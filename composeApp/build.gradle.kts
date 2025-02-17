@@ -64,6 +64,11 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.junit.jupiter)
     debugImplementation(compose.uiTooling)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
