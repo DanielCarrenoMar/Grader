@@ -13,3 +13,7 @@ val movies = (1..10).map {
         poster = "https://picsum.photos/200/300?id=$it",
     )
 }
+
+fun getA():String{
+    return "A"
+}
