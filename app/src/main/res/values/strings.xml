@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Grader</string>
+    <string name="salute_message">Hola %1$s</string>
+</resources>

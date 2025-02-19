@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editTextName"
+        app:layout_constraintStart_toStartOf="@+id/editTextName"
+        app:layout_constraintEnd_toEndOf="@+id/editTextName"
+        android:textSize="36sp"
+        android:text="SaludoApp"
+    />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/editTextName"
+        app:layout_constraintStart_toStartOf="@+id/editTextName"
+        app:layout_constraintEnd_toEndOf="@+id/editTextName"
+        android:textSize="16sp"
+        android:text="Nombre"
+    />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:labelFor="@id/buttonSend"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSend"
+        app:layout_constraintStart_toStartOf="@+id/buttonSend"
+        app:layout_constraintEnd_toEndOf="@+id/buttonSend"
+    />
+
+    <Button
+        android:id="@+id/buttonSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Saludar"
+        android:textSize="16sp"
+        android:background="@color/purple_200"
+
+    />
+
+    <TextView
+        android:id="@+id/textSalute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSend"
+        app:layout_constraintStart_toStartOf="@+id/buttonSend"
+        app:layout_constraintEnd_toEndOf="@+id/buttonSend"
+        android:textSize="16sp"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
