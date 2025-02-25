@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "course")
-data class CourseEntity (
+@Entity(tableName = "sub_grade")
+data class SubGradeEntity (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
+    @ColumnInfo(name = "grade_id") val gradeId: Int,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "uc") val uc: Int,
+    @ColumnInfo(name = "grade") val grade: Float,
+    @ColumnInfo(name = "percentage") val percentage: Double,
 )

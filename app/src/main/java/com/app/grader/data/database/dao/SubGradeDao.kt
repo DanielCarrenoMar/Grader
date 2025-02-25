@@ -4,18 +4,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.CourseEntity
 
 @Dao
-interface CourseDao {
+interface SubGradeDao {
 
-    @Query("SELECT * FROM course")
-    suspend fun getAllCourses():List<CourseEntity>
-
+    /*@Query("SELECT * FROM course ORDER BY author DESC")
+    suspend fun getAllQuotes():List<QuoteEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCourse(course:CourseEntity):Long
+    suspend fun insertAll(quotes:List<QuoteEntity>)
 
     @Query("DELETE FROM course")
-    suspend fun deleteAllCourses()
+    suspend fun deleteAllQuotes()*/
 }

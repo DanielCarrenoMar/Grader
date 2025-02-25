@@ -7,10 +7,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.app.grader.ui.allGrades.AllGradesScreen
 import com.app.grader.ui.course.CourseScreen
+import com.app.grader.ui.course.CourseViewModel
 import com.app.grader.ui.grade.GradeScreen
 import com.app.grader.ui.home.HomeScreen
 import com.app.grader.ui.home.HomeViewModel
-import kotlin.reflect.typeOf
 
 @Composable
 fun NavigationWrapper() {
@@ -31,7 +31,10 @@ fun NavigationWrapper() {
         }
 
         composable<Course> {
-            CourseScreen ({ navController.navigate(Home){popUpTo(Home) { inclusive = true }} }, { navController.navigate(Grade) })
+            CourseScreen (
+                { navController.navigate(Home){popUpTo(Home) { inclusive = true }} },
+                { navController.navigate(Grade) }
+            )
         }
 
         composable<Grade> {
