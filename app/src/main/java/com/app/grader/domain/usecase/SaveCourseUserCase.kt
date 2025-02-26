@@ -1,5 +1,6 @@
 package com.app.grader.domain.usecase
 
+import android.util.Log
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.repository.LocalStorageRepository
@@ -10,12 +11,12 @@ import javax.inject.Inject
 class SaveCourseUserCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(timerSessionModel: CourseModel): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(courseModel: CourseModel): Flow<Resource<Boolean>> = flow {
         try {
             emit(Resource.Loading())
             emit(
                 Resource.Success(
-                    data = repository.saveCourse(timerSessionModel)
+                    data = repository.saveCourse(courseModel)
                 )
             )
         } catch (e: Exception) {

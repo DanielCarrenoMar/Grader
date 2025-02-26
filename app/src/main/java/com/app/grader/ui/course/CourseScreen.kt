@@ -47,6 +47,9 @@ fun CourseScreen(navegateToHome: () -> Unit, navigateToGrade: () -> Unit, viewMo
         Button(onClick = { navegateToHome() }) {
             Text(text = "Navegar a la HOME")
         }
+        Button(onClick = { viewModel.saveGrade() }) {
+            Text(text = "Crear Materia")
+        }
         Spacer(modifier = Modifier.weight(1f))
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(showCourses.component1()) { course ->

@@ -1,5 +1,6 @@
 package com.app.grader.data.database.repository
 
+import android.util.Log
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.toCourseEntity
@@ -11,6 +12,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Boolean {
         try {
+            Log.i("LocalStorageRepositoryImpl", "Guardando Course: ${courseModel.title}, Description: ${courseModel.description}, UC: ${courseModel.uc}")
             val result = courseDao.insertCourse(courseModel.toCourseEntity())
             return result.toInt() != -1
         } catch (e: Exception) {

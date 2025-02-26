@@ -25,5 +25,5 @@ class DataBaseModule {
 
     @Singleton
     @Provides
-    fun provideTimerSessionDao(db: AppDatabase) = db.getCourseDao()
+    fun provideCourseDao(db: AppDatabase) = db.getCourseDao()
 }

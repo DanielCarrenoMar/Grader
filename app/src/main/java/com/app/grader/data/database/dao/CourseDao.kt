@@ -12,7 +12,6 @@ interface CourseDao {
     @Query("SELECT * FROM course")
     suspend fun getAllCourses():List<CourseEntity>
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCourse(course:CourseEntity):Long
 
