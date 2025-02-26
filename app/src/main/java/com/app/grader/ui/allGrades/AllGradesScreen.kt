@@ -16,7 +16,7 @@ fun AllGradesScreen(text:String,navegateToHome: () -> Unit) {
         Spacer(modifier = Modifier.weight(1f))
         Text(text = "AllGrades SCREEN", fontSize = 25.sp)
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = "Texto Transmitido desde HOME: $text", fontSize = 14.sp)
+        //Text(text = "Texto Transmitido desde HOME: $text", fontSize = 14.sp)
         Spacer(modifier = Modifier.weight(1f))
         Button(onClick = { navegateToHome() }) {
             Text(text = "Navegar a la HOME")

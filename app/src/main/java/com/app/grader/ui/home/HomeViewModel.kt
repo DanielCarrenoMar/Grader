@@ -1,14 +1,12 @@
 package com.app.grader.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class HomeViewModel: ViewModel() {
-    private var _text: MutableLiveData<String> = MutableLiveData("")
-    val text: LiveData<String> = _text
+    //private var _text: MutableLiveData<String> = MutableLiveData("")
+    //val text: LiveData<String> = _text
 
     fun onTextChanged(newText: String) {
-        _text.value = newText
+        //_text.value = newText
     }
 }
