@@ -16,5 +16,5 @@ interface CourseDao {
     suspend fun insertCourse(course:CourseEntity):Long
 
     @Query("DELETE FROM course")
-    suspend fun deleteAllCourses()
+    suspend fun deleteAllCourses():Int
 }

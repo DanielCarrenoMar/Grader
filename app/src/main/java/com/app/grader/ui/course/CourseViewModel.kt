@@ -8,6 +8,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.SaveCourseUserCase
+import com.app.grader.domain.usecase.DeleteAllCoursesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,13 +16,14 @@ import javax.inject.Inject
 @HiltViewModel
 class CourseViewModel  @Inject constructor(
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
-    private val saveCourseUserCase: SaveCourseUserCase
+    private val saveCourseUserCase: SaveCourseUserCase,
+    private val deleteAllCoursesUserCase: DeleteAllCoursesUseCase
 ): ViewModel() {
 
     private val _showCourses = mutableStateOf<List<CourseModel>>(emptyList())
     val showCourses = _showCourses
 
-    fun getAllGrades() {
+    fun getAllCourses() {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
                 if (result is Resource.Success) {
@@ -35,13 +37,13 @@ class CourseViewModel  @Inject constructor(
             }
         }
     }
-    fun saveGrade() {
+    fun saveCourse() {
         val courseModel = CourseModel("Curso", "Descripcion", 2)
         viewModelScope.launch {
             saveCourseUserCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        getAllGrades()
+                        getAllCourses()
                         Log.i("CourseViewModel", "saveGrade Cantidad: " + _showCourses.value.size)
                     }
                     is Resource.Loading -> {
@@ -49,6 +51,25 @@ class CourseViewModel  @Inject constructor(
                     }
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error saving course: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun deleteAllCourses() {
+        viewModelScope.launch {
+            deleteAllCoursesUserCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.i("CourseViewModel", "deleteAllCourses Cantidad: " + result.data)
+                        _showCourses.value = emptyList()
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error deleting all courses: ${result.message}")
                     }
                 }
             }

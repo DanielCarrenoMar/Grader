@@ -33,4 +33,12 @@ class LocalStorageRepositoryImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun deleteAllCourses(): Int {
+        try {
+            return courseDao.deleteAllCourses()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }

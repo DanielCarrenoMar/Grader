@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.dp
+import com.app.grader.domain.model.CourseModel
 
 @Composable
 fun CourseScreen(navegateToHome: () -> Unit, navigateToGrade: () -> Unit, viewModel: CourseViewModel = hiltViewModel()) {
@@ -33,7 +34,7 @@ fun CourseScreen(navegateToHome: () -> Unit, navigateToGrade: () -> Unit, viewMo
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllGrades()
+            viewModel.getAllCourses()
         }
     }
 
@@ -47,24 +48,39 @@ fun CourseScreen(navegateToHome: () -> Unit, navigateToGrade: () -> Unit, viewMo
         Button(onClick = { navegateToHome() }) {
             Text(text = "Navegar a la HOME")
         }
-        Button(onClick = { viewModel.saveGrade() }) {
+        Button(onClick = { viewModel.saveCourse() }) {
             Text(text = "Crear Materia")
         }
+        Button(onClick = { viewModel.deleteAllCourses() }) {
+            Text(text = "Borrar todas las Materias")
+        }
         Spacer(modifier = Modifier.weight(1f))
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(showCourses.component1()) { course ->
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(4.dp)
-                ) {
-                    Text(
-                        text = course.title,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 18.sp
-                    )
-                }
+        CourseList(courses = showCourses.value, navigateToGrade = navigateToGrade)
+    }
+}
+
+@Composable
+fun CourseList(courses: List<CourseModel>, navigateToGrade: () -> Unit) {
+    LazyColumn {
+        items(courses) { course ->
+            CourseItem(course = course, navigateToGrade = navigateToGrade)
+        }
+    }
+}
+
+@Composable
+fun CourseItem(course: CourseModel, navigateToGrade: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(text = course.title, fontSize = 20.sp)
+            Text(text = course.description, fontSize = 14.sp)
+            Text(text = "UC: ${course.uc}", fontSize = 14.sp)
+            Button(onClick = { navigateToGrade() }) {
+                Text(text = "Navegar a Nota (Grader)")
             }
         }
     }
