@@ -3,23 +3,31 @@ package com.app.grader.ui.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowInsetsCompat
+import com.app.grader.ui.componets.HeaderMenu
+import androidx.core.view.WindowInsetsCompat.Type
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel ,navegateToAllGrades: (String) -> Unit, navigateToCourse: () -> Unit) {
-    //val text: String by viewModel.text.observeAsState(initial = "")
+    val insets = WindowInsetsCompat.toWindowInsetsCompat(LocalView.current.rootWindowInsets)
+    val statusBarHeight = with(LocalDensity.current) { insets.getInsets(Type.statusBars()).top.toDp() }
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = statusBarHeight),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HeaderMenu("Asignaturas")
         Spacer(modifier = Modifier.weight(1f))
         Text(text = "HOME SCREEN", fontSize = 25.sp)
         Spacer(modifier = Modifier.weight(1f))
