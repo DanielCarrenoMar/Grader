@@ -10,13 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -39,6 +35,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HeaderMenu(
     title: String,
+    navigateAllGrades: (() -> Unit)?,
+    navigateHome: (() -> Unit)?,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -47,26 +45,24 @@ fun HeaderMenu(
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.width(400.dp)
+                modifier = Modifier.width(300.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
-                    Text("Drawer Title", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
+                    Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
                     HorizontalDivider()
-
-                    Text("Section 1", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
                     NavigationDrawerItem(
-                        label = { Text("Item 1") },
-                        selected = false,
-                        onClick = { /* Handle click */ }
+                        label = { Text("Asignaturas") },
+                        selected = navigateHome == null,
+                        onClick = { navigateHome?.invoke() }
                     )
                     NavigationDrawerItem(
-                        label = { Text("Item 2") },
-                        selected = false,
-                        onClick = { /* Handle click */ }
+                        label = { Text("Todas las notas") },
+                        selected = navigateAllGrades == null,
+                        onClick = { navigateAllGrades?.invoke() }
                     )
                 }
             }

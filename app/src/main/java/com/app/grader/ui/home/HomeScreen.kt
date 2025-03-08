@@ -16,14 +16,13 @@ import androidx.core.view.WindowInsetsCompat
 import com.app.grader.ui.componets.lateralMenu.HeaderMenu
 import androidx.core.view.WindowInsetsCompat.Type
 import com.app.grader.ui.componets.CommonLayout
-import com.app.grader.ui.componets.lateralMenu.ItemLateralMenu
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, navigateToCourse: () -> Unit) {
     val insets = WindowInsetsCompat.toWindowInsetsCompat(LocalView.current.rootWindowInsets)
     val statusBarHeight = with(LocalDensity.current) { insets.getInsets(Type.statusBars()).top.toDp() }
 
-    HeaderMenu ("Asignaturas") {
+    HeaderMenu ("Asignaturas", {navigateToAllGrades("a")}, null) {
         CommonLayout {
             Column(
                 modifier = Modifier
@@ -37,13 +36,6 @@ fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, 
                 Spacer(modifier = Modifier.weight(1f))
                 //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
                 //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
-                Spacer(modifier = Modifier.weight(1f))
-                Button(onClick = { navigateToCourse() }) {
-                    Text(text = "Navegar a Materia (Course)")
-                }
-                Button(onClick = { navigateToAllGrades("a") }) {
-                    Text(text = "Navegar a todas las Notas (AllGrades)")
-                }
                 Spacer(modifier = Modifier.weight(1f))
             }
         }

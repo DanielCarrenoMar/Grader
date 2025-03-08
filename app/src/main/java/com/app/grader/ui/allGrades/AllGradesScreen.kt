@@ -9,18 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import com.app.grader.ui.componets.CommonLayout
+import com.app.grader.ui.componets.lateralMenu.HeaderMenu
 
 @Composable
 fun AllGradesScreen(text:String,navegateToHome: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.weight(1f))
-        Text(text = "AllGrades SCREEN", fontSize = 25.sp)
-        Spacer(modifier = Modifier.weight(1f))
-        //Text(text = "Texto Transmitido desde HOME: $text", fontSize = 14.sp)
-        Spacer(modifier = Modifier.weight(1f))
-        Button(onClick = { navegateToHome() }) {
-            Text(text = "Navegar a la HOME")
+
+    HeaderMenu ("Todas las notas", null, {navegateToHome()}) {
+        CommonLayout {
+            Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "AllGrades SCREEN", fontSize = 25.sp)
+                Spacer(modifier = Modifier.weight(1f))
+                //Text(text = "Texto Transmitido desde HOME: $text", fontSize = 14.sp)
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
-        Spacer(modifier = Modifier.weight(1f))
     }
 }
