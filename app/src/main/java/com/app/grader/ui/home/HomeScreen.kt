@@ -13,33 +13,40 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsCompat
-import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.lateralMenu.HeaderMenu
 import androidx.core.view.WindowInsetsCompat.Type
+import com.app.grader.ui.componets.CommonLayout
+import com.app.grader.ui.componets.lateralMenu.ItemLateralMenu
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel ,navegateToAllGrades: (String) -> Unit, navigateToCourse: () -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, navigateToCourse: () -> Unit) {
     val insets = WindowInsetsCompat.toWindowInsetsCompat(LocalView.current.rootWindowInsets)
     val statusBarHeight = with(LocalDensity.current) { insets.getInsets(Type.statusBars()).top.toDp() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = statusBarHeight),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        HeaderMenu("Asignaturas")
-        Spacer(modifier = Modifier.weight(1f))
-        Text(text = "HOME SCREEN", fontSize = 25.sp)
-        Spacer(modifier = Modifier.weight(1f))
-        //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
-        //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
-        Spacer(modifier = Modifier.weight(1f))
-        Button(onClick = { navigateToCourse() }) {
-            Text(text = "Navegar a Materia (Course)")
+    HeaderMenu ("Asignaturas") {
+        CommonLayout {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = statusBarHeight),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "HOME SCREEN", fontSize = 25.sp)
+                Spacer(modifier = Modifier.weight(1f))
+                //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
+                //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
+                Spacer(modifier = Modifier.weight(1f))
+                Button(onClick = { navigateToCourse() }) {
+                    Text(text = "Navegar a Materia (Course)")
+                }
+                Button(onClick = { navigateToAllGrades("a") }) {
+                    Text(text = "Navegar a todas las Notas (AllGrades)")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
-        Button(onClick = { navegateToAllGrades("a") }) {
-            Text(text = "Navegar a todas las Notas (AllGrades)")
-        }
-        Spacer(modifier = Modifier.weight(1f))
     }
+
 }
