@@ -1,4 +1,4 @@
-package com.app.grader.ui.componets.lateralMenu
+package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -35,8 +35,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HeaderMenu(
     title: String,
-    navigateAllGrades: (() -> Unit)?,
     navigateHome: (() -> Unit)?,
+    navigateAllGrades: (() -> Unit)?,
+    navigateConfig: (() -> Unit)?,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -52,17 +53,47 @@ fun HeaderMenu(
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
-                    Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
+                    Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.secondary)
                     HorizontalDivider()
                     NavigationDrawerItem(
-                        label = { Text("Asignaturas") },
+                        label = { Text("Asignaturas", style = MaterialTheme.typography.labelLarge) },
+                        icon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.home_outline),
+                                contentDescription = "Asignaturas",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                            )
+                        },
                         selected = navigateHome == null,
                         onClick = { navigateHome?.invoke() }
                     )
                     NavigationDrawerItem(
-                        label = { Text("Todas las notas") },
+                        label = { Text("Todas las notas", style = MaterialTheme.typography.labelLarge) },
+                        icon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.star_outline),
+                                contentDescription = "Todas las notas",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                            )
+                        },
                         selected = navigateAllGrades == null,
                         onClick = { navigateAllGrades?.invoke() }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Ajustes", style = MaterialTheme.typography.labelLarge) },
+                        icon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.cog_outline),
+                                contentDescription = "Ajustes",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                            )
+                        },
+                        selected = navigateConfig == null,
+                        onClick = { navigateConfig?.invoke() }
                     )
                 }
             }
@@ -72,6 +103,7 @@ fun HeaderMenu(
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.padding(start = 8.dp),
                     title = {
                         Text(
                             text = title,
@@ -95,7 +127,6 @@ fun HeaderMenu(
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                                 modifier = Modifier.size(48.dp).padding(end = 15.dp),
                             )
-
                         }
                     }
                 )

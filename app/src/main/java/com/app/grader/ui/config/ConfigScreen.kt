@@ -1,4 +1,4 @@
-package com.app.grader.ui.home
+package com.app.grader.ui.config
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,18 +12,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsCompat
-import com.app.grader.ui.componets.HeaderMenu
 import androidx.core.view.WindowInsetsCompat.Type
+import com.app.grader.ui.componets.HeaderMenu
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Unit, navigateToCourse: () -> Unit) {
+fun ConfigScreen( navigateToHome: () -> Unit, navigateToAllGrades: (String) -> Unit) {
     val insets = WindowInsetsCompat.toWindowInsetsCompat(LocalView.current.rootWindowInsets)
     val statusBarHeight = with(LocalDensity.current) { insets.getInsets(Type.statusBars()).top.toDp() }
 
-    HeaderMenu ("Asignaturas",
-        null,
+    HeaderMenu ("Ajustes",
+        {navigateToHome()},
         {navigateToAllGrades("a")},
-        {navigateToConfig()}
+        null,
     ) {
         Column(
             modifier = Modifier
@@ -33,10 +33,7 @@ fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, 
         ) {
 
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "HOME SCREEN", fontSize = 25.sp)
-            Spacer(modifier = Modifier.weight(1f))
-            //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
-            //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
+            Text(text = "Config SCREEN", fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))
         }
     }
