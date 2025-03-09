@@ -56,13 +56,13 @@ fun NavigationWrapper() {
 
         composable<Course> {
             CourseScreen (
-                { navController.navigatePop(Home) },
+                { navController.popBackStack() },
                 { navController.navigate(Grade) }
             )
         }
 
         composable<Grade> {
-            GradeScreen { navController.navigate(Course) }
+            GradeScreen { navController.popBackStack() }
         }
 
         /*composable<Detail> { backStackEntry ->
