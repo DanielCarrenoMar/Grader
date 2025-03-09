@@ -1,6 +1,7 @@
 package com.app.grader.ui.home
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsCompat
 import com.app.grader.ui.componets.HeaderMenu
 import androidx.core.view.WindowInsetsCompat.Type
+import com.app.grader.ui.componets.CircleGrade
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Unit, navigateToCourse: () -> Unit) {
@@ -44,6 +46,20 @@ fun HomeScreen(viewModel: HomeViewModel ,navigateToAllGrades: (String) -> Unit, 
             //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
             //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
             Spacer(modifier = Modifier.weight(1f))
+            Row {
+                CircleGrade(20)
+                CircleGrade(18)
+                CircleGrade(16)
+                CircleGrade(14)
+            }
+            Row {
+                CircleGrade(12)
+                CircleGrade(10)
+                CircleGrade(5)
+                CircleGrade(2)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
         }
     }
 

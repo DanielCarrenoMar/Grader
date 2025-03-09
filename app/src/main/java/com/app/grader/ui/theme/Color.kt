@@ -10,5 +10,9 @@ val Primary400 = Color(0xFF8A23C9)
 
 val Secondary600 = Color(0xFF0F68EF)
 
+val Success500 = Color(0xFF28A745)
+val Warning500 = Color(0xFFFFC107)
+val Error500 = Color(0xFFF33E3E)
+
 val Shadow50 = Color(0xFFFFFFFF)
 val Shadow100 = Color(0xFF000000)
