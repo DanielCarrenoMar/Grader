@@ -15,5 +15,11 @@ object Config
 object Course
 
 @Serializable
+object EditCourse
+
+@Serializable
 object Grade
+
+@Serializable
+object EditGrade
 

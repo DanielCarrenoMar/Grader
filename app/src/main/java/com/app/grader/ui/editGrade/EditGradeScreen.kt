@@ -1,4 +1,4 @@
-package com.app.grader.ui.grade
+package com.app.grader.ui.editGrade
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.sp
 import com.app.grader.ui.componets.HeaderBack
 
 @Composable
-fun GradeScreen(navegateBack: () -> Unit) {
+fun EditGradeScreen(navegateBack: () -> Unit) {
 
     HeaderBack(
-        title = "Nota",
+        title = "Asignatura",
         navigateBack = navegateBack
     ) {
         Column(
@@ -22,7 +22,7 @@ fun GradeScreen(navegateBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "Grade SCREEN", fontSize = 25.sp)
+            Text(text = "EditGrade SCREEN", fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))
         }
     }

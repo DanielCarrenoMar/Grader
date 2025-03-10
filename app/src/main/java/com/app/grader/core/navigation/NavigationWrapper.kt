@@ -6,13 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.app.grader.ui.allGrades.AllGradesScreen
-import com.app.grader.ui.config.ConfigScreen
-import com.app.grader.ui.course.CourseScreen
-import com.app.grader.ui.course.CourseViewModel
-import com.app.grader.ui.grade.GradeScreen
-import com.app.grader.ui.home.HomeScreen
-import com.app.grader.ui.home.HomeViewModel
+import com.app.grader.ui.allGrades.*
+import com.app.grader.ui.config.*
+import com.app.grader.ui.course.*
+import com.app.grader.ui.grade.*
+import com.app.grader.ui.home.*
+import com.app.grader.ui.editGrade.*
+import com.app.grader.ui.editCourse.*
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas
@@ -61,8 +61,16 @@ fun NavigationWrapper() {
             )
         }
 
+        composable<EditCourse> {
+            EditCourseScreen { navController.popBackStack() }
+        }
+
         composable<Grade> {
             GradeScreen { navController.popBackStack() }
+        }
+
+        composable<EditGrade> {
+            EditGradeScreen { navController.popBackStack() }
         }
 
         /*composable<Detail> { backStackEntry ->
