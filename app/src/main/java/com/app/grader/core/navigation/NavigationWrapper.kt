@@ -28,8 +28,8 @@ fun NavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home) {
         composable<Home> {
-            HomeScreen(HomeViewModel() ,{
-                myText -> navController.navigate(AllGrades(text = myText)) },
+            HomeScreen(
+                { myText -> navController.navigate(AllGrades(text = myText)) },
                 { navController.navigatePop(Config) },
                 { navController.navigate(Course) },
             )

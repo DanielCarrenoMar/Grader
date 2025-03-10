@@ -1,7 +1,6 @@
 package com.app.grader.ui.componets
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,12 +14,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.grader.ui.theme.Error500
+import com.app.grader.ui.theme.Neutral100
 import com.app.grader.ui.theme.Success500
 import com.app.grader.ui.theme.Warning500
-import kotlin.math.roundToInt
 
-fun getColorForGrade(grade: Int): Color {
+fun getColorForGrade(grade: Double): Color {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
+    if (grade == 0.0) return Neutral100
 
     val colorHigh = Success500
     val colorMiddle = Warning500
@@ -28,18 +28,18 @@ fun getColorForGrade(grade: Int): Color {
 
     return when {
         grade <= 10 -> {
-            val adjustedFraction = grade / 10f
+            val adjustedFraction = (grade / 10f).toFloat()
             lerp(colorLow, colorMiddle, adjustedFraction)
         }
         else -> {
-            val adjustedFraction = (grade - 10) / 10f
+            val adjustedFraction = ((grade - 10) / 10f).toFloat()
             lerp(colorMiddle, colorHigh, adjustedFraction)
         }
     }
 }
 
 @Composable
-fun CircleGrade(grade: Int, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp, radius : Dp = 40.dp) {
+fun CircleGrade(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp, radius : Dp = 40.dp) {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
@@ -66,9 +66,10 @@ fun CircleGrade(grade: Int, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp
             .then(modifier)
     ) {
         Text(
-            "$grade",
+            if (grade != 0.0) "$grade" else "--",
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }

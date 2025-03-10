@@ -7,6 +7,7 @@ data class CourseModel(
     val title: String,
     val description: String,
     val uc: Int,
+    val average: Double = 0.0,
 )
 
 fun CourseModel.toCourseEntity():CourseEntity{
