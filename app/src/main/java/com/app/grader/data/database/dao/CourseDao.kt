@@ -10,11 +10,14 @@ import com.app.grader.data.database.entitites.CourseEntity
 interface CourseDao {
 
     @Query("SELECT * FROM course")
-    suspend fun getAllCourses():List<CourseEntity>
+    suspend fun getAllCourses(): List<CourseEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCourse(course:CourseEntity):Long
+    suspend fun insertCourse(course: CourseEntity): Long
 
     @Query("DELETE FROM course")
-    suspend fun deleteAllCourses():Int
+    suspend fun deleteAllCourses(): Int
+
+    @Query("DELETE FROM course WHERE id = :courseId")
+    suspend fun deleteCourse(courseId: Int): Int
 }

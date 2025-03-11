@@ -6,5 +6,6 @@ interface LocalStorageRepository {
     suspend fun saveCourse(courseModel: CourseModel): Boolean
     suspend fun getAllCourses(): List<CourseModel>
     suspend fun deleteAllCourses() : Int
-    suspend fun getAverageFromCourse(courseId:Int) : Double
+    suspend fun deleteCourse(courseModel: CourseModel): Int
+    suspend fun calculateAverageGrade(courseId: Int): Float
 }
