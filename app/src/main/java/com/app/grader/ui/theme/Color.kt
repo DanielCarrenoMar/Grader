@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val Neutral50 = Color(0xFFF1F1F3)
 val Neutral100 = Color(0xFFC7C8D1)
+val Neutral600 = Color(0xFF5D5F6F)
 val Neutral900 = Color(0xFF17181C)
 
 val Primary400 = Color(0xFF8A23C9)
@@ -16,3 +17,5 @@ val Error500 = Color(0xFFF33E3E)
 
 val Shadow50 = Color(0xFFFFFFFF)
 val Shadow100 = Color(0xFF000000)
+
+val Background = Color(0xFFE0E7F3)

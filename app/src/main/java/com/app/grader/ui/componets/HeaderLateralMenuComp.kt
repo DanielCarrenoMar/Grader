@@ -103,7 +103,6 @@ fun HeaderMenu(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    modifier = Modifier.padding(start = 8.dp),
                     title = {
                         Text(
                             text = title,
@@ -112,7 +111,9 @@ fun HeaderMenu(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {
+                        IconButton(
+                            modifier = Modifier.padding(start = 8.dp),
+                            onClick = {
                             scope.launch {
                                 if (drawerState.isClosed) {
                                     drawerState.open()

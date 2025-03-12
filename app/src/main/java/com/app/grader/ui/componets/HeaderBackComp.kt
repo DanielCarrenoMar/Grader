@@ -23,7 +23,6 @@ fun HeaderBack( title: String, navigateBack: () -> Unit, content: @Composable (P
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(start = 8.dp),
                 title = {
                     Text(
                         text = title,
@@ -32,7 +31,9 @@ fun HeaderBack( title: String, navigateBack: () -> Unit, content: @Composable (P
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
+                    IconButton(
+                        modifier = Modifier.padding(start = 8.dp),
+                        onClick = {
                         navigateBack()
                     }) {
                         Image(
