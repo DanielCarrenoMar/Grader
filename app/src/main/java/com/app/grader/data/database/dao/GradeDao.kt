@@ -10,11 +10,11 @@ import com.app.grader.data.database.entitites.GradeEntity
 interface GradeDao {
 
     @Query("SELECT * FROM grade")
-    suspend fun getAllGrades():List<GradeEntity>
-    /*
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(quotes:List<QuoteEntity>)
+    suspend fun getAllGrades(): List<GradeEntity>
 
-    @Query("DELETE FROM course")
-    suspend fun deleteAllQuotes()*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGrade(grades: List<GradeEntity>)
+
+    @Query("DELETE FROM grade")
+    suspend fun deleteAllGrades(): Int
 }

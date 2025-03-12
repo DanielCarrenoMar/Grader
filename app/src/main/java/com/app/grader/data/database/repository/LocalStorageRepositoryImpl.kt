@@ -46,6 +46,14 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteCourse(courseModel: CourseModel): Int {
+        try {
+            return courseDao.deleteCourse(courseModel.toCourseEntity().id)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun getAverageFromCourse(courseId:Int): Double {
         try {
             val grades = gradeDao.getAllGrades()
