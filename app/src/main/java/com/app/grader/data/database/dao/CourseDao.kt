@@ -18,6 +18,9 @@ interface CourseDao {
     @Query("DELETE FROM course")
     suspend fun deleteAllCourses(): Int
 
+    @Query("DELETE FROM sqlite_sequence WHERE name = 'course'")
+    suspend fun resetIncremetalCourse()
+
     @Query("DELETE FROM course WHERE id = :courseId")
     suspend fun deleteCourse(courseId: Int): Int
 }

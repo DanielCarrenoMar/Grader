@@ -38,6 +38,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllCourses(): Int {
         try {
+            courseDao.resetIncremetalCourse()
             return courseDao.deleteAllCourses()
         } catch (e: Exception) {
             throw e
