@@ -9,12 +9,12 @@ import com.app.grader.data.database.entitites.GradeEntity
 @Dao
 interface GradeDao {
 
-    @Query("SELECT * FROM grade WHERE course_id = :courseId")
-    suspend fun getGradesByCourseId(courseId: Int): List<GradeEntity>
-
+    @Query("SELECT * FROM grade")
+    suspend fun getAllGrades():List<GradeEntity>
+    /*
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGrade(grades: List<GradeEntity>)
+    suspend fun insertAll(quotes:List<QuoteEntity>)
 
-    @Query("DELETE FROM grade")
-    suspend fun deleteAllGrades(): Int
+    @Query("DELETE FROM course")
+    suspend fun deleteAllQuotes()*/
 }

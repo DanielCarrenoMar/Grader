@@ -9,7 +9,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.dao.GradeDao
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -28,6 +27,7 @@ class DataBaseModule {
     @Provides
     fun provideCourseDao(db: AppDatabase) = db.getCourseDao()
 
+    @Singleton
     @Provides
     fun provideGradeDao(db: AppDatabase) = db.getGradeDao()
 }

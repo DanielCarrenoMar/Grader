@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class LocalStorageRepositoryImpl @Inject constructor(
     private val courseDao: CourseDao,
-    private val gradeDao: GradeDao
+    private val gradeDao: GradeDao,
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Boolean {
         try {
@@ -28,7 +28,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 CourseModel(
                     title = courseEntity.title,
                     description = courseEntity.description,
-                    uc = courseEntity.uc
+                    uc = courseEntity.uc,
+                    average = getAverageFromCourse(courseEntity.id)
                 )
             }
         } catch (e: Exception) {
@@ -45,22 +46,16 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteCourse(courseModel: CourseModel): Int {
+    override suspend fun getAverageFromCourse(courseId:Int): Double {
         try {
-            return courseDao.deleteCourse(courseModel.toCourseEntity().id)
-        } catch (e: Exception) {
-            throw e
-        }
-    }
+            val grades = gradeDao.getAllGrades()
+                .filter { gradeEntity -> gradeEntity.courseId == courseId }
+            if (grades.isEmpty()) return 0.0
 
-    override suspend fun calculateAverageGrade(courseId: Int): Float {
-        try {
-            val grades = gradeDao.getGradesByCourseId(courseId)
-            return if (grades.isNotEmpty()) {
-                grades.map { it.grade }.average().toFloat()
-            } else {
-                0f
-            }
+            val totalWeight = grades.sumOf { it.percentage }
+            val weightedAverage = grades.sumOf { it.grade * it.percentage } / totalWeight
+
+            return weightedAverage
         } catch (e: Exception) {
             throw e
         }
