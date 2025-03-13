@@ -17,18 +17,15 @@ import com.app.grader.ui.componets.HeaderMenu
 
 @Composable
 fun ConfigScreen( navigateToHome: () -> Unit, navigateToAllGrades: (String) -> Unit) {
-    val insets = WindowInsetsCompat.toWindowInsetsCompat(LocalView.current.rootWindowInsets)
-    val statusBarHeight = with(LocalDensity.current) { insets.getInsets(Type.statusBars()).top.toDp() }
-
     HeaderMenu ("Ajustes",
         {navigateToHome()},
         {navigateToAllGrades("a")},
         null,
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = statusBarHeight),
+                .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

@@ -3,6 +3,7 @@ package com.app.grader.ui.allGrades
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,8 +18,11 @@ fun AllGradesScreen(text:String,navegateToHome: () -> Unit, navigateToConfig: ()
         {navegateToHome()},
         null,
         {navigateToConfig()}
-    ) {
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Spacer(modifier = Modifier.weight(1f))
             Text(text = "AllGrades SCREEN", fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))

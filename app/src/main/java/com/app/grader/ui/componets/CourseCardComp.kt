@@ -18,7 +18,6 @@ import com.app.grader.domain.model.CourseModel
 fun CourseCardComp(course: CourseModel, navigateToGrade: () -> Unit) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth(),
         colors = CardColors(
             MaterialTheme.colorScheme.surface,

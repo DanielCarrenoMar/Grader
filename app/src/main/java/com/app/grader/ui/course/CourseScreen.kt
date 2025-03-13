@@ -34,8 +34,10 @@ fun CourseScreen(navegateBack: () -> Unit, navigateToGrade: () -> Unit, viewMode
     HeaderBack(
         title = "Materia",
         navigateBack = navegateBack
-    ) {
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.weight(1f))
             Text(text = "Course SCREEN", fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))
