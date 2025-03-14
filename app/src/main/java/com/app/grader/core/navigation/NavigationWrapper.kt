@@ -1,76 +1,44 @@
 package com.app.grader.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.app.grader.ui.allGrades.*
-import com.app.grader.ui.config.*
-import com.app.grader.ui.course.*
-import com.app.grader.ui.grade.*
-import com.app.grader.ui.home.*
-import com.app.grader.ui.editGrade.*
-import com.app.grader.ui.editCourse.*
-
-/**
- * Navega a una pantalla borrandola de la pila de pantallas
- */
-fun NavController.navigatePop(route: Any) {
-    this.navigate(route) {
-        popUpTo(route) { inclusive = true }
-    }
-}
+import com.app.grader.ui.allGrades.AllGradesScreen
+import com.app.grader.ui.course.CourseScreen
+import com.app.grader.ui.course.CourseViewModel
+import com.app.grader.ui.grade.GradeScreen
+import com.app.grader.ui.home.HomeScreen
+import com.app.grader.ui.home.HomeViewModel
 
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home) {
         composable<Home> {
-            HomeScreen(
-                { myText -> navController.navigate(AllGrades(text = myText)) },
-                { navController.navigatePop(Config) },
-                { navController.navigate(Course) },
-            )
+            HomeScreen(HomeViewModel() ,{ myText -> navController.navigate(AllGrades(text = myText)) }, { navController.navigate(Course) })
         }
 
         composable<AllGrades> { backStateEntry ->
             val allGrades:AllGrades = backStateEntry.toRoute()
-            AllGradesScreen (
-                allGrades.text ,
-                { navController.navigatePop(Home) },
-                { navController.navigatePop(Config) }
-            )
+            AllGradesScreen (allGrades.text ){ navController.navigate(Home){
+                popUpTo(Home) { inclusive = true }
+            } }
             // Cuando se navega a una pantalla se crea una nueva
             // frente a la anterior, asi que para navegar a la home
             // borramos la pila de pantallas con popUpTo
         }
 
-        composable<Config> {
-            ConfigScreen(
-                { navController.navigatePop(Home) },
-                { myText -> navController.navigatePop(AllGrades(text = myText)) }
-            )
-        }
-
         composable<Course> {
             CourseScreen (
-                { navController.popBackStack() },
+                { navController.navigate(Home){popUpTo(Home) { inclusive = true }} },
                 { navController.navigate(Grade) }
             )
         }
 
-        composable<EditCourse> {
-            EditCourseScreen { navController.popBackStack() }
-        }
-
         composable<Grade> {
-            GradeScreen { navController.popBackStack() }
-        }
-
-        composable<EditGrade> {
-            EditGradeScreen { navController.popBackStack() }
+            GradeScreen { navController.navigate(Course) }
         }
 
         /*composable<Detail> { backStackEntry ->

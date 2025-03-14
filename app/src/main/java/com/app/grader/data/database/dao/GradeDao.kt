@@ -4,14 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.GradeEntity
 
 @Dao
 interface GradeDao {
 
-    @Query("SELECT * FROM grade")
-    suspend fun getAllGrades():List<GradeEntity>
-    /*
+    /*@Query("SELECT * FROM course ORDER BY author DESC")
+    suspend fun getAllQuotes():List<QuoteEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(quotes:List<QuoteEntity>)
 
