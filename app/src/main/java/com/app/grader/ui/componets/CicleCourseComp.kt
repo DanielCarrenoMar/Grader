@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp, radius : Dp = 40.dp) {
-    if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
+    if (grade < 0.00 || grade > 20.00) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
     if (strokeWith > radius) throw IllegalArgumentException("Stroke width must be less than radius")
@@ -34,7 +34,7 @@ fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 
             .then(modifier)
     ) {
         Text(
-            if (grade != 0.0) "$grade" else "--",
+            if (grade != 0.00) "$grade" else "--",
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.background,
