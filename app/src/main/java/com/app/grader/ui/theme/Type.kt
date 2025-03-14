@@ -1,53 +1,34 @@
 package com.app.grader.ui.theme
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.app.grader.R
-
-val QuickSandsFont = FontFamily(
-    Font(R.font.quicksand_regular, FontWeight.Normal, FontStyle.Normal),
-    Font(R.font.quicksand_medium, FontWeight.Medium, FontStyle.Normal),
-    Font(R.font.quicksand_bold, FontWeight.Bold, FontStyle.Normal),
-    Font(R.font.quicksand_semibold, FontWeight.SemiBold, FontStyle.Normal),
-    Font(R.font.quicksand_light, FontWeight.Light, FontStyle.Normal),
-)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    titleLarge = TextStyle(
-        fontFamily = QuickSandsFont,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        lineHeight = 24.sp,
-    ),
-    bodySmall = TextStyle(
-        fontFamily = QuickSandsFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 10.sp,
-        lineHeight = 16.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = QuickSandsFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-    ),
-    labelMedium = TextStyle(
-        fontFamily = QuickSandsFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
-        lineHeight = 16.sp,
-    ),
     bodyLarge = TextStyle(
-        fontFamily = QuickSandsFont,
-        fontWeight = FontWeight.Medium,
-        fontSize = 20.sp,
-        lineHeight = 16.sp,
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    )
+    /* Other default text styles to override
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
     ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    )
+    */
 )
