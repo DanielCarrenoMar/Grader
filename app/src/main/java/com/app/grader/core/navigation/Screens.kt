@@ -1,5 +1,6 @@
 package com.app.grader.core.navigation
 
+import com.app.grader.domain.model.CourseModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,7 +13,7 @@ data class AllGrades(val text: String)
 object Config
 
 @Serializable
-object Course
+data class Course(val courseId: Int)
 
 @Serializable
 object EditCourse

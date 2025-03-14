@@ -15,10 +15,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -30,8 +36,11 @@ import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 
 @Composable
-fun CourseCardComp(course: CourseModel, navigateToGrade: () -> Unit) {
+fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
     Card(
+        onClick = navigateToCourse,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
@@ -105,7 +114,7 @@ fun CourseCardComp(course: CourseModel, navigateToGrade: () -> Unit) {
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(
-                        onClick = navigateToGrade,
+                        onClick = { expanded = true },
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.dots_vertical_outline),
@@ -113,6 +122,19 @@ fun CourseCardComp(course: CourseModel, navigateToGrade: () -> Unit) {
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                             modifier = Modifier.size(26.dp)
                         )
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(onClick = { /* Handle action 1 */ },
+                        text = {
+                            Text("Action 1")
+                        })
+                        DropdownMenuItem(onClick = { /* Handle action 1 */ },
+                            text = {
+                                Text("Action 2")
+                            })
                     }
                 }
             }

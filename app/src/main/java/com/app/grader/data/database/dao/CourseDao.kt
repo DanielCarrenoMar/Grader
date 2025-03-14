@@ -23,4 +23,7 @@ interface CourseDao {
 
     @Query("DELETE FROM course WHERE id = :courseId")
     suspend fun deleteCourse(courseId: Int): Int
+
+    @Query("SELECT * FROM course WHERE id = :courseId")
+    suspend fun getCourseFromId(courseId: Int): CourseEntity
 }

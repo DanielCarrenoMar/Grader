@@ -26,31 +26,38 @@ class HomeViewModel  @Inject constructor(
     fun getAllCourses() {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
-                if (result is Resource.Success) {
-                    _courses.value = result.data!!
-                    result.data.forEach { course ->
-                        Log.i("CourseViewModel", "Course: ${course.title}, Description: ${course.description}, UC: ${course.uc}")
-                    }
-                } else if (result is Resource.Error) {
-                    Log.e("CourseViewModel", "Error fetching courses: ${result.message}")
-                }
-            }
-        }
-    }
-    fun saveCourse() {
-        val courseModel = CourseModel("Curso", "Descripcion", 2)
-        viewModelScope.launch {
-            saveCourseUserCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        getAllCourses()
-                        Log.i("CourseViewModel", "saveGrade Cantidad: " + _courses.value.size)
+                        _courses.value = result.data!!
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error saving course: ${result.message}")
+                        Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+    fun saveCourse() {
+        val courseModel = CourseModel(
+            title ="Curso",
+            description =  "Descripcion",
+            uc =  2
+        )
+        viewModelScope.launch {
+            saveCourseUserCase(courseModel = courseModel).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        getAllCourses()
+                        Log.i("HomeViewModel", "saveGrade Cantidad: " + _courses.value.size)
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("HomeViewModel", "Error saving course: ${result.message}")
                     }
                 }
             }
@@ -62,14 +69,14 @@ class HomeViewModel  @Inject constructor(
             deleteAllCoursesUserCase().collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.i("CourseViewModel", "deleteAllCourses Cantidad: " + result.data)
+                        Log.i("HomeViewModel", "deleteAllCourses Cantidad: " + result.data)
                         _courses.value = emptyList()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error deleting all courses: ${result.message}")
+                        Log.e("HomeViewModel", "Error deleting all courses: ${result.message}")
                     }
                 }
             }

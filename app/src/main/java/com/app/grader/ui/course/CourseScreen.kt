@@ -27,12 +27,24 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.dp
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.ui.componets.CourseCardComp
+import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
 
 @Composable
-fun CourseScreen(navegateBack: () -> Unit, navigateToGrade: () -> Unit, viewModel: CourseViewModel = hiltViewModel()) {
+fun CourseScreen(courseId: Int, navegateBack: () -> Unit, navigateToGrade: () -> Unit, viewModel: CourseViewModel = hiltViewModel()) {
+    val grades by remember { mutableStateOf(viewModel.grades) }
+    val course by remember { mutableStateOf(viewModel.course) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(viewModel) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.getGradesFromCourse(courseId)
+            viewModel.getCourseFromId(courseId)
+        }
+    }
+
     HeaderBack(
-        title = "Materia",
+        title = course.value.title,
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
@@ -41,18 +53,11 @@ fun CourseScreen(navegateBack: () -> Unit, navigateToGrade: () -> Unit, viewMode
             Spacer(modifier = Modifier.weight(1f))
             Text(text = "Course SCREEN", fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))
-            Button(onClick = { navigateToGrade() }) {
-                Text(text = "Navegar a Nota (Grader)")
+            LazyColumn {
+                items(grades.value) { grade ->
+                    GradeCardComp(grade, navigateToGrade)
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun CourseList(courses: List<CourseModel>, navigateToGrade: () -> Unit) {
-    LazyColumn {
-        items(courses) { course ->
-            CourseCardComp(course, navigateToGrade)
         }
     }
 }

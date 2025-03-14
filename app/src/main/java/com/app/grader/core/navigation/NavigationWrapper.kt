@@ -29,9 +29,9 @@ fun NavigationWrapper() {
     NavHost(navController = navController, startDestination = Home) {
         composable<Home> {
             HomeScreen(
-                { myText -> navController.navigate(AllGrades(text = myText)) },
+                { myText -> navController.navigate(AllGrades(myText)) },
                 { navController.navigatePop(Config) },
-                { navController.navigate(Course) },
+                {  courseId ->  navController.navigate(Course(courseId)) },
             )
         }
 
@@ -54,8 +54,10 @@ fun NavigationWrapper() {
             )
         }
 
-        composable<Course> {
+        composable<Course> { backStateEntry ->
+            val course:Course = backStateEntry.toRoute()
             CourseScreen (
+                course.courseId,
                 { navController.popBackStack() },
                 { navController.navigate(Grade) }
             )

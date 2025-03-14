@@ -4,6 +4,7 @@ import android.util.Log
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.repository.LocalStorageRepository
 import javax.inject.Inject
@@ -29,9 +30,25 @@ class LocalStorageRepositoryImpl @Inject constructor(
                     title = courseEntity.title,
                     description = courseEntity.description,
                     uc = courseEntity.uc,
-                    average = getAverageFromCourse(courseEntity.id)
+                    average = getAverageFromCourse(courseEntity.id),
+                    id = courseEntity.id
                 )
             }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getCourseFromId(courseId: Int): CourseModel {
+        try {
+            val courseEntity = courseDao.getCourseFromId(courseId)
+            return CourseModel(
+                    title = courseEntity.title,
+                    description = courseEntity.description,
+                    uc = courseEntity.uc,
+                    average = getAverageFromCourse(courseEntity.id),
+                    id = courseEntity.id
+                )
         } catch (e: Exception) {
             throw e
         }
@@ -64,6 +81,23 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val weightedAverage = grades.sumOf { it.grade * it.percentage } / totalWeight
 
             return weightedAverage
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
+        try {
+            return gradeDao.getAllGrades().filter { it.courseId == courseId }.map { gradeEntity ->
+                GradeModel(
+                    id = gradeEntity.id,
+                    courseId = gradeEntity.courseId,
+                    title = gradeEntity.title,
+                    description = gradeEntity.description,
+                    grade = gradeEntity.grade,
+                    percentage = gradeEntity.percentage
+                )
+            }
         } catch (e: Exception) {
             throw e
         }

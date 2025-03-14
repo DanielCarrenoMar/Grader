@@ -23,9 +23,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.HeaderMenu
 import androidx.compose.ui.unit.dp
+import com.app.grader.domain.model.CourseModel
 
 @Composable
-fun HomeScreen(navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Unit, navigateToCourse: () -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Unit, navigateToCourse: (Int) -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
     val courses by remember { mutableStateOf(viewModel.courses) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -58,7 +59,7 @@ fun HomeScreen(navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Un
                 }
             }
             items(courses.value) { course ->
-                CourseCardComp(course, navigateToCourse)
+                CourseCardComp(course){ navigateToCourse(course.id) }
                 Spacer(Modifier.height(10.dp))
             }
         }

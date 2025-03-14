@@ -4,11 +4,11 @@ import com.app.grader.data.database.entitites.GradeEntity
 
 
 data class GradeModel(
+    val id: Int,
+    val courseId: Int,
     val title: String,
     val description: String,
     val grade: Double,
-    val id: Int,
-    val courseId: Int,
     val percentage: Double
 )
 
