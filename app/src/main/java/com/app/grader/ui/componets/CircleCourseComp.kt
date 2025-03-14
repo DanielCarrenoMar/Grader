@@ -67,7 +67,7 @@ fun CircleGrade(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7
     ) {
         Text(
             if (grade != 0.0) "$grade" else "--",
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
         )
