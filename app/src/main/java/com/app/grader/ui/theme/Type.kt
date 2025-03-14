@@ -29,7 +29,7 @@ val Typography = Typography(
     bodySmall = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 10.sp,
+        fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
     bodyMedium = TextStyle(
@@ -38,16 +38,22 @@ val Typography = Typography(
         fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
+    labelSmall = TextStyle(
+        fontFamily = QuickSandsFont,
+        fontWeight = FontWeight.Light,
+        fontSize = 20.sp,
+        lineHeight = 16.sp,
+    ),
     labelMedium = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         lineHeight = 16.sp,
     ),
-    bodyLarge = TextStyle(
+    labelLarge = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 16.sp,
-    ),
+    )
 )

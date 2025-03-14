@@ -57,7 +57,8 @@ fun CircleGrade(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7
                     colorOnBase,
                     radius = radius.toPx(),
                 )
-            }.drawBehind {
+            }
+            .drawBehind {
                 drawCircle(
                     colorBase,
                     radius = (radius - strokeWith).toPx(),

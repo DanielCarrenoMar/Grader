@@ -2,6 +2,7 @@ package com.app.grader.ui.home
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.HeaderMenu
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen(navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Unit, navigateToCourse: () -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
@@ -57,6 +59,7 @@ fun HomeScreen(navigateToAllGrades: (String) -> Unit, navigateToConfig: () -> Un
             }
             items(courses.value) { course ->
                 CourseCardComp(course, navigateToCourse)
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
