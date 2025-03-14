@@ -6,10 +6,20 @@ import kotlinx.serialization.Serializable
 object Home
 
 @Serializable
+data class AllGrades(val text: String)
+
+@Serializable
+object Config
+
+@Serializable
 object Course
+
+@Serializable
+object EditCourse
 
 @Serializable
 object Grade
 
 @Serializable
-data class AllGrades(val text: String)
+object EditGrade
+
