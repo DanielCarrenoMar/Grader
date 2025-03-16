@@ -36,7 +36,7 @@ import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 
 @Composable
-fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit) {
+fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit, deleteCourse: ()-> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -127,14 +127,10 @@ fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        DropdownMenuItem(onClick = { /* Handle action 1 */ },
+                        DropdownMenuItem(onClick = deleteCourse,
                         text = {
-                            Text("Action 1")
+                            Text("Borrar")
                         })
-                        DropdownMenuItem(onClick = { /* Handle action 1 */ },
-                            text = {
-                                Text("Action 2")
-                            })
                     }
                 }
             }

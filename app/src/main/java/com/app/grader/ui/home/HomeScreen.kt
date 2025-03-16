@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.ui.componets.AddComp
 import com.app.grader.ui.componets.AddCompItem
+import com.app.grader.ui.componets.DeleteConfirmationComp
 
 @Composable
 fun HomeScreen(
@@ -36,12 +38,20 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val courses by remember { mutableStateOf(viewModel.courses) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllCourses()
         }
+    }
+
+    if (showDeleteConfirmation){
+        DeleteConfirmationComp(
+            { viewModel.deleteSelectedCourse() },
+            { showDeleteConfirmation = false }
+        )
     }
 
     HeaderMenu ("Asignaturas",
@@ -67,7 +77,7 @@ fun HomeScreen(
                 }
             }
             items(courses.value) { course ->
-                CourseCardComp(course){ navigateToCourse(course.id) }
+                CourseCardComp(course, { navigateToCourse(course.id) }, { viewModel.selectDeleteCourse(course.id); showDeleteConfirmation = true })
                 Spacer(Modifier.height(10.dp))
             }
         }

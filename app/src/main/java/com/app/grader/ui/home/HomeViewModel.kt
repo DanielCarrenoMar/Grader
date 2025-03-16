@@ -1,6 +1,7 @@
 package com.app.grader.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,9 +20,22 @@ class HomeViewModel  @Inject constructor(
     private val saveCourseUserCase: SaveCourseUserCase,
     private val deleteAllCoursesUserCase: DeleteAllCoursesUseCase
 ): ViewModel() {
-
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
+    private val _deleteCourseId = mutableIntStateOf(-1)
+    val deleteCourseId = _deleteCourseId
+
+    fun deleteSelectedCourse(){
+        viewModelScope.launch {
+
+        }
+    }
+
+    fun selectDeleteCourse(courseId: Int){
+        viewModelScope.launch {
+            _deleteCourseId.intValue = courseId
+        }
+    }
 
     fun getAllCourses() {
         viewModelScope.launch {
