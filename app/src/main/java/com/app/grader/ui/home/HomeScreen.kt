@@ -24,6 +24,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.HeaderMenu
 import androidx.compose.ui.unit.dp
+import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.ui.componets.AddComp
 import com.app.grader.ui.componets.AddCompItem
@@ -87,7 +88,8 @@ fun HomeScreen(
             }
         }
         AddComp(listOf(
-            AddCompItem("Crear Materia", { navigateToEditCourse(-1) }),
+            AddCompItem("Asignatura", R.drawable.education_cap_outline){ navigateToEditCourse(-1) },
+            AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditCourse(-1) },
         ))
     }
 
