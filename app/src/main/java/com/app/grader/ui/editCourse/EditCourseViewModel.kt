@@ -60,7 +60,7 @@ class EditCourseViewModel   @Inject constructor(
             saveCourseUserCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.i("EditCourseViewModel", "saveGrade state: $result")
+                        Log.i("EditCourseViewModel", "saveGrade")
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

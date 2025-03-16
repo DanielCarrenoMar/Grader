@@ -10,6 +10,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.SaveCourseUserCase
 import com.app.grader.domain.usecase.DeleteAllCoursesUseCase
+import com.app.grader.domain.usecase.DeleteCourseFromIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel  @Inject constructor(
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
     private val saveCourseUserCase: SaveCourseUserCase,
-    private val deleteAllCoursesUserCase: DeleteAllCoursesUseCase
+    private val deleteAllCoursesUserCase: DeleteAllCoursesUseCase,
+    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
@@ -27,7 +29,19 @@ class HomeViewModel  @Inject constructor(
 
     fun deleteSelectedCourse(){
         viewModelScope.launch {
-
+            deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
+                when (result){
+                    is Resource.Success -> {
+                        getAllCourses()
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("HomeViewModel", "Error deleteSelectedCourse: ${result.message}")
+                    }
+                }
+            }
         }
     }
 
@@ -49,29 +63,6 @@ class HomeViewModel  @Inject constructor(
                     }
                     is Resource.Error -> {
                         Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
-                    }
-                }
-            }
-        }
-    }
-    fun saveCourse() {
-        val courseModel = CourseModel(
-            title ="Curso",
-            description =  "Descripcion",
-            uc =  2
-        )
-        viewModelScope.launch {
-            saveCourseUserCase(courseModel = courseModel).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        getAllCourses()
-                        Log.i("HomeViewModel", "saveGrade Cantidad: " + _courses.value.size)
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
-                    is Resource.Error -> {
-                        Log.e("HomeViewModel", "Error saving course: ${result.message}")
                     }
                 }
             }

@@ -69,9 +69,6 @@ fun HomeScreen(
                 Text(text = "HOME SCREEN", fontSize = 25.sp)
                 //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
                 //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
-                Button(onClick = { viewModel.saveCourse() }) {
-                    Text(text = "Crear Materia")
-                }
                 Button(onClick = { viewModel.deleteAllCourses() }) {
                     Text(text = "Borrar todas las Materias")
                 }

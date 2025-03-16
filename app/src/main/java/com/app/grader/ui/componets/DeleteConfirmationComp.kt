@@ -18,7 +18,10 @@ fun DeleteConfirmationComp(
         title = { Text(text = "Borrar") },
         text = { Text(text = "¿Realmente desea borrar este elemento?") },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            Button(onClick = {
+                onDismiss()
+                onConfirm()
+            }) {
                 Text("Borrar")
             }
         },

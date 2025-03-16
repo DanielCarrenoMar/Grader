@@ -39,7 +39,7 @@ class CourseViewModel  @Inject constructor(
             getCourseFromIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        _course.value = result.data!!
+                        if (result.data != null) _course.value = result.data!!
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

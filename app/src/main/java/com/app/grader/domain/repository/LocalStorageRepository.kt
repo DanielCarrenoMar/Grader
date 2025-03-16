@@ -6,9 +6,13 @@ import com.app.grader.domain.model.GradeModel
 interface LocalStorageRepository {
     suspend fun saveCourse(courseModel: CourseModel): Boolean
     suspend fun getAllCourses(): List<CourseModel>
+
+    /**
+     * Si existe devuelve un CoruseModel sino devuelve null
+     */
     suspend fun getCourseFromId(courseId: Int):CourseModel?
     suspend fun deleteAllCourses() : Int
     suspend fun getAverageFromCourse(courseId:Int) : Double
-    suspend fun deleteCourse(courseModel: CourseModel): Int
+    suspend fun deleteCourseFromId(courseId: Int): Boolean
     suspend fun getGradesFromCourse(courseId: Int): List<GradeModel>
 }

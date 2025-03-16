@@ -22,7 +22,7 @@ interface CourseDao {
     suspend fun resetIncremetalCourse()
 
     @Query("DELETE FROM course WHERE id = :courseId")
-    suspend fun deleteCourse(courseId: Int): Int
+    suspend fun deleteCourseFromId(courseId: Int): Int
 
     @Query("SELECT * FROM course WHERE id = :courseId")
     suspend fun getCourseFromId(courseId: Int): CourseEntity?
