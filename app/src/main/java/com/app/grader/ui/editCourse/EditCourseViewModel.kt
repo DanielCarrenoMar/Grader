@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditCourseViewModel   @Inject constructor(
+class EditCourseViewModel @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val saveCourseUserCase: SaveCourseUserCase,
     private val updateCourseUseCase: UpdateCourseUseCase,
