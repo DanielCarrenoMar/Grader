@@ -39,9 +39,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCourseFromId(courseId: Int): CourseModel {
+    override suspend fun getCourseFromId(courseId: Int): CourseModel? {
         try {
-            val courseEntity = courseDao.getCourseFromId(courseId)
+            val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
             return CourseModel(
                     title = courseEntity.title,
                     description = courseEntity.description,

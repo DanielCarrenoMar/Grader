@@ -12,10 +12,10 @@ import androidx.compose.ui.unit.sp
 import com.app.grader.ui.componets.HeaderBack
 
 @Composable
-fun EditCourseScreen(navegateBack: () -> Unit) {
+fun EditCourseScreen(courseId: Int,navegateBack: () -> Unit) {
 
     HeaderBack(
-        title = "Nota",
+        title = "Editar Asignatura",
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(

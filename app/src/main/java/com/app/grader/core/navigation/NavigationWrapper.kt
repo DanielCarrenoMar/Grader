@@ -32,6 +32,7 @@ fun NavigationWrapper() {
                 { myText -> navController.navigate(AllGrades(myText)) },
                 { navController.navigatePop(Config) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
+                {  courseId ->  navController.navigate(EditCourse(courseId)) },
             )
         }
 
@@ -63,8 +64,9 @@ fun NavigationWrapper() {
             )
         }
 
-        composable<EditCourse> {
-            EditCourseScreen { navController.popBackStack() }
+        composable<EditCourse> { backStateEntry ->
+            val editCourse:EditCourse = backStateEntry.toRoute()
+            EditCourseScreen (editCourse.courseId) { navController.popBackStack() }
         }
 
         composable<Grade> {

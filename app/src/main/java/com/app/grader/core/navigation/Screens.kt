@@ -16,7 +16,7 @@ object Config
 data class Course(val courseId: Int)
 
 @Serializable
-object EditCourse
+data class EditCourse(val courseId: Int)
 
 @Serializable
 object Grade
