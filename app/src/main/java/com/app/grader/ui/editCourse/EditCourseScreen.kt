@@ -1,5 +1,6 @@
 package com.app.grader.ui.editCourse
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,14 +34,10 @@ fun EditCourseScreen(
     navegateBack: () -> Unit,
     viewModel: EditCourseViewModel = hiltViewModel(),
     ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var uc by remember { mutableStateOf("") }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            uc = viewModel.uc.intValue.toString()
+            viewModel.getCourseFromId(courseId)
         }
     }
 
@@ -54,40 +51,38 @@ fun EditCourseScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.weight(1f))
             Text(text = "EditCourse SCREEN", fontSize = 25.sp)
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.2f))
             Text(text = "Titulo", style = MaterialTheme.typography.labelMedium)
             TextField(
-                value = title,
+                value = viewModel.showTitle.value,
                 onValueChange = {
-                    title = it
-                    viewModel.title.value = title
+                    viewModel.showTitle.value = it
+                    viewModel.title.value = it
                 }
             )
             Text(text = "Descricción", style = MaterialTheme.typography.labelMedium)
             TextField(
-                value = description,
+                value = viewModel.showDescription.value,
                 onValueChange = {
-                    description = it
-                    viewModel.description.value = description
+                    viewModel.showDescription.value = it
+                    viewModel.description.value = it
                 }
             )
             Text(text = "UC", style = MaterialTheme.typography.labelMedium)
             TextField(
-                value = uc.toString(),
+                value = viewModel.showUc.value,
                 onValueChange = {
-                    uc = it
-                    viewModel.uc.intValue = uc.toIntOrNull() ?: 1
+                    viewModel.showUc.value = it
+                    viewModel.uc.intValue = it.toIntOrNull() ?: 1
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.onFocusChanged { focusState ->
-                   if (!focusState.isFocused) uc = viewModel.uc.intValue.toString()
+                   if (!focusState.isFocused) viewModel.showUc.value = viewModel.uc.intValue.toString()
                 }
             )
-            Spacer(modifier = Modifier.weight(1f))
             Button(onClick = {
-                viewModel.saveOrCreateCourse(courseId)
+                viewModel.updateOrCreateCourse(courseId)
                 navegateBack()
             }) {
                 Text(text = "Guardar")

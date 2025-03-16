@@ -74,7 +74,15 @@ fun HomeScreen(
                 }
             }
             items(courses.value) { course ->
-                CourseCardComp(course, { navigateToCourse(course.id) }, { viewModel.selectDeleteCourse(course.id); showDeleteConfirmation = true })
+                CourseCardComp(
+                    course,
+                    { navigateToCourse(course.id) },
+                    {
+                        viewModel.selectDeleteCourse(course.id)
+                        showDeleteConfirmation = true
+                    },
+                    {navigateToEditCourse(course.id)},
+                )
                 Spacer(Modifier.height(10.dp))
             }
         }

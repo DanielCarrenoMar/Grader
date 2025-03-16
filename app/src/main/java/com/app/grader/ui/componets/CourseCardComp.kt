@@ -36,7 +36,12 @@ import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 
 @Composable
-fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit, deleteCourse: ()-> Unit) {
+fun CourseCardComp(
+    course: CourseModel,
+    navigateToCourse: () -> Unit,
+    deleteCourse: ()-> Unit,
+    editCourse: ()-> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -127,7 +132,7 @@ fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit, deleteCour
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        DropdownMenuItem(onClick = { TODO("Funcion de editar")},
+                        DropdownMenuItem(onClick = editCourse,
                             text = {
                                 Text("Editar")
                             })

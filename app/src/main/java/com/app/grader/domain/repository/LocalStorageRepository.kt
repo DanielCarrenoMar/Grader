@@ -5,6 +5,11 @@ import com.app.grader.domain.model.GradeModel
 
 interface LocalStorageRepository {
     suspend fun saveCourse(courseModel: CourseModel): Boolean
+
+    /**
+     * Actualiza la informacion de una asignatura guiandose por el id
+     */
+    suspend fun updateCourse(courseModel: CourseModel): Boolean
     suspend fun getAllCourses(): List<CourseModel>
 
     /**

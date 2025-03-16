@@ -11,6 +11,7 @@ import com.app.grader.domain.usecase.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.SaveCourseUserCase
+import com.app.grader.domain.usecase.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,22 +20,21 @@ import javax.inject.Inject
 class EditCourseViewModel   @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val saveCourseUserCase: SaveCourseUserCase,
+    private val updateCourseUseCase: UpdateCourseUseCase,
 ): ViewModel() {
-    private val _title = mutableStateOf<String>("Sin Titulo")
+    private val _title = mutableStateOf("Sin Titulo")
     val title = _title
-    private val _description = mutableStateOf<String>("Sin Descricción")
+    private val _description = mutableStateOf("Sin Descricción")
     val description = _description
     private val _uc = mutableIntStateOf(1)
     val uc = _uc
-    private val _course = mutableStateOf<CourseModel>(
-        CourseModel(
-            title = _title.value,
-            description = _description.value,
-            uc = _uc.intValue,
-            average = 0.0
-        )
-    )
-    val course = _course
+
+    private val _showTitle = mutableStateOf("")
+    val showTitle = _showTitle
+    private val _showDescription = mutableStateOf("")
+    val showDescription = _showDescription
+    private val _showUc = mutableStateOf("")
+    val showUc = _showUc
 
     fun getCourseFromId(courseId: Int) {
         if (courseId == -1) return
@@ -42,7 +42,13 @@ class EditCourseViewModel   @Inject constructor(
             getCourseFromIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        _course.value = result.data!!
+                        val course = result.data!!
+                        _title.value = course.title
+                        _showTitle.value = course.title
+                        _description.value = course.description
+                        _showDescription.value = course.description
+                        _uc.intValue = course.uc
+                        _showUc.value = course.uc.toString()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -60,7 +66,7 @@ class EditCourseViewModel   @Inject constructor(
             saveCourseUserCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.i("EditCourseViewModel", "saveGrade")
+                        Log.i("EditCourseViewModel", "saveGrade id: ${courseModel.id}")
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -73,7 +79,25 @@ class EditCourseViewModel   @Inject constructor(
         }
     }
 
-    fun saveOrCreateCourse(courseId: Int){
+    private fun updateCourse(courseModel:CourseModel) {
+        viewModelScope.launch {
+            updateCourseUseCase(courseModel = courseModel).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.i("EditCourseViewModel", "updateCourse id: ${courseModel.id}")
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateOrCreateCourse(courseId: Int){
         viewModelScope.launch {
             if (courseId == -1) {
                 saveCourse(
@@ -85,7 +109,15 @@ class EditCourseViewModel   @Inject constructor(
                     )
                 )
             } else {
-                TODO("Update course")
+                updateCourse(
+                    CourseModel(
+                        title = title.value,
+                        description = description.value,
+                        uc = uc.intValue,
+                        average = 0.0,
+                        id = courseId
+                    )
+                )
             }
         }
     }

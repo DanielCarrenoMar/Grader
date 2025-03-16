@@ -15,9 +15,22 @@ class LocalStorageRepositoryImpl @Inject constructor(
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Boolean {
         try {
-            Log.i("LocalStorageRepositoryImpl", "Guardando Course: ${courseModel.title}, Description: ${courseModel.description}, UC: ${courseModel.uc}")
             val result = courseDao.insertCourse(courseModel.toCourseEntity())
             return result.toInt() != -1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun updateCourse(courseModel: CourseModel): Boolean {
+        try {
+            val result = courseDao.updateCourseById(
+                courseModel.id,
+                courseModel.title,
+                courseModel.description,
+                courseModel.uc
+            )
+            return result == 1
         } catch (e: Exception) {
             throw e
         }
