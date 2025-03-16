@@ -2,6 +2,7 @@ package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
@@ -46,23 +49,20 @@ fun AddComp(items: List<AddCompItem>) {
             .fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ){
-        Box(
+        IconButton (
+            onClick = { expanded = true },
             modifier = Modifier
-                .size(60.dp) // Adjust the size as needed
+                .size(60.dp)
                 .shadow(6.dp, shape = RoundedCornerShape(24))
-                .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)),
-            contentAlignment = Alignment.Center,
+                .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(24))
+                .alpha(0.85f)
         ) {
-            IconButton(
-                onClick = { expanded = true },
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.plus_outline),
-                    contentDescription = "add",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier.size(35.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.plus_outline),
+                contentDescription = "add",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                modifier = Modifier.size(35.dp)
+            )
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
