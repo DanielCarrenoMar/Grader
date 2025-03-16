@@ -20,21 +20,21 @@ class EditCourseViewModel   @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val saveCourseUserCase: SaveCourseUserCase,
 ): ViewModel() {
+    private val _title = mutableStateOf<String>("Sin Titulo")
+    val title = _title
+    private val _description = mutableStateOf<String>("Sin Descricción")
+    val description = _description
+    private val _uc = mutableIntStateOf(1)
+    val uc = _uc
     private val _course = mutableStateOf<CourseModel>(
         CourseModel(
-            title = "Sin Titulo",
-            description = "Sin Descricción",
-            uc = 1,
+            title = _title.value,
+            description = _description.value,
+            uc = _uc.intValue,
             average = 0.0
         )
     )
     val course = _course
-    private val _title = mutableStateOf<String>("")
-    val title = _title
-    private val _description = mutableStateOf<String>("")
-    val description = _description
-    private val _uc = mutableIntStateOf(0)
-    val uc = _uc
 
     fun getCourseFromId(courseId: Int) {
         if (courseId == -1) return
@@ -48,7 +48,7 @@ class EditCourseViewModel   @Inject constructor(
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                        Log.e("EditCourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
                     }
                 }
             }
