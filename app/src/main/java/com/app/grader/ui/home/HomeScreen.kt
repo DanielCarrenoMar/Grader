@@ -42,9 +42,13 @@ fun HomeScreen(
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
+    var isFirstLaunch by remember { mutableStateOf(true) }
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllCourses()
+        if (isFirstLaunch) {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getAllCourses()
+            }
+            isFirstLaunch = false
         }
     }
 
@@ -85,6 +89,9 @@ fun HomeScreen(
                     {navigateToEditCourse(course.id)},
                 )
                 Spacer(Modifier.height(10.dp))
+            }
+            item{
+                Spacer(Modifier.height(80.dp))
             }
         }
         AddComp(listOf(

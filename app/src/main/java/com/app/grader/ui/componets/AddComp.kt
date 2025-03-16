@@ -10,11 +10,9 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
@@ -61,7 +59,7 @@ fun AddComp(items: List<AddCompItem>) {
     Box(
         modifier = Modifier
             .zIndex(2f)
-            .padding(16.dp)
+            .padding(12.dp)
             .padding(bottom = 48.dp)
             .fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
@@ -70,10 +68,10 @@ fun AddComp(items: List<AddCompItem>) {
             onClick = { expanded = true },
             modifier = Modifier
                 .size(60.dp)
-                .shadow(6.dp, shape = RoundedCornerShape(24))
+                .shadow(6.dp, shape = MaterialTheme.shapes.large)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(24)
+                    shape = MaterialTheme.shapes.large
                 )
                 .alpha(0.85f)
         ) {
@@ -99,14 +97,14 @@ fun AddComp(items: List<AddCompItem>) {
                     DropdownMenuItem(
                         onClick = item.navFun,
                         text = {
-                            Text(item.title, color = MaterialTheme.colorScheme.onBackground)
+                            Text(item.title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onBackground)
                         },
                         trailingIcon = {
                             Box(
                                 modifier = Modifier
                                     .background(
                                         MaterialTheme.colorScheme.background,
-                                        RoundedCornerShape(24)
+                                        MaterialTheme.shapes.medium
                                     )
                                     .padding(6.dp),
                                 contentAlignment = Alignment.Center

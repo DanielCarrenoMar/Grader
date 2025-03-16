@@ -10,6 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -20,9 +23,12 @@ import com.app.grader.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderBack( title: String, navigateBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
         topBar = {
             TopAppBar(
+                scrollBehavior = scrollBehavior,
                 title = {
                     Text(
                         text = title,
@@ -30,6 +36,13 @@ fun HeaderBack( title: String, navigateBack: () -> Unit, content: @Composable (P
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 },
+                colors = TopAppBarColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.colorScheme.primary,
+                ),
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.padding(start = 8.dp),

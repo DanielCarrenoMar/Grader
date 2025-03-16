@@ -18,4 +18,5 @@ val Error500 = Color(0xFFF33E3E)
 val Shadow50 = Color(0xFFFFFFFF)
 val Shadow100 = Color(0xFF000000)
 
-val Background = Color(0xFFE0E7F3)
+val BackgroundLight = Color(0xFFE0E7F3)
+val BackgroundLightVar = Color(0xFFCAD7F6)

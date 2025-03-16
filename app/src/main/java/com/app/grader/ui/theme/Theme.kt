@@ -3,19 +3,23 @@ package com.app.grader.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 
 private val DarkColorScheme = darkColorScheme(
     primary = Secondary600,
     secondary = Secondary600,
-    background = Background,
+    background = BackgroundLight,
     onBackground = Neutral900,
+    surfaceVariant = BackgroundLightVar,
     error = Error500,
     surface = Shadow50,
     onSurface = Neutral600,
@@ -24,11 +28,16 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Primary400,
     secondary = Secondary600,
-    background = Background,
+    background = BackgroundLight,
     onBackground = Neutral900,
+    surfaceVariant = BackgroundLightVar,
     error = Error500,
     surface = Shadow50,
     onSurface = Neutral600,
+)
+
+val replyShapes = Shapes(
+
 )
 
 @Composable
@@ -50,6 +59,7 @@ fun NavigationGuideTheme(
     }
 
     MaterialTheme(
+        shapes = replyShapes,
         colorScheme = colorScheme,
         typography = Typography,
         content = content
