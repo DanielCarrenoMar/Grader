@@ -127,6 +127,10 @@ fun CourseCardComp(course: CourseModel, navigateToCourse: () -> Unit, deleteCour
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+                        DropdownMenuItem(onClick = { TODO("Funcion de editar")},
+                            text = {
+                                Text("Editar")
+                            })
                         DropdownMenuItem(onClick = deleteCourse,
                         text = {
                             Text("Borrar")
