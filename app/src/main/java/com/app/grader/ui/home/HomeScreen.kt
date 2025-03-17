@@ -36,6 +36,7 @@ fun HomeScreen(
     navigateToConfig: () -> Unit,
     navigateToCourse: (Int) -> Unit,
     navigateToEditCourse: (Int) -> Unit,
+    navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val courses by remember { mutableStateOf(viewModel.courses) }

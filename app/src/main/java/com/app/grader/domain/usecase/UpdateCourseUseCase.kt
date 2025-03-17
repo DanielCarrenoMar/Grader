@@ -19,7 +19,7 @@ class UpdateCourseUseCase @Inject constructor(
                 )
             } else {
                 send(
-                    Resource.Error("Update Error")
+                    Resource.Error("Update course Error")
                 )
             }
         } catch (e: Exception) {

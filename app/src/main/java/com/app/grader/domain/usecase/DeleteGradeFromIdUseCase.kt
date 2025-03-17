@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class DeleteCourseFromIdUseCase  @Inject constructor(
+class DeleteGradeFromIdUseCase  @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(courseId: Int): Flow<Resource<Unit>> = channelFlow {
+    operator fun invoke(gradeId: Int): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.deleteCourseFromId(courseId)){
+            if (repository.deleteGradeFromId(gradeId)){
                 send(
                     Resource.Success(Unit)
                 )
             }else{
                 send(
-                    Resource.Error("Delete course id: $courseId Error")
+                    Resource.Error("Delete grade id: $gradeId Error")
                 )
             }
 

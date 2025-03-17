@@ -19,8 +19,8 @@ data class Course(val courseId: Int)
 data class EditCourse(val courseId: Int)
 
 @Serializable
-object Grade
+data class Grade(val gradeId: Int)
 
 @Serializable
-object EditGrade
+data class EditGrade(val gradeId: Int, val courseId: Int)
 

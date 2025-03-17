@@ -25,13 +25,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.dp
+import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.ui.componets.AddComp
+import com.app.grader.ui.componets.AddCompItem
 import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
 
 @Composable
-fun CourseScreen(courseId: Int, navegateBack: () -> Unit, navigateToGrade: () -> Unit, viewModel: CourseViewModel = hiltViewModel()) {
+fun CourseScreen(
+    courseId: Int,
+    navegateBack: () -> Unit,
+    navigateToGrade: (Int) -> Unit,
+    navigateToEditGrade: (Int, Int) -> Unit,
+    viewModel: CourseViewModel = hiltViewModel(),
+) {
     val grades by remember { mutableStateOf(viewModel.grades) }
     val course by remember { mutableStateOf(viewModel.course) }
 
@@ -55,9 +64,12 @@ fun CourseScreen(courseId: Int, navegateBack: () -> Unit, navigateToGrade: () ->
             Spacer(modifier = Modifier.weight(1f))
             LazyColumn {
                 items(grades.value) { grade ->
-                    GradeCardComp(grade, navigateToGrade)
+                    GradeCardComp(grade, {navigateToGrade(grade.id)})
                 }
             }
         }
     }
+    AddComp(listOf(
+        AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, courseId) },
+    ))
 }

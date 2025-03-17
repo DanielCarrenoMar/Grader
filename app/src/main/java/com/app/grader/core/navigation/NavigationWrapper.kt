@@ -33,6 +33,7 @@ fun NavigationWrapper() {
                 { navController.navigatePop(Config) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  courseId ->  navController.navigate(EditCourse(courseId)) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
 
@@ -60,7 +61,8 @@ fun NavigationWrapper() {
             CourseScreen (
                 course.courseId,
                 { navController.popBackStack() },
-                { navController.navigate(Grade) }
+                { gradeId -> navController.navigate(Grade(gradeId)) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
 
@@ -69,12 +71,14 @@ fun NavigationWrapper() {
             EditCourseScreen (editCourse.courseId, { navController.popBackStack() })
         }
 
-        composable<Grade> {
-            GradeScreen { navController.popBackStack() }
+        composable<Grade> {  backStateEntry ->
+            val grade:Grade = backStateEntry.toRoute()
+            GradeScreen (grade.gradeId, { navController.popBackStack() })
         }
 
-        composable<EditGrade> {
-            EditGradeScreen { navController.popBackStack() }
+        composable<EditGrade> {  backStateEntry ->
+            val editGrade:EditGrade = backStateEntry.toRoute()
+            EditGradeScreen (editGrade.gradeId, editGrade.courseId, { navController.popBackStack() })
         }
 
         /*composable<Detail> { backStackEntry ->

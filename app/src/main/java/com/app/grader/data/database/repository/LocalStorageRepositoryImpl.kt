@@ -6,6 +6,7 @@ import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.toCourseEntity
+import com.app.grader.domain.model.toGradeEntity
 import com.app.grader.domain.repository.LocalStorageRepository
 import javax.inject.Inject
 
@@ -111,6 +112,88 @@ class LocalStorageRepositoryImpl @Inject constructor(
                     percentage = gradeEntity.percentage
                 )
             }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun saveGrade(gradeModel: GradeModel): Boolean {
+        try {
+            val result = gradeDao.insertGrade(gradeModel.toGradeEntity())
+            return result.toInt() != -1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteAllGradesFromCourseId(courseId: Int): Int {
+        try {
+            return gradeDao.deleteAllGradesFromCourseId(courseId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteAllGrades(): Int {
+        try {
+            gradeDao.resetIncremetalGrade()
+            return gradeDao.deleteAllGrades()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteGradeFromId(gradeId: Int): Boolean {
+        try {
+            return gradeDao.deleteGradeFromId(gradeId) == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getAllGrades(): List<GradeModel> {
+        try {
+            return gradeDao.getAllGrades().map { gradeEntity ->
+                GradeModel(
+                    title = gradeEntity.title,
+                    description = gradeEntity.description,
+                    grade = gradeEntity.grade,
+                    percentage = gradeEntity.percentage,
+                    id = gradeEntity.id,
+                    courseId = gradeEntity.courseId,
+                )
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getGradeFromId(gradeId: Int): GradeModel? {
+        try {
+            val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
+            return GradeModel(
+                title = gradeEntity.title,
+                description = gradeEntity.description,
+                grade = gradeEntity.grade,
+                percentage = gradeEntity.percentage,
+                id = gradeEntity.id,
+                courseId = gradeEntity.courseId,
+            )
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun updateGrade(gradeModel: GradeModel): Boolean {
+        try {
+            val result = gradeDao.updateGradeById(
+                gradeModel.id,
+                gradeModel.title,
+                gradeModel.description,
+                gradeModel.grade,
+                gradeModel.percentage
+            )
+            return result == 1
         } catch (e: Exception) {
             throw e
         }

@@ -21,7 +21,7 @@ class SaveCourseUserCase @Inject constructor(
                 )
             } else {
                 send(
-                    Resource.Error("Save Error")
+                    Resource.Error("Save course Error")
                 )
             }
         } catch (e: Exception) {

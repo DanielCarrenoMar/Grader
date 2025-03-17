@@ -11,13 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.editCourse.EditCourseViewModel
 
 @Composable
-fun GradeScreen(navegateBack: () -> Unit) {
-
+fun GradeScreen(
+    gradeId: Int,
+    navegateBack: () -> Unit,
+    viewModel: EditCourseViewModel = hiltViewModel(),
+)  {
     HeaderBack(
         title = "Nota",
         navigateBack = navegateBack
