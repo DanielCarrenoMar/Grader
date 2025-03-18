@@ -102,7 +102,13 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
+    private fun checkInputs(): Boolean {
+        return title.value.isNotBlank() && description.value.isNotBlank() && grade.value.getGrade() != 0.0 && percentage.value.getPercentage() != 0.0
+    }
+
     fun updateOrCreateGrade(gradeId: Int, courseId: Int){
+        if (courseId == -1) return
+        if (checkInputs().not()) return
         viewModelScope.launch {
             if (gradeId == -1) {
                 saveGrade(
