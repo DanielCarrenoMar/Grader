@@ -1,6 +1,7 @@
 package com.app.grader.ui.course
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,56 +61,61 @@ fun CourseScreen(
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally) {
             //Spacer(modifier = Modifier.weight(1f))
             //Text(text = "Course SCREEN", fontSize = 25.sp)
             Column(modifier =Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .width(300.dp)
-                .padding(15.dp)
+                .padding(horizontal = 25.dp)
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+                .fillMaxWidth()
 
             ){
-                //course.value.description
-                Text(text = "Tu promedio", fontSize = 20.sp)
-                Row( modifier = Modifier
-                    .padding(horizontal = 0.dp, vertical = 10.dp)
-
-                ) {
-                    CirclePie()
-                    Column(modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 0.dp)
-
-                    ) {
-                        Text(text = "$course.value.description", fontSize = 15.sp)
-                        Text(text = "$course.value.uc UC", fontSize = 15.sp)
-                    }
-                }
-                Row(
+                Column (
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(20.dp)
+                ){
+                    //course.value.description
+                    Text(text = "Tu promedio", fontSize = 20.sp)
+                    Row( modifier = Modifier
+                        .padding(horizontal = 0.dp, vertical = 10.dp)
+
                     ) {
-                        Text(text = "Puntos acumulados", fontSize = 13.sp, color = Success500)
-                        Text(text = "6", fontSize = 15.sp, color = Success500)
+                        CirclePie()
+                        Column(modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 0.dp)
+
+                        ) {
+                            Text(text = course.value.description, fontSize = 15.sp)
+                            Text(text = "${course.value.uc} UC", fontSize = 15.sp)
+                        }
                     }
-                    Column(
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxWidth()
                     ) {
-                        Text(text = "Puntos por evaluar", fontSize = 13.sp, color = Secondary600)
-                        Text(text = "8", fontSize = 15.sp, color = Secondary600)
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "Puntos acumulados", fontSize = 13.sp, color = Success500)
+                            Text(text = "6", fontSize = 15.sp, color = Success500)
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "Puntos por evaluar", fontSize = 13.sp, color = Secondary600)
+                            Text(text = "8", fontSize = 15.sp, color = Secondary600)
+                        }
                     }
                 }
-
             }
             Spacer(modifier = Modifier.weight(1f))
             LazyColumn {
