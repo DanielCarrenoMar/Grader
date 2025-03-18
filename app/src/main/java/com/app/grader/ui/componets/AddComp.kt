@@ -65,7 +65,11 @@ fun AddComp(items: List<AddCompItem>) {
         contentAlignment = Alignment.BottomEnd
     ){
         IconButton (
-            onClick = { expanded = true },
+            onClick = {
+                if (items.size == 1) {
+                    items[0].navFun()
+                } else expanded = true
+              },
             modifier = Modifier
                 .size(60.dp)
                 .shadow(6.dp, shape = MaterialTheme.shapes.large)
