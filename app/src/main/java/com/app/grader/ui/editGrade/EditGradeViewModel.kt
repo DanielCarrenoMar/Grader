@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
+import com.app.grader.domain.usecase.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
 import com.app.grader.domain.usecase.SaveGradeUseCase
@@ -23,6 +25,7 @@ class EditGradeViewModel @Inject constructor(
     private val getGradesFromCourseUserCase: GetGradesFromCourseUserCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
+    private val getAllCoursesUserCase: GetAllCoursesUserCase,
 ): ViewModel() {
     private val _title = mutableStateOf("Sin Titulo")
     val title = _title
@@ -44,6 +47,8 @@ class EditGradeViewModel @Inject constructor(
 
     private val _courseId = mutableIntStateOf(-1)
     val courseId = _courseId
+    private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
+    val courses = _courses
 
     fun setPercentage(percentage: String){
         _showPercentage.value = percentage
@@ -196,6 +201,28 @@ class EditGradeViewModel @Inject constructor(
             }
         }
         return true
+    }
+
+    fun getAllCourses() {
+        viewModelScope.launch {
+            getAllCoursesUserCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _courses.value = result.data!!
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+    fun setCurseId(courseId: Int){
+        _courseId.intValue = courseId
+        setDefaultPercentage()
     }
 
 }
