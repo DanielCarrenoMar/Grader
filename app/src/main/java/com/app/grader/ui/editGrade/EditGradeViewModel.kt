@@ -1,6 +1,7 @@
 package com.app.grader.ui.editGrade
 
 import android.util.Log
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.GetGradeFromIdUseCase
+import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
 import com.app.grader.domain.usecase.SaveGradeUseCase
 import com.app.grader.domain.usecase.UpdateGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditGradeViewModel @Inject constructor(
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
+    private val getGradesFromCourseUserCase: GetGradesFromCourseUserCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
 ): ViewModel() {
@@ -38,6 +41,43 @@ class EditGradeViewModel @Inject constructor(
     val showGrade = _showGrade
     private val _showPercentage = mutableStateOf("")
     val showPercentage = _showPercentage
+
+    private val _courseId = mutableIntStateOf(-1)
+    val courseId = _courseId
+
+    fun setDefaultPercentage() {
+        if (_courseId.intValue == -1){
+            _percentage.value.setPercentage(100.0)
+            _showPercentage.value = _percentage.value.toString()
+            return
+        }
+        viewModelScope.launch {
+            getGradesFromCourseUserCase(_courseId.intValue).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        val grades = result.data!!
+                        var totalPercentage = 0.0
+                        grades.forEach { grade ->
+                            totalPercentage += grade.percentage
+                        }
+                        _percentage.value.setPercentage(100.0 - totalPercentage)
+                        _showPercentage.value = _percentage.value.toString()
+                    }
+
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+
+                    is Resource.Error -> {
+                        Log.e(
+                            "EditGradeViewModel",
+                            "Error getGradesFromCourseUserCase: ${result.message}"
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun getGradeFromId(gradeId: Int) {
         if (gradeId == -1) return
@@ -106,14 +146,14 @@ class EditGradeViewModel @Inject constructor(
         return title.value.isNotBlank() && description.value.isNotBlank() && grade.value.getGrade() != 0.0 && percentage.value.getPercentage() != 0.0
     }
 
-    fun updateOrCreateGrade(gradeId: Int, courseId: Int){
-        if (courseId == -1) return
+    fun updateOrCreateGrade(gradeId: Int){
+        if (_courseId.intValue == -1) return
         if (checkInputs().not()) return
         viewModelScope.launch {
             if (gradeId == -1) {
                 saveGrade(
                     GradeModel(
-                        courseId = courseId,
+                        courseId = _courseId.intValue,
                         title = title.value,
                         description = description.value,
                         grade = grade.value.getGrade(),
@@ -123,7 +163,7 @@ class EditGradeViewModel @Inject constructor(
             } else {
                 updateGrade(
                     GradeModel(
-                        courseId = courseId,
+                        courseId = _courseId.intValue,
                         title = title.value,
                         description = description.value,
                         grade = grade.value.getGrade(),

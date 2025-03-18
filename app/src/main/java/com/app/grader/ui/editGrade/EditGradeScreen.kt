@@ -36,7 +36,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.editCourse.EditCourseViewModel
 
 @Composable
 fun EditGradeScreen(
@@ -48,6 +47,8 @@ fun EditGradeScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.courseId.intValue = courseId
+            viewModel.setDefaultPercentage()
             viewModel.getGradeFromId(gradeId)
         }
     }
@@ -63,6 +64,7 @@ fun EditGradeScreen(
                 .background(MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(text = viewModel.courseId.intValue.toString())
             EditScreenInputComp(
                 placeHolderText = "Agregar titulo",
                 value = viewModel.showTitle.value,
@@ -118,8 +120,27 @@ fun EditGradeScreen(
                     )
                 },
             )
+            EditScreenInputComp(
+                placeHolderText = "Agregar porcentaje",
+                value = viewModel.showPercentage.value,
+                onValueChange = {
+                    viewModel.showPercentage.value = it
+                    val value = it.toIntOrNull()
+                    if (value != null) viewModel.percentage.value.setPercentage(value)
+                    else viewModel.setDefaultPercentage()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.cog_outline),
+                        contentDescription = "Ajustes",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                    )
+                },
+            )
             Button(onClick = {
-                viewModel.updateOrCreateGrade(gradeId, courseId)
+                viewModel.updateOrCreateGrade(gradeId)
                 navegateBack()
             }) {
                 Text(text = "Guardar")
