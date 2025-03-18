@@ -45,10 +45,19 @@ class EditGradeViewModel @Inject constructor(
     private val _courseId = mutableIntStateOf(-1)
     val courseId = _courseId
 
+    fun setPercentage(percentage: String){
+        _showPercentage.value = percentage
+
+        if (percentage.isEmpty()) return
+        val value = percentage.toDoubleOrNull()
+        if (value == null || Percentage.check(value).not()) setDefaultPercentage()
+        else _percentage.value.setPercentage(value)
+    }
+
     fun setDefaultPercentage() {
         if (_courseId.intValue == -1){
             _percentage.value.setPercentage(100.0)
-            _showPercentage.value = _percentage.value.toString()
+            _showPercentage.value = "100"
             return
         }
         viewModelScope.launch {
@@ -143,36 +152,50 @@ class EditGradeViewModel @Inject constructor(
     }
 
     private fun checkInputs(): Boolean {
-        return title.value.isNotBlank() && description.value.isNotBlank() && grade.value.getGrade() != 0.0 && percentage.value.getPercentage() != 0.0
+        return _title.value.isNotBlank() &&
+                _description.value.isNotBlank() &&
+                _grade.value.getGrade() != 0.0 &&
+                _grade.value.getGrade().toInt() == _showGrade.value.toIntOrNull() &&
+                _percentage.value.getPercentage() != 0.0 &&
+                _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull()
     }
 
-    fun updateOrCreateGrade(gradeId: Int){
-        if (_courseId.intValue == -1) return
-        if (checkInputs().not()) return
+    private fun syncInputs() {
+        _showGrade.value = _grade.value.toString()
+        _showPercentage.value = _percentage.value.toString()
+    }
+
+    fun updateOrCreateGrade(gradeId: Int): Boolean{
+        if (_courseId.intValue == -1) return false
+        if (checkInputs().not()) {
+            syncInputs()
+            return false
+        }
         viewModelScope.launch {
             if (gradeId == -1) {
                 saveGrade(
                     GradeModel(
                         courseId = _courseId.intValue,
-                        title = title.value,
-                        description = description.value,
-                        grade = grade.value.getGrade(),
-                        percentage = percentage.value.getPercentage(),
+                        title = _title.value,
+                        description = _description.value,
+                        grade = _grade.value.getGrade(),
+                        percentage = _percentage.value.getPercentage(),
                     )
                 )
             } else {
                 updateGrade(
                     GradeModel(
                         courseId = _courseId.intValue,
-                        title = title.value,
-                        description = description.value,
-                        grade = grade.value.getGrade(),
-                        percentage = percentage.value.getPercentage(),
+                        title = _title.value,
+                        description = _description.value,
+                        grade = _grade.value.getGrade(),
+                        percentage = _percentage.value.getPercentage(),
                         id = gradeId,
                     )
                 )
             }
         }
+        return true
     }
 
 }

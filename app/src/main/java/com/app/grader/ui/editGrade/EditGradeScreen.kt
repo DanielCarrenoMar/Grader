@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -66,44 +67,6 @@ fun EditGradeScreen(
         ) {
             Text(text = viewModel.courseId.intValue.toString())
             EditScreenInputComp(
-                placeHolderText = "Agregar titulo",
-                value = viewModel.showTitle.value,
-                onValueChange = {
-                    viewModel.showTitle.value = it
-                    viewModel.title.value = it
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier.size(32.dp).padding(end = 5.dp),
-                    )
-                }
-            )
-            EditScreenInputComp(
-                placeHolderText = "Agregar descricción",
-                value = viewModel.showDescription.value,
-                onValueChange = {
-                    viewModel.showDescription.value = it
-                    viewModel.description.value = it
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier.size(32.dp).padding(end = 5.dp),
-                    )
-                },
-            )
-            EditScreenInputComp(
                 placeHolderText = "Agregar calificación",
                 value = viewModel.showGrade.value,
                 onValueChange = {
@@ -123,13 +86,55 @@ fun EditGradeScreen(
             EditScreenInputComp(
                 placeHolderText = "Agregar porcentaje",
                 value = viewModel.showPercentage.value,
-                onValueChange = {
-                    viewModel.showPercentage.value = it
-                    val value = it.toIntOrNull()
-                    if (value != null) viewModel.percentage.value.setPercentage(value)
-                    else viewModel.setDefaultPercentage()
-                },
+                onValueChange = { viewModel.setPercentage(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.cog_outline),
+                        contentDescription = "Ajustes",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                    )
+                },
+                suffix = {
+                    Text(
+                        text = "%",
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(start = 5.dp)
+                    )
+                },
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            HorizontalDivider( modifier = Modifier.alpha(0.5f))
+            EditScreenInputComp(
+                placeHolderText = "Sin titulo",
+                value = viewModel.showTitle.value,
+                onValueChange = {
+                    viewModel.showTitle.value = it
+                    viewModel.title.value = it
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.cog_outline),
+                        contentDescription = "Ajustes",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        modifier = Modifier.size(32.dp).padding(end = 5.dp),
+                    )
+                }
+            )
+            EditScreenInputComp(
+                placeHolderText = "Sin descricción",
+                value = viewModel.showDescription.value,
+                onValueChange = {
+                    viewModel.showDescription.value = it
+                    viewModel.description.value = it
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
                 leadingIcon = {
                     Image(
                         painter = painterResource(id = R.drawable.cog_outline),
@@ -140,8 +145,7 @@ fun EditGradeScreen(
                 },
             )
             Button(onClick = {
-                viewModel.updateOrCreateGrade(gradeId)
-                navegateBack()
+                if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
             }) {
                 Text(text = "Guardar")
             }

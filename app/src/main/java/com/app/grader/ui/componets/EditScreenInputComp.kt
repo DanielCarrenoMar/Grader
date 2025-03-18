@@ -16,7 +16,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EditScreenInputComp(placeHolderText: String,value: String, onValueChange: (String) -> Unit, leadingIcon: @Composable() (()->Unit)? = null, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)) {
+fun EditScreenInputComp(
+    placeHolderText: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    leadingIcon: @Composable() (()->Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    suffix: @Composable() (()->Unit)? = null
+) {
     TextField(
         colors = TextFieldDefaults.colors().copy(
             focusedContainerColor = Color.Transparent,
@@ -32,6 +39,7 @@ fun EditScreenInputComp(placeHolderText: String,value: String, onValueChange: (S
         keyboardOptions = keyboardOptions,
         value = value,
         onValueChange = onValueChange,
+        suffix = suffix
     )
     HorizontalDivider( modifier = Modifier.alpha(0.5f))
 }

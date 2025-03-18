@@ -21,4 +21,13 @@ data class Percentage(
     override fun toString(): String {
         return percentage.toString()
     }
+
+    companion object {
+        fun check(percentage: Double): Boolean {
+            return percentage in 0.0..100.0
+        }
+        fun check(percentage: Int): Boolean {
+            return percentage in 0..100
+        }
+    }
 }
