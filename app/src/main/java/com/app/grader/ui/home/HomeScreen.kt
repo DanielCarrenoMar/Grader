@@ -97,7 +97,7 @@ fun HomeScreen(
         }
         AddComp(listOf(
             AddCompItem("Asignatura", R.drawable.education_cap_outline){ navigateToEditCourse(-1) },
-            AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditCourse(-1) },
+            AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, -1) },
         ))
     }
 
