@@ -55,7 +55,7 @@ fun CourseCardComp(
             disabledContainerColor = MaterialTheme.colorScheme.error,
             disabledContentColor = MaterialTheme.colorScheme.error,
         ),
-        shape = RoundedCornerShape(12)
+        shape = MaterialTheme.shapes.large
     ) {
         Row (
             modifier = Modifier
