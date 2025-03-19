@@ -50,7 +50,7 @@ fun EditGradeScreen(
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.courseId.intValue = courseId
-            viewModel.setDefaultPercentage()
+            viewModel.actDefaultPercentage()
             viewModel.getGradeFromId(gradeId)
             viewModel.getAllCourses()
         }
@@ -107,7 +107,7 @@ fun EditGradeScreen(
                 }
             }
             EditScreenInputComp(
-                placeHolderText = viewModel.percentage.value.toString(),
+                placeHolderText = viewModel.defaultPercentage.value.toString(),
                 value = viewModel.showPercentage.value,
                 onValueChange = { viewModel.setPercentage(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

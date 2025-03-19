@@ -35,6 +35,8 @@ class EditGradeViewModel @Inject constructor(
     val grade = _grade
     private val _percentage = mutableStateOf(Percentage(100.0))
     val percentage = _percentage
+    private val _defaultPercentage = mutableStateOf(Percentage(100.0))
+    val defaultPercentage = _defaultPercentage
 
     private val _showTitle = mutableStateOf("")
     val showTitle = _showTitle
@@ -52,19 +54,18 @@ class EditGradeViewModel @Inject constructor(
 
     fun setPercentage(percentage: String){
         _showPercentage.value = percentage
-
-        if (percentage.isBlank()) setDefaultPercentage()
         val value = percentage.toDoubleOrNull()
-        if (value == null || Percentage.check(value).not()) setDefaultPercentage()
+
+        if (percentage.isBlank() || value == null || Percentage.check(value).not()) actDefaultPercentage()
         else _percentage.value.setPercentage(value)
     }
+    fun setCurseId(courseId: Int){
+        _courseId.intValue = courseId
+        actDefaultPercentage()
+    }
 
-    fun setDefaultPercentage() {
-        if (_courseId.intValue == -1){
-            _percentage.value.setPercentage(100.0)
-            //_showPercentage.value = "100"
-            return
-        }
+    fun actDefaultPercentage() {
+        if (_courseId.intValue == -1) return
         viewModelScope.launch {
             getGradesFromCourseUserCase(_courseId.intValue).collect { result ->
                 when (result) {
@@ -74,8 +75,10 @@ class EditGradeViewModel @Inject constructor(
                         grades.forEach { grade ->
                             totalPercentage += grade.percentage
                         }
+                        _defaultPercentage.value.setPercentage(100.0 - totalPercentage)
                         _percentage.value.setPercentage(100.0 - totalPercentage)
-                        //_showPercentage.value = _percentage.value.toString()
+                        _showPercentage.value = " "
+                        _showPercentage.value = ""
                     }
 
                     is Resource.Loading -> {
@@ -219,10 +222,6 @@ class EditGradeViewModel @Inject constructor(
                 }
             }
         }
-    }
-    fun setCurseId(courseId: Int){
-        _courseId.intValue = courseId
-        setDefaultPercentage()
     }
 
 }
