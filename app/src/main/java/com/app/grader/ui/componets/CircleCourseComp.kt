@@ -67,7 +67,7 @@ fun CircleGrade(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7
             .then(modifier)
     ) {
         Text(
-            if (grade != 0.0) "$grade" else "--",
+            if (grade != 0.0) "${Math.round(grade * 10) / 10f}" else "--",
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
