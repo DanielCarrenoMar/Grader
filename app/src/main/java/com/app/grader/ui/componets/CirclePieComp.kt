@@ -16,9 +16,13 @@ import com.app.grader.ui.theme.Success500
 
 
 @Composable
-fun CirclePie(){
+fun CirclePie(accumulatePoints:Double, pendingPoints: Double){
     //debe recibir por parametro los valores de nota acumulada, los puntos perdidos y los restantes. En ese orden float
-    val data = listOf(40f, 20f,40f)
+    val data = listOf(
+        accumulatePoints.toFloat(),
+        20 - accumulatePoints.toFloat() - pendingPoints.toFloat()
+        ,pendingPoints.toFloat()
+    )
     val colors = listOf(
         Success500,
         Neutral600,

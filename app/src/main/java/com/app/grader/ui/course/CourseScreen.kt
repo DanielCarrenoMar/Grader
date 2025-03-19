@@ -1,7 +1,6 @@
 package com.app.grader.ui.course
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +21,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
@@ -34,8 +32,7 @@ import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
+import androidx.compose.runtime.setValue
 
 @Composable
 fun CourseScreen(
@@ -45,82 +42,41 @@ fun CourseScreen(
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
-    val grades by remember { mutableStateOf(viewModel.grades) }
-    val course by remember { mutableStateOf(viewModel.course) }
+    var expanded by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getGradesFromCourse(courseId)
             viewModel.getCourseFromId(courseId)
+            viewModel.calPoints(courseId)
         }
     }
 
     HeaderBack(
-        title = course.value.title,
+        title = viewModel.course.value.title,
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            //Spacer(modifier = Modifier.weight(1f))
-            //Text(text = "Course SCREEN", fontSize = 25.sp)
-            Column(modifier =Modifier
-                .padding(horizontal = 25.dp)
-                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
-                .fillMaxWidth()
-
-            ){
-                Column (
-                    modifier = Modifier
-                        .padding(20.dp)
-                ){
-                    //course.value.description
-                    Text(text = "Tu promedio", fontSize = 20.sp)
-                    Row( modifier = Modifier
-                        .padding(horizontal = 0.dp, vertical = 10.dp)
-
-                    ) {
-                        CirclePie()
-                        Column(modifier = Modifier
-                            .padding(horizontal = 10.dp, vertical = 0.dp)
-
-                        ) {
-                            Text(text = course.value.description, fontSize = 15.sp)
-                            Text(text = "${course.value.uc} UC", fontSize = 15.sp)
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "Puntos acumulados", fontSize = 13.sp, color = Success500)
-                            Text(text = "6", fontSize = 15.sp, color = Success500)
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "Puntos por evaluar", fontSize = 13.sp, color = Secondary600)
-                            Text(text = "8", fontSize = 15.sp, color = Secondary600)
-                        }
-                    }
-                }
-            }
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            InfoCourseCard(
+                viewModel.course.value.average,
+                viewModel.accumulatePoints.doubleValue,
+                viewModel.pedingPoints.doubleValue,
+                viewModel.course.value.description,
+                viewModel.course.value.uc
+            )
             Spacer(modifier = Modifier.weight(1f))
             LazyColumn {
-                items(grades.value) { grade ->
-                    GradeCardComp(grade, {navigateToGrade(grade.id)})
+                items(viewModel.grades.value) { grade ->
+                    GradeCardComp(grade){
+                        expanded = true
+                        //TODO("llamar a funcion para actualizar el componente de ver calificacion")
+                    }
                 }
             }
         }
@@ -128,4 +84,57 @@ fun CourseScreen(
     AddComp(listOf(
         AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, courseId) },
     ))
+}
+
+@Composable
+fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Double, description: String, uc: Int){
+    Column(modifier =Modifier
+        .padding(horizontal = 25.dp)
+        .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+        .fillMaxWidth()
+
+    ){
+        Column (
+            modifier = Modifier
+                .padding(20.dp)
+        ){
+            Text(text = "Tu promedio", fontSize = 20.sp)
+            Row( modifier = Modifier
+                .padding(horizontal = 0.dp, vertical = 10.dp)
+
+            ) {
+                CirclePie(accumulatePoints, pendingPoints) // TODO("Agrega poner parametros a CirclePie")
+                Column(modifier = Modifier
+                    .padding(horizontal = 10.dp, vertical = 0.dp)
+
+                ) {
+                    Text(text = description, fontSize = 15.sp)
+                    Text(text = "$uc UC", fontSize = 15.sp)
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Puntos acumulados", fontSize = 13.sp, color = Success500)
+                    Text(text = accumulatePoints.toString(), fontSize = 15.sp, color = Success500)
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Puntos por evaluar", fontSize = 13.sp, color = Secondary600)
+                    Text(text = pendingPoints.toString(), fontSize = 15.sp, color = Secondary600)
+                }
+            }
+        }
+    }
 }

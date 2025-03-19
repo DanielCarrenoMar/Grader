@@ -14,6 +14,9 @@ interface GradeDao {
     @Query("SELECT * FROM grade")
     suspend fun getAllGrades(): List<GradeEntity>
 
+    @Query("SELECT * FROM grade WHERE course_id = :courseId")
+    suspend fun getGradesFromCourseId(courseId: Int): List<GradeEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGrade(grades: GradeEntity): Long
 

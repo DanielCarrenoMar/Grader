@@ -87,8 +87,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId:Int): Double {
         try {
-            val grades = gradeDao.getAllGrades()
-                .filter { gradeEntity -> gradeEntity.courseId == courseId }
+            val grades = gradeDao.getGradesFromCourseId(courseId)
             if (grades.isEmpty()) return 0.0
 
             val totalWeight = grades.sumOf { it.percentage }
@@ -102,7 +101,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
         try {
-            return gradeDao.getAllGrades().filter { it.courseId == courseId }.map { gradeEntity ->
+            return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
                 GradeModel(
                     id = gradeEntity.id,
                     courseId = gradeEntity.courseId,
