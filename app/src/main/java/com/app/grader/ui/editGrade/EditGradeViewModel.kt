@@ -53,7 +53,7 @@ class EditGradeViewModel @Inject constructor(
     fun setPercentage(percentage: String){
         _showPercentage.value = percentage
 
-        if (percentage.isEmpty()) return
+        if (percentage.isBlank()) setDefaultPercentage()
         val value = percentage.toDoubleOrNull()
         if (value == null || Percentage.check(value).not()) setDefaultPercentage()
         else _percentage.value.setPercentage(value)
@@ -62,7 +62,7 @@ class EditGradeViewModel @Inject constructor(
     fun setDefaultPercentage() {
         if (_courseId.intValue == -1){
             _percentage.value.setPercentage(100.0)
-            _showPercentage.value = "100"
+            //_showPercentage.value = "100"
             return
         }
         viewModelScope.launch {
@@ -75,7 +75,7 @@ class EditGradeViewModel @Inject constructor(
                             totalPercentage += grade.percentage
                         }
                         _percentage.value.setPercentage(100.0 - totalPercentage)
-                        _showPercentage.value = _percentage.value.toString()
+                        //_showPercentage.value = _percentage.value.toString()
                     }
 
                     is Resource.Loading -> {

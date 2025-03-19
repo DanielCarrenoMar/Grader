@@ -34,7 +34,7 @@ fun EditScreenInputComp(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
         leadingIcon = leadingIcon,
         placeholder = {
-            Text(placeHolderText, style = MaterialTheme.typography.labelMedium, modifier = Modifier.alpha(0.6f))
+            Text(placeHolderText, modifier = Modifier.alpha(0.4f))
         },
         keyboardOptions = keyboardOptions,
         value = value,

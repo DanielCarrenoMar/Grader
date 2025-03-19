@@ -107,7 +107,7 @@ fun EditGradeScreen(
                 }
             }
             EditScreenInputComp(
-                placeHolderText = "Agregar porcentaje",
+                placeHolderText = viewModel.percentage.value.toString(),
                 value = viewModel.showPercentage.value,
                 onValueChange = { viewModel.setPercentage(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
