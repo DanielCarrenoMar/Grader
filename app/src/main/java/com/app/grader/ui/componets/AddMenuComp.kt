@@ -97,7 +97,7 @@ fun AddMenuComp(items: List<AddMenuCompItem>) {
             ) {
                 for (item in items) {
                     DropdownMenuItem(
-                        onClick = item.navFun,
+                        onClick = {item.navFun() ; expanded = false},
                         text = {
                             Text(item.title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onBackground)
                         },
