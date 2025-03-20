@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.app.grader.ui.theme.Neutral600
 import com.app.grader.ui.theme.Secondary600
@@ -16,7 +17,7 @@ import com.app.grader.ui.theme.Success500
 
 
 @Composable
-fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double){
+fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double, strokeWeight: Dp = 7.dp, radius: Dp = 40.dp){
     //debe recibir por parametro los valores de nota acumulada, los puntos perdidos y los restantes. En ese orden float
     val data = listOf(
         accumulatePoints.toFloat(),
@@ -34,11 +35,11 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(40.dp * 2)
+            .size(radius * 2)
             .drawBehind {
 
-                val total = data.sum() //
-                var startAngle = -90f //
+                val total = data.sum()
+                var startAngle = -90f
 
                 data.forEachIndexed { index, value ->
                     val sweepAngle = (value / total) * 360f
@@ -54,7 +55,7 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double){
             .drawBehind {
                 drawCircle(
                     colorBase,
-                    radius = 70f,
+                    radius = (radius - strokeWeight).toPx(),
                 )
             }
     ) {

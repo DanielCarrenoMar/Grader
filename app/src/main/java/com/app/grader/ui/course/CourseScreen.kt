@@ -148,8 +148,9 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     )
                     Text(
                         text = "${Math.round(accumulatePoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold, color = Success500
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Normal,
+                        color = Success500
                     )
                 }
                 Column(
@@ -165,8 +166,8 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     )
                     Text(
                         text = "${Math.round(pendingPoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Normal,
                         color = Secondary600
                     )
                 }
