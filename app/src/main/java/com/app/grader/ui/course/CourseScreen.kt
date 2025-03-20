@@ -4,13 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -31,6 +34,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import com.app.grader.R
+import com.app.grader.ui.componets.AddMenuComp
+import com.app.grader.ui.componets.AddMenuCompItem
+import com.app.grader.ui.componets.CardContainer
 import com.app.grader.ui.componets.CircleGrade
 import com.app.grader.ui.componets.CirclePie
 import com.app.grader.ui.componets.GradeCardComp
@@ -47,7 +54,6 @@ fun CourseScreen(
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
-    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -77,7 +83,7 @@ fun CourseScreen(
                 viewModel.course.value.description,
                 viewModel.course.value.uc
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(25.dp))
             LazyColumn {
                 items(viewModel.grades.value){ grade ->
                     GradeCardComp(grade) {
@@ -97,26 +103,28 @@ fun CourseScreen(
                     Text(text = viewModel.showGrade.value.title)
                     Text(text = viewModel.showGrade.value.description)
                     Text(text = "${viewModel.showGrade.value.percentage}%")
-                    Button(onClick = { navigateToEditGrade(viewModel.showGrade.value.id, courseId)}) {
+                    HorizontalDivider()
+                    Button(onClick = { navigateToEditGrade(viewModel.showGrade.value.id, courseId) }) {
                         Text("Edit")
+                    }
+                    HorizontalDivider()
+                    Button(onClick = { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) }) {
+                        Text("Eliminar")
                     }
                 }
             }
         }
+        AddMenuComp(listOf(
+            AddMenuCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, courseId) },
+        ))
     }
 }
 
 @Composable
 fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Double, description: String, uc: Int){
-    Column(modifier =Modifier
-        .padding(horizontal = 25.dp)
-        .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
-        .fillMaxWidth()
-
-    ){
+    CardContainer{ innerPading ->
         Column (
-            modifier = Modifier
-                .padding(20.dp)
+            modifier = Modifier.padding(innerPading)
         ){
             Text(text = "Tu promedio", fontSize = 20.sp)
             Row( modifier = Modifier
@@ -127,8 +135,28 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     .padding(horizontal = 15.dp, vertical = 0.dp)
 
                 ) {
-                    Text(text = description, style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "$uc UC", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.height(60.dp)
+                    )
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                    ){
+                        Text(
+                            text = "$uc",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "UC",
+                            modifier = Modifier
+                                .padding(start = 8.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                 }
             }
             Row(
@@ -148,8 +176,8 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     )
                     Text(
                         text = "${Math.round(accumulatePoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Normal,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
                         color = Success500
                     )
                 }
@@ -166,8 +194,8 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     )
                     Text(
                         text = "${Math.round(pendingPoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Normal,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
                         color = Secondary600
                     )
                 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.usecase.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class CourseViewModel  @Inject constructor(
     private val getGradesFromCourseUserCase: GetGradesFromCourseUserCase,
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
-    private val getGradeFromIdUseCase: GetGradeFromIdUseCase
+    private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
+    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
@@ -121,6 +123,25 @@ class CourseViewModel  @Inject constructor(
                     }
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getGradesFromCourse: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun deleteGradeFromId(gradeId: Int){
+        viewModelScope.launch {
+            deleteGradeFromIdUseCase(gradeId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        getGradesFromCourse(_course.value.id)
+                        calPoints(_course.value.id)
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error deleteGradeFromId: ${result.message}")
                     }
                 }
             }

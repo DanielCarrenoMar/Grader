@@ -32,6 +32,9 @@ interface GradeDao {
     @Query("DELETE FROM grade WHERE id = :gradeId")
     suspend fun deleteGradeFromId(gradeId: Int): Int
 
+    @Query("DELETE FROM grade WHERE course_id = :courseId")
+    suspend fun deleteGradeFromCourseId(courseId: Int): Int
+
     @Query("DELETE FROM sqlite_sequence WHERE name = 'grade'")
     suspend fun resetIncremetalGrade()
 

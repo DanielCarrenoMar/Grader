@@ -2,7 +2,6 @@ package com.app.grader.ui.componets
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,14 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.app.grader.R
 
-data class AddCompItem(
+data class AddMenuCompItem(
     val title : String,
     val iconId: Int,
     val navFun: () -> Unit
 )
 
 @Composable
-fun AddComp(items: List<AddCompItem>) {
+fun AddMenuComp(items: List<AddMenuCompItem>) {
     var expanded by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
         targetValue = if (expanded) Color.White.copy(0.9f) else Color.White.copy(0.0f),

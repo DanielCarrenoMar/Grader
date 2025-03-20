@@ -79,6 +79,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteCourseFromId(courseId: Int): Boolean {
         try {
+            gradeDao.deleteGradeFromCourseId(courseId)
             return courseDao.deleteCourseFromId(courseId) == 1
         } catch (e: Exception) {
             throw e
