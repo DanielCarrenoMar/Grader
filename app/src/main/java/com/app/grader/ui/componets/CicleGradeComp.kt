@@ -13,11 +13,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp, radius : Dp = 40.dp) {
+fun CircleGrade(grade: Double, modifier: Modifier = Modifier, radius : Dp = 40.dp) {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
-    if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
-    if (strokeWith > radius) throw IllegalArgumentException("Stroke width must be less than radius")
 
     val colorOnBase = getColorForGrade(grade)
 
@@ -37,7 +35,7 @@ fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 
             if (grade != 0.0) "$grade" else "--",
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.surface,
         )
     }
 }
