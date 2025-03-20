@@ -35,8 +35,9 @@ fun NavigationWrapper() {
     NavHost(
         navController = navController,
         startDestination = Home,
-        enterTransition = { fadeIn(animationSpec = tween(300)) },
-        exitTransition = { fadeOut(animationSpec = tween(300)) },
+        enterTransition = { fadeIn(animationSpec = tween(700)) },
+        exitTransition = { fadeOut(animationSpec = tween(700)) },
+        popEnterTransition = {fadeIn(animationSpec = tween(0))},
     ) {
         composable<Home> {
             HomeScreen(

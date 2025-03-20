@@ -59,8 +59,7 @@ fun AddComp(items: List<AddCompItem>) {
     Box(
         modifier = Modifier
             .zIndex(2f)
-            .padding(12.dp)
-            .padding(bottom = 48.dp)
+            .padding(bottom = 68.dp, end = 16.dp)
             .fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ){
@@ -72,7 +71,7 @@ fun AddComp(items: List<AddCompItem>) {
               },
             modifier = Modifier
                 .size(60.dp)
-                .shadow(6.dp, shape = MaterialTheme.shapes.large)
+                .shadow(8.dp, shape = MaterialTheme.shapes.large)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.large
