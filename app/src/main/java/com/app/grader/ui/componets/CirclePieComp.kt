@@ -16,7 +16,7 @@ import com.app.grader.ui.theme.Success500
 
 
 @Composable
-fun CirclePie(accumulatePoints:Double, pendingPoints: Double){
+fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double){
     //debe recibir por parametro los valores de nota acumulada, los puntos perdidos y los restantes. En ese orden float
     val data = listOf(
         accumulatePoints.toFloat(),
@@ -58,7 +58,7 @@ fun CirclePie(accumulatePoints:Double, pendingPoints: Double){
                 )
             }
     ) {
-        Text( text="20" ,
+        Text( text="${Math.round(average * 10) / 10.0}" ,
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
