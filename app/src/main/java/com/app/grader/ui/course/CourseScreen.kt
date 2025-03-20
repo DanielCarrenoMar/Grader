@@ -1,12 +1,14 @@
 package com.app.grader.ui.course
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,15 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.ui.componets.AddComp
@@ -33,7 +43,11 @@ import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import com.app.grader.ui.componets.CircleGrade
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourseScreen(
     courseId: Int,
@@ -42,7 +56,9 @@ fun CourseScreen(
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -72,18 +88,31 @@ fun CourseScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             LazyColumn {
-                items(viewModel.grades.value) { grade ->
-                    GradeCardComp(grade){
-                        expanded = true
-                        //TODO("llamar a funcion para actualizar el componente de ver calificacion")
+                items(viewModel.grades.value){ grade ->
+                    GradeCardComp(grade) {
+                        viewModel.setShowGrade(grade.id)
+                        showBottomSheet = true
+                    }
+                }
+            }
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+                    CircleGrade(viewModel.showGrade.value.grade, radius = 40.dp)
+                    Text(text = viewModel.showGrade.value.title)
+                    Text(text = viewModel.showGrade.value.description)
+                    Text(text = "${viewModel.showGrade.value.percentage}%")
+                    Button(onClick = { navigateToEditGrade(viewModel.showGrade.value.id, courseId)}) {
+                        Text("Edit")
                     }
                 }
             }
         }
     }
-    AddComp(listOf(
-        AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, courseId) },
-    ))
 }
 
 @Composable

@@ -9,6 +9,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class CourseViewModel  @Inject constructor(
     private val getGradesFromCourseUserCase: GetGradesFromCourseUserCase,
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
+    private val getGradeFromIdUseCase: GetGradeFromIdUseCase
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
@@ -26,6 +28,15 @@ class CourseViewModel  @Inject constructor(
     private val _pedingPoints = mutableDoubleStateOf(0.0)
     val pedingPoints = _pedingPoints
 
+    private val _showGrade = mutableStateOf(GradeModel(
+        grade = 0.0,
+        title = "NULL",
+        description = "NULL",
+        percentage = 0.0,
+        courseId = -1,
+        id = -1,
+    ))
+    val showGrade = _showGrade
     private val _course = mutableStateOf(
         CourseModel(
             title = "NULL",
@@ -35,6 +46,24 @@ class CourseViewModel  @Inject constructor(
         )
     )
     val course = _course
+
+    fun setShowGrade(gradeId: Int){
+        viewModelScope.launch {
+            getGradeFromIdUseCase(gradeId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        if (result.data != null) _showGrade.value = result.data
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun calPoints(courseId: Int){
         viewModelScope.launch {
