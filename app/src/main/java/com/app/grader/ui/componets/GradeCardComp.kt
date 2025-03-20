@@ -14,13 +14,13 @@ import com.app.grader.domain.model.GradeModel
 
 
 @Composable
-fun GradeCardComp(grade: GradeModel, navigateToGrade: () -> Unit) {
+fun GradeCardComp(grade: GradeModel, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
     ) {
-        Button(onClick = { navigateToGrade() }) {
+        Button(onClick = onClick) {
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(text = grade.title, fontSize = 20.sp)
                 Text(text = "porcentaje: ${grade.percentage}", fontSize = 14.sp)
