@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CardContainer(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ){
     Card(

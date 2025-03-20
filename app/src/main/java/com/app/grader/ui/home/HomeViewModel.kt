@@ -1,6 +1,7 @@
 package com.app.grader.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -18,21 +19,21 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel  @Inject constructor(
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
-    private val saveCourseUserCase: SaveCourseUserCase,
-    private val deleteAllCoursesUserCase: DeleteAllCoursesUseCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
     private val _deleteCourseId = mutableIntStateOf(-1)
     val deleteCourseId = _deleteCourseId
+    private val _totalAverage = mutableDoubleStateOf(0.0)
+    val totalAverage = _totalAverage
 
     fun deleteSelectedCourse(){
         viewModelScope.launch {
             deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
                 when (result){
                     is Resource.Success -> {
-                        getAllCourses()
+                        getAllCoursesAndCalTotalAverage()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -51,37 +52,23 @@ class HomeViewModel  @Inject constructor(
         }
     }
 
-    fun getAllCourses() {
+    fun getAllCoursesAndCalTotalAverage() {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
+                        var grades = 0.0
+                        _courses.value.forEach( {course ->
+                            grades += course.average
+                        })
+                        _totalAverage.doubleValue = grades / _courses.value.size
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
                         Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
-                    }
-                }
-            }
-        }
-    }
-
-    fun deleteAllCourses() {
-        viewModelScope.launch {
-            deleteAllCoursesUserCase().collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        Log.i("HomeViewModel", "deleteAllCourses Cantidad: " + result.data)
-                        _courses.value = emptyList()
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
-                    is Resource.Error -> {
-                        Log.e("HomeViewModel", "Error deleting all courses: ${result.message}")
                     }
                 }
             }

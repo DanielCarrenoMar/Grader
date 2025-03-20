@@ -26,6 +26,12 @@ val Typography = Typography(
         fontSize = 24.sp,
         lineHeight = 24.sp,
     ),
+    titleMedium = TextStyle(
+        fontFamily = QuickSandsFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 24.sp,
+        lineHeight = 24.sp,
+    ),
     bodySmall = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Normal,
@@ -41,19 +47,19 @@ val Typography = Typography(
     labelSmall = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Light,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         lineHeight = 16.sp,
     ),
     labelMedium = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         lineHeight = 16.sp,
     ),
     labelLarge = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Medium,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         lineHeight = 16.sp,
     )
 )

@@ -1,6 +1,8 @@
 package com.app.grader.ui.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +32,7 @@ import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.ui.componets.AddComp
 import com.app.grader.ui.componets.AddCompItem
+import com.app.grader.ui.componets.CardContainer
 import com.app.grader.ui.componets.DeleteConfirmationComp
 
 @Composable
@@ -48,7 +52,7 @@ fun HomeScreen(
     LaunchedEffect(viewModel) {
         if (isFirstLaunch) {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getAllCourses()
+                viewModel.getAllCoursesAndCalTotalAverage()
             }
             isFirstLaunch = false
         }
@@ -73,12 +77,8 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text(text = "HOME SCREEN", fontSize = 25.sp)
-                //Text(text = "Texto Transmitido a AllGrades: $text", fontSize = 14.sp)
-                //TextField(value = text, onValueChange = {viewModel.onTextChanged(it)})
-                Button(onClick = { viewModel.deleteAllCourses() }) {
-                    Text(text = "Borrar todas las Materias")
-                }
+                InfoHomeCard(viewModel.totalAverage.doubleValue)
+                Spacer(modifier = Modifier.height(20.dp))
             }
             items(courses.value) { course ->
                 CourseCardComp(
@@ -104,8 +104,32 @@ fun HomeScreen(
 }
 
 @Composable
-fun InfoHomeCard(){
-    Column {
-
+fun InfoHomeCard(average: Double){
+    CardContainer{ innerPading ->
+        Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(innerPading).fillMaxSize()
+        ){
+            Column{
+                Text(text = "titulo")
+                Text(text = "Grafico")
+            }
+            Column (
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(end = 30.dp)
+            ){
+                Text(
+                    text = average.toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 32.sp,
+                )
+                Text(
+                    text = "Tu Promedio",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
     }
 }

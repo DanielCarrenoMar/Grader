@@ -83,7 +83,7 @@ fun CourseCardComp(
                     )
                     Row (
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 32.dp)
+                        modifier = Modifier.padding(top = 26.dp)
                     ){
                         Text(
                             text = "${course.uc}",
@@ -106,7 +106,7 @@ fun CourseCardComp(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(vertical = 4.dp),
                 ){
-                    CircleGrade(course.average, strokeWith =  6.dp, radius =  38.dp)
+                    CircleGrade(course.average, strokeWith =  5.dp, radius =  32.dp)
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(
