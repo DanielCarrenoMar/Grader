@@ -124,7 +124,7 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
             ) {
                 CirclePie(average ,accumulatePoints, pendingPoints) // TODO("Agrega poner parametros a CirclePie")
                 Column(modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 0.dp)
+                    .padding(horizontal = 15.dp, vertical = 0.dp)
 
                 ) {
                     Text(text = description, style = MaterialTheme.typography.bodyLarge)
