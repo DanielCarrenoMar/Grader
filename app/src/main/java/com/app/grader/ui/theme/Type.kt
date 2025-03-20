@@ -44,6 +44,12 @@ val Typography = Typography(
         fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
+    bodyLarge = TextStyle(
+        fontFamily = QuickSandsFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+    ),
     labelSmall = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Light,
