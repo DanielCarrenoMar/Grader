@@ -27,12 +27,12 @@ fun getColorForGrade(grade: Double): Color {
     val colorLow = Error500
 
     return when {
-        grade <= 10 -> {
-            val adjustedFraction = (grade / 10f).toFloat()
+        grade <= 15 -> {
+            val adjustedFraction = (grade / 5f).toFloat()
             lerp(colorLow, colorMiddle, adjustedFraction)
         }
         else -> {
-            val adjustedFraction = ((grade - 10) / 10f).toFloat()
+            val adjustedFraction = ((grade - 15) / 15f).toFloat()
             lerp(colorMiddle, colorHigh, adjustedFraction)
         }
     }
