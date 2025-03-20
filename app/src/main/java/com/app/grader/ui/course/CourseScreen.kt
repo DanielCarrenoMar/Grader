@@ -122,7 +122,7 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
             Row( modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CirclePie(average ,accumulatePoints, pendingPoints) // TODO("Agrega poner parametros a CirclePie")
+                CirclePie(average ,accumulatePoints, pendingPoints)
                 Column(modifier = Modifier
                     .padding(horizontal = 15.dp, vertical = 0.dp)
 
