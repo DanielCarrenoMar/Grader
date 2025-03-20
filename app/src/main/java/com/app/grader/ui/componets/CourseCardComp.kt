@@ -2,11 +2,13 @@ package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -44,31 +49,21 @@ fun CourseCardComp(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Card(
-        onClick = navigateToCourse,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        colors = CardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            disabledContainerColor = MaterialTheme.colorScheme.error,
-            disabledContentColor = MaterialTheme.colorScheme.error,
-        ),
-        shape = MaterialTheme.shapes.large
-    ) {
+    CardContainer(
+        onClick = navigateToCourse
+    ) { innerPading ->
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp),
+                .padding(innerPading),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Row (
                 verticalAlignment = Alignment.Top,
-                modifier = Modifier.padding(top = 12.dp),
             ) {
                 Box(
                     modifier = Modifier
+                        .padding(end = 12.dp)
                         .size(28.dp)
                         .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
                     contentAlignment = Alignment.Center
@@ -77,25 +72,21 @@ fun CourseCardComp(
                         painter = painterResource(id = R.drawable.education_cap),
                         contentDescription = "educationCap",
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
                 Column{
                     Text(
                         text = course.title,
-                        modifier = Modifier
-                            .padding(start = 12.dp),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Row (
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 24.dp)
+                        modifier = Modifier.padding(top = 32.dp)
                     ){
                         Text(
                             text = "${course.uc}",
-                            modifier = Modifier
-                                .padding(start = 12.dp),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
@@ -113,19 +104,19 @@ fun CourseCardComp(
             Row (verticalAlignment = Alignment.Top){
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier.padding(vertical = 4.dp),
                 ){
-                    CircleGrade(course.average, strokeWith =  6.dp, radius =  37.dp)
+                    CircleGrade(course.average, strokeWith =  6.dp, radius =  38.dp)
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(
                         onClick = { expanded = true },
+                        modifier = Modifier.size(32.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.dots_vertical_outline),
                             contentDescription = "edit",
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            modifier = Modifier.size(26.dp)
                         )
                     }
                     DropdownMenu(

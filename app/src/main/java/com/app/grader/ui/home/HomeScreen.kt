@@ -1,5 +1,6 @@
 package com.app.grader.ui.home
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -100,5 +101,11 @@ fun HomeScreen(
             AddCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, -1) },
         ))
     }
+}
 
+@Composable
+fun InfoHomeCard(){
+    Column {
+
+    }
 }
