@@ -151,7 +151,7 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Puntos acumulados", fontSize = 13.sp, color = Success500)
-                    Text(text = accumulatePoints.toString(), fontSize = 15.sp, color = Success500)
+                    Text(text = "${Math.round(accumulatePoints * 10) / 10.0}", fontSize = 15.sp, color = Success500)
                 }
                 Column(
                     modifier = Modifier
@@ -160,7 +160,7 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Puntos por evaluar", fontSize = 13.sp, color = Secondary600)
-                    Text(text = pendingPoints.toString(), fontSize = 15.sp, color = Secondary600)
+                    Text(text = "${Math.round(pendingPoints * 10) / 10.0}", fontSize = 15.sp, color = Secondary600)
                 }
             }
         }
