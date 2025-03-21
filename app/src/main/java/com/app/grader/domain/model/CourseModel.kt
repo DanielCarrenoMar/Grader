@@ -9,7 +9,15 @@ data class CourseModel(
     val uc: Int,
     val average: Double = 0.0,
     val id: Int = -1,
-)
+){
+    companion object {
+        val DEFAULT = CourseModel(
+            title = "NULL",
+            description = "NULL",
+            uc = -1
+        )
+    }
+}
 
 fun CourseModel.toCourseEntity():CourseEntity{
     return CourseEntity(

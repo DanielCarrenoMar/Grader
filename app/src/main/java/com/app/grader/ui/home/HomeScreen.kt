@@ -1,5 +1,6 @@
 package com.app.grader.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -19,19 +21,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.app.grader.ui.componets.CourseCardComp
-import com.app.grader.ui.componets.HeaderMenu
-import androidx.compose.ui.unit.dp
 import com.app.grader.R
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.AddMenuComp
 import com.app.grader.ui.componets.AddMenuCompItem
 import com.app.grader.ui.componets.CardContainer
+import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.DeleteConfirmationComp
+import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.LineChartAverage
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
@@ -46,13 +51,10 @@ fun HomeScreen(
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isFirstLaunch by remember { mutableStateOf(true) }
     LaunchedEffect(viewModel) {
-        if (isFirstLaunch) {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getAllCoursesAndCalTotalAverage()
-            }
-            isFirstLaunch = false
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.getAllGrades()
+            viewModel.getAllCoursesAndCalTotalAverage()
         }
     }
 
@@ -75,7 +77,7 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                InfoHomeCard(viewModel.totalAverage.doubleValue)
+                InfoHomeCard(viewModel.totalAverage.doubleValue, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             items(courses.value) { course ->
@@ -102,7 +104,9 @@ fun HomeScreen(
 }
 
 @Composable
-fun InfoHomeCard(average: Double){
+fun InfoHomeCard(average: Double, grades: List<GradeModel>){
+    val gradeValues = if (grades.isNotEmpty()) grades.map { it.grade } else listOf(1.0,4.0)
+
     CardContainer{ innerPading ->
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -110,12 +114,12 @@ fun InfoHomeCard(average: Double){
                 .padding(innerPading)
                 .fillMaxSize()
         ){
-            /*Column{
+            Column{
                 Text(text = "Grafico")
-            }*/
+                LineChartAverage(gradeValues)
+            }
             Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.padding(end = 40.dp)
             ){
                 /*Row {
                     Box(
@@ -136,7 +140,7 @@ fun InfoHomeCard(average: Double){
                 }*/
 
                 Text(
-                    text = "${Math.round(average * 100) / 100.0 }",
+                    text = "${(average * 100).roundToInt() / 100.0 }",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 32.sp,
