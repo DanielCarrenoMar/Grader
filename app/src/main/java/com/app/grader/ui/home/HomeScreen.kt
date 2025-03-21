@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,9 +53,9 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
+        viewModel.getAllCoursesAndCalTotalAverage()
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllGrades()
-            viewModel.getAllCoursesAndCalTotalAverage()
         }
     }
 
@@ -105,8 +106,6 @@ fun HomeScreen(
 
 @Composable
 fun InfoHomeCard(average: Double, grades: List<GradeModel>){
-    val gradeValues = if (grades.isNotEmpty()) grades.map { it.grade } else listOf(1.0,4.0)
-
     CardContainer{ innerPading ->
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -116,7 +115,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
         ){
             Column{
                 Text(text = "Grafico")
-                LineChartAverage(gradeValues)
+                if (grades.isNotEmpty()) LineChartAverage(grades.map{it.grade}, Modifier.size(120.dp))
             }
             Column (
                 modifier = Modifier.padding(end = 40.dp)
