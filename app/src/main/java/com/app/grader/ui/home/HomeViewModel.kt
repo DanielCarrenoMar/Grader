@@ -61,11 +61,13 @@ class HomeViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
-                        var grades = 0.0
-                        _courses.value.forEach( {course ->
-                            grades += course.average
-                        })
-                        _totalAverage.doubleValue = grades / _courses.value.size
+                        if (_courses.value.isNotEmpty()){
+                            var grades = 0.0
+                            _courses.value.forEach( {course ->
+                                grades += course.average
+                            })
+                            _totalAverage.doubleValue = grades / _courses.value.size
+                        }
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -84,7 +86,6 @@ class HomeViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!
-
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

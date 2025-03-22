@@ -1,7 +1,11 @@
 package com.app.grader.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +45,9 @@ import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.LineChartAverage
+import com.app.grader.ui.theme.IconMedium
+import com.app.grader.ui.theme.IconSmall
+import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
@@ -78,6 +89,7 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+                Spacer(modifier = Modifier.height(10.dp))
                 InfoHomeCard(viewModel.totalAverage.doubleValue, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
@@ -111,44 +123,65 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(innerPading)
-                .fillMaxSize()
+                .fillMaxWidth()
+                .height(150.dp)
         ){
-            Column{
-                Text(text = "Grafico")
-                if (grades.isNotEmpty()) LineChartAverage(grades.map{it.grade}, Modifier.size(120.dp))
-            }
             Column (
-                modifier = Modifier.padding(end = 40.dp)
+                modifier = Modifier.weight(1f)
             ){
-                /*Row {
+                Row (
+                    verticalAlignment = Alignment.Top,
+                ) {
                     Box(
                         modifier = Modifier
                             .padding(end = 12.dp)
-                            .size(28.dp)
-                            .background(color = MaterialTheme.colorScheme.secondary, shape = CircleShape),
+                            .size(26.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = CircleShape
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.cog_outline),
+                            painter = painterResource(id = R.drawable.chart_mixed),
                             contentDescription = "educationCap",
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(IconSmall)
                         )
                     }
-                    Text(text = "titulo")
-                }*/
-
-                Text(
-                    text = "${(average * 100).roundToInt() / 100.0 }",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 32.sp,
-                )
-                Text(
-                    text = "Tu Promedio",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                    Text(text = "Progresión", style = MaterialTheme.typography.labelMedium)
+                }
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(vertical = 15.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    if (grades.isNotEmpty()) LineChartAverage(grades.map{it.grade}, Modifier.fillMaxSize())
+                    else Text(
+                            text = "No hay calificaciones",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                }
+            }
+            Box (
+                modifier = Modifier.weight(0.9f),
+            ){
+                Column (
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        text = "${(average * 100).roundToInt() / 100.0 }",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 32.sp,
+                    )
+                    Text(
+                        text = "Tu Promedio",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
