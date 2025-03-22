@@ -19,3 +19,4 @@ val Shadow50 = Color(0xFFFFFFFF)
 val Shadow100 = Color(0xFF000000)
 
 val BackgroundLight = Color(0xFFF3F8FF)
+val BackgroundLightVar = Color(0xFFE9F2FF)

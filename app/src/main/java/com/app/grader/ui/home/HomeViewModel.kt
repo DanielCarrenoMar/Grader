@@ -15,6 +15,7 @@ import com.app.grader.domain.usecase.GetAllGradesUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.times
 
 @HiltViewModel
 class HomeViewModel  @Inject constructor(
@@ -62,11 +63,17 @@ class HomeViewModel  @Inject constructor(
                     is Resource.Success -> {
                         _courses.value = result.data!!
                         if (_courses.value.isNotEmpty()){
-                            var grades = 0.0
-                            _courses.value.forEach( {course ->
-                                grades += course.average
-                            })
-                            _totalAverage.doubleValue = grades / _courses.value.size
+                            var totalGrades = 0.0
+                            var totalUC = 0
+
+                            _courses.value.forEach { course ->
+                                if (course.average != 0.0) {
+                                    totalGrades += course.average * course.uc
+                                    totalUC += course.uc
+                                }
+                            }
+
+                            _totalAverage.doubleValue = totalGrades / totalUC
                         }
                     }
                     is Resource.Loading -> {
