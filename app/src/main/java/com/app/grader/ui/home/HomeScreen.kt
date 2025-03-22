@@ -76,11 +76,11 @@ fun HomeScreen(
             { showDeleteConfirmation = false }
         )
     }
-
-    HeaderMenu ("Asignaturas",
+    HeaderMenu(
+        "Asignaturas",
         null,
-        {navigateToAllGrades("a")},
-        {navigateToConfig()}
+        { navigateToAllGrades("a") },
+        { navigateToConfig() }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -101,18 +101,26 @@ fun HomeScreen(
                         viewModel.selectDeleteCourse(course.id)
                         showDeleteConfirmation = true
                     },
-                    {navigateToEditCourse(course.id)},
+                    { navigateToEditCourse(course.id) },
                 )
                 Spacer(Modifier.height(10.dp))
             }
-            item{
+            item {
                 Spacer(Modifier.height(80.dp))
             }
         }
-        AddMenuComp(listOf(
-            AddMenuCompItem("Asignatura", R.drawable.education_cap_outline){ navigateToEditCourse(-1) },
-            AddMenuCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, -1) },
-        ))
+        AddMenuComp(
+            listOf(
+                AddMenuCompItem(
+                    "Asignatura",
+                    R.drawable.education_cap_outline
+                ) { navigateToEditCourse(-1) },
+                AddMenuCompItem(
+                    "Calificación",
+                    R.drawable.star_outline
+                ) { navigateToEditGrade(-1, -1) },
+            )
+        )
     }
 }
 
