@@ -53,13 +53,13 @@ val Typography = Typography(
     labelSmall = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Light,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         lineHeight = 16.sp,
     ),
     labelMedium = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         lineHeight = 16.sp,
     ),
     labelLarge = TextStyle(

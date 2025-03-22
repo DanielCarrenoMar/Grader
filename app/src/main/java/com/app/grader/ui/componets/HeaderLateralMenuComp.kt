@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,9 +34,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
+import com.app.grader.ui.theme.IconLarge
+import com.app.grader.ui.theme.IconMedium
 import kotlinx.coroutines.launch
+
+@Composable
+private fun MyNavigationDrawerItem(title:String, iconId:Int, onClick:(()->Unit)?){
+    NavigationDrawerItem(
+        label = {
+            Text(
+                title,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium
+            )
+        },
+        icon = {
+            Image(
+                painter = painterResource(id = iconId),
+                contentDescription = title,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                modifier = Modifier.size(IconLarge).padding(end = 5.dp),
+            )
+        },
+        selected = onClick == null,
+        onClick = { onClick?.invoke() },
+        colors = NavigationDrawerItemDefaults.colors(
+            selectedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f)
+        )
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,44 +99,20 @@ fun HeaderMenu(
                     Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.secondary)
                     HorizontalDivider()
-                    NavigationDrawerItem(
-                        label = { Text("Asignaturas", style = MaterialTheme.typography.labelLarge) },
-                        icon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.home_outline),
-                                contentDescription = "Asignaturas",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
-                            )
-                        },
-                        selected = navigateHome == null,
-                        onClick = { navigateHome?.invoke() }
+                    MyNavigationDrawerItem(
+                        title = "Asignaturas",
+                        iconId = R.drawable.home_outline,
+                        onClick = navigateHome
                     )
-                    NavigationDrawerItem(
-                        label = { Text("Todas las notas", style = MaterialTheme.typography.labelLarge) },
-                        icon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.star_outline),
-                                contentDescription = "Todas las notas",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
-                            )
-                        },
-                        selected = navigateAllGrades == null,
-                        onClick = { navigateAllGrades?.invoke() }
+                    MyNavigationDrawerItem(
+                        title = "Todas las notas",
+                        iconId = R.drawable.star_outline,
+                        onClick = navigateAllGrades
                     )
-                    NavigationDrawerItem(
-                        label = { Text("Ajustes", style = MaterialTheme.typography.labelLarge) },
-                        icon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.cog_outline),
-                                contentDescription = "Ajustes",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                                modifier = Modifier.size(32.dp).padding(end = 5.dp),
-                            )
-                        },
-                        selected = navigateConfig == null,
-                        onClick = { navigateConfig?.invoke() }
+                    MyNavigationDrawerItem(
+                        title = "Ajustes",
+                        iconId = R.drawable.cog_outline,
+                        onClick = navigateConfig
                     )
                 }
             }

@@ -9,7 +9,9 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenu
@@ -29,9 +31,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.app.grader.R
+import com.app.grader.ui.theme.IconMedium
+import com.app.grader.ui.theme.IconSmall
 
 data class AddMenuCompItem(
     val title : String,
@@ -95,31 +101,41 @@ fun AddMenuComp(items: List<AddMenuCompItem>) {
                 containerColor = Color.Transparent,
                 shadowElevation = 0.dp,
             ) {
-                for (item in items) {
+                items.forEachIndexed { index, item ->
                     DropdownMenuItem(
+
                         onClick = {item.navFun() ; expanded = false},
                         text = {
-                            Text(item.title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onBackground)
+                            Text(
+                                item.title,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontWeight = FontWeight.Medium,
+                            )
                         },
                         trailingIcon = {
                             Box(
                                 modifier = Modifier
+                                    .shadow(4.dp, shape = MaterialTheme.shapes.medium)
                                     .background(
                                         MaterialTheme.colorScheme.background,
                                         MaterialTheme.shapes.medium
                                     )
-                                    .padding(6.dp),
+                                    .padding(12.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
                                     painter = painterResource(id = item.iconId),
                                     contentDescription = item.title,
                                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                                    modifier = Modifier.size(25.dp)
+                                    modifier = Modifier.size(IconMedium)
                                 )
                             }
                         }
                     )
+                    if (index < items.size - 1) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
         }

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.ui.theme.IconSmall
 
 @Composable
 fun CourseCardComp(
@@ -53,7 +54,7 @@ fun CourseCardComp(
                 Box(
                     modifier = Modifier
                         .padding(end = 12.dp)
-                        .size(28.dp)
+                        .size(26.dp)
                         .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
@@ -61,7 +62,7 @@ fun CourseCardComp(
                         painter = painterResource(id = R.drawable.education_cap),
                         contentDescription = "educationCap",
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(IconSmall)
                     )
                 }
                 Column{
