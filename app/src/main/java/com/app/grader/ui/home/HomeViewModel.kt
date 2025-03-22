@@ -7,11 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.GetAllCoursesUserCase
-import com.app.grader.domain.usecase.SaveCourseUserCase
-import com.app.grader.domain.usecase.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.DeleteCourseFromIdUseCase
+import com.app.grader.domain.usecase.GetAllCoursesUserCase
+import com.app.grader.domain.usecase.GetAllGradesUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,9 +20,12 @@ import javax.inject.Inject
 class HomeViewModel  @Inject constructor(
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
+    private val getAllGradesUseCase: GetAllGradesUserCase
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
+    private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
+    val grades = _grades
     private val _deleteCourseId = mutableIntStateOf(-1)
     val deleteCourseId = _deleteCourseId
     private val _totalAverage = mutableDoubleStateOf(0.0)
@@ -58,17 +61,37 @@ class HomeViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
-                        var grades = 0.0
-                        _courses.value.forEach( {course ->
-                            grades += course.average
-                        })
-                        _totalAverage.doubleValue = grades / _courses.value.size
+                        if (_courses.value.isNotEmpty()){
+                            var grades = 0.0
+                            _courses.value.forEach( {course ->
+                                grades += course.average
+                            })
+                            _totalAverage.doubleValue = grades / _courses.value.size
+                        }
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
                         Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun getAllGrades() {
+        viewModelScope.launch {
+            getAllGradesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _grades.value = result.data!!
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("HomeViewModel", "Error getAllGrades: ${result.message}")
                     }
                 }
             }

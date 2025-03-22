@@ -10,7 +10,17 @@ data class GradeModel(
     val grade: Double,
     val percentage: Double,
     val id: Int = -1,
-)
+){
+    companion object {
+        val DEFAULT = GradeModel(
+            courseId = -1,
+            title = "NULL",
+            description = "NULL",
+            grade = 0.0,
+            percentage = 0.0,
+        )
+    }
+}
 
 fun GradeModel.toGradeEntity(): GradeEntity {
     return GradeEntity(

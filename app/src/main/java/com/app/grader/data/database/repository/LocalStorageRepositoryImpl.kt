@@ -1,6 +1,5 @@
 package com.app.grader.data.database.repository
 
-import android.util.Log
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.domain.model.CourseModel
