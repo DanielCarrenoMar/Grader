@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ripple.rememberRipple
@@ -64,6 +65,7 @@ import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +108,6 @@ fun CourseScreen(
                 viewModel.course.value.average,
                 viewModel.accumulatePoints.doubleValue,
                 viewModel.pedingPoints.doubleValue,
-                viewModel.course.value.description,
                 viewModel.course.value.uc
             )
             Spacer(modifier = Modifier.height(25.dp))
@@ -129,7 +130,7 @@ fun CourseScreen(
                 }
             }
             if (showBottomSheet) {
-                infoGradeBottonCar(
+                InfoGradeBottonCar(
                     onDismissRequest = {
                         showBottomSheet = false
                     },
@@ -147,7 +148,7 @@ fun CourseScreen(
 }
 
 @Composable
-fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Double, description: String, uc: Int){
+fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Double, uc: Int){
     CardContainer{ innerPading ->
         Column (
             modifier = Modifier.padding(innerPading)
@@ -161,13 +162,48 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                 CirclePie(average ,accumulatePoints, pendingPoints)
                 Column(modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 0.dp)
-
                 ) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.height(60.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Row (verticalAlignment = Alignment.Bottom){
+                                Text(
+                                    text = "${(accumulatePoints * 10).roundToInt() / 10.0}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Success500,
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "Ptos. Acumulados",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Success500
+                                )
+                            }
+                            Spacer(Modifier.height(3.dp))
+                            Row (verticalAlignment = Alignment.Bottom) {
+                                Text(
+                                    text = "${(pendingPoints * 10).roundToInt() / 10.0}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Secondary600
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "Ptos. Por Evaluar",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Secondary600
+                                )
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
                     Row (
                         verticalAlignment = Alignment.CenterVertically,
                     ){
@@ -187,54 +223,13 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                     }
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Puntos acumulados",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Success500
-                    )
-                    Text(
-                        text = "${Math.round(accumulatePoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = Success500
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Puntos por evaluar",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Secondary600
-                    )
-                    Text(
-                        text = "${Math.round(pendingPoints * 10) / 10.0}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = Secondary600
-                    )
-                }
-            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun infoGradeBottonCar(
+fun InfoGradeBottonCar(
     onDismissRequest: ()-> Unit,
     sheetState: SheetState,
     showGrade: GradeModel,

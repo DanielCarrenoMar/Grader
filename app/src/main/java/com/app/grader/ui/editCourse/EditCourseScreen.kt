@@ -61,14 +61,6 @@ fun EditCourseScreen(
                     viewModel.title.value = it
                 }
             )
-            Text(text = "Descricción", style = MaterialTheme.typography.labelMedium)
-            TextField(
-                value = viewModel.showDescription.value,
-                onValueChange = {
-                    viewModel.showDescription.value = it
-                    viewModel.description.value = it
-                }
-            )
             Text(text = "UC", style = MaterialTheme.typography.labelMedium)
             TextField(
                 value = viewModel.showUc.value,

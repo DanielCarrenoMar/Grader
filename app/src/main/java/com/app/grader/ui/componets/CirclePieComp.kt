@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.app.grader.ui.theme.Neutral600
 import com.app.grader.ui.theme.Secondary600
@@ -66,7 +67,7 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double, st
     ) {
         Text(
             text= textAverage,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
         )

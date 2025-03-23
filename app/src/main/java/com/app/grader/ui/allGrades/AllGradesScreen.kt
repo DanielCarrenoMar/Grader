@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -40,8 +41,10 @@ fun AllGradesScreen(
         {navigateToConfig()}
     ) { innerPadding ->
         LazyColumn (
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp),
         ){
             items(viewModel.grades.value){ grade ->
                 GradeCardComp(grade) { } // TODO("Llevar a editar nota")

@@ -24,15 +24,11 @@ class EditCourseViewModel @Inject constructor(
 ): ViewModel() {
     private val _title = mutableStateOf("Sin Titulo")
     val title = _title
-    private val _description = mutableStateOf("Sin Descricción")
-    val description = _description
     private val _uc = mutableIntStateOf(1)
     val uc = _uc
 
     private val _showTitle = mutableStateOf("")
     val showTitle = _showTitle
-    private val _showDescription = mutableStateOf("")
-    val showDescription = _showDescription
     private val _showUc = mutableStateOf("")
     val showUc = _showUc
 
@@ -45,8 +41,6 @@ class EditCourseViewModel @Inject constructor(
                         val course = result.data!!
                         _title.value = course.title
                         _showTitle.value = course.title
-                        _description.value = course.description
-                        _showDescription.value = course.description
                         _uc.intValue = course.uc
                         _showUc.value = course.uc.toString()
                     }
@@ -103,7 +97,6 @@ class EditCourseViewModel @Inject constructor(
                 saveCourse(
                     CourseModel(
                         title = title.value,
-                        description = description.value,
                         uc = uc.intValue,
                         average = 0.0
                     )
@@ -112,7 +105,6 @@ class EditCourseViewModel @Inject constructor(
                 updateCourse(
                     CourseModel(
                         title = title.value,
-                        description = description.value,
                         uc = uc.intValue,
                         average = 0.0,
                         id = courseId

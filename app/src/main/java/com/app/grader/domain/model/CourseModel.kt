@@ -5,7 +5,6 @@ import com.app.grader.data.database.entitites.CourseEntity
 
 data class CourseModel(
     val title: String,
-    val description: String,
     val uc: Int,
     val average: Double = 0.0,
     val id: Int = -1,
@@ -13,7 +12,6 @@ data class CourseModel(
     companion object {
         val DEFAULT = CourseModel(
             title = "NULL",
-            description = "NULL",
             uc = -1
         )
     }
@@ -22,7 +20,6 @@ data class CourseModel(
 fun CourseModel.toCourseEntity():CourseEntity{
     return CourseEntity(
         title = this.title,
-        description = this.description,
         uc = this.uc
     )
 }

@@ -27,7 +27,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val result = courseDao.updateCourseById(
                 courseModel.id,
                 courseModel.title,
-                courseModel.description,
                 courseModel.uc
             )
             return result == 1
@@ -41,7 +40,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
             return courseDao.getAllCourses().map { courseEntity ->
                 CourseModel(
                     title = courseEntity.title,
-                    description = courseEntity.description,
                     uc = courseEntity.uc,
                     average = getAverageFromCourse(courseEntity.id),
                     id = courseEntity.id
@@ -57,7 +55,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
             return CourseModel(
                     title = courseEntity.title,
-                    description = courseEntity.description,
                     uc = courseEntity.uc,
                     average = getAverageFromCourse(courseEntity.id),
                     id = courseEntity.id

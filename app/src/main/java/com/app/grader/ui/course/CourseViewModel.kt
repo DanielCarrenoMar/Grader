@@ -40,12 +40,7 @@ class CourseViewModel  @Inject constructor(
     ))
     val showGrade = _showGrade
     private val _course = mutableStateOf(
-        CourseModel(
-            title = "NULL",
-            description = "Null",
-            uc = 0,
-            average = 0.0
-        )
+        CourseModel.DEFAULT
     )
     val course = _course
 
