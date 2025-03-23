@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -23,8 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
@@ -38,6 +41,8 @@ fun CourseCardComp(
     editCourse: ()-> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
 
     CardContainer(
         onClick = navigateToCourse
@@ -111,16 +116,24 @@ fun CourseCardComp(
                     }
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        offset = DpOffset(x = screenWidth - 200.dp, y = 0.dp),
+                        modifier = Modifier.width(200.dp),
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
                         DropdownMenuItem(onClick = editCourse,
                             text = {
-                                Text("Editar")
-                            })
+                                Text("Editar", style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                            },
+
+                        )
                         DropdownMenuItem(onClick = deleteCourse,
                         text = {
-                            Text("Borrar")
-                        })
+                            Text("Borrar", style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                        }
+                        )
                     }
                 }
             }
