@@ -18,24 +18,36 @@ import com.app.grader.ui.theme.Neutral100
 import com.app.grader.ui.theme.Success500
 import com.app.grader.ui.theme.Warning500
 
+fun interpolateColors(colors: List<Color>, fraction: Float): Color {
+    require(colors.isNotEmpty()) { "Color list must not be empty" }
+    require(fraction in 0f..1f) { "Fraction must be between 0 and 1" }
+
+    if (colors.size == 1) return colors.first()
+
+    val position = (fraction * (colors.size - 1)).coerceIn(0f, (colors.size - 1).toFloat())
+    val index = position.toInt()
+    val localFraction = position - index
+
+    return if (index == colors.size - 1) {
+        colors.last()
+    } else {
+        lerp(colors[index], colors[index + 1], localFraction)
+    }
+}
+
 fun getColorForGrade(grade: Double): Color {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (grade == 0.0) return Neutral100
 
-    val colorHigh = Success500
-    val colorMiddle = Warning500
-    val colorLow = Error500
-
-    return when {
-        grade <= 15 -> {
-            val adjustedFraction = (grade / 5f).toFloat()
-            lerp(colorLow, colorMiddle, adjustedFraction)
-        }
-        else -> {
-            val adjustedFraction = ((grade - 15) / 15f).toFloat()
-            lerp(colorMiddle, colorHigh, adjustedFraction)
-        }
-    }
+    return  interpolateColors(
+        listOf(
+            Color(0xFFF28705),
+            Color(0xFFF2B705),
+            Color(0xFF8BC441),
+            Color(0xFF4CA649),
+        ),
+        (grade / 20).toFloat()
+    )
 }
 
 @Composable
