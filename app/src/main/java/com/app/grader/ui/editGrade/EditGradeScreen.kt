@@ -2,6 +2,7 @@ package com.app.grader.ui.editGrade
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -26,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -62,7 +67,7 @@ fun EditGradeScreen(
 
     HeaderBack(
         text = {
-            Row (modifier = Modifier.fillMaxWidth()){
+            Row (modifier = Modifier.fillMaxWidth().padding(end = 30.dp), horizontalArrangement = Arrangement.End){
                 Button(onClick = {
                     if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
                 }) {
@@ -79,7 +84,7 @@ fun EditGradeScreen(
                 .background(MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = viewModel.courseId.intValue.toString())
+            Spacer(Modifier.height(10.dp))
             EditScreenInputComp(
                 placeHolderText = "Agregar calificación",
                 value = viewModel.showGrade.value,
@@ -90,25 +95,53 @@ fun EditGradeScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIconId = R.drawable.star_outline,
             )
-            Button(
-                onClick = { expanded = true }
-            ) { Text(text = "Seleccionar curso ${viewModel.courseId.intValue}") }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+            Card (
+                onClick = { expanded = true },
+                colors = CardColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContentColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
             ) {
-                viewModel.courses.value.forEach { option ->
-                    DropdownMenuItem(
-                        onClick = {
-                            viewModel.setCurseId(option.id)
-                            expanded = false
-                        },
-                        text = {
-                            Text(option.title, style = MaterialTheme.typography.bodyMedium)
-                        }
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                ){
+                    Image(
+                        painter = painterResource(id = R.drawable.education_cap_outline),
+                        contentDescription = "Course",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        modifier = Modifier
+                            .size(IconLarge),
+                    )
+                    Text(
+                        text = "Seleccionar curso ${viewModel.courseId.intValue}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(start = 20.dp),
+                        fontWeight = FontWeight.Medium
                     )
                 }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    viewModel.courses.value.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                viewModel.setCurseId(option.id)
+                                expanded = false
+                            },
+                            text = {
+                                Text(option.title, style = MaterialTheme.typography.bodyMedium)
+                            }
+                        )
+                    }
+                }
             }
+            HorizontalDivider( modifier = Modifier.alpha(0.5f))
             EditScreenInputComp(
                 placeHolderText = viewModel.defaultPercentage.value.toString(),
                 value = viewModel.showPercentage.value,

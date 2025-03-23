@@ -28,7 +28,8 @@ fun EditScreenInputComp(
     onValueChange: (String) -> Unit,
     leadingIconId: Int,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-    suffix: @Composable() (()->Unit)? = null
+    suffix: @Composable() (()->Unit)? = null,
+    modifier: Modifier = Modifier
 ) {
     TextField(
         colors = TextFieldDefaults.colors().copy(
@@ -37,19 +38,18 @@ fun EditScreenInputComp(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
         ),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp),
         leadingIcon = {
             Image(
                 painter = painterResource(id = leadingIconId),
                 contentDescription = placeHolderText,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier
-                    .size(IconLarge)
-                    .padding(end = 5.dp),
+                    .size(IconLarge),
             )
         },
         placeholder = {
-            Text(placeHolderText, modifier = Modifier.alpha(0.4f))
+            Text(placeHolderText, modifier = Modifier.alpha(0.5f))
         },
         keyboardOptions = keyboardOptions,
         value = value,
