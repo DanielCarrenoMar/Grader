@@ -22,20 +22,14 @@ import com.app.grader.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderBack( title: String, navigateBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+fun HeaderBack(text: @Composable () -> Unit, navigateBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
             TopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
+                title = text,
                 colors = TopAppBarColors(
                     MaterialTheme.colorScheme.background,
                     MaterialTheme.colorScheme.surfaceVariant,

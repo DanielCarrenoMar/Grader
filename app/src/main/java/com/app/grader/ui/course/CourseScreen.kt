@@ -95,7 +95,14 @@ fun CourseScreen(
         )
     }
     HeaderBack(
-        title = viewModel.course.value.title,
+        text = {
+            Text(
+                text = viewModel.course.value.title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        },
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(

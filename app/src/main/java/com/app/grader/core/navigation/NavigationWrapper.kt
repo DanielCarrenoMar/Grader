@@ -15,7 +15,6 @@ import androidx.navigation.toRoute
 import com.app.grader.ui.allGrades.*
 import com.app.grader.ui.config.*
 import com.app.grader.ui.course.*
-import com.app.grader.ui.grade.*
 import com.app.grader.ui.home.*
 import com.app.grader.ui.editGrade.*
 import com.app.grader.ui.editCourse.*

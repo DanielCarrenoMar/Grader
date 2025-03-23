@@ -3,8 +3,10 @@ package com.app.grader.ui.editGrade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -36,6 +39,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.theme.IconLarge
 
 @Composable
 fun EditGradeScreen(
@@ -57,7 +61,15 @@ fun EditGradeScreen(
     }
 
     HeaderBack(
-        title = "Editar Calificación",
+        text = {
+            Row (modifier = Modifier.fillMaxWidth()){
+                Button(onClick = {
+                    if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
+                }) {
+                    Text(text = "Guardar")
+                }
+            }
+        },
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
@@ -76,16 +88,7 @@ fun EditGradeScreen(
                     viewModel.grade.value.setGrade(it.toIntOrNull() ?: 1)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(end = 5.dp),
-                    )
-                },
+                leadingIconId = R.drawable.star_outline,
             )
             Button(
                 onClick = { expanded = true }
@@ -111,16 +114,7 @@ fun EditGradeScreen(
                 value = viewModel.showPercentage.value,
                 onValueChange = { viewModel.setPercentage(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(end = 5.dp),
-                    )
-                },
+                leadingIconId = R.drawable.weight_outline,
                 suffix = {
                     Text(
                         text = "%",
@@ -141,16 +135,7 @@ fun EditGradeScreen(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(end = 5.dp),
-                    )
-                }
+                leadingIconId = R.drawable.bookmark_outline
             )
             EditScreenInputComp(
                 placeHolderText = "Sin descricción",
@@ -162,22 +147,8 @@ fun EditGradeScreen(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.cog_outline),
-                        contentDescription = "Ajustes",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(end = 5.dp),
-                    )
-                },
+                leadingIconId = R.drawable.align_center,
             )
-            Button(onClick = {
-                if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
-            }) {
-                Text(text = "Guardar")
-            }
             Spacer(modifier = Modifier.weight(1f))
         }
     }

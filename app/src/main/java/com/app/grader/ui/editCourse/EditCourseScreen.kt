@@ -42,7 +42,7 @@ fun EditCourseScreen(
     }
 
     HeaderBack(
-        title = "Editar Asignatura",
+        text = { },
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
