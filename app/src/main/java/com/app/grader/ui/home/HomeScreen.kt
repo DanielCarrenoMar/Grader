@@ -138,7 +138,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
             Column (
                 modifier = Modifier.weight(1f)
             ){
-                TitleIcon("education cap", R.drawable.education_cap){
+                TitleIcon("chart mixed", R.drawable.chart_mixed){
                     Text(text = "Progresión", style = MaterialTheme.typography.labelLarge)
                 }
                 Box(

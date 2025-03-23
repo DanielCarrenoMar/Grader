@@ -31,6 +31,11 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double, st
     )
 
     val colorBase = MaterialTheme.colorScheme.surface
+    val textAverage = when{
+        average == 0.0 -> "--"
+        average % 1 == 0.0 -> average.toInt().toString()
+        else -> (Math.round(average * 10) / 10.0 ).toString()
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -59,7 +64,8 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double, st
                 )
             }
     ) {
-        Text( text="${Math.round(average * 10) / 10.0}" ,
+        Text(
+            text= textAverage,
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,

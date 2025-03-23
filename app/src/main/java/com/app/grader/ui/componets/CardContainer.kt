@@ -17,12 +17,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CardContainer(
     onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
 ){
     if (onClick != null){
         Card(
             onClick = onClick,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 15.dp),
             colors = CardColors(

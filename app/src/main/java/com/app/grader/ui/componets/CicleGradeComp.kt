@@ -10,14 +10,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlin.rem
+import kotlin.text.toInt
+import kotlin.toString
 
 @Composable
-fun CircleGrade(grade: Double, modifier: Modifier = Modifier, radius : Dp = 40.dp) {
+fun CircleGrade(grade: Double, fontSize: TextUnit = 16.sp, modifier: Modifier = Modifier, radius : Dp = 40.dp) {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 
     val colorOnBase = getColorForGrade(grade)
+    val textGrade = when{
+        grade == 0.0 -> "--"
+        grade % 1 == 0.0 -> grade.toInt().toString()
+        else -> grade.toString()
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -32,10 +42,11 @@ fun CircleGrade(grade: Double, modifier: Modifier = Modifier, radius : Dp = 40.d
             .then(modifier)
     ) {
         Text(
-            if (grade != 0.0) "$grade" else "--",
+            textGrade,
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.surface,
+            fontSize = fontSize
         )
     }
 }

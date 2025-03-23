@@ -47,6 +47,11 @@ fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 
 
     val colorBase = MaterialTheme.colorScheme.surface
     val colorOnBase = getColorForGrade(grade)
+    val textGrade = when{
+        grade == 0.0 -> "--"
+        grade % 1 == 0.0 -> grade.toInt().toString()
+        else -> (Math.round(grade * 10) / 10.0 ).toString()
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -67,7 +72,7 @@ fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 
             .then(modifier)
     ) {
         Text(
-            if (grade != 0.0) "${Math.round(grade * 10) / 10f}" else "--",
+            text = textGrade,
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
