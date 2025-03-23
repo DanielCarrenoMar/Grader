@@ -54,7 +54,7 @@ fun CourseCardComp(
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Column (verticalArrangement = Arrangement.Top){
-                TitleIcon("education cap", R.drawable.education_cap){
+                TitleIcon("education cap", R.drawable.education_cap, backgroundColor = MaterialTheme.colorScheme.primary){
                     Text(
                         text = course.title,
                         style = MaterialTheme.typography.labelLarge,

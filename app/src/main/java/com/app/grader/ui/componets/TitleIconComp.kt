@@ -1,5 +1,6 @@
 package com.app.grader.ui.componets
 
+import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,13 @@ import androidx.compose.ui.unit.dp
 import com.app.grader.ui.theme.IconSmall
 
 @Composable
-fun TitleIcon(iconName: String, iconId: Int, size: Dp = IconSmall, text: @Composable ()->Unit){
+fun TitleIcon(
+    iconName: String,
+    iconId: Int,
+    size: Dp = IconSmall,
+    backgroundColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.secondary,
+    text: @Composable ()->Unit)
+{
     Row (
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -28,7 +35,7 @@ fun TitleIcon(iconName: String, iconId: Int, size: Dp = IconSmall, text: @Compos
                 .padding(end = 12.dp)
                 .size(26.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = backgroundColor,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
