@@ -53,47 +53,31 @@ fun CourseCardComp(
                 .padding(innerPading),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
-            Row (
-                verticalAlignment = Alignment.Top,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 12.dp)
-                        .size(26.dp)
-                        .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.education_cap),
-                        contentDescription = "educationCap",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                        modifier = Modifier.size(IconSmall)
-                    )
-                }
-                Column{
+            Column (verticalArrangement = Arrangement.Top){
+                TitleIcon("education cap", R.drawable.education_cap){
                     Text(
                         text = course.title,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 26.dp)
-                    ){
-                        Text(
-                            text = "${course.uc}",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "UC",
-                            modifier = Modifier
-                                .padding(start = 8.dp),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                }
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 27.dp, start = 40.dp)
+                ){
+                    Text(
+                        text = "${course.uc}",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "UC",
+                        modifier = Modifier
+                            .padding(start = 8.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
             }
             Row (verticalAlignment = Alignment.Top){
@@ -101,7 +85,7 @@ fun CourseCardComp(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(vertical = 4.dp),
                 ){
-                    CircleCourse(course.average, strokeWith =  5.dp, radius =  32.dp)
+                    CircleCourse(course.average, strokeWith =  5.dp, radius =  33.dp)
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(

@@ -42,6 +42,7 @@ import com.app.grader.ui.componets.CircleGrade
 import com.app.grader.ui.componets.CirclePie
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
 
@@ -84,6 +85,9 @@ fun CourseScreen(
                 viewModel.course.value.uc
             )
             Spacer(modifier = Modifier.height(25.dp))
+            TitleIcon("star", R.drawable.star){
+                Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
+            }
             LazyColumn {
                 items(viewModel.grades.value){ grade ->
                     GradeCardComp(grade) {
@@ -126,7 +130,6 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
         Column (
             modifier = Modifier.padding(innerPading)
         ){
-            Text(text = "Tu promedio", fontSize = 20.sp)
             Row( modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {

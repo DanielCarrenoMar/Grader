@@ -45,6 +45,7 @@ import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.LineChartAverage
+import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.theme.IconMedium
 import com.app.grader.ui.theme.IconSmall
 import kotlinx.coroutines.delay
@@ -137,27 +138,8 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
             Column (
                 modifier = Modifier.weight(1f)
             ){
-                Row (
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 12.dp)
-                            .size(26.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.secondary,
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.chart_mixed),
-                            contentDescription = "educationCap",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                            modifier = Modifier.size(IconSmall)
-                        )
-                    }
-                    Text(text = "Progresión", style = MaterialTheme.typography.labelMedium)
+                TitleIcon("education cap", R.drawable.education_cap){
+                    Text(text = "Progresión", style = MaterialTheme.typography.labelLarge)
                 }
                 Box(
                     modifier = Modifier.fillMaxSize().padding(vertical = 15.dp),
