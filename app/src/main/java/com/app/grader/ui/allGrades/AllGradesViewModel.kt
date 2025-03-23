@@ -19,10 +19,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllGradesViewModel  @Inject constructor(
-    private val getAllGradesUserCase: GetAllGradesUserCase
+    private val getAllGradesUserCase: GetAllGradesUserCase,
+    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
+    private val getGradeFromIdUseCase: GetGradeFromIdUseCase
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
+    private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
+    val showGrade = _showGrade
+
+    fun deleteGradeFromId(gradeId: Int){
+        viewModelScope.launch {
+            deleteGradeFromIdUseCase(gradeId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        getAllGrades()
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error deleteGradeFromId: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun setShowGrade(gradeId: Int){
+        viewModelScope.launch {
+            getGradeFromIdUseCase(gradeId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        if (result.data != null) _showGrade.value = result.data
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun getAllGrades() {
         viewModelScope.launch {

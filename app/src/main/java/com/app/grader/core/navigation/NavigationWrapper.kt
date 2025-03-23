@@ -54,11 +54,9 @@ fun NavigationWrapper() {
             AllGradesScreen (
                 allGrades.text ,
                 { navController.navigatePop(Home) },
-                { navController.navigatePop(Config) }
+                { navController.navigatePop(Config) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
-            // Cuando se navega a una pantalla se crea una nueva
-            // frente a la anterior, asi que para navegar a la home
-            // borramos la pila de pantallas con popUpTo
         }
 
         composable<Config> {
@@ -78,7 +76,6 @@ fun NavigationWrapper() {
             CourseScreen (
                 course.courseId,
                 { navController.popBackStack() },
-                { gradeId -> navController.navigate(Grade(gradeId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -91,16 +88,6 @@ fun NavigationWrapper() {
         ) { backStateEntry ->
             val editCourse:EditCourse = backStateEntry.toRoute()
             EditCourseScreen (editCourse.courseId, { navController.popBackStack() })
-        }
-
-        composable<Grade>(
-            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
-            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
-            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
-        ) {  backStateEntry ->
-            val grade:Grade = backStateEntry.toRoute()
-            GradeScreen (grade.gradeId, { navController.popBackStack() })
         }
 
         composable<EditGrade>(

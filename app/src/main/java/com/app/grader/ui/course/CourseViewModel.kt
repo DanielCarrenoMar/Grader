@@ -30,14 +30,7 @@ class CourseViewModel  @Inject constructor(
     private val _pedingPoints = mutableDoubleStateOf(0.0)
     val pedingPoints = _pedingPoints
 
-    private val _showGrade = mutableStateOf(GradeModel(
-        grade = 0.0,
-        title = "NULL",
-        description = "NULL",
-        percentage = 0.0,
-        courseId = -1,
-        id = -1,
-    ))
+    private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
     val showGrade = _showGrade
     private val _course = mutableStateOf(
         CourseModel.DEFAULT

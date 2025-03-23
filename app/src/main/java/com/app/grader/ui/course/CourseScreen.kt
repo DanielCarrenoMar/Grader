@@ -72,7 +72,6 @@ import kotlin.math.roundToInt
 fun CourseScreen(
     courseId: Int,
     navegateBack: () -> Unit,
-    navigateToGrade: (Int) -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
