@@ -11,6 +11,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.GetAllCoursesUserCase
+import com.app.grader.domain.usecase.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
 import com.app.grader.domain.usecase.SaveGradeUseCase
@@ -49,6 +50,8 @@ class EditGradeViewModel @Inject constructor(
 
     private val _courseId = mutableIntStateOf(-1)
     val courseId = _courseId
+    private val _showCourse = mutableStateOf(CourseModel.DEFAULT)
+    val showCourse = _showCourse
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
 
@@ -59,7 +62,7 @@ class EditGradeViewModel @Inject constructor(
         if (percentage.isBlank() || value == null || Percentage.check(value).not()) actDefaultPercentage()
         else _percentage.value.setPercentage(value)
     }
-    fun setCurseId(courseId: Int){
+    fun setCourseId(courseId: Int){
         _courseId.intValue = courseId
         actDefaultPercentage()
     }

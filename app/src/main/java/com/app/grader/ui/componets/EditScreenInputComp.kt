@@ -27,9 +27,10 @@ fun EditScreenInputComp(
     value: String,
     onValueChange: (String) -> Unit,
     leadingIconId: Int,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     suffix: @Composable() (()->Unit)? = null,
-    modifier: Modifier = Modifier
+    maxLength: Int = Int.MAX_VALUE
 ) {
     TextField(
         colors = TextFieldDefaults.colors().copy(
@@ -52,9 +53,10 @@ fun EditScreenInputComp(
             Text(placeHolderText, modifier = Modifier.alpha(0.5f))
         },
         keyboardOptions = keyboardOptions,
-        value = value,
-        onValueChange = onValueChange,
-        suffix = suffix
+        value = value.take(maxLength),
+        onValueChange = { if (it.length <= maxLength) onValueChange(it) },
+        suffix = suffix,
+        textStyle = MaterialTheme.typography.labelLarge
     )
     HorizontalDivider( modifier = Modifier.alpha(0.5f))
 }

@@ -117,7 +117,7 @@ fun EditGradeScreen(
                             .size(IconLarge),
                     )
                     Text(
-                        text = "Seleccionar curso ${viewModel.courseId.intValue}",
+                        text = viewModel.showCourse.value.title,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 20.dp),
@@ -126,16 +126,17 @@ fun EditGradeScreen(
                 }
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
                 ) {
                     viewModel.courses.value.forEach { option ->
                         DropdownMenuItem(
                             onClick = {
-                                viewModel.setCurseId(option.id)
+                                viewModel.showCourse.value = option
+                                viewModel.setCourseId(option.id)
                                 expanded = false
                             },
                             text = {
-                                Text(option.title, style = MaterialTheme.typography.bodyMedium)
+                                Text(option.title, style = MaterialTheme.typography.bodyLarge)
                             }
                         )
                     }
@@ -159,7 +160,7 @@ fun EditGradeScreen(
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalDivider( modifier = Modifier.alpha(0.5f))
             EditScreenInputComp(
-                placeHolderText = "Sin titulo",
+                placeHolderText = "Agregar título (Opcional)",
                 value = viewModel.showTitle.value,
                 onValueChange = {
                     viewModel.showTitle.value = it
@@ -171,7 +172,7 @@ fun EditGradeScreen(
                 leadingIconId = R.drawable.bookmark_outline
             )
             EditScreenInputComp(
-                placeHolderText = "Sin descricción",
+                placeHolderText = "Agregar descripcción (Opcional)",
                 value = viewModel.showDescription.value,
                 onValueChange = {
                     viewModel.showDescription.value = it

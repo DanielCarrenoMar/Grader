@@ -56,7 +56,7 @@ fun CourseCardComp(
             Column (verticalArrangement = Arrangement.Top){
                 TitleIcon("education cap", R.drawable.education_cap, backgroundColor = MaterialTheme.colorScheme.primary){
                     Text(
-                        text = course.title,
+                        text = if (course.title.length > 18) course.title.take(18) + "..." else course.title,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
