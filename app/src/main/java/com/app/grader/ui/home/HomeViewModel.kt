@@ -73,6 +73,7 @@ class HomeViewModel  @Inject constructor(
                                 }
                             }
                             if (totalUC != 0) _totalAverage.doubleValue = totalGrades / totalUC
+                            else _totalAverage.doubleValue = 0.0
                         }else _totalAverage.doubleValue = 0.0
                     }
                     is Resource.Loading -> {
