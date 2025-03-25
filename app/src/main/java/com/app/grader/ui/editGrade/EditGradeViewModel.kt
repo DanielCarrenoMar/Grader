@@ -27,6 +27,7 @@ class EditGradeViewModel @Inject constructor(
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
+    private val getCourseFromIdUseCase: GetCourseFromIdUseCase
 ): ViewModel() {
     private val _title = mutableStateOf("Sin Titulo")
     val title = _title
@@ -209,6 +210,25 @@ class EditGradeViewModel @Inject constructor(
         return true
     }
 
+    private fun getCourseFromId(courseId: Int){
+        if (courseId == -1) return
+        viewModelScope.launch {
+            getCourseFromIdUseCase(courseId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _showCourse.value = result.data!!
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("EditGradeViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
     fun loadCourseOptions() {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
@@ -217,8 +237,12 @@ class EditGradeViewModel @Inject constructor(
                         _courses.value = result.data!!
 
                         if (courses.value.isNotEmpty()) {
-                            showCourse.value = courses.value[0]
-                            setCourseId(courses.value[0].id)
+                            if (_courseId.intValue == -1){
+                                showCourse.value = courses.value[0]
+                                setCourseId(courses.value[0].id)
+                            }else{
+                                getCourseFromId(_courseId.intValue)
+                            }
                         }
                     }
                     is Resource.Loading -> {

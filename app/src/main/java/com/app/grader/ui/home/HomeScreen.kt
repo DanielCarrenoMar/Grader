@@ -161,7 +161,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = "${(average * 100).roundToInt() / 100.0 }",
+                        text = if (average != 0.0) "${(average * 100).roundToInt() / 100.0}" else "--",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.secondary,
                         fontSize = 32.sp,
