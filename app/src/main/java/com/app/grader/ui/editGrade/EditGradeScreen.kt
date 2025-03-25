@@ -61,7 +61,7 @@ fun EditGradeScreen(
             viewModel.courseId.intValue = courseId
             viewModel.actDefaultPercentage()
             viewModel.getGradeFromId(gradeId)
-            viewModel.getAllCourses()
+            viewModel.loadCourseOptions()
         }
     }
 
@@ -169,7 +169,8 @@ fun EditGradeScreen(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
-                leadingIconId = R.drawable.bookmark_outline
+                leadingIconId = R.drawable.bookmark_outline,
+                maxLength = 50
             )
             EditScreenInputComp(
                 placeHolderText = "Agregar descripcción (Opcional)",
@@ -182,6 +183,7 @@ fun EditGradeScreen(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 leadingIconId = R.drawable.align_center,
+                maxLength = 200
             )
             Spacer(modifier = Modifier.weight(1f))
         }

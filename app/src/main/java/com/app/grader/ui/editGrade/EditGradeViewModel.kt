@@ -209,12 +209,17 @@ class EditGradeViewModel @Inject constructor(
         return true
     }
 
-    fun getAllCourses() {
+    fun loadCourseOptions() {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
+
+                        if (courses.value.isNotEmpty()) {
+                            showCourse.value = courses.value[0]
+                            setCourseId(courses.value[0].id)
+                        }
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

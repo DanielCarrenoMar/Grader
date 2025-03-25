@@ -50,7 +50,7 @@ fun EditScreenInputComp(
             )
         },
         placeholder = {
-            Text(placeHolderText, modifier = Modifier.alpha(0.5f))
+            Text(placeHolderText, modifier = Modifier.alpha(0.6f), style = MaterialTheme.typography.labelLarge)
         },
         keyboardOptions = keyboardOptions,
         value = value.take(maxLength),
