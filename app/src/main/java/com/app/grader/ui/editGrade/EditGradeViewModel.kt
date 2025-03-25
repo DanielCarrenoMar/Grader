@@ -56,6 +56,13 @@ class EditGradeViewModel @Inject constructor(
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
 
+    fun setGrade(grade: String){
+        _showGrade.value = grade
+        val value = grade.toDoubleOrNull()
+
+        if (grade.isNotBlank() && value != null && Grade.check(value) ) _grade.value.setGrade(value)
+    }
+
     fun setPercentage(percentage: String){
         _showPercentage.value = percentage
         val value = percentage.toDoubleOrNull()
@@ -112,9 +119,9 @@ class EditGradeViewModel @Inject constructor(
                         _description.value = grade.description
                         _showDescription.value = grade.description
                         _grade.value.setGrade(grade.grade)
-                        _showGrade.value = grade.grade.toString()
+                        _showGrade.value = grade.grade.toString().removeSuffix(".0")
                         _percentage.value.setPercentage(grade.percentage)
-                        _showPercentage.value = grade.percentage.toString()
+                        _showPercentage.value = grade.percentage.toString().removeSuffix(".0")
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -167,7 +174,7 @@ class EditGradeViewModel @Inject constructor(
         return _title.value.isNotBlank() &&
                 _description.value.isNotBlank() &&
                 _grade.value.getGrade() != 0.0 &&
-                _grade.value.getGrade().toInt() == _showGrade.value.toIntOrNull() &&
+                _grade.value.getGrade() == _showGrade.value.toDoubleOrNull() &&
                 _percentage.value.getPercentage() != 0.0 &&
                 _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull()
     }

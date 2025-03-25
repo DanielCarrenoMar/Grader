@@ -2,10 +2,12 @@ package com.app.grader.ui.componets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,10 +42,13 @@ fun GradeCardComp(grade: GradeModel, onClick: () -> Unit) {
         ){
             CircleGrade(grade.grade, radius = 20.dp)
             Column(
-                modifier = Modifier.height(40.dp).padding(start = 20.dp),
+                modifier = Modifier.padding(start = 20.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = grade.title, style = MaterialTheme.typography.labelMedium)
+                Text(
+                    text = grade.title,
+                    style = MaterialTheme.typography.labelMedium
+                )
                 Text(
                     text = "${if (grade.percentage % 1 == 0.0) grade.percentage.toInt() else grade.percentage}%",
                     style = MaterialTheme.typography.labelSmall,

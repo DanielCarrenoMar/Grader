@@ -89,11 +89,11 @@ fun EditGradeScreen(
                 placeHolderText = "Agregar calificación",
                 value = viewModel.showGrade.value,
                 onValueChange = {
-                    viewModel.showGrade.value = it
-                    viewModel.grade.value.setGrade(it.toIntOrNull() ?: 1)
+                    viewModel.setGrade(it)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIconId = R.drawable.star_outline,
+                maxLength = 5
             )
             Card (
                 onClick = { expanded = true },
@@ -156,6 +156,7 @@ fun EditGradeScreen(
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },
+                maxLength = 3
             )
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalDivider( modifier = Modifier.alpha(0.5f))

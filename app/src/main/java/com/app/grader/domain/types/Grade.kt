@@ -21,4 +21,13 @@ data class Grade(
     override fun toString(): String {
         return grade.toString()
     }
+
+    companion object {
+        fun check(percentage: Double): Boolean {
+            return percentage in 0.0..20.0
+        }
+        fun check(percentage: Int): Boolean {
+            return percentage in 0..20
+        }
+    }
 }
