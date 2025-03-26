@@ -35,6 +35,7 @@ fun ConfigScreen(
 ) {
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
 
 
     if (showDeleteConfirmation){
@@ -86,6 +87,10 @@ fun ConfigScreen(
                 text = "Eliminar todos los datos",
             )
             Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "Grader $versionName",
+                style = MaterialTheme.typography.bodyMedium,
+            )
             Text(
                 text = "Creado por @DanielCarrenoMar en colaboración con @Kobalt09, @Queik5450 y @Bloodbay8",
                 style = MaterialTheme.typography.bodyMedium,
