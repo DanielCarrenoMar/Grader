@@ -6,7 +6,7 @@
 
 ![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
 
-Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450)  y [@earmasag](https://github.com/earmasag)
+Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450)  y [@Bloodbay8](https://github.com/Bloodbay8)
 
 <!-- 
 ![Menú](https://github.com/DanielCarrenoMar/Snake-XPR_UCAB/assets/144462396/77e014b9-e0da-4ff7-9f2b-fa92bc88c42c)
