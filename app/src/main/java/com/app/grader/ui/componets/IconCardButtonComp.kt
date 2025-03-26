@@ -23,13 +23,14 @@ import com.app.grader.ui.theme.IconLarge
 
 @Composable
 fun IconCardButton(
-    onclick: () -> Unit,
+    onClick: () -> Unit,
     contentColor:Color,
+    iconColor:Color = contentColor,
     icon: Int,
     text: String
 ) {
     Card (
-        onClick = onclick,
+        onClick = onClick,
         colors = CardColors(
             containerColor = Color.Transparent,
             contentColor = contentColor,
@@ -46,14 +47,14 @@ fun IconCardButton(
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = text,
-                colorFilter = ColorFilter.tint(contentColor),
+                colorFilter = ColorFilter.tint(iconColor),
                 modifier = Modifier
                     .size(IconLarge),
             )
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.padding(start = 16.dp),
                 fontWeight = FontWeight.Medium
             )
         }
