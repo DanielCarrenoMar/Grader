@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 object Home
 
 @Serializable
-data class AllGrades(val text: String)
+object AllGrades
 
 @Serializable
 object Config

@@ -66,6 +66,7 @@ import com.app.grader.ui.componets.CirclePie
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.IconCardButton
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
@@ -324,70 +325,19 @@ fun InfoGradeBottonCar(
                 }
                 Spacer(Modifier.height(20.dp))
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
-                Card (
-                    onClick = editOnClick,
-                    colors = CardColors(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        disabledContainerColor = Color.Transparent,
-                        disabledContentColor = MaterialTheme.colorScheme.onBackground
-                    )
-                ){
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clickable(onClick = editOnClick)
-                            .padding(vertical = 15.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.pen_outline),
-                            contentDescription = "pen outline",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier
-                                .size(IconLarge),
-                        )
-                        Text(
-                            text = "Editar",
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(start = 12.dp),
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                }
+                IconCardButton(
+                    onclick = editOnClick,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    icon = R.drawable.pen_outline,
+                    text = "Editar"
+                )
                 HorizontalDivider( modifier = Modifier.alpha(0.5f))
-                Card (
-                    onClick = deleteOnClick,
-                    colors = CardColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Error500,
-                        disabledContainerColor = Color.Transparent,
-                        disabledContentColor = Error500
-                    )
-                ){
-                    Row (
-                        modifier = Modifier
-                            .padding(vertical = 15.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.trash_outline),
-                            contentDescription = "trash outline",
-                            colorFilter = ColorFilter.tint(Error500),
-                            modifier = Modifier
-                                .size(IconLarge),
-                        )
-                        Text(
-                            text = "Eliminar",
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(start = 12.dp),
-                            fontWeight = FontWeight.Medium,
-                            color = Error500
-                        )
-                    }
-                }
+                IconCardButton(
+                    onclick = deleteOnClick,
+                    contentColor = Error500,
+                    icon = R.drawable.trash_outline,
+                    text = "Eliminar"
+                )
                 Spacer(Modifier.height(60.dp))
             }
         }

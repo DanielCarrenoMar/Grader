@@ -32,7 +32,7 @@ import com.app.grader.ui.home.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllGradesScreen(
-    text:String,navegateToHome: () -> Unit,
+    navegateToHome: () -> Unit,
     navigateToConfig: () -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: AllGradesViewModel = hiltViewModel()

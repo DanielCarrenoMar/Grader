@@ -40,20 +40,18 @@ fun NavigationWrapper() {
     ) {
         composable<Home> {
             HomeScreen(
-                { myText -> navController.navigate(AllGrades(myText)) },
-                { navController.navigatePop(Config) },
+                { myText -> navController.navigate(AllGrades) },
+                { navController.navigate(Config) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  courseId ->  navController.navigate(EditCourse(courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
 
-        composable<AllGrades> { backStateEntry ->
-            val allGrades:AllGrades = backStateEntry.toRoute()
+        composable<AllGrades> {
             AllGradesScreen (
-                allGrades.text ,
                 { navController.navigatePop(Home) },
-                { navController.navigatePop(Config) },
+                { navController.navigate(Config) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -61,7 +59,7 @@ fun NavigationWrapper() {
         composable<Config> {
             ConfigScreen(
                 { navController.navigatePop(Home) },
-                { myText -> navController.navigatePop(AllGrades(text = myText)) }
+                { navController.navigate(AllGrades) }
             )
         }
 

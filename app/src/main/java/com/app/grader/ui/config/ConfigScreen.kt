@@ -21,7 +21,7 @@ import com.app.grader.ui.componets.HeaderMenu
 @Composable
 fun ConfigScreen(
     navigateToHome: () -> Unit,
-    navigateToAllGrades: (String) -> Unit,
+    navigateToAllGrades: () -> Unit,
     viewModel: ConfigViewModel = hiltViewModel(),
 ) {
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -33,7 +33,7 @@ fun ConfigScreen(
     }
     HeaderMenu ("Ajustes",
         {navigateToHome()},
-        {navigateToAllGrades("a")},
+        {navigateToAllGrades()},
         null,
     ) { innerPadding ->
         Column(
