@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -66,8 +67,8 @@ fun EditGradeScreen(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.courseId.intValue = courseId
             viewModel.actDefaultPercentage()
+            viewModel.loadCourseOptions(courseId)
             viewModel.getGradeFromId(gradeId)
-            viewModel.loadCourseOptions()
         }
     }
 
@@ -97,7 +98,9 @@ fun EditGradeScreen(
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     shape = MaterialTheme.shapes.medium
                 )
-            })
+            },
+            modifier = Modifier.imePadding()
+            )
                        },
         navigateBack = navegateBack
     ) { innerPadding ->
@@ -111,7 +114,7 @@ fun EditGradeScreen(
             Spacer(Modifier.height(10.dp))
             EditScreenInputComp(
                 placeHolderText = "Agregar calificación",
-                value = viewModel.showGrade.value.removeSuffix(".0"),
+                value = viewModel.showGrade.value,
                 onValueChange = {
                     viewModel.setGrade(it)
                 },
@@ -182,7 +185,7 @@ fun EditGradeScreen(
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },
-                maxLength = 4
+                maxLength = 6
             )
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalDivider( modifier = Modifier.alpha(0.5f))

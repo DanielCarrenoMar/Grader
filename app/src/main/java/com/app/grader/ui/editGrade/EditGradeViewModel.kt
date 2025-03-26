@@ -77,10 +77,10 @@ class EditGradeViewModel @Inject constructor(
         actDefaultPercentage()
     }
 
-    fun actDefaultPercentage() {
-        if (_courseId.intValue == -1) return
+    fun actDefaultPercentage(courseId: Int = _courseId.intValue) {
+        if (courseId == -1) return
         viewModelScope.launch {
-            getGradesFromCourseUserCase(_courseId.intValue).collect { result ->
+            getGradesFromCourseUserCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val grades = result.data!!
@@ -89,7 +89,7 @@ class EditGradeViewModel @Inject constructor(
                             totalPercentage += grade.percentage
                         }
                         _defaultPercentage.value.setPercentage(100.0 - totalPercentage)
-                        _percentage.value.setPercentage(100.0 - totalPercentage)
+                        //_percentage.value.setPercentage(100.0 - totalPercentage)
                         _showPercentage.value = " "
                         _showPercentage.value = ""
                     }
@@ -181,15 +181,18 @@ class EditGradeViewModel @Inject constructor(
                 _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull()
     }
 
-    private fun syncInputs() {
-        _showGrade.value = _grade.value.toString()
-        _showPercentage.value = _defaultPercentage.value.toString()
+    private fun syncInvalidInputs() {
+        val showGradeValue = _showGrade.value.toDoubleOrNull()
+        if (_showGrade.value.isBlank() || showGradeValue == null || !Grade.check(showGradeValue)) _showGrade.value = _grade.value.toString().removeSuffix(".0")
+
+        val showPercentageValue = _showPercentage.value.toDoubleOrNull()
+        if (_showPercentage.value.isBlank() || showPercentageValue == null || !Percentage.check(showPercentageValue)) _showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
     }
 
     fun updateOrCreateGrade(gradeId: Int): Boolean{
         if (_courseId.intValue == -1) return false
         if (checkInputs().not()) {
-            syncInputs()
+            syncInvalidInputs()
             return false
         }
         viewModelScope.launch {
@@ -238,7 +241,7 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    fun loadCourseOptions() {
+    fun loadCourseOptions(courseId: Int = _courseId.intValue) {
         viewModelScope.launch {
             getAllCoursesUserCase().collect { result ->
                 when (result) {
@@ -246,11 +249,11 @@ class EditGradeViewModel @Inject constructor(
                         _courses.value = result.data!!
 
                         if (courses.value.isNotEmpty()) {
-                            if (_courseId.intValue == -1){
+                            if (courseId == -1){
                                 showCourse.value = courses.value[0]
                                 setCourseId(courses.value[0].id)
                             }else{
-                                getCourseFromId(_courseId.intValue)
+                                getCourseFromId(courseId)
                             }
                         }
                     }
