@@ -43,5 +43,5 @@ Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y d
 ![photo_2](https://github.com/user-attachments/assets/23d16a50-b04b-444d-adaa-e53a176aa116)
 ![photo_3](https://github.com/user-attachments/assets/961a6b9d-3533-46cf-8ecb-f21e64e5bb36)
 ![photo_4](https://github.com/user-attachments/assets/f998272b-e1d6-4f78-b529-46bf17e8f789)
-![photo_5](https://github.com/user-attachments/assets/881dab93-9214-41c3-942b-d1b2775b9dfa)
+![ajustes](https://github.com/user-attachments/assets/b512f0de-597c-430f-966b-660167b669a7)
 
