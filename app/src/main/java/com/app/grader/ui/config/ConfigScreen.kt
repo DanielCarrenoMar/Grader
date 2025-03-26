@@ -69,6 +69,17 @@ fun ConfigScreen(
                 text = "Buscar si hay actualización",
             )
             IconCardButton(
+                onClick = {
+                    val url = "https://github.com/DanielCarrenoMar/Grader/issues/new"
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    context.startActivity(intent)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.exclamation_outline,
+                text = "Reportar bug o sugerencia",
+            )
+            IconCardButton(
                 onClick = { showDeleteConfirmation = true },
                 contentColor = Error500,
                 icon = R.drawable.trash_outline,

@@ -64,8 +64,8 @@ fun AllGradesScreen(
         LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
                 .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 20.dp)
         ){
             items(viewModel.grades.value){ grade ->

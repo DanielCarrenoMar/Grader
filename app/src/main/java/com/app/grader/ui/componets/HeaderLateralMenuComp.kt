@@ -48,7 +48,8 @@ private fun MyNavigationDrawerItem(title:String, iconId:Int, onClick:(()->Unit)?
             Text(
                 title,
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 5.dp)
             )
         },
         icon = {
@@ -56,7 +57,7 @@ private fun MyNavigationDrawerItem(title:String, iconId:Int, onClick:(()->Unit)?
                 painter = painterResource(id = iconId),
                 contentDescription = title,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                modifier = Modifier.size(IconLarge).padding(end = 5.dp),
+                modifier = Modifier.size(IconLarge),
             )
         },
         selected = onClick == null,
@@ -140,7 +141,7 @@ fun HeaderMenu(
                     ),
                     navigationIcon = {
                         IconButton(
-                            modifier = Modifier.padding(start = 8.dp),
+                            modifier = Modifier.padding(start = 8.dp, end = 15.dp),
                             onClick = {
                             scope.launch {
                                 if (drawerState.isClosed) {
@@ -154,7 +155,7 @@ fun HeaderMenu(
                                 painter = painterResource(id = R.drawable.bars_outline),
                                 contentDescription = "Menu",
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                                modifier = Modifier.size(48.dp).padding(end = 15.dp),
+                                modifier = Modifier.size(IconLarge),
                             )
                         }
                     }
