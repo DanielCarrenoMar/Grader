@@ -19,12 +19,16 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -45,6 +48,7 @@ import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.IconLarge
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditGradeScreen(
@@ -54,6 +58,8 @@ fun EditGradeScreen(
     viewModel: EditGradeViewModel = hiltViewModel(),
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -67,14 +73,32 @@ fun EditGradeScreen(
 
     HeaderBack(
         text = {
-            Row (modifier = Modifier.fillMaxWidth().padding(end = 30.dp), horizontalArrangement = Arrangement.End){
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 30.dp), horizontalArrangement = Arrangement.End){
                 Button(onClick = {
                     if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
+                    else {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Campos rellenados automáticamente")
+                        }
+                    }
                 }) {
                     Text(text = "Guardar")
                 }
             }
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState,
+            snackbar = {
+                Snackbar(
+                    it,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    shape = MaterialTheme.shapes.medium
+                )
+            })
+                       },
         navigateBack = navegateBack
     ) { innerPadding ->
         Column(
@@ -87,7 +111,7 @@ fun EditGradeScreen(
             Spacer(Modifier.height(10.dp))
             EditScreenInputComp(
                 placeHolderText = "Agregar calificación",
-                value = viewModel.showGrade.value,
+                value = viewModel.showGrade.value.removeSuffix(".0"),
                 onValueChange = {
                     viewModel.setGrade(it)
                 },
@@ -103,7 +127,9 @@ fun EditGradeScreen(
                     disabledContentColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent
                 ),
-                modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
             ) {
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
@@ -144,7 +170,7 @@ fun EditGradeScreen(
             }
             HorizontalDivider( modifier = Modifier.alpha(0.5f))
             EditScreenInputComp(
-                placeHolderText = viewModel.defaultPercentage.value.toString(),
+                placeHolderText = viewModel.defaultPercentage.value.toString().removeSuffix(".0"),
                 value = viewModel.showPercentage.value,
                 onValueChange = { viewModel.setPercentage(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -156,7 +182,7 @@ fun EditGradeScreen(
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },
-                maxLength = 3
+                maxLength = 4
             )
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalDivider( modifier = Modifier.alpha(0.5f))

@@ -33,7 +33,7 @@ class EditGradeViewModel @Inject constructor(
     val title = _title
     private val _description = mutableStateOf("Sin Descricción")
     val description = _description
-    private val _grade = mutableStateOf(Grade(0.0))
+    private val _grade = mutableStateOf(Grade(20.0))
     val grade = _grade
     private val _percentage = mutableStateOf(Percentage(100.0))
     val percentage = _percentage
@@ -67,8 +67,10 @@ class EditGradeViewModel @Inject constructor(
         _showPercentage.value = percentage
         val value = percentage.toDoubleOrNull()
 
-        if (percentage.isBlank() || value == null || Percentage.check(value).not()) actDefaultPercentage()
-        else _percentage.value.setPercentage(value)
+        if (percentage.isBlank() || value == null ){
+            actDefaultPercentage()
+        }
+        else if (Percentage.check(value)) _percentage.value.setPercentage(value)
     }
     fun setCourseId(courseId: Int){
         _courseId.intValue = courseId
@@ -181,7 +183,7 @@ class EditGradeViewModel @Inject constructor(
 
     private fun syncInputs() {
         _showGrade.value = _grade.value.toString()
-        _showPercentage.value = _percentage.value.toString()
+        _showPercentage.value = _defaultPercentage.value.toString()
     }
 
     fun updateOrCreateGrade(gradeId: Int): Boolean{

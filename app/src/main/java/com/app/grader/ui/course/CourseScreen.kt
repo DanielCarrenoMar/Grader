@@ -3,6 +3,8 @@ package com.app.grader.ui.course
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,7 +77,7 @@ fun CourseScreen(
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(true)
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
@@ -247,116 +249,118 @@ fun InfoGradeBottonCar(
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        Column (
+        LazyColumn  (
             modifier = Modifier
                 .padding(horizontal =  20.dp)
-                .padding(bottom = 60.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 15.dp)
-            ) {
-                CircleGrade(showGrade.grade, radius = 25.dp, fontSize = 18.sp)
-                Text(
-                    text = showGrade.title,
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(start = 20.dp)
-                )
-            }
-            HorizontalDivider(modifier = Modifier.alpha(0.5f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.weight),
-                    contentDescription = "weight",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                    modifier = Modifier
-                        .size(IconLarge),
-                )
-                Text(
-                    text = "${if (showGrade.percentage % 1 == 0.0) showGrade.percentage.toInt() else showGrade.percentage}%",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-            }
-
-            HorizontalDivider(modifier = Modifier.alpha(0.5f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 15.dp)
-            ) {
-                Text(
-                    text = "${showGrade.description}",
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-            Spacer(Modifier.height(20.dp))
-            HorizontalDivider(modifier = Modifier.alpha(0.5f))
-            Card (
-                onClick = deleteOnClick,
-                colors = CardColors(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    disabledContainerColor = Color.Transparent,
-                    disabledContentColor = MaterialTheme.colorScheme.onBackground
-                )
-            ){
+            item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clickable(onClick = editOnClick)
-                        .padding(vertical = 15.dp)
-                        .fillMaxWidth()
+                    modifier = Modifier.padding(bottom = 15.dp)
+                ) {
+                    CircleGrade(showGrade.grade, radius = 25.dp, fontSize = 18.sp)
+                    Text(
+                        text = showGrade.title,
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                }
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.pen_outline),
-                        contentDescription = "pen outline",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                        painter = painterResource(id = R.drawable.weight),
+                        contentDescription = "weight",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = Modifier
                             .size(IconLarge),
                     )
                     Text(
-                        text = "Editar",
+                        text = "${if (showGrade.percentage % 1 == 0.0) showGrade.percentage.toInt() else showGrade.percentage}%",
                         style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(start = 12.dp),
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        modifier = Modifier.padding(start = 12.dp)
                     )
                 }
-            }
-            HorizontalDivider( modifier = Modifier.alpha(0.5f))
-            Card (
-                onClick = deleteOnClick,
-                colors = CardColors(
-                    containerColor = Color.Transparent,
-                    contentColor = Error500,
-                    disabledContainerColor = Color.Transparent,
-                    disabledContentColor = Error500
-                )
-            ){
-                Row (
-                    modifier = Modifier
-                        .padding(vertical = 15.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 15.dp)
+                ) {
+                    Text(
+                        text = showGrade.description,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
+                Card (
+                    onClick = deleteOnClick,
+                    colors = CardColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = MaterialTheme.colorScheme.onBackground
+                    )
                 ){
-                    Image(
-                        painter = painterResource(id = R.drawable.trash_outline),
-                        contentDescription = "trash outline",
-                        colorFilter = ColorFilter.tint(Error500),
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(IconLarge),
-                    )
-                    Text(
-                        text = "Eliminar",
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(start = 12.dp),
-                        fontWeight = FontWeight.Medium,
-                        color = Error500
-                    )
+                            .clickable(onClick = editOnClick)
+                            .padding(vertical = 15.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.pen_outline),
+                            contentDescription = "pen outline",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            modifier = Modifier
+                                .size(IconLarge),
+                        )
+                        Text(
+                            text = "Editar",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(start = 12.dp),
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
+                HorizontalDivider( modifier = Modifier.alpha(0.5f))
+                Card (
+                    onClick = deleteOnClick,
+                    colors = CardColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Error500,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Error500
+                    )
+                ){
+                    Row (
+                        modifier = Modifier
+                            .padding(vertical = 15.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.trash_outline),
+                            contentDescription = "trash outline",
+                            colorFilter = ColorFilter.tint(Error500),
+                            modifier = Modifier
+                                .size(IconLarge),
+                        )
+                        Text(
+                            text = "Eliminar",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(start = 12.dp),
+                            fontWeight = FontWeight.Medium,
+                            color = Error500
+                        )
+                    }
+                }
+                Spacer(Modifier.height(60.dp))
             }
         }
     }

@@ -22,10 +22,16 @@ import com.app.grader.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderBack(text: @Composable () -> Unit, navigateBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+fun HeaderBack(
+    text: @Composable () -> Unit,
+    snackbarHost: @Composable () -> Unit = {},
+    navigateBack: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        snackbarHost = snackbarHost,
         topBar = {
             TopAppBar(
                 scrollBehavior = scrollBehavior,
