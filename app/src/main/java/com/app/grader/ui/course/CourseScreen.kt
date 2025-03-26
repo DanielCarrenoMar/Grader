@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -67,6 +71,7 @@ import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,6 +83,8 @@ fun CourseScreen(
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
     val sheetState = rememberModalBottomSheetState(true)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
@@ -104,6 +111,18 @@ fun CourseScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState,
+                snackbar = {
+                    Snackbar(
+                        it,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                }
+            )
         },
         navigateBack = navegateBack
     ) { innerPadding ->
@@ -144,13 +163,22 @@ fun CourseScreen(
                     },
                     sheetState = sheetState,
                     showGrade = viewModel.showGrade.value,
-                    editOnClick = { navigateToEditGrade(viewModel.showGrade.value.id, courseId); showBottomSheet = false },
+                    editOnClick = {
+                        navigateToEditGrade(viewModel.showGrade.value.id, courseId)
+                        showBottomSheet = false
+                                  },
                     deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }
                 )
             }
         }
         AddMenuComp(listOf(
-            AddMenuCompItem("Calificación", R.drawable.star_outline){ navigateToEditGrade(-1, courseId) },
+            AddMenuCompItem("Calificación", R.drawable.star_outline){
+                if (viewModel.pedingPoints.doubleValue > 0){
+                    navigateToEditGrade(-1, courseId)
+                }else coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
+                }
+            },
         ))
     }
 }
@@ -297,7 +325,7 @@ fun InfoGradeBottonCar(
                 Spacer(Modifier.height(20.dp))
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 Card (
-                    onClick = deleteOnClick,
+                    onClick = editOnClick,
                     colors = CardColors(
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
