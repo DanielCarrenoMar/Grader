@@ -178,15 +178,26 @@ class EditGradeViewModel @Inject constructor(
                 _grade.value.getGrade() != 0.0 &&
                 _grade.value.getGrade() == _showGrade.value.toDoubleOrNull() &&
                 _percentage.value.getPercentage() != 0.0 &&
-                _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull()
+                _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull() &&
+                _percentage.value.getPercentage() <= _defaultPercentage.value.getPercentage()
     }
 
     private fun syncInvalidInputs() {
         val showGradeValue = _showGrade.value.toDoubleOrNull()
-        if (_showGrade.value.isBlank() || showGradeValue == null || !Grade.check(showGradeValue)) _showGrade.value = _grade.value.toString().removeSuffix(".0")
+        if (_showGrade.value.isBlank() ||
+            showGradeValue == null ||
+            !Grade.check(showGradeValue)
+            ) _showGrade.value = _grade.value.toString().removeSuffix(".0")
 
         val showPercentageValue = _showPercentage.value.toDoubleOrNull()
-        if (_showPercentage.value.isBlank() || showPercentageValue == null || !Percentage.check(showPercentageValue)) _showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
+        if (_showPercentage.value.isBlank() ||
+            showPercentageValue == null ||
+            !Percentage.check(showPercentageValue) ||
+            showPercentageValue > _defaultPercentage.value.getPercentage()
+            ) {
+            _showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
+            _percentage.value.setPercentage(_defaultPercentage.value.getPercentage())
+        }
     }
 
     fun updateOrCreateGrade(gradeId: Int): Boolean{
