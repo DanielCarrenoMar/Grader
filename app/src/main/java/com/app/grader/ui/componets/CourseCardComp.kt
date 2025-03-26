@@ -115,7 +115,7 @@ fun CourseCardComp(
                         )
                         DropdownMenuItem(onClick = {deleteCourse();expanded = false},
                         text = {
-                            Text("Borrar", style = MaterialTheme.typography.labelMedium,
+                            Text("Eliminar", style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
                         }
                         )

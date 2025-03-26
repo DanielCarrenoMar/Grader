@@ -1,34 +1,35 @@
 package com.app.grader.ui.componets
 
-import android.R
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun DeleteConfirmationComp(
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    description: String = "¿Realmente desea eliminar este elemento?",
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
                     Text(
-                        text = "Borrar",
+                        text = "Eliminar",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 },
         text = {
                     Text(
-                        text = "¿Realmente desea borrar este elemento?",
+                        text = description,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -41,15 +42,16 @@ fun DeleteConfirmationComp(
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onSurface,
-                )
+                ),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Borrar")
+                Text("Eliminar")
             }
         },
         dismissButton = {
             Button(
                 onClick = onDismiss,
-
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Cancelar")
             }

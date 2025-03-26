@@ -41,7 +41,8 @@ fun ConfigScreen(
     if (showDeleteConfirmation){
         DeleteConfirmationComp(
             { viewModel.deleteAll() },
-            { showDeleteConfirmation = false }
+            { showDeleteConfirmation = false },
+            "Esta opción borrar todos los datos de la app: asignaturas y calificaciones.",
         )
     }
     HeaderMenu(
