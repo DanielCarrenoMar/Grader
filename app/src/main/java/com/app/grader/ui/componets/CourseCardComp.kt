@@ -106,14 +106,14 @@ fun CourseCardComp(
                         modifier = Modifier.width(200.dp),
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
-                        DropdownMenuItem(onClick = editCourse,
+                        DropdownMenuItem(onClick = {editCourse();expanded = false},
                             text = {
                                 Text("Editar", style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
                             },
 
                         )
-                        DropdownMenuItem(onClick = deleteCourse,
+                        DropdownMenuItem(onClick = {deleteCourse();expanded = false},
                         text = {
                             Text("Borrar", style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
