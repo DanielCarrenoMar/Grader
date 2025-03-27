@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
+import com.app.grader.ui.theme.Error500
 
 @Composable
 fun DeleteConfirmationComp(
@@ -41,7 +42,7 @@ fun DeleteConfirmationComp(
                     onConfirm()
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = Error500,
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
