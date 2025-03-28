@@ -28,11 +28,13 @@ fun EditScreenInputComp(
     onValueChange: (String) -> Unit,
     leadingIconId: Int,
     modifier: Modifier = Modifier,
+    enabled: Boolean  = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     suffix: @Composable() (()->Unit)? = null,
-    maxLength: Int = Int.MAX_VALUE
+    maxLength: Int = Int.MAX_VALUE,
 ) {
     TextField(
+        enabled = enabled,
         colors = TextFieldDefaults.colors().copy(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,

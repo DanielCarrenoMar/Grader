@@ -1,21 +1,21 @@
-package com.app.grader.domain.usecase.subGrade
+package com.app.grader.domain.usecase.grade
 
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class GetSubGradesFromGradeUserCase @Inject constructor(
+class GetGradesFromCourseUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(gradeId: Int): Flow<Resource<List<SubGradeModel>>> = channelFlow {
+    operator fun invoke(courseId: Int): Flow<Resource<List<GradeModel>>> = channelFlow {
         try {
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.getSubGradesFromGrade(gradeId)
+                    data = repository.getGradesFromCourse(courseId)
                 )
             )
         } catch (e: Exception) {

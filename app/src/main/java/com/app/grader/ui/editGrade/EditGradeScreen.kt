@@ -1,7 +1,10 @@
 package com.app.grader.ui.editGrade
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +16,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -20,6 +25,7 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -35,13 +41,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -49,7 +60,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
+import com.app.grader.ui.theme.IconMedium
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,6 +82,7 @@ fun EditGradeScreen(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.courseId.intValue = courseId
             viewModel.loadGradeFromId(gradeId)
+            viewModel.loadSubGradesFromGrade(gradeId)
             viewModel.loadCourseOptions(courseId)
             if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
         }
@@ -118,6 +133,7 @@ fun EditGradeScreen(
             item {
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
+                    enabled = viewModel.showSubGrades.isEmpty(),
                     placeHolderText = "Agregar calificación",
                     value = viewModel.showGrade.value,
                     onValueChange = {
@@ -125,12 +141,65 @@ fun EditGradeScreen(
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     leadingIconId = R.drawable.star_outline,
-                    maxLength = 5
+                    maxLength = 5,
+                    suffix = {
+                        IconButton(
+                            onClick = { viewModel.addSubGrade() },
+                            modifier = Modifier.size(IconLarge)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.plus_outline),
+                                contentDescription = "Grade",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                modifier = Modifier
+                            )
+                        }
+                    }
+                )
+            }
+            itemsIndexed (viewModel.showSubGrades) { index, subgrade ->
+                var itemHeight by remember { mutableStateOf(0.dp) }
+                val animatedHeight by animateDpAsState(targetValue = itemHeight)
+                val focusManager = LocalFocusManager.current
+                val focusRequester = remember { FocusRequester() }
+
+                LaunchedEffect(Unit) {
+                    itemHeight = 65.dp
+                    if (index == viewModel.showSubGrades.size - 1) {
+                        focusRequester.requestFocus()
+                    }
+                }
+
+                EditScreenInputComp(
+                    modifier = Modifier
+                        .animateContentSize()
+                        .height(animatedHeight)
+                        .padding(start = 5.dp)
+                        .focusRequester(focusRequester),
+                    placeHolderText = "Agregar calificación",
+                    value = subgrade,
+                    onValueChange = {
+                        viewModel.setSubGrade(index, it)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    leadingIconId = R.drawable.star_half_outline,
+                    maxLength = 5,
+                    suffix = {
+                        IconButton(
+                            onClick = { viewModel.removeSubGrade(index) },
+                            modifier = Modifier.size(IconLarge)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.trash_outline),
+                                contentDescription = "Delete",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                            )
+                        }
+                    }
                 )
             }
 
             item {
-
                 Card(
                     onClick = { expanded = true },
                     colors = CardColors(

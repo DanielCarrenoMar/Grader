@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
-import com.app.grader.domain.usecase.course.SaveCourseUserCase
+import com.app.grader.domain.usecase.course.SaveCourseUseCase
 import com.app.grader.domain.usecase.course.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditCourseViewModel @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
-    private val saveCourseUserCase: SaveCourseUserCase,
+    private val saveCourseUseCase: SaveCourseUseCase,
     private val updateCourseUseCase: UpdateCourseUseCase,
 ): ViewModel() {
     private val _title = mutableStateOf("Sin Titulo")
@@ -55,7 +55,7 @@ class EditCourseViewModel @Inject constructor(
 
     private fun saveCourse(courseModel:CourseModel) {
         viewModelScope.launch {
-            saveCourseUserCase(courseModel = courseModel).collect { result ->
+            saveCourseUseCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         Log.i("EditCourseViewModel", "saveGrade id: ${courseModel.id}")

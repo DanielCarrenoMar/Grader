@@ -11,14 +11,14 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
-import com.app.grader.domain.usecase.grade.GetGradesFromCourseUserCase
+import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CourseViewModel  @Inject constructor(
-    private val getGradesFromCourseUserCase: GetGradesFromCourseUserCase,
+    private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase
@@ -57,7 +57,7 @@ class CourseViewModel  @Inject constructor(
 
     fun calPoints(courseId: Int){
         viewModelScope.launch {
-            getGradesFromCourseUserCase(courseId).collect { result ->
+            getGradesFromCourseUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val grades = result.data!!
@@ -101,7 +101,7 @@ class CourseViewModel  @Inject constructor(
 
     fun getGradesFromCourse(courseId: Int) {
         viewModelScope.launch {
-            getGradesFromCourseUserCase(courseId).collect { result ->
+            getGradesFromCourseUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!

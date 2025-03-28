@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import kotlin.rem
 import kotlin.text.toInt
 import kotlin.toString
@@ -26,7 +27,7 @@ fun CircleGrade(grade: Double, fontSize: TextUnit = 16.sp, modifier: Modifier = 
     val textGrade = when{
         grade == 0.0 -> "--"
         grade % 1 == 0.0 -> grade.toInt().toString()
-        else -> grade.toString()
+        else -> ((grade * 10).roundToInt() / 10.0).toString()
     }
 
     Box(
