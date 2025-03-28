@@ -32,4 +32,8 @@ class DataBaseModule {
     @Singleton
     @Provides
     fun provideGradeDao(db: AppDatabase) = db.getGradeDao()
+
+    @Singleton
+    @Provides
+    fun provideSubGradeDao(db: AppDatabase) = db.getSubGradeDao()
 }

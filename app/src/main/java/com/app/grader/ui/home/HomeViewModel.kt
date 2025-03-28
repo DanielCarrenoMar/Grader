@@ -9,13 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.DeleteCourseFromIdUseCase
-import com.app.grader.domain.usecase.GetAllCoursesUserCase
-import com.app.grader.domain.usecase.GetAllGradesUserCase
+import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
+import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
+import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.times
 
 @HiltViewModel
 class HomeViewModel  @Inject constructor(

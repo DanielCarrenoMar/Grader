@@ -7,11 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.DeleteAllCoursesUseCase
-import com.app.grader.domain.usecase.GetAllCoursesUserCase
-import com.app.grader.domain.usecase.GetCourseFromIdUseCase
-import com.app.grader.domain.usecase.SaveCourseUserCase
-import com.app.grader.domain.usecase.UpdateCourseUseCase
+import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.course.SaveCourseUserCase
+import com.app.grader.domain.usecase.course.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.DeleteGradeFromIdUseCase
-import com.app.grader.domain.usecase.GetCourseFromIdUseCase
-import com.app.grader.domain.usecase.GetGradeFromIdUseCase
-import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
+import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
+import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.GetGradesFromCourseUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

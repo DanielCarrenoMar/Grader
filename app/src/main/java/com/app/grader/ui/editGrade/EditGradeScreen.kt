@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -74,9 +75,11 @@ fun EditGradeScreen(
 
     HeaderBack(
         text = {
-            Row (modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 30.dp), horizontalArrangement = Arrangement.End){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 30.dp), horizontalArrangement = Arrangement.End
+            ) {
                 Button(onClick = {
                     if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
                     else {
@@ -90,132 +93,140 @@ fun EditGradeScreen(
             }
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState,
-            snackbar = {
-                Snackbar(
-                    it,
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    shape = MaterialTheme.shapes.medium
-                )
-            },
-            modifier = Modifier.imePadding()
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = {
+                    Snackbar(
+                        it,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                },
+                modifier = Modifier.imePadding()
             )
-                       },
+        },
         navigateBack = navegateBack
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(10.dp))
-            EditScreenInputComp(
-                placeHolderText = "Agregar calificación",
-                value = viewModel.showGrade.value,
-                onValueChange = {
-                    viewModel.setGrade(it)
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                leadingIconId = R.drawable.star_outline,
-                maxLength = 5
-            )
-            Card (
-                onClick = { expanded = true },
-                colors = CardColors(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp)
-            ) {
-                Row (
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.education_cap_outline),
-                        contentDescription = "Course",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .size(IconLarge),
-                    )
-                    Text(
-                        text = viewModel.showCourse.value.title,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 20.dp),
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
+            item {
+                Spacer(Modifier.height(10.dp))
+                EditScreenInputComp(
+                    placeHolderText = "Agregar calificación",
+                    value = viewModel.showGrade.value,
+                    onValueChange = {
+                        viewModel.setGrade(it)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    leadingIconId = R.drawable.star_outline,
+                    maxLength = 5
+                )
+            }
+
+            item {
+
+                Card(
+                    onClick = { expanded = true },
+                    colors = CardColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
                 ) {
-                    viewModel.courses.value.forEach { option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                viewModel.showCourse.value = option
-                                viewModel.setCourseId(option.id)
-                                expanded = false
-                            },
-                            text = {
-                                Text(option.title, style = MaterialTheme.typography.bodyLarge)
-                            }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.education_cap_outline),
+                            contentDescription = "Course",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                            modifier = Modifier
+                                .size(IconLarge),
+                        )
+                        Text(
+                            text = viewModel.showCourse.value.title,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(start = 20.dp),
+                            fontWeight = FontWeight.Medium
                         )
                     }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        viewModel.courses.value.forEach { option ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    viewModel.showCourse.value = option
+                                    viewModel.setCourseId(option.id)
+                                    expanded = false
+                                },
+                                text = {
+                                    Text(option.title, style = MaterialTheme.typography.bodyLarge)
+                                }
+                            )
+                        }
+                    }
                 }
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
+                EditScreenInputComp(
+                    placeHolderText = viewModel.defaultPercentage.value.toString()
+                        .removeSuffix(".0"),
+                    value = viewModel.showPercentage.value,
+                    onValueChange = { viewModel.setPercentage(it) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    leadingIconId = R.drawable.weight_outline,
+                    suffix = {
+                        Text(
+                            text = "%",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    },
+                    maxLength = 6
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
+                EditScreenInputComp(
+                    placeHolderText = "Agregar título (Opcional)",
+                    value = viewModel.showTitle.value,
+                    onValueChange = {
+                        viewModel.showTitle.value = it
+                        viewModel.title.value = it
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    leadingIconId = R.drawable.bookmark_outline,
+                    maxLength = 50
+                )
+                EditScreenInputComp(
+                    placeHolderText = "Agregar descripcción (Opcional)",
+                    value = viewModel.showDescription.value,
+                    onValueChange = {
+                        viewModel.showDescription.value = it
+                        viewModel.description.value = it
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    leadingIconId = R.drawable.align_center,
+                    maxLength = 200
+                )
+                Spacer(modifier = Modifier.height(120.dp))
             }
-            HorizontalDivider( modifier = Modifier.alpha(0.5f))
-            EditScreenInputComp(
-                placeHolderText = viewModel.defaultPercentage.value.toString().removeSuffix(".0"),
-                value = viewModel.showPercentage.value,
-                onValueChange = { viewModel.setPercentage(it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                leadingIconId = R.drawable.weight_outline,
-                suffix = {
-                    Text(
-                        text = "%",
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(start = 5.dp)
-                    )
-                },
-                maxLength = 6
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            HorizontalDivider( modifier = Modifier.alpha(0.5f))
-            EditScreenInputComp(
-                placeHolderText = "Agregar título (Opcional)",
-                value = viewModel.showTitle.value,
-                onValueChange = {
-                    viewModel.showTitle.value = it
-                    viewModel.title.value = it
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                leadingIconId = R.drawable.bookmark_outline,
-                maxLength = 50
-            )
-            EditScreenInputComp(
-                placeHolderText = "Agregar descripcción (Opcional)",
-                value = viewModel.showDescription.value,
-                onValueChange = {
-                    viewModel.showDescription.value = it
-                    viewModel.description.value = it
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                leadingIconId = R.drawable.align_center,
-                maxLength = 200
-            )
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

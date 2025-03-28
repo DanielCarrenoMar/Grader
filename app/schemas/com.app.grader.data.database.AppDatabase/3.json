@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "24d7e7fb3d8733f35199cd042a871a38",
+    "version": 3,
+    "identityHash": "fbb50818a3d44d8ffb95158c2e2e630a",
     "entities": [
       {
         "tableName": "course",
@@ -88,7 +88,7 @@
       },
       {
         "tableName": "sub_grade",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grade_id` INTEGER NOT NULL, `title` TEXT NOT NULL, `grade` REAL NOT NULL, `percentage` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grade_id` INTEGER NOT NULL, `title` TEXT NOT NULL, `grade` REAL NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -113,12 +113,6 @@
             "columnName": "grade",
             "affinity": "REAL",
             "notNull": true
-          },
-          {
-            "fieldPath": "percentage",
-            "columnName": "percentage",
-            "affinity": "REAL",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -134,7 +128,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24d7e7fb3d8733f35199cd042a871a38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fbb50818a3d44d8ffb95158c2e2e630a')"
     ]
   }
 }

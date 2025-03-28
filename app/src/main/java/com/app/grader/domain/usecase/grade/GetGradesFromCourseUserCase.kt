@@ -1,27 +1,23 @@
-package com.app.grader.domain.usecase
+package com.app.grader.domain.usecase.grade
 
-import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.repository.LocalStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class UpdateCourseUseCase @Inject constructor(
+class GetGradesFromCourseUserCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(courseModel: CourseModel): Flow<Resource<Unit>> = channelFlow {
+    operator fun invoke(courseId: Int): Flow<Resource<List<GradeModel>>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.updateCourse(courseModel)){
-                send(
-                    Resource.Success(data = Unit)
+            send(
+                Resource.Success(
+                    data = repository.getGradesFromCourse(courseId)
                 )
-            } else {
-                send(
-                    Resource.Error("Update course Error")
-                )
-            }
+            )
         } catch (e: Exception) {
             send(
                 Resource.Error(e.message ?: "Unknown Error")

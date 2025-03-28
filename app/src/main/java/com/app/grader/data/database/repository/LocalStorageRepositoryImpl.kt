@@ -2,16 +2,20 @@ package com.app.grader.data.database.repository
 
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
+import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.model.toGradeEntity
+import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.repository.LocalStorageRepository
 import javax.inject.Inject
 
 class LocalStorageRepositoryImpl @Inject constructor(
     private val courseDao: CourseDao,
     private val gradeDao: GradeDao,
+    private val subGradeDao: SubGradeDao,
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Boolean {
         try {
@@ -75,7 +79,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteCourseFromId(courseId: Int): Boolean {
         try {
-            gradeDao.deleteGradeFromCourseId(courseId)
+            deleteAllGradesFromCourseId(courseId)
             return courseDao.deleteCourseFromId(courseId) == 1
         } catch (e: Exception) {
             throw e
@@ -124,6 +128,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllGradesFromCourseId(courseId: Int): Int {
         try {
+            gradeDao.getGradesFromCourseId(courseId).forEach { grade ->
+                subGradeDao.deleteAllSubGradesFromGradeId(grade.id)
+            }
             return gradeDao.deleteAllGradesFromCourseId(courseId)
         } catch (e: Exception) {
             throw e
@@ -188,6 +195,82 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 gradeModel.description,
                 gradeModel.grade,
                 gradeModel.percentage
+            )
+            return result == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel> {
+        try {
+            return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGradeEntity ->
+                SubGradeModel(
+                    id = subGradeEntity.id,
+                    title = subGradeEntity.title,
+                    grade = subGradeEntity.grade,
+                    gradeId = subGradeEntity.gradeId,
+                )
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Boolean {
+        try {
+            val result = subGradeDao.insertSubGrade(subGradeModel.toSubGradeEntity())
+            return result.toInt() != -1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteAllSubGrades(): Int {
+        try {
+            subGradeDao.resetIncremetalSubGrade()
+            return subGradeDao.deleteAllSubGrades()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteAllSubGradesFromGradeId(gradeId: Int): Int {
+        try {
+            return subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteSubGradeFromId(subGradeId: Int): Boolean {
+        try {
+            return subGradeDao.deleteSubGradeFromId(subGradeId) == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getSubGradeFromId(subGradeId: Int): SubGradeModel? {
+        try {
+            val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
+            return SubGradeModel(
+                title = subGradeEntity.title,
+                grade = subGradeEntity.grade,
+                id = subGradeEntity.id,
+                gradeId = subGradeEntity.gradeId,
+            )
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun updateSubGrade(subGradeModel: SubGradeModel): Boolean {
+        try {
+            val result = subGradeDao.updateSubGradeById(
+                subGradeModel.id,
+                subGradeModel.title,
+                subGradeModel.grade,
             )
             return result == 1
         } catch (e: Exception) {

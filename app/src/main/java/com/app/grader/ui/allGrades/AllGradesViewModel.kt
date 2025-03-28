@@ -1,18 +1,14 @@
 package com.app.grader.ui.allGrades
 
 import android.util.Log
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.DeleteGradeFromIdUseCase
-import com.app.grader.domain.usecase.GetAllGradesUserCase
-import com.app.grader.domain.usecase.GetCourseFromIdUseCase
-import com.app.grader.domain.usecase.GetGradeFromIdUseCase
-import com.app.grader.domain.usecase.GetGradesFromCourseUserCase
+import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
+import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

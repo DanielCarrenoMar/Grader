@@ -1,27 +1,27 @@
-package com.app.grader.domain.usecase
+package com.app.grader.domain.usecase.subGrade
 
-import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.repository.LocalStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class SaveGradeUseCase @Inject constructor(
+class DeleteSubGradeFromIdUseCase  @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(gradeModel: GradeModel): Flow<Resource<Unit>> = channelFlow {
+    operator fun invoke(subGradeId: Int): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.saveGrade(gradeModel)){
+            if (repository.deleteSubGradeFromId(subGradeId)){
                 send(
-                    Resource.Success(data = Unit)
+                    Resource.Success(Unit)
                 )
-            } else {
+            }else{
                 send(
-                    Resource.Error("Save grade Error")
+                    Resource.Error("Delete subGrade id: $subGradeId Error")
                 )
             }
+
         } catch (e: Exception) {
             send(
                 Resource.Error(e.message ?: "Unknown Error")

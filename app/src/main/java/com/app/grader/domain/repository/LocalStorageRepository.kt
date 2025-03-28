@@ -2,6 +2,7 @@ package com.app.grader.domain.repository
 
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.SubGradeModel
 
 interface LocalStorageRepository {
     suspend fun getAverageFromCourse(courseId:Int) : Double
@@ -26,4 +27,12 @@ interface LocalStorageRepository {
     suspend fun getAllGrades(): List<GradeModel>
     suspend fun getGradeFromId(gradeId: Int): GradeModel?
     suspend fun updateGrade(gradeModel: GradeModel): Boolean
+
+    suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel>
+    suspend fun saveSubGrade(subGradeModel: SubGradeModel): Boolean
+    suspend fun deleteAllSubGrades(): Int
+    suspend fun deleteAllSubGradesFromGradeId(gradeId: Int): Int
+    suspend fun deleteSubGradeFromId(subGradeId: Int): Boolean
+    suspend fun getSubGradeFromId(subGradeId: Int): SubGradeModel?
+    suspend fun updateSubGrade(subGradeModel: SubGradeModel): Boolean
 }
