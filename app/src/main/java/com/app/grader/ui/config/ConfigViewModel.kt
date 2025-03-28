@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
+import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ConfigViewModel  @Inject constructor(
     private val deleteAllGradesUseCase: DeleteAllGradesUseCase,
-    private val deleteAllCoursesUseCase: DeleteAllCoursesUseCase
+    private val deleteAllCoursesUseCase: DeleteAllCoursesUseCase,
+    private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
 ): ViewModel() {
     fun deleteAll(){
         viewModelScope.launch {
@@ -40,6 +42,19 @@ class ConfigViewModel  @Inject constructor(
                     }
                     is Resource.Error -> {
                         Log.e("ConfigViewModel", "Error deleteAllCoursesUseCase: ${result.message}")
+                    }
+                }
+            }
+            deleteAllSubGradesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.d("ConfigViewModel", "deleteAllSubGradesUseCase: Success ${result.data}")
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("ConfigViewModel", "Error deleteAllSubGradesUseCase: ${result.message}")
                     }
                 }
             }
