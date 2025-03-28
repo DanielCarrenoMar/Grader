@@ -10,12 +10,13 @@ import javax.inject.Inject
 class SaveGradeUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(gradeModel: GradeModel): Flow<Resource<Unit>> = channelFlow {
+    operator fun invoke(gradeModel: GradeModel): Flow<Resource<Long>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.saveGrade(gradeModel)){
+            val data = repository.saveGrade(gradeModel)
+            if (data.toInt() != -1){
                 send(
-                    Resource.Success(data = Unit)
+                    Resource.Success(data = data)
                 )
             } else {
                 send(

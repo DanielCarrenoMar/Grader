@@ -10,12 +10,13 @@ import javax.inject.Inject
 class SaveCourseUserCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(courseModel: CourseModel): Flow<Resource<Unit>> = channelFlow {
+    operator fun invoke(courseModel: CourseModel): Flow<Resource<Long>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.saveCourse(courseModel)){
+            val data = repository.saveCourse(courseModel)
+            if (data.toInt() != -1){
                 send(
-                    Resource.Success(data = Unit)
+                    Resource.Success(data = data)
                 )
             } else {
                 send(

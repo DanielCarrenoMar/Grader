@@ -17,10 +17,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
 ) : LocalStorageRepository {
-    override suspend fun saveCourse(courseModel: CourseModel): Boolean {
+    override suspend fun saveCourse(courseModel: CourseModel): Long {
         try {
-            val result = courseDao.insertCourse(courseModel.toCourseEntity())
-            return result.toInt() != -1
+            return courseDao.insertCourse(courseModel.toCourseEntity())
         } catch (e: Exception) {
             throw e
         }
@@ -117,10 +116,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveGrade(gradeModel: GradeModel): Boolean {
+    override suspend fun saveGrade(gradeModel: GradeModel): Long {
         try {
-            val result = gradeDao.insertGrade(gradeModel.toGradeEntity())
-            return result.toInt() != -1
+            return gradeDao.insertGrade(gradeModel.toGradeEntity())
         } catch (e: Exception) {
             throw e
         }
@@ -217,10 +215,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Boolean {
+    override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Long {
         try {
-            val result = subGradeDao.insertSubGrade(subGradeModel.toSubGradeEntity())
-            return result.toInt() != -1
+            return subGradeDao.insertSubGrade(subGradeModel.toSubGradeEntity())
         } catch (e: Exception) {
             throw e
         }

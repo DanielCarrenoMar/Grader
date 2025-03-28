@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
@@ -39,6 +40,7 @@ class EditGradeViewModel @Inject constructor(
     val percentage = _percentage
     private val _defaultPercentage = mutableStateOf(Percentage(100.0))
     val defaultPercentage = _defaultPercentage
+    private val _savedPercentage = mutableStateOf(Percentage(0.0))
 
     private val _showTitle = mutableStateOf("")
     val showTitle = _showTitle
@@ -56,6 +58,9 @@ class EditGradeViewModel @Inject constructor(
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
 
+    private val _subGrades = mutableStateOf<List<SubGradeModel>>(emptyList())
+    val subGrades = _subGrades
+
     fun setGrade(grade: String){
         _showGrade.value = grade
         val value = grade.toDoubleOrNull()
@@ -72,6 +77,7 @@ class EditGradeViewModel @Inject constructor(
         }
         else if (Percentage.check(value)) _percentage.value.setPercentage(value)
     }
+
     fun setCourseId(courseId: Int){
         _courseId.intValue = courseId
         actDefaultPercentage()
@@ -88,8 +94,7 @@ class EditGradeViewModel @Inject constructor(
                         grades.forEach { grade ->
                             totalPercentage += grade.percentage
                         }
-                        _defaultPercentage.value.setPercentage(100.0 - totalPercentage)
-                        //_percentage.value.setPercentage(100.0 - totalPercentage)
+                        _defaultPercentage.value.setPercentage(100.0 - totalPercentage + _savedPercentage.value.getPercentage())
                         _showPercentage.value = " "
                         _showPercentage.value = ""
                     }
@@ -109,7 +114,9 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    fun getGradeFromId(gradeId: Int) {
+    //fun loadSubGradesFrom()
+
+    fun loadGradeFromId(gradeId: Int) {
         if (gradeId == -1) return
         viewModelScope.launch {
             getGradeFromIdUseCase(gradeId).collect { result ->
@@ -124,6 +131,7 @@ class EditGradeViewModel @Inject constructor(
                         _showGrade.value = grade.grade.toString().removeSuffix(".0")
                         _percentage.value.setPercentage(grade.percentage)
                         _showPercentage.value = grade.percentage.toString().removeSuffix(".0")
+                        _savedPercentage.value.setPercentage(grade.percentage)
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -141,7 +149,7 @@ class EditGradeViewModel @Inject constructor(
             saveGradeUseCase(gradeModel = gradeModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.i("EditGradeViewModel", "saveGrade id: ${gradeModel.id}")
+                        Log.i("EditGradeViewModel", "saveGrade id: ${result.data}")
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -191,6 +199,7 @@ class EditGradeViewModel @Inject constructor(
 
         val showPercentageValue = _showPercentage.value.toDoubleOrNull()
         if (_showPercentage.value.isBlank() ||
+            _percentage.value.getPercentage() == 0.0 ||
             showPercentageValue == null ||
             !Percentage.check(showPercentageValue) ||
             showPercentageValue > _defaultPercentage.value.getPercentage()

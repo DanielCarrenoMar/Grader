@@ -67,9 +67,9 @@ fun EditGradeScreen(
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.courseId.intValue = courseId
-            viewModel.actDefaultPercentage()
+            viewModel.loadGradeFromId(gradeId)
             viewModel.loadCourseOptions(courseId)
-            viewModel.getGradeFromId(gradeId)
+            if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
         }
     }
 
