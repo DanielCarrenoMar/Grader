@@ -96,7 +96,7 @@ fun EditCourseScreen(
                 suffix = {
                     Text(
                         text = "UC",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },

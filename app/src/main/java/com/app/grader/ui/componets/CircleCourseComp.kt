@@ -13,10 +13,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.Neutral100
-import com.app.grader.ui.theme.Success500
-import com.app.grader.ui.theme.Warning500
 
 fun interpolateColors(colors: List<Color>, fraction: Float): Color {
     require(colors.isNotEmpty()) { "Color list must not be empty" }
