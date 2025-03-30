@@ -5,6 +5,7 @@
 # ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=Kotlin&logoColor=white) Grader. App de Calificaciones
 
 ![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
+![descargas](https://img.shields.io/github/downloads/DanielCarrenoMar/Grader/total)
 
 Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
 
