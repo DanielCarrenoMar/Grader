@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Secondary600,
+    primary = Primary400,
     secondary = Secondary600,
     background = BackgroundLight,
     surfaceVariant = BackgroundLightVar,
