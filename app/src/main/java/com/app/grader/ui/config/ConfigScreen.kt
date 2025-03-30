@@ -93,7 +93,7 @@ fun ConfigScreen(
                 style = MaterialTheme.typography.bodyMedium,
             )
             Text(
-                text = "Creado por @DanielCarrenoMar en colaboración con @Kobalt09, @Queik5450 y @Bloodbay8",
+                text = "Creado por @DanielCarrenoMar en colaboración con @Kobalt09, @Queik5450, @Bloodbay8 y @davijuan69",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
