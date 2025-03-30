@@ -6,7 +6,7 @@
 
 ![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
 
-Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450)  y [@Bloodbay8](https://github.com/Bloodbay8)
+Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
 
 <!-- 
 > [Descargar ultima versión](https://github.com/DanielCarrenoMar/Grader/releases/latest/download/Grader.apk)
@@ -39,9 +39,8 @@ Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y d
 ### Imagenes...
 ![Home](https://github.com/user-attachments/assets/5db992fb-f3af-42c5-bfa3-7c3998603337)
 ![Asignatura](https://github.com/user-attachments/assets/57824d52-6314-494e-b65a-e1342bf6fb40)
-![photo_1](https://github.com/user-attachments/assets/3b778b60-2ee2-4f10-bccc-d5ef6d142950)
-![photo_2](https://github.com/user-attachments/assets/23d16a50-b04b-444d-adaa-e53a176aa116)
-![photo_3](https://github.com/user-attachments/assets/961a6b9d-3533-46cf-8ecb-f21e64e5bb36)
-![photo_4](https://github.com/user-attachments/assets/f998272b-e1d6-4f78-b529-46bf17e8f789)
-![ajustes](https://github.com/user-attachments/assets/b512f0de-597c-430f-966b-660167b669a7)
-
+![TodasLasNotas](https://github.com/user-attachments/assets/3b778b60-2ee2-4f10-bccc-d5ef6d142950)
+![EditarAsignatura](https://github.com/user-attachments/assets/23d16a50-b04b-444d-adaa-e53a176aa116)
+![nota](https://github.com/user-attachments/assets/f998272b-e1d6-4f78-b529-46bf17e8f789)
+![Editarnota](https://github.com/user-attachments/assets/0cf31947-47c3-403c-bbc3-9f12f7898f2a)
+![ajustes](https://github.com/user-attachments/assets/4065d08a-3df9-45b2-ac1f-6f9a19cd3da7)
