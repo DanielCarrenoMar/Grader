@@ -4,16 +4,33 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.app.grader.data.database.entitites.GradeEntity
+import com.app.grader.data.database.entitites.SubGradeEntity
 
 @Dao
 interface SubGradeDao {
 
-    /*@Query("SELECT * FROM course ORDER BY author DESC")
-    suspend fun getAllQuotes():List<QuoteEntity>
+    @Query("SELECT * FROM sub_grade WHERE grade_id = :gradeId")
+    suspend fun getSubGradesFromGradeId(gradeId: Int): List<SubGradeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(quotes:List<QuoteEntity>)
+    suspend fun insertSubGrade(subGrade: SubGradeEntity): Long
 
-    @Query("DELETE FROM course")
-    suspend fun deleteAllQuotes()*/
+    @Query("UPDATE sub_grade SET title = :title, grade = :grade  WHERE id = :subGradeId")
+    suspend fun updateSubGradeById(subGradeId: Int, title: String, grade: Double): Int
+
+    @Query("DELETE FROM sub_grade WHERE grade_id = :gradeId")
+    suspend fun deleteAllSubGradesFromGradeId(gradeId: Int): Int
+
+    @Query("DELETE FROM sub_grade")
+    suspend fun deleteAllSubGrades(): Int
+
+    @Query("DELETE FROM sub_grade WHERE id = :subGradeId")
+    suspend fun deleteSubGradeFromId(subGradeId: Int): Int
+
+    @Query("DELETE FROM sqlite_sequence WHERE name = 'sub_grade'")
+    suspend fun resetIncremetalSubGrade()
+
+    @Query("SELECT * FROM sub_grade WHERE id = :subGradeId")
+    suspend fun getSubGradeFromId(subGradeId: Int): SubGradeEntity?
 }

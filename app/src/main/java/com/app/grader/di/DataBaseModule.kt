@@ -2,6 +2,8 @@ package com.app.grader.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,4 +28,12 @@ class DataBaseModule {
     @Singleton
     @Provides
     fun provideCourseDao(db: AppDatabase) = db.getCourseDao()
+
+    @Singleton
+    @Provides
+    fun provideGradeDao(db: AppDatabase) = db.getGradeDao()
+
+    @Singleton
+    @Provides
+    fun provideSubGradeDao(db: AppDatabase) = db.getSubGradeDao()
 }

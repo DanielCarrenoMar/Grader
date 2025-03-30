@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "43dcf578186a57eb92ff9cbfe40b4d8c",
+    "version": 3,
+    "identityHash": "fbb50818a3d44d8ffb95158c2e2e630a",
     "entities": [
       {
         "tableName": "course",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `uc` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `uc` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,12 +17,6 @@
           {
             "fieldPath": "title",
             "columnName": "title",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -94,7 +88,7 @@
       },
       {
         "tableName": "sub_grade",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grade_id` INTEGER NOT NULL, `title` TEXT NOT NULL, `grade` REAL NOT NULL, `percentage` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `grade_id` INTEGER NOT NULL, `title` TEXT NOT NULL, `grade` REAL NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -119,12 +113,6 @@
             "columnName": "grade",
             "affinity": "REAL",
             "notNull": true
-          },
-          {
-            "fieldPath": "percentage",
-            "columnName": "percentage",
-            "affinity": "REAL",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -140,7 +128,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '43dcf578186a57eb92ff9cbfe40b4d8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fbb50818a3d44d8ffb95158c2e2e630a')"
     ]
   }
 }

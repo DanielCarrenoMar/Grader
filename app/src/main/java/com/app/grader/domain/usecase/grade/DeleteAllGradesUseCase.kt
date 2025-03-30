@@ -1,26 +1,24 @@
-package com.app.grader.domain.usecase
+package com.app.grader.domain.usecase.grade
 
-import android.util.Log
-import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.repository.LocalStorageRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class SaveCourseUserCase @Inject constructor(
+class DeleteAllGradesUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(courseModel: CourseModel): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(): Flow<Resource<Int>> = channelFlow {
         try {
-            emit(Resource.Loading())
-            emit(
+            send(Resource.Loading())
+            send(
                 Resource.Success(
-                    data = repository.saveCourse(courseModel)
+                    data = repository.deleteAllGrades()
                 )
             )
         } catch (e: Exception) {
-            emit(
+            send(
                 Resource.Error(e.message ?: "Unknown Error")
             )
         }

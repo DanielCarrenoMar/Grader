@@ -1,56 +1,100 @@
 package com.app.grader.core.navigation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.app.grader.ui.allGrades.AllGradesScreen
-import com.app.grader.ui.course.CourseScreen
-import com.app.grader.ui.course.CourseViewModel
-import com.app.grader.ui.grade.GradeScreen
-import com.app.grader.ui.home.HomeScreen
-import com.app.grader.ui.home.HomeViewModel
+import com.app.grader.ui.allGrades.*
+import com.app.grader.ui.config.*
+import com.app.grader.ui.course.*
+import com.app.grader.ui.home.*
+import com.app.grader.ui.editGrade.*
+import com.app.grader.ui.editCourse.*
+
+/**
+ * Navega a una pantalla borrandola de la pila de pantallas
+ */
+fun NavController.navigatePop(route: Any) {
+    this.navigate(route) {
+        popUpTo(route) { inclusive = true }
+    }
+}
 
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Home) {
+    NavHost(
+        navController = navController,
+        startDestination = Home,
+        enterTransition = { fadeIn(animationSpec = tween(700)) },
+        exitTransition = { fadeOut(animationSpec = tween(700)) },
+        popEnterTransition = {fadeIn(animationSpec = tween(0))},
+    ) {
         composable<Home> {
-            HomeScreen(HomeViewModel() ,{ myText -> navController.navigate(AllGrades(text = myText)) }, { navController.navigate(Course) })
-        }
-
-        composable<AllGrades> { backStateEntry ->
-            val allGrades:AllGrades = backStateEntry.toRoute()
-            AllGradesScreen (allGrades.text ){ navController.navigate(Home){
-                popUpTo(Home) { inclusive = true }
-            } }
-            // Cuando se navega a una pantalla se crea una nueva
-            // frente a la anterior, asi que para navegar a la home
-            // borramos la pila de pantallas con popUpTo
-        }
-
-        composable<Course> {
-            CourseScreen (
-                { navController.navigate(Home){popUpTo(Home) { inclusive = true }} },
-                { navController.navigate(Grade) }
+            HomeScreen(
+                { myText -> navController.navigate(AllGrades) },
+                { navController.navigate(Config) },
+                {  courseId ->  navController.navigate(Course(courseId)) },
+                {  courseId ->  navController.navigate(EditCourse(courseId)) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
 
-        composable<Grade> {
-            GradeScreen { navController.navigate(Course) }
+        composable<AllGrades> {
+            AllGradesScreen (
+                { navController.navigatePop(Home) },
+                { navController.navigate(Config) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+            )
         }
 
-        /*composable<Detail> { backStackEntry ->
-            val detail: Detail = backStackEntry.toRoute()
-            DetailScreen(name = detail.name,
-                navigateBack = { navController.navigateUp() },
-                navigateToSettings = {navController.navigate(Settings(it))})
+        composable<Config> {
+            ConfigScreen(
+                { navController.navigatePop(Home) },
+                { navController.navigate(AllGrades) }
+            )
         }
 
-        composable<Settings>(typeMap = mapOf(typeOf<SettingsInfo>() to createNavType<SettingsInfo>())){ backStackEntry ->
-            val settings:Settings = backStackEntry.toRoute()
-            SettingsScreen(settings.info)
-        }*/
+        composable<Course>(
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) { backStateEntry ->
+            val course:Course = backStateEntry.toRoute()
+            CourseScreen (
+                course.courseId,
+                { navController.popBackStack() },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+            )
+        }
+
+        composable<EditCourse>(
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) { backStateEntry ->
+            val editCourse:EditCourse = backStateEntry.toRoute()
+            EditCourseScreen (editCourse.courseId, { navController.popBackStack() })
+        }
+
+        composable<EditGrade>(
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) {  backStateEntry ->
+            val editGrade:EditGrade = backStateEntry.toRoute()
+            EditGradeScreen (editGrade.gradeId, editGrade.courseId, { navController.popBackStack() })
+        }
     }
 }
