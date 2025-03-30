@@ -8,7 +8,7 @@
 
 Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
 
-> 👀 [Descargar última versión](https://github.com/DanielCarrenoMar/Grader/releases/latest/download/Grader.v1.0.0.apk)
+> 👀 [Descargar última versión](https://github.com/DanielCarrenoMar/Grader/releases/latest/download/Grader.v1.0.1.apk)
 
 
 ## Características ⭐
