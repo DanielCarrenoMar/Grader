@@ -200,13 +200,13 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                                     text = "${(accumulatePoints * 10).roundToInt() / 10.0}",
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
-                                    color = Success500,
+                                    color = MaterialTheme.colorScheme.tertiary,
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     text = "Ptos. Acumulados",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = Success500
+                                    color = MaterialTheme.colorScheme.tertiary
                                 )
                             }
                             Spacer(Modifier.height(3.dp))
@@ -215,13 +215,13 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
                                     text = "${(pendingPoints * 10).roundToInt() / 10.0}",
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
-                                    color = Secondary600
+                                    color = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     text = "Ptos. Por Evaluar",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = Secondary600
+                                    color = MaterialTheme.colorScheme.secondary
                                 )
                             }
                         }

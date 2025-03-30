@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.app.grader.ui.theme.Neutral600
 import com.app.grader.ui.theme.Secondary600
 import com.app.grader.ui.theme.Success500
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -26,16 +27,16 @@ fun CirclePie(average:Double, accumulatePoints:Double, pendingPoints: Double, st
         ,pendingPoints.toFloat()
     )
     val colors = listOf(
-        Success500,
-        Neutral600,
-        Secondary600
+        MaterialTheme.colorScheme.tertiary,
+        MaterialTheme.colorScheme.onSurface,
+        MaterialTheme.colorScheme.secondary
     )
 
     val colorBase = MaterialTheme.colorScheme.surface
     val textAverage = when{
         average == 0.0 -> "--"
         average % 1 == 0.0 -> average.toInt().toString()
-        else -> (Math.round(average * 10) / 10.0 ).toString()
+        else -> ((average * 10).roundToInt() / 10.0 ).toString()
     }
 
     Box(

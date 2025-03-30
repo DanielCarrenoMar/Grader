@@ -43,6 +43,7 @@ fun DeleteConfirmationComp(
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Error500,
+                    contentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -52,7 +53,10 @@ fun DeleteConfirmationComp(
         dismissButton = {
             Button(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = MaterialTheme.colorScheme.onBackground
+                ),
             ) {
                 Text("Cancelar")
             }

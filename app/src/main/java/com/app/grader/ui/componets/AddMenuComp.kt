@@ -78,7 +78,7 @@ data class AddMenuCompItem(
 fun AddMenuComp(items: List<AddMenuCompItem>) {
     var expanded by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
-        targetValue = if (expanded) Color.White.copy(0.9f) else Color.White.copy(0.0f),
+        targetValue = if (expanded) MaterialTheme.colorScheme.background.copy(0.9f) else MaterialTheme.colorScheme.background.copy(0.0f),
         animationSpec = tween(
             durationMillis = 150,
             easing = EaseIn
