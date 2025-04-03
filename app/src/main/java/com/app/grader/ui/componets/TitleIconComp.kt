@@ -21,6 +21,7 @@ import com.app.grader.ui.theme.IconSmall
 
 @Composable
 fun TitleIcon(
+    modifier: Modifier = Modifier,
     iconName: String,
     iconId: Int,
     size: Dp = IconSmall,
@@ -28,6 +29,7 @@ fun TitleIcon(
     text: @Composable ()->Unit)
 {
     Row (
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
