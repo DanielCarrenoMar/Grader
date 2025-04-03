@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -53,13 +54,19 @@ fun CourseCardComp(
                 .padding(innerPading),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
-            Column (verticalArrangement = Arrangement.Top){
-                TitleIcon("education cap", R.drawable.education_cap, backgroundColor = MaterialTheme.colorScheme.primary){
+            Column (
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Top
+            ){
+                TitleIcon(
+                    iconName = "education cap",
+                    iconId =  R.drawable.education_cap,
+                    backgroundColor = MaterialTheme.colorScheme.primary
+                ){
                     Text(
                         text = course.title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.width(200.dp)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
                 Row (
@@ -81,7 +88,10 @@ fun CourseCardComp(
                     )
                 }
             }
-            Row (verticalAlignment = Alignment.Top){
+            Row (
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.End
+            ){
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(vertical = 4.dp),

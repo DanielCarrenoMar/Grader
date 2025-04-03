@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
 import com.app.grader.ui.theme.Error500
+import com.app.grader.ui.theme.Shadow50
 
 @Composable
 fun DeleteConfirmationComp(
@@ -43,7 +44,7 @@ fun DeleteConfirmationComp(
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Error500,
-                    contentColor = MaterialTheme.colorScheme.onBackground
+                    contentColor = Shadow50
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -55,7 +56,7 @@ fun DeleteConfirmationComp(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = MaterialTheme.colorScheme.onBackground
+                    contentColor = Shadow50
                 ),
             ) {
                 Text("Cancelar")

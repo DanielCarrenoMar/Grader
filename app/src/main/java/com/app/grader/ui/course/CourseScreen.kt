@@ -129,7 +129,10 @@ fun CourseScreen(
                 modifier = Modifier.weight(1f)
             ){ innerPadding ->
                 Column (modifier = Modifier.padding(innerPadding).fillMaxHeight()) {
-                    TitleIcon("star", R.drawable.star) {
+                    TitleIcon(
+                        iconName = "star",
+                        iconId =  R.drawable.star
+                    ) {
                         Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
                     }
                     Spacer(modifier = Modifier.height(15.dp))
@@ -176,7 +179,10 @@ fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Doub
         Column (
             modifier = Modifier.padding(innerPading)
         ){
-            TitleIcon("chart pie", R.drawable.chart_pie) {
+            TitleIcon(
+                iconName = "chart pie",
+                iconId = R.drawable.chart_pie
+            ) {
                 Text(text = "Promedio", style = MaterialTheme.typography.labelLarge)
             }
             Row( modifier = Modifier
