@@ -37,7 +37,7 @@ Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y d
 2. Asegúrese de que tiene habilitada la opción de descargar APKS (por defecto Android no te deja descargar fuera de la Play Store).
 3. Instala la aplicación.
 
-### Imagenes...
+### Imagenes
 ![Home](https://github.com/user-attachments/assets/5db992fb-f3af-42c5-bfa3-7c3998603337)
 ![Asignatura](https://github.com/user-attachments/assets/57824d52-6314-494e-b65a-e1342bf6fb40)
 ![TodasLasNotas](https://github.com/user-attachments/assets/3b778b60-2ee2-4f10-bccc-d5ef6d142950)
