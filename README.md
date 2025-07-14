@@ -26,7 +26,7 @@ Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y d
 - Vico (gráficos)
 - Material3 (UI)
 
-# Hoja de Ruta
+# Características Futuras 🔮
 1) Ordenar calificaciones en Todas las calificaciones
 2) Activar o desactivar el modo oscuro desde la app
 3) Atajo pulsar para eliminar
