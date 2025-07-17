@@ -22,7 +22,7 @@ class DataBaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java, "grader_database"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration(true).build()
     }
 
     @Singleton
