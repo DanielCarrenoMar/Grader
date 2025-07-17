@@ -106,7 +106,7 @@ fun HeaderMenu(
                         onClick = navigateHome
                     )
                     MyNavigationDrawerItem(
-                        title = "Todas las notas",
+                        title = "Todas las calificaciones",
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
                     )
