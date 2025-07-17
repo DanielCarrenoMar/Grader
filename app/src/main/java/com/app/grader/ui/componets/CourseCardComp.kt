@@ -98,7 +98,6 @@ fun CourseCardComp(
                 ){
                     CircleCourse(
                         grade = course.average,
-                        strokeWith =  5.dp,
                         radius =  33.dp)
                 }
                 Box(contentAlignment = Alignment.TopEnd){

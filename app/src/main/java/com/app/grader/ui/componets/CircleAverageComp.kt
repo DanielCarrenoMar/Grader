@@ -24,7 +24,7 @@ fun CirclePie(
     average:Double,
     accumulatePoints:Double,
     pendingPoints: Double,
-    strokeWeight: Dp = 7.dp,
+    strokeWith: Dp = 7.dp,
     radius: Dp = 40.dp
 ){
     val density = LocalDensity.current
@@ -47,7 +47,7 @@ fun CirclePie(
                 masterProgress = 1f,
                 gapWidthDegrees = 0f,
                 gapAngleDegrees = 270f,
-                strokeWidth = with(density) { strokeWeight.toPx() },
+                strokeWidth = with(density) { strokeWith.toPx() },
                 backgroundLineColor = MaterialTheme.colorScheme.onSurface,
                 sections = listOf(
                     DonutSection(amount = accumulatePoints.toFloat(), color = MaterialTheme.colorScheme.tertiary),
