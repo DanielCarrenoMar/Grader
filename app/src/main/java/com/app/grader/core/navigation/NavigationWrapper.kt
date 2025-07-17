@@ -40,7 +40,7 @@ fun NavigationWrapper() {
     ) {
         composable<Home> {
             HomeScreen(
-                { myText -> navController.navigate(AllGrades) },
+                { navController.navigate(AllGrades) },
                 { navController.navigate(Config) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  courseId ->  navController.navigate(EditCourse(courseId)) },

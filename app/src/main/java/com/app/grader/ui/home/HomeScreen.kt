@@ -53,7 +53,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    navigateToAllGrades: (String) -> Unit,
+    navigateToAllGrades: () -> Unit,
     navigateToConfig: () -> Unit,
     navigateToCourse: (Int) -> Unit,
     navigateToEditCourse: (Int) -> Unit,
@@ -80,7 +80,7 @@ fun HomeScreen(
     HeaderMenu(
         "Asignaturas",
         null,
-        { navigateToAllGrades("a") },
+        { navigateToAllGrades() },
         { navigateToConfig() }
     ) { innerPadding ->
         LazyColumn(
