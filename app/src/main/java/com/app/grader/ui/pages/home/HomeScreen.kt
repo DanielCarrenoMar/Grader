@@ -65,8 +65,8 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        viewModel.getAllCoursesAndCalTotalAverage()
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.getAllCoursesAndCalTotalAverage()
             viewModel.getAllGrades()
         }
     }
