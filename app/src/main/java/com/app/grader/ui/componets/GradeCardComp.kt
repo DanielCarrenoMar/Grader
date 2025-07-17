@@ -40,7 +40,10 @@ fun GradeCardComp(grade: GradeModel, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(5.dp)
         ){
-            CircleGrade(grade.grade, radius = 20.dp)
+            CircleGrade(
+                grade = grade.grade,
+                radius = 20.dp
+            )
             Column(
                 modifier = Modifier.padding(start = 20.dp),
                 verticalArrangement = Arrangement.SpaceBetween

@@ -48,7 +48,12 @@ fun getColorForGrade(grade: Double): Color {
 }
 
 @Composable
-fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 7.dp, radius : Dp = 40.dp) {
+fun CircleCourse(
+    modifier: Modifier = Modifier,
+    grade: Double,
+    strokeWith: Dp = 7.dp,
+    radius : Dp = 40.dp
+) {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
@@ -61,6 +66,15 @@ fun CircleCourse(grade: Double, modifier: Modifier = Modifier, strokeWith: Dp = 
         grade % 1 == 0.0 -> grade.toInt().toString()
         else -> (Math.round(grade * 10) / 10.0 ).toString()
     }
+
+    val data = listOf(
+        grade.toFloat(),
+        20 - grade.toFloat(),
+    )
+    val colors = listOf(
+        colorOnBase,
+        MaterialTheme.colorScheme.onSurface,
+    )
 
     Box(
         contentAlignment = Alignment.Center,

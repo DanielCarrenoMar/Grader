@@ -12,12 +12,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.app.grader.ui.allGrades.*
-import com.app.grader.ui.config.*
-import com.app.grader.ui.course.*
-import com.app.grader.ui.home.*
-import com.app.grader.ui.editGrade.*
-import com.app.grader.ui.editCourse.*
+import com.app.grader.ui.pages.allGrades.AllGradesScreen
+import com.app.grader.ui.pages.config.ConfigScreen
+import com.app.grader.ui.pages.course.CourseScreen
+import com.app.grader.ui.pages.editCourse.EditCourseScreen
+import com.app.grader.ui.pages.editGrade.EditGradeScreen
+import com.app.grader.ui.pages.home.HomeScreen
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas

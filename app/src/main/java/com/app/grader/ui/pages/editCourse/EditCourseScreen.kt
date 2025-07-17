@@ -1,4 +1,4 @@
-package com.app.grader.ui.editCourse
+package com.app.grader.ui.pages.editCourse
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -35,7 +35,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.home.HomeViewModel
+import com.app.grader.ui.pages.home.HomeViewModel
 
 @Composable
 fun EditCourseScreen(

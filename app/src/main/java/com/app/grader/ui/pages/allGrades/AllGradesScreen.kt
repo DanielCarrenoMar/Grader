@@ -1,4 +1,4 @@
-package com.app.grader.ui.allGrades
+package com.app.grader.ui.pages.allGrades
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,8 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.course.InfoGradeBottonCar
-import com.app.grader.ui.home.HomeViewModel
+import com.app.grader.ui.pages.course.InfoGradeBottonCar
+import com.app.grader.ui.pages.home.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

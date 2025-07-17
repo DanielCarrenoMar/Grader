@@ -1,4 +1,4 @@
-package com.app.grader.ui.course
+package com.app.grader.ui.pages.course
 
 import android.util.Log
 import androidx.compose.runtime.mutableDoubleStateOf

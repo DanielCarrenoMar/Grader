@@ -1,4 +1,4 @@
-package com.app.grader.ui.course
+package com.app.grader.ui.pages.course
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -279,7 +279,11 @@ fun InfoGradeBottonCar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 15.dp)
                 ) {
-                    CircleGrade(showGrade.grade, radius = 25.dp, fontSize = 18.sp)
+                    CircleGrade(
+                        grade = showGrade.grade,
+                        radius = 25.dp,
+                        fontSize = 18.sp
+                    )
                     Text(
                         text = showGrade.title,
                         style = MaterialTheme.typography.labelLarge,

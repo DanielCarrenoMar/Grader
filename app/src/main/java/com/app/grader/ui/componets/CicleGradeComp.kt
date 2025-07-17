@@ -14,12 +14,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
-import kotlin.rem
-import kotlin.text.toInt
-import kotlin.toString
 
 @Composable
-fun CircleGrade(grade: Double, fontSize: TextUnit = 16.sp, modifier: Modifier = Modifier, radius : Dp = 40.dp) {
+fun CircleGrade(
+    modifier: Modifier = Modifier,
+    grade: Double,
+    fontSize: TextUnit = 16.sp,
+    radius : Dp = 40.dp
+) {
     if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 

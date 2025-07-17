@@ -1,4 +1,4 @@
-package com.app.grader.ui.home
+package com.app.grader.ui.pages.home
 
 import android.util.Log
 import androidx.compose.runtime.mutableDoubleStateOf

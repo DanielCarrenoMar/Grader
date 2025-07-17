@@ -1,4 +1,4 @@
-package com.app.grader.ui.config
+package com.app.grader.ui.pages.config
 
 import android.content.Intent
 import android.net.Uri

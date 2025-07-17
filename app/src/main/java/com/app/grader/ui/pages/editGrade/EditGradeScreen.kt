@@ -1,4 +1,4 @@
-package com.app.grader.ui.editGrade
+package com.app.grader.ui.pages.editGrade
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState

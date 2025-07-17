@@ -1,4 +1,4 @@
-package com.app.grader.ui.editGrade
+package com.app.grader.ui.pages.editGrade
 
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf

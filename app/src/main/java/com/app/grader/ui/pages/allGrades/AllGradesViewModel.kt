@@ -1,4 +1,4 @@
-package com.app.grader.ui.allGrades
+package com.app.grader.ui.pages.allGrades
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf

@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CardContainer(
-    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ){
     if (onClick != null){

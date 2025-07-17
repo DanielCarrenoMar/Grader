@@ -1,4 +1,4 @@
-package com.app.grader.ui.config
+package com.app.grader.ui.pages.config
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

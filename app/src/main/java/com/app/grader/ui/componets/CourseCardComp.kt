@@ -96,7 +96,10 @@ fun CourseCardComp(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(vertical = 4.dp),
                 ){
-                    CircleCourse(course.average, strokeWith =  5.dp, radius =  33.dp)
+                    CircleCourse(
+                        grade = course.average,
+                        strokeWith =  5.dp,
+                        radius =  33.dp)
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(
