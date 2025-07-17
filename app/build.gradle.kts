@@ -77,6 +77,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Graficos/Diagramas
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.views)
+    implementation(libs.donut.views)
+    implementation(libs.donut.compose)
+
 }
