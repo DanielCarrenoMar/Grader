@@ -44,7 +44,7 @@ class EditGradeViewModel @Inject constructor(
 
     private val _title = mutableStateOf("Sin Titulo")
     val title = _title
-    private val _description = mutableStateOf("Sin Descricción")
+    private val _description = mutableStateOf("Sin descripción")
     val description = _description
     private val _grade = mutableStateOf(Grade(20.0))
     val grade = _grade
@@ -321,7 +321,10 @@ class EditGradeViewModel @Inject constructor(
         if (_showGrade.value.isBlank() ||
             showGradeValue == null ||
             !Grade.check(showGradeValue)
-            ) _showGrade.value = _grade.value.toString().removeSuffix(".0")
+            ) {
+            _grade.value.setBlank()
+            _showGrade.value = _grade.value.toString().removeSuffix(".0")
+        }
 
         val showPercentageValue = _showPercentage.value.toDoubleOrNull()
         if (_showPercentage.value.isBlank() ||
