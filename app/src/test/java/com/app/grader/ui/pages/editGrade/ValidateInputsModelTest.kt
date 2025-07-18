@@ -25,7 +25,7 @@ object EditGradeViewModelMother {
     }
 }
 
-class EditGradeViewModelTest {
+class ValidateInputsModelTest {
     private lateinit var viewModel: EditGradeViewModel
 
     @Before
@@ -53,8 +53,15 @@ class EditGradeViewModelTest {
     }
 
     @Test
-    fun `syncInvalidInputs retorna false con grade invalida`() {
+    fun `syncInvalidInputs retorna false con grade es mas de 20`() {
         viewModel.setGrade("40")
+        val result = viewModel.syncInvalidInputs()
+        assertFalse(result)
+    }
+
+    @Test
+    fun `syncInvalidInputs retorna false con grade es negativo`() {
+        viewModel.setGrade("-10")
         val result = viewModel.syncInvalidInputs()
         assertFalse(result)
     }
@@ -68,8 +75,15 @@ class EditGradeViewModelTest {
     }
 
     @Test
-    fun `syncInvalidInputs retorna false si percentage es inválido`() {
-        viewModel.setPercentage("")
+    fun `syncInvalidInputs retorna false si percentage es negativo`() {
+        viewModel.setPercentage("-10")
+        val result = viewModel.syncInvalidInputs()
+        assertFalse(result)
+    }
+
+    @Test
+    fun `syncInvalidInputs retorna false si percentage es mas de 100`() {
+        viewModel.setPercentage("101")
         val result = viewModel.syncInvalidInputs()
         assertFalse(result)
     }
