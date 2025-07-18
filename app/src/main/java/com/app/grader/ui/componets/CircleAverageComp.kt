@@ -17,11 +17,12 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
+import com.app.grader.domain.types.Grade
 import kotlin.math.roundToInt
 
 @Composable
 fun CirclePie(
-    average:Double,
+    average: Grade,
     accumulatePoints:Double,
     pendingPoints: Double,
     strokeWith: Dp = 7.dp,
@@ -29,9 +30,8 @@ fun CirclePie(
 ){
     val density = LocalDensity.current
     val textAverage = when{
-        average == 0.0 -> "--"
-        average % 1 == 0.0 -> average.toInt().toString()
-        else -> ((average * 10).roundToInt() / 10.0 ).toString()
+        average.isBlank() -> "--"
+        else -> average.toString()
     }
 
     Box(

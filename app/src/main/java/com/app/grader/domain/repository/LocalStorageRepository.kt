@@ -3,9 +3,10 @@ package com.app.grader.domain.repository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SubGradeModel
+import com.app.grader.domain.types.Grade
 
 interface LocalStorageRepository {
-    suspend fun getAverageFromCourse(courseId:Int) : Double
+    suspend fun getAverageFromCourse(courseId:Int) : Grade
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int
     suspend fun deleteCourseFromId(courseId: Int): Boolean

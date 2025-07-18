@@ -8,8 +8,10 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.model.toGradeEntity
+import com.app.grader.domain.model.toGradeModel
 import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.repository.LocalStorageRepository
+import com.app.grader.domain.types.Grade
 import javax.inject.Inject
 
 class LocalStorageRepositoryImpl @Inject constructor(
@@ -85,15 +87,15 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAverageFromCourse(courseId:Int): Double {
+    override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
             val grades = gradeDao.getGradesFromCourseId(courseId)
-            if (grades.isEmpty()) return 0.0
+            if (grades.isEmpty()) return Grade()
 
             val totalWeight = grades.sumOf { it.percentage }
             val weightedAverage = grades.sumOf { it.grade * it.percentage } / totalWeight
 
-            return weightedAverage
+            return Grade(weightedAverage)
         } catch (e: Exception) {
             throw e
         }
@@ -102,14 +104,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
         try {
             return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
-                GradeModel(
-                    id = gradeEntity.id,
-                    courseId = gradeEntity.courseId,
-                    title = gradeEntity.title,
-                    description = gradeEntity.description,
-                    grade = gradeEntity.grade,
-                    percentage = gradeEntity.percentage
-                )
+                gradeEntity.toGradeModel()
             }
         } catch (e: Exception) {
             throw e
@@ -156,14 +151,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getAllGrades(): List<GradeModel> {
         try {
             return gradeDao.getAllGrades().map { gradeEntity ->
-                GradeModel(
-                    title = gradeEntity.title,
-                    description = gradeEntity.description,
-                    grade = gradeEntity.grade,
-                    percentage = gradeEntity.percentage,
-                    id = gradeEntity.id,
-                    courseId = gradeEntity.courseId,
-                )
+                gradeEntity.toGradeModel()
             }
         } catch (e: Exception) {
             throw e
@@ -173,14 +161,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getGradeFromId(gradeId: Int): GradeModel? {
         try {
             val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
-            return GradeModel(
-                title = gradeEntity.title,
-                description = gradeEntity.description,
-                grade = gradeEntity.grade,
-                percentage = gradeEntity.percentage,
-                id = gradeEntity.id,
-                courseId = gradeEntity.courseId,
-            )
+            return gradeEntity.toGradeModel()
         } catch (e: Exception) {
             throw e
         }
@@ -192,7 +173,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 gradeModel.id,
                 gradeModel.title,
                 gradeModel.description,
-                gradeModel.grade,
+                gradeModel.grade.getGrade(),
                 gradeModel.percentage
             )
             return result == 1

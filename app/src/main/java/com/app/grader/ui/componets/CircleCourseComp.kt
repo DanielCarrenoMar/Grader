@@ -20,6 +20,7 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
+import com.app.grader.domain.types.Grade
 import com.app.grader.ui.theme.Neutral100
 
 fun interpolateColors(colors: List<Color>, fraction: Float): Color {
@@ -39,9 +40,8 @@ fun interpolateColors(colors: List<Color>, fraction: Float): Color {
     }
 }
 
-fun getColorForGrade(grade: Double): Color {
-    if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
-    if (grade == 0.0) return Neutral100
+fun getColorForGrade(grade: Grade): Color {
+    if (grade.isBlank()) return Neutral100
 
     return  interpolateColors(
         listOf(
@@ -50,18 +50,17 @@ fun getColorForGrade(grade: Double): Color {
             Color(0xFF8BC441),
             Color(0xFF4CA649),
         ),
-        (grade / 20).toFloat()
+        (grade.getGrade() / 20).toFloat()
     )
 }
 
 @Composable
 fun CircleCourse(
     modifier: Modifier = Modifier,
-    grade: Double,
+    grade: Grade,
     strokeWith: Dp = 5.dp,
     radius : Dp = 40.dp
 ) {
-    if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
     if (strokeWith > radius) throw IllegalArgumentException("Stroke width must be less than radius")
@@ -69,9 +68,8 @@ fun CircleCourse(
     val density = LocalDensity.current
     val colorOnBase = getColorForGrade(grade)
     val textGrade = when{
-        grade == 0.0 -> "--"
-        grade % 1 == 0.0 -> grade.toInt().toString()
-        else -> (Math.round(grade * 10) / 10.0 ).toString()
+        grade.isBlank() -> "--"
+        else -> grade.toString()
     }
 
     Box(
@@ -89,7 +87,7 @@ fun CircleCourse(
                 strokeWidth = with(density) { strokeWith.toPx() },
                 backgroundLineColor = MaterialTheme.colorScheme.onSurface,
                 sections = listOf(
-                    DonutSection(amount = grade.toFloat(), color = colorOnBase),
+                    DonutSection(amount = grade.getGrade().toFloat(), color = colorOnBase),
                 )
             ),
             config = DonutConfig(

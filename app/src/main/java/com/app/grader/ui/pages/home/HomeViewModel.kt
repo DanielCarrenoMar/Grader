@@ -66,8 +66,8 @@ class HomeViewModel  @Inject constructor(
                             var totalUC = 0
 
                             _courses.value.forEach { course ->
-                                if (course.average != 0.0) {
-                                    totalGrades += course.average * course.uc
+                                if (course.average.isNotBlank()) {
+                                    totalGrades += course.average.getGrade() * course.uc
                                     totalUC += course.uc
                                 }
                             }

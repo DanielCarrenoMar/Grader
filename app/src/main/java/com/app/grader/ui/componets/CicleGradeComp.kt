@@ -13,23 +13,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.grader.domain.types.Grade
 import kotlin.math.roundToInt
 
 @Composable
 fun CircleGrade(
     modifier: Modifier = Modifier,
-    grade: Double,
+    grade: Grade,
     fontSize: TextUnit = 16.sp,
     radius : Dp = 40.dp
 ) {
-    if (grade < 0 || grade > 20) throw IllegalArgumentException("Grade must be between 0 and 20")
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 
     val colorOnBase = getColorForGrade(grade)
     val textGrade = when{
-        grade == 0.0 -> "--"
-        grade % 1 == 0.0 -> grade.toInt().toString()
-        else -> ((grade * 10).roundToInt() / 10.0).toString()
+        grade.isBlank() -> "--"
+        else -> grade.toString()
     }
 
     Box(

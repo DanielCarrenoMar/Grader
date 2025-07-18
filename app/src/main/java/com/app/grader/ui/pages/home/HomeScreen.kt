@@ -148,7 +148,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
                     modifier = Modifier.fillMaxSize().padding(vertical = 15.dp),
                     contentAlignment = Alignment.Center
                 ){
-                    if (grades.isNotEmpty()) LineChartAverage(grades.map{it.grade}, Modifier.fillMaxSize())
+                    if (grades.isNotEmpty()) LineChartAverage(grades.map{it.grade.getGrade()}, Modifier.fillMaxSize())
                     else Text(
                             text = "No hay calificaciones",
                             style = MaterialTheme.typography.titleSmall

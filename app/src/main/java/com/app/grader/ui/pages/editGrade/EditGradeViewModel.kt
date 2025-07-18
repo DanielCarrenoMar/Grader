@@ -40,6 +40,8 @@ class EditGradeViewModel @Inject constructor(
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
     private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeIdUseCase
 ): ViewModel() {
+    private val gradesCache = mutableStateOf<List<GradeModel>>(emptyList())
+
     private val _title = mutableStateOf("Sin Titulo")
     val title = _title
     private val _description = mutableStateOf("Sin Descricción")
@@ -77,6 +79,7 @@ class EditGradeViewModel @Inject constructor(
         val value = grade.toDoubleOrNull()
 
         if (grade.isNotBlank() && value != null && Grade.check(value) ) _grade.value.setGrade(value)
+        else _grade.value.setBlank()
     }
 
     fun setPercentage(percentage: String){
@@ -87,6 +90,7 @@ class EditGradeViewModel @Inject constructor(
             actDefaultPercentage()
         }
         else if (Percentage.check(value)) _percentage.value.setPercentage(value)
+        else actDefaultPercentage()
     }
 
     fun setCourseId(courseId: Int){
@@ -97,18 +101,17 @@ class EditGradeViewModel @Inject constructor(
 
     fun actDefaultPercentage(courseId: Int = _courseId.intValue) {
         if (courseId == -1) return
+        if (gradesCache.value.isNotEmpty()) {
+            calDefaultPercentage(gradesCache.value)
+        }
+
         viewModelScope.launch {
             getGradesFromCourseUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val grades = result.data!!
-                        var totalPercentage = 0.0
-                        grades.forEach { grade ->
-                            totalPercentage += grade.percentage
-                        }
-                        _defaultPercentage.value.setPercentage(100.0 - totalPercentage + _savedPercentage.value.getPercentage())
-                        _showPercentage.value = " "
-                        _showPercentage.value = ""
+                        gradesCache.value = grades
+                        calDefaultPercentage(grades)
                     }
 
                     is Resource.Loading -> {
@@ -124,6 +127,20 @@ class EditGradeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun calDefaultPercentage(grades: List<GradeModel>) {
+        var totalPercentage = 0.0
+        grades.forEach { grade ->
+            totalPercentage += grade.percentage
+        }
+        _defaultPercentage.value.setPercentage(100.0 - totalPercentage + _savedPercentage.value.getPercentage())
+        _showPercentage.value = " " // Estos dos parecen redundantes, considera si realmente los necesitas
+        _showPercentage.value = ""
+    }
+
+    fun resetCacheGrade() {
+        gradesCache.value = emptyList()
     }
 
     fun calGradeFromSubGrades() {
@@ -293,7 +310,6 @@ class EditGradeViewModel @Inject constructor(
     private fun checkInputs(): Boolean {
         return _title.value.isNotBlank() &&
                 _description.value.isNotBlank() &&
-                _grade.value.getGrade() != 0.0 &&
                 _grade.value.getGrade() == _showGrade.value.toDoubleOrNull() &&
                 _percentage.value.getPercentage() != 0.0 &&
                 _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull() &&
@@ -332,7 +348,7 @@ class EditGradeViewModel @Inject constructor(
                         courseId = _courseId.intValue,
                         title = _title.value,
                         description = _description.value,
-                        grade = _grade.value.getGrade(),
+                        grade = _grade.value,
                         percentage = _percentage.value.getPercentage(),
                     )
                 )
@@ -342,7 +358,7 @@ class EditGradeViewModel @Inject constructor(
                         courseId = _courseId.intValue,
                         title = _title.value,
                         description = _description.value,
-                        grade = _grade.value.getGrade(),
+                        grade = _grade.value,
                         percentage = _percentage.value.getPercentage(),
                         id = gradeId,
                     )

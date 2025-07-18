@@ -96,7 +96,6 @@ class EditCourseViewModel @Inject constructor(
                     CourseModel(
                         title = title.value,
                         uc = uc.intValue,
-                        average = 0.0
                     )
                 )
             } else {
@@ -104,7 +103,6 @@ class EditCourseViewModel @Inject constructor(
                     CourseModel(
                         title = title.value,
                         uc = uc.intValue,
-                        average = 0.0,
                         id = courseId
                     )
                 )

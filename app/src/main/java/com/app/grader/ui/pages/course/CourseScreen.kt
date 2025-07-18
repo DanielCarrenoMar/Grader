@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.types.Grade
 import com.app.grader.ui.componets.AddMenuComp
 import com.app.grader.ui.componets.AddMenuCompItem
 import com.app.grader.ui.componets.CardContainer
@@ -174,7 +175,7 @@ fun CourseScreen(
 }
 
 @Composable
-fun InfoCourseCard(average: Double, accumulatePoints:Double, pendingPoints: Double, uc: Int){
+fun InfoCourseCard(average: Grade, accumulatePoints:Double, pendingPoints: Double, uc: Int){
     CardContainer{ innerPading ->
         Column (
             modifier = Modifier.padding(innerPading)
