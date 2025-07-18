@@ -10,6 +10,7 @@ data class Grade(
         require(grade in 0.0..20.0 || grade == -1.0) { "Grade must be between 0 and 20" }
     }
     constructor() : this(-1.0)
+    constructor(grade:Grade) : this(grade.getGrade())
     fun setGrade(grade:Double){
         if (grade < 0.0) this.grade = -1.0
         else if (grade > 20.0) this.grade = 20.0

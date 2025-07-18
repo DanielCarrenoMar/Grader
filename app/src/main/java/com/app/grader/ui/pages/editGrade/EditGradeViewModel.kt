@@ -158,8 +158,13 @@ class EditGradeViewModel @Inject constructor(
     }
 
     fun addSubGrade(){
-        _subGrades.add(Grade(1.0))
-        _showSubGrades.add("")
+        if (_subGrades.isEmpty()){
+            _subGrades.add(Grade(_grade.value))
+            _showSubGrades.add(_grade.value.toString())
+        }else{
+            _subGrades.add(Grade(0.0))
+            _showSubGrades.add("0")
+        }
         calGradeFromSubGrades()
     }
 
