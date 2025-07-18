@@ -10,6 +10,7 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
+import com.app.grader.domain.usecase.course.GetAverageFromCourseIdUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
@@ -23,7 +24,8 @@ class CourseViewModel  @Inject constructor(
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
-    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase
+    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
+    private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
@@ -124,6 +126,27 @@ class CourseViewModel  @Inject constructor(
         }
     }
 
+    fun calAverageFromCourseId(courseId: Int) {
+        viewModelScope.launch {
+            getAverageFromCourseIdUseCase(courseId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        val average = result.data!!
+                        _course.value = _course.value.copy(
+                            average = average
+                        )
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error getAverageFromCourseId: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
     fun deleteGradeFromId(gradeId: Int){
         viewModelScope.launch {
             deleteGradeFromIdUseCase(gradeId).collect { result ->
@@ -131,6 +154,7 @@ class CourseViewModel  @Inject constructor(
                     is Resource.Success -> {
                         getGradesFromCourse(_course.value.id)
                         calPoints(_course.value.id)
+                        calAverageFromCourseId(_course.value.id)
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
