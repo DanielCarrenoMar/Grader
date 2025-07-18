@@ -22,6 +22,8 @@ import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
 import com.app.grader.domain.types.Grade
 import com.app.grader.ui.theme.Neutral100
+import kotlin.text.isNotBlank
+import kotlin.text.toFloat
 
 fun interpolateColors(colors: List<Color>, fraction: Float): Color {
     require(colors.isNotEmpty()) { "Color list must not be empty" }
@@ -71,6 +73,21 @@ fun CircleCourse(
         grade.isBlank() -> "--"
         else -> grade.toString()
     }
+    val sections = if (grade.isNotBlank()) {
+        listOf(
+            DonutSection(
+                amount = grade.getGrade().toFloat(),
+                color = colorOnBase
+            )
+        )
+    } else {
+        listOf(
+            DonutSection(
+                amount = 20f,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            )
+        )
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -86,9 +103,7 @@ fun CircleCourse(
                 gapAngleDegrees = 270f,
                 strokeWidth = with(density) { strokeWith.toPx() },
                 backgroundLineColor = MaterialTheme.colorScheme.onSurface,
-                sections = listOf(
-                    DonutSection(amount = grade.getGrade().toFloat(), color = colorOnBase),
-                )
+                sections = sections
             ),
             config = DonutConfig(
                 gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessLow),

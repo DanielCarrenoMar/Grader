@@ -33,6 +33,17 @@ fun CirclePie(
         average.isBlank() -> "--"
         else -> average.toString()
     }
+    val sections = if (average.isNotBlank()) {
+        listOf(
+            DonutSection(amount = accumulatePoints.toFloat(), color = MaterialTheme.colorScheme.tertiary),
+            DonutSection(amount = pendingPoints.toFloat(), color = MaterialTheme.colorScheme.secondary),
+        )
+    } else {
+        listOf(
+            DonutSection(amount = 0f, color = MaterialTheme.colorScheme.tertiary),
+            DonutSection(amount = 0f, color = MaterialTheme.colorScheme.secondary),
+        )
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -49,10 +60,7 @@ fun CirclePie(
                 gapAngleDegrees = 270f,
                 strokeWidth = with(density) { strokeWith.toPx() },
                 backgroundLineColor = MaterialTheme.colorScheme.onSurface,
-                sections = listOf(
-                    DonutSection(amount = accumulatePoints.toFloat(), color = MaterialTheme.colorScheme.tertiary),
-                    DonutSection(amount = pendingPoints.toFloat(), color = MaterialTheme.colorScheme.secondary),
-                )
+                sections = sections
             ),
             config = DonutConfig(
                 gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessLow),
