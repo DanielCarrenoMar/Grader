@@ -136,7 +136,11 @@ fun CourseScreen(
                     ) {
                         Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
                         Spacer(Modifier.width(6.dp))
-                        Text(text = viewModel.totalPercentaje.value.toString() + "%", style = MaterialTheme.typography.labelSmall)
+                        if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
+                            text = viewModel.totalPercentaje.value.toString() + "%",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyColumn {
