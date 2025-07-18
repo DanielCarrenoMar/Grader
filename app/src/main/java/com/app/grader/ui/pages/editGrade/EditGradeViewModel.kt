@@ -251,8 +251,11 @@ class EditGradeViewModel @Inject constructor(
                         _showTitle.value = grade.title
                         _description.value = grade.description
                         _showDescription.value = grade.description
+
                         _grade.value.setGrade(grade.grade)
-                        _showGrade.value = grade.grade.toString().removeSuffix(".0")
+                        if ( _grade.value.isBlank()) _showGrade.value = ""
+                        else _showGrade.value = grade.grade.toString()
+
                         _percentage.value.setPercentage(grade.percentage)
                         _showPercentage.value = grade.percentage.toString().removeSuffix(".0")
                         _savedPercentage.value.setPercentage(grade.percentage)
