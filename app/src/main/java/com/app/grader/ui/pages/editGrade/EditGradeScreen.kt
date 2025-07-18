@@ -100,7 +100,7 @@ fun EditGradeScreen(
                     if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
                     else {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Campos rellenados automáticamente")
+                            snackbarHostState.showSnackbar("Campos invalidos")
                         }
                     }
                 }) {

@@ -307,43 +307,50 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    private fun checkInputs(): Boolean {
-        return _title.value.isNotBlank() &&
-                _description.value.isNotBlank() &&
-                _grade.value.getGrade() == _showGrade.value.toDoubleOrNull() &&
-                _percentage.value.getPercentage() != 0.0 &&
-                _percentage.value.getPercentage() == _showPercentage.value.toDoubleOrNull() &&
-                _percentage.value.getPercentage() <= _defaultPercentage.value.getPercentage()
-    }
+     fun syncInvalidInputs(): Boolean {
+        var result = true
 
-    private fun syncInvalidInputs() {
         val showGradeValue = _showGrade.value.toDoubleOrNull()
         if (_showGrade.value.isBlank() ||
-            showGradeValue == null ||
-            !Grade.check(showGradeValue)
+            showGradeValue == null
             ) {
             _grade.value.setBlank()
-            _showGrade.value = _grade.value.toString().removeSuffix(".0")
+        }
+        else if (!Grade.check(showGradeValue)) {
+            _showGrade.value = if (_grade.value.isNotBlank()) _grade.value.toString().removeSuffix(".0") else ""
+            _grade.value.setGrade(_showGrade.value.toDoubleOrNull() ?: 0.0)
+            result = false
         }
 
         val showPercentageValue = _showPercentage.value.toDoubleOrNull()
-        if (_showPercentage.value.isBlank() ||
-            _percentage.value.getPercentage() == 0.0 ||
+        if (_percentage.value.getPercentage() == 0.0 ||
             showPercentageValue == null ||
             !Percentage.check(showPercentageValue) ||
             showPercentageValue > _defaultPercentage.value.getPercentage()
             ) {
-            _showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
+            //_showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
             _percentage.value.setPercentage(_defaultPercentage.value.getPercentage())
+            result = false
         }
+
+        if (_showTitle.value.isBlank()) {
+            _title.value = "Sin Titulo"
+            _showTitle.value = "Sin Titulo"
+        }
+
+        if (_showDescription.value.isBlank()) {
+            _description.value = "Sin descripción"
+            _showDescription.value = "Sin descripción"
+        }
+
+        return result
     }
 
     fun updateOrCreateGrade(gradeId: Int): Boolean{
         if (_courseId.intValue == -1) return false
-        if (checkInputs().not()) {
-            syncInvalidInputs()
-            return false
-        }
+
+        if (!syncInvalidInputs()) return false // Si algo sale mal retorna error
+
         viewModelScope.launch {
             if (gradeId == -1) {
                 saveGradeWithSubGrades(

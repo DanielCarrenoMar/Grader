@@ -19,6 +19,7 @@ kotlinxSerialization = "1.8.0"
 ksp = "2.1.10-1.0.30"
 vico = "2.1.0"
 donut = "2.2.4"
+mockito = "6.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,7 @@ vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", ve
 vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref = "vico" }
 donut-views = { group = "app.futured.donut", name = "donut", version.ref = "donut" }
 donut-compose = { group = "app.futured.donut", name = "donut-compose", version.ref = "donut" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

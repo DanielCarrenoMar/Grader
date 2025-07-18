@@ -83,4 +83,6 @@ dependencies {
     implementation(libs.donut.views)
     implementation(libs.donut.compose)
 
+    testImplementation(libs.mockito.kotlin)
+
 }
