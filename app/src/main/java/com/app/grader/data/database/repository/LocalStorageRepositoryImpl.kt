@@ -10,6 +10,7 @@ import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.model.toGradeEntity
 import com.app.grader.domain.model.toGradeModel
 import com.app.grader.domain.model.toSubGradeEntity
+import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
 import com.app.grader.domain.types.Grade
 import javax.inject.Inject
@@ -185,12 +186,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel> {
         try {
             return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGradeEntity ->
-                SubGradeModel(
-                    id = subGradeEntity.id,
-                    title = subGradeEntity.title,
-                    grade = subGradeEntity.grade,
-                    gradeId = subGradeEntity.gradeId,
-                )
+                subGradeEntity.toSubGradeModel()
             }
         } catch (e: Exception) {
             throw e
@@ -233,12 +229,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getSubGradeFromId(subGradeId: Int): SubGradeModel? {
         try {
             val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
-            return SubGradeModel(
-                title = subGradeEntity.title,
-                grade = subGradeEntity.grade,
-                id = subGradeEntity.id,
-                gradeId = subGradeEntity.gradeId,
-            )
+            return subGradeEntity.toSubGradeModel()
         } catch (e: Exception) {
             throw e
         }
@@ -249,7 +240,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val result = subGradeDao.updateSubGradeById(
                 subGradeModel.id,
                 subGradeModel.title,
-                subGradeModel.grade,
+                subGradeModel.grade.getGrade(),
             )
             return result == 1
         } catch (e: Exception) {

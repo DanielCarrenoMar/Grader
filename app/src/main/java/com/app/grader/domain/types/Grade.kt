@@ -39,6 +39,10 @@ data class Grade(
     }
 
     override fun toString(): String {
+        if (isBlank()) {
+            return ""
+        }
+
         if (grade % 1.0 == 0.0) {
             return grade.toLong().toString() // Convertir a Long y luego a String para quitar ".0"
         }
@@ -58,7 +62,10 @@ data class Grade(
     }
 }
 
-fun Iterable<Grade>.averageGrade(): Double {
-    if (this.none()) return 0.0
-    return this.filter { !it.isBlank() }.sumOf { it.getGrade() } / this.count()
+fun Iterable<Grade>.averageGrade(): Grade {
+    if (this.none()) return Grade()
+    val filters = this.filter { !it.isBlank() }
+    if (filters.isEmpty()) return Grade()
+    val sum = filters.sumOf { it.getGrade() } / filters.count()
+    return Grade(sum)
 }

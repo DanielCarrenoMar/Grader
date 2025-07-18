@@ -146,7 +146,7 @@ class EditGradeViewModel @Inject constructor(
     fun calGradeFromSubGrades() {
         if (_subGrades.isEmpty()) return
         _grade.value.setGrade( _subGrades.averageGrade())
-        _showGrade.value = _grade.value.toString().removeSuffix(".0")
+        _showGrade.value = _grade.value.toString()
     }
 
     fun setSubGrade(index: Int, subGrade: String){
@@ -154,6 +154,7 @@ class EditGradeViewModel @Inject constructor(
         val value = subGrade.toDoubleOrNull()
 
         if (subGrade.isNotBlank() && value != null && Grade.check(value) ) _subGrades[index].setGrade(value)
+        else _subGrades[index].setBlank()
         calGradeFromSubGrades()
     }
 
@@ -162,8 +163,8 @@ class EditGradeViewModel @Inject constructor(
             _subGrades.add(Grade(_grade.value))
             _showSubGrades.add(_grade.value.toString())
         }else{
-            _subGrades.add(Grade(0.0))
-            _showSubGrades.add("0")
+            _subGrades.add(Grade())
+            _showSubGrades.add("")
         }
         calGradeFromSubGrades()
     }
@@ -183,7 +184,7 @@ class EditGradeViewModel @Inject constructor(
                         val subGrades:List<SubGradeModel> = result.data!!
                         subGrades.map {
                             _subGrades.add(Grade(it.grade))
-                            _showSubGrades.add(it.grade.toString().removeSuffix(".0"))
+                            _showSubGrades.add(it.grade.toString())
                         }
                     }
                     is Resource.Loading -> {
@@ -202,7 +203,7 @@ class EditGradeViewModel @Inject constructor(
         _subGrades.forEachIndexed { index, grade ->
             saveSubGrade(SubGradeModel(
                 title = "SubGrade $index",
-                grade = grade.getGrade(),
+                grade = grade,
                 gradeId = gradeId
             ))
         }
@@ -258,8 +259,7 @@ class EditGradeViewModel @Inject constructor(
                         _showDescription.value = grade.description
 
                         _grade.value.setGrade(grade.grade)
-                        if ( _grade.value.isBlank()) _showGrade.value = ""
-                        else _showGrade.value = grade.grade.toString()
+                        _showGrade.value = grade.grade.toString()
 
                         _percentage.value.setPercentage(grade.percentage)
                         _showPercentage.value = grade.percentage.toString().removeSuffix(".0")
