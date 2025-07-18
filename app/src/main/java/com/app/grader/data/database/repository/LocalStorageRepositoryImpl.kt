@@ -94,7 +94,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val filteredGrades = grades.filter { it.grade.isNotBlank() }
             if (filteredGrades.isEmpty()) return Grade()
 
-
             val totalWeight = filteredGrades.sumOf { it.percentage }
             val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage } / totalWeight
 

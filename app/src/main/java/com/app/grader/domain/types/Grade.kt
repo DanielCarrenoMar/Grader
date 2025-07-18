@@ -1,8 +1,5 @@
 package com.app.grader.domain.types
 
-import androidx.compose.runtime.snapshots.toLong
-import androidx.compose.ui.text.intl.Locale
-
 data class Grade(
     private var grade: Double
 ){
