@@ -323,8 +323,12 @@ class EditGradeViewModel @Inject constructor(
         }
 
         val showPercentageValue = _showPercentage.value.toDoubleOrNull()
-        if (_percentage.value.getPercentage() == 0.0 ||
-            showPercentageValue == null ||
+         if (_showPercentage.value.isBlank() ||
+             showPercentageValue == null
+         ) {
+             _percentage.value.setPercentage(_defaultPercentage.value.getPercentage())
+         }
+        else if (_percentage.value.getPercentage() == 0.0 ||
             !Percentage.check(showPercentageValue) ||
             showPercentageValue > _defaultPercentage.value.getPercentage()
             ) {
