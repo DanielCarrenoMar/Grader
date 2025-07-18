@@ -67,8 +67,8 @@ class ValidateInputsModelTest {
     }
 
     @Test
-    fun `syncInvalidInputs retorna false con grade en valor Blank`() {
-        val value = Grade().toString()
+    fun `syncInvalidInputs retorna false con grade en valor en Blank`() {
+        val value = Grade().getGrade().toString()
         viewModel.setGrade(value)
         val result = viewModel.syncInvalidInputs()
         assertFalse(result)
