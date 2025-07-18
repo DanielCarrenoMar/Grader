@@ -7,7 +7,7 @@ data class Grade(
     private var grade: Double
 ){
     init {
-        require(grade in 0.0..20.0 || grade == -1.0) { "Grade must be between 0 and 20" }
+        require(grade in 0.0..20.0 || grade == -1.0) { "Grade must be between 0 and 20 or -1. Not $grade" }
     }
     constructor() : this(-1.0)
     constructor(grade:Grade) : this(grade.getGrade())

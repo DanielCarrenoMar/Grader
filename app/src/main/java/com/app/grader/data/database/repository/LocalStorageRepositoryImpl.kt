@@ -90,11 +90,13 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
-            val grades = gradeDao.getGradesFromCourseId(courseId)
-            if (grades.isEmpty()) return Grade()
+            val grades = getGradesFromCourse(courseId)
+            val filteredGrades = grades.filter { it.grade.isNotBlank() }
+            if (filteredGrades.isEmpty()) return Grade()
 
-            val totalWeight = grades.sumOf { it.percentage }
-            val weightedAverage = grades.sumOf { it.grade * it.percentage } / totalWeight
+
+            val totalWeight = filteredGrades.sumOf { it.percentage }
+            val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage } / totalWeight
 
             return Grade(weightedAverage)
         } catch (e: Exception) {

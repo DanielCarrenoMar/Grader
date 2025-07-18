@@ -64,8 +64,10 @@ class CourseViewModel  @Inject constructor(
                         var accumulatePointsTemp = 0.0
                         var totalPercentage = 0.0
                         grades.forEach { grade ->
-                            accumulatePointsTemp += (grade.percentage / 100) * grade.grade.getGrade()
-                            totalPercentage += grade.percentage
+                            if (grade.grade.isNotBlank()) {
+                                accumulatePointsTemp += (grade.percentage / 100) * grade.grade.getGrade()
+                                totalPercentage += grade.percentage
+                            }
                         }
                         _accumulatePoints.doubleValue = accumulatePointsTemp
                         _pedingPoints.doubleValue = (100 - totalPercentage) / 100 * 20
