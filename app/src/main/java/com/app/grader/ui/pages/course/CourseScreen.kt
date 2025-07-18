@@ -121,8 +121,8 @@ fun CourseScreen(
         ) {
             InfoCourseCard(
                 viewModel.course.value.average,
-                viewModel.accumulatePoints.doubleValue,
-                viewModel.pedingPoints.doubleValue,
+                viewModel.accumulatePoints.value,
+                viewModel.pedingPoints.value,
                 viewModel.course.value.uc
             )
             Spacer(modifier = Modifier.height(25.dp))
@@ -135,6 +135,8 @@ fun CourseScreen(
                         iconId =  R.drawable.star
                     ) {
                         Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
+                        Spacer(Modifier.width(6.dp))
+                        Text(text = viewModel.totalPercentaje.value.toString() + "%", style = MaterialTheme.typography.labelSmall)
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyColumn {
@@ -164,7 +166,7 @@ fun CourseScreen(
         }
         AddMenuComp(listOf(
             AddMenuCompItem("Calificación", R.drawable.star_outline){
-                if (viewModel.pedingPoints.doubleValue > 0){
+                if (viewModel.pedingPoints.value.getGrade() > 0){
                     navigateToEditGrade(-1, courseId)
                 }else coroutineScope.launch {
                     snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
@@ -175,7 +177,7 @@ fun CourseScreen(
 }
 
 @Composable
-fun InfoCourseCard(average: Grade, accumulatePoints:Double, pendingPoints: Double, uc: Int){
+fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade, uc: Int){
     CardContainer{ innerPading ->
         Column (
             modifier = Modifier.padding(innerPading)
@@ -189,7 +191,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Double, pendingPoints: Doubl
             Row( modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CirclePie(average ,accumulatePoints, pendingPoints)
+                CirclePie(average ,accumulatePoints.getGrade(), pendingPoints.getGrade())
                 Column(modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 0.dp)
                 ) {
@@ -204,7 +206,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Double, pendingPoints: Doubl
                         ) {
                             Row (verticalAlignment = Alignment.Bottom){
                                 Text(
-                                    text = "${(accumulatePoints * 10).roundToInt() / 10.0}",
+                                    text = "$accumulatePoints",
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
@@ -219,7 +221,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Double, pendingPoints: Doubl
                             Spacer(Modifier.height(3.dp))
                             Row (verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = "${(pendingPoints * 10).roundToInt() / 10.0}",
+                                    text = "$pendingPoints",
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.secondary
@@ -304,7 +306,7 @@ fun InfoGradeBottonCar(
                             .size(IconLarge),
                     )
                     Text(
-                        text = "${if (showGrade.percentage % 1 == 0.0) showGrade.percentage.toInt() else showGrade.percentage}%",
+                        text = showGrade.percentage.toString() + "%",
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 12.dp)
                     )

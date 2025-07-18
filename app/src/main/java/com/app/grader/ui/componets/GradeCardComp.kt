@@ -53,7 +53,7 @@ fun GradeCardComp(grade: GradeModel, onClick: () -> Unit) {
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = "${if (grade.percentage % 1 == 0.0) grade.percentage.toInt() else grade.percentage}%",
+                    text = grade.percentage.toString() + "%",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface
                     )

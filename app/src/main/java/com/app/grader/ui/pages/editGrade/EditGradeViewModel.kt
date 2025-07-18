@@ -132,7 +132,7 @@ class EditGradeViewModel @Inject constructor(
     private fun calDefaultPercentage(grades: List<GradeModel>) {
         var totalPercentage = 0.0
         grades.forEach { grade ->
-            totalPercentage += grade.percentage
+            totalPercentage += grade.percentage.getPercentage()
         }
         _defaultPercentage.value.setPercentage(100.0 - totalPercentage + _savedPercentage.value.getPercentage())
         _showPercentage.value = " " // Estos dos parecen redundantes, considera si realmente los necesitas
@@ -262,7 +262,7 @@ class EditGradeViewModel @Inject constructor(
                         _showGrade.value = grade.grade.toString()
 
                         _percentage.value.setPercentage(grade.percentage)
-                        _showPercentage.value = grade.percentage.toString().removeSuffix(".0")
+                        _showPercentage.value = grade.percentage.toString()
                         _savedPercentage.value.setPercentage(grade.percentage)
                     }
                     is Resource.Loading -> {
@@ -325,7 +325,7 @@ class EditGradeViewModel @Inject constructor(
             _grade.value.setBlank()
         }
         else if (!Grade.check(showGradeValue)) {
-            _showGrade.value = if (_grade.value.isNotBlank()) _grade.value.toString().removeSuffix(".0") else ""
+            _showGrade.value = _grade.value.toString()
             _grade.value.setGrade(_showGrade.value.toDoubleOrNull() ?: 0.0)
             result = false
         }
@@ -334,14 +334,13 @@ class EditGradeViewModel @Inject constructor(
          if (_showPercentage.value.isBlank() ||
              showPercentageValue == null
          ) {
-             _percentage.value.setPercentage(_defaultPercentage.value.getPercentage())
+             _percentage.value.setPercentage(_defaultPercentage.value)
          }
         else if (_percentage.value.getPercentage() == 0.0 ||
             !Percentage.check(showPercentageValue) ||
             showPercentageValue > _defaultPercentage.value.getPercentage()
             ) {
-            //_showPercentage.value = _defaultPercentage.value.toString().removeSuffix(".0")
-            _percentage.value.setPercentage(_defaultPercentage.value.getPercentage())
+            _percentage.value.setPercentage(_defaultPercentage.value)
             result = false
         }
 
@@ -371,7 +370,7 @@ class EditGradeViewModel @Inject constructor(
                         title = _title.value,
                         description = _description.value,
                         grade = _grade.value,
-                        percentage = _percentage.value.getPercentage(),
+                        percentage = _percentage.value,
                     )
                 )
             } else {
@@ -381,7 +380,7 @@ class EditGradeViewModel @Inject constructor(
                         title = _title.value,
                         description = _description.value,
                         grade = _grade.value,
-                        percentage = _percentage.value.getPercentage(),
+                        percentage = _percentage.value,
                         id = gradeId,
                     )
                 )

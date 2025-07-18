@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
@@ -25,10 +27,12 @@ class CourseViewModel  @Inject constructor(
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableDoubleStateOf(0.0)
+    private val _accumulatePoints = mutableStateOf(Grade(0.0))
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableDoubleStateOf(0.0)
+    private val _pedingPoints = mutableStateOf(Grade(0.0))
     val pedingPoints = _pedingPoints
+    private val _totalPercentaje = mutableStateOf(Percentage(0.0))
+    val totalPercentaje = _totalPercentaje
 
     private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
     val showGrade = _showGrade
@@ -65,12 +69,13 @@ class CourseViewModel  @Inject constructor(
                         var totalPercentage = 0.0
                         grades.forEach { grade ->
                             if (grade.grade.isNotBlank()) {
-                                accumulatePointsTemp += (grade.percentage / 100) * grade.grade.getGrade()
-                                totalPercentage += grade.percentage
+                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * grade.grade.getGrade()
+                                totalPercentage += grade.percentage.getPercentage()
                             }
                         }
-                        _accumulatePoints.doubleValue = accumulatePointsTemp
-                        _pedingPoints.doubleValue = (100 - totalPercentage) / 100 * 20
+                        _totalPercentaje.value = Percentage(totalPercentage)
+                        _accumulatePoints.value = Grade(accumulatePointsTemp)
+                        _pedingPoints.value = Grade((100 - totalPercentage) / 100 * 20)
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

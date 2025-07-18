@@ -94,8 +94,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val filteredGrades = grades.filter { it.grade.isNotBlank() }
             if (filteredGrades.isEmpty()) return Grade()
 
-            val totalWeight = filteredGrades.sumOf { it.percentage }
-            val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage } / totalWeight
+            val totalWeight = filteredGrades.sumOf { it.percentage.getPercentage() }
+            val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage.getPercentage() } / totalWeight
 
             return Grade(weightedAverage)
         } catch (e: Exception) {
@@ -176,7 +176,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 gradeModel.title,
                 gradeModel.description,
                 gradeModel.grade.getGrade(),
-                gradeModel.percentage
+                gradeModel.percentage.getPercentage()
             )
             return result == 1
         } catch (e: Exception) {
