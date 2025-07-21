@@ -170,6 +170,11 @@ fun CourseScreen(
                                 },
                                 isEditing = viewModel.isEditingGrade.value,
                                 onInputValueChange = { newValue ->
+                                    if (newValue.isBlank()) {
+                                        grade.grade.setBlank()
+                                        viewModel.updateGrade(grade)
+                                        return@GradeCardComp
+                                    }
                                     val numberValue = newValue.toDoubleOrNull()
                                     if (numberValue == null) return@GradeCardComp
                                     if (!Grade.check(numberValue)) return@GradeCardComp
