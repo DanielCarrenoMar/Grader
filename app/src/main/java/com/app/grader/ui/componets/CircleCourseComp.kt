@@ -106,8 +106,8 @@ fun CircleCourse(
                 sections = sections
             ),
             config = DonutConfig(
-                gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessLow),
-                gapAngleAnimationSpec = spring(stiffness = Spring.StiffnessLow),
+                gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessVeryLow),
+                gapAngleAnimationSpec = spring(stiffness = Spring.StiffnessVeryLow),
                 capAnimationSpec = spring(),
                 strokeWidthAnimationSpec = spring(),
                 sectionColorAnimationSpec = spring(),
