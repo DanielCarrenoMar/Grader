@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.app.grader.domain.types.Grade
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.VicoZoomState
 import com.patrykandpatrick.vico.compose.cartesian.layer.point
@@ -25,11 +26,11 @@ import com.patrykandpatrick.vico.core.common.shader.ShaderProvider
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 
 @Composable
-fun LineChartAverage(serie: List<Double> ,modifier: Modifier = Modifier) {
+fun LineChartAverage(gradeSerie: List<Grade>, modifier: Modifier = Modifier) {
     val modelProducer = remember { CartesianChartModelProducer() }
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {
-            lineSeries { series(serie) }
+            lineSeries { series(gradeSerie.filter { it.isNotBlank() }.map{it.getGrade()}) }
         }
     }
     JetpackComposeBasicLineChart(modelProducer, modifier)
