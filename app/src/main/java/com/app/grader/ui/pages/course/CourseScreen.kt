@@ -1,6 +1,8 @@
 package com.app.grader.ui.pages.course
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -117,7 +119,16 @@ fun CourseScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .let { baseModifier ->
+                    if (viewModel.isEditingGrade.value) {
+                        baseModifier.clickable(
+                            onClick = { viewModel.isEditingGrade.value = false },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
+                    } else baseModifier
+                },
         ) {
             InfoCourseCard(
                 viewModel.course.value.average,
@@ -129,7 +140,9 @@ fun CourseScreen(
             CardContainer (
                 modifier = Modifier.weight(1f)
             ){ innerPadding ->
-                Column (modifier = Modifier.padding(innerPadding).fillMaxHeight()) {
+                Column (modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxHeight()) {
                     TitleIcon(
                         iconName = "star",
                         iconId =  R.drawable.star
@@ -145,10 +158,25 @@ fun CourseScreen(
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyColumn {
                         items(viewModel.grades.value) { grade ->
-                            GradeCardComp(grade) {
-                                viewModel.setShowGrade(grade.id)
-                                showBottomSheet = true
-                            }
+                            GradeCardComp(
+                                grade = grade,
+                                onClick = {
+                                    viewModel.setShowGrade(grade.id)
+                                    showBottomSheet = true
+                                },
+                                onLongClick = {
+                                    viewModel.setShowGrade(grade.id)
+                                    viewModel.isEditingGrade.value = true
+                                },
+                                isEditing = viewModel.isEditingGrade.value,
+                                onInputValueChange = { newValue ->
+                                    val numberValue = newValue.toDoubleOrNull()
+                                    if (numberValue == null) return@GradeCardComp
+                                    if (!Grade.check(numberValue)) return@GradeCardComp
+                                    grade.grade.setGrade(numberValue)
+                                    viewModel.updateGrade(grade)
+                                },
+                            )
                         }
                     }
                 }

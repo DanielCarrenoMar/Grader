@@ -15,6 +15,7 @@ import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
+import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +26,8 @@ class CourseViewModel  @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
-    private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase
+    private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase,
+    private val updateGradeUseCase: UpdateGradeUseCase,
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
@@ -42,6 +44,30 @@ class CourseViewModel  @Inject constructor(
         CourseModel.DEFAULT
     )
     val course = _course
+
+    private val _isEditingGrade = mutableStateOf(false)
+    val isEditingGrade = _isEditingGrade
+
+    fun updateGrade(grade: GradeModel) {
+        viewModelScope.launch {
+            updateGradeUseCase(grade).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+
+                        getGradesFromCourse(_course.value.id)
+                        calPoints(_course.value.id)
+                        calAverageFromCourseId(_course.value.id)
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error updateGrade: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun setShowGrade(gradeId: Int){
         viewModelScope.launch {
@@ -164,6 +190,20 @@ class CourseViewModel  @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun updateGradeGradeUseCase(gradeId: Int){
+        viewModelScope.launch {
+            /*updateGradeUseCase(
+
+            ).collect { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error updateGradeUseCase: ${result.message}")
+                    }
+                }
+            }*/
         }
     }
 }

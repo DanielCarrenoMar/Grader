@@ -69,10 +69,13 @@ fun AllGradesScreen(
                 .padding(horizontal = 20.dp)
         ){
             items(viewModel.grades.value){ grade ->
-                GradeCardComp(grade) {
+                GradeCardComp(
+                    grade = grade,
+                    onClick = {
                     viewModel.setShowGrade(grade.id)
                     showBottomSheet = true
                 }
+                )
             }
         }
         if (showBottomSheet) {
