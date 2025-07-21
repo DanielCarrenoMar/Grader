@@ -217,13 +217,13 @@ fun CourseScreen(
 fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade, uc: Int){
     val animatedAccumulatePoints by animateFloatAsState(
         targetValue = accumulatePoints.getGrade().toFloat(),
-        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "accumulatePointsAnimation"
     )
 
     val animatedPendingPoints by animateFloatAsState(
         targetValue = pendingPoints.getGrade().toFloat(),
-        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "pendingPointsAnimation"
     )
 

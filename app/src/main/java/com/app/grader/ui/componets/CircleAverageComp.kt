@@ -35,7 +35,7 @@ fun CircleAverage(
 
     val animatedAverage by animateFloatAsState(
         targetValue = average.getGrade().toFloat(),
-        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "averageAnimation"
     )
 
