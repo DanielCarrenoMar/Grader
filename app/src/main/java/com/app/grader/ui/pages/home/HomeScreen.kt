@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -94,36 +96,42 @@ fun HomeScreen(
                 InfoHomeCard(viewModel.totalAverage.doubleValue, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
-            items(courses.value) { course ->
-                CourseCardComp(
-                    course,
-                    { navigateToCourse(course.id) },
-                    {
-                        viewModel.selectDeleteCourse(course.id)
-                        showDeleteConfirmation = true
-                    },
-                    { navigateToEditCourse(course.id) },
-                )
-                Spacer(Modifier.height(10.dp))
-            }
-            if (courses.value.isEmpty()) {
+            if (viewModel.isLoading.value) {
                 item {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        EmptyCoursesImg()
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "No hay asignaturas",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier.width(64.dp),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
                 }
-            } else {
-                item {
-                    Spacer(Modifier.height(80.dp))
+            }else {
+                items(courses.value) { course ->
+                    CourseCardComp(
+                        course,
+                        { navigateToCourse(course.id) },
+                        {
+                            viewModel.selectDeleteCourse(course.id)
+                            showDeleteConfirmation = true
+                        },
+                        { navigateToEditCourse(course.id) },
+                    )
+                    Spacer(Modifier.height(10.dp))
+                }
+                if (courses.value.isEmpty()) {
+                    item {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            EmptyCoursesImg()
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                text = "No hay asignaturas",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
                 }
             }
             item {

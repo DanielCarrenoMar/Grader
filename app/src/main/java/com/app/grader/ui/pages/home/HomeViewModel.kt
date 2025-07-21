@@ -31,6 +31,9 @@ class HomeViewModel  @Inject constructor(
     private val _totalAverage = mutableDoubleStateOf(0.0)
     val totalAverage = _totalAverage
 
+    private val _isLoading = mutableStateOf(true)
+    val isLoading = _isLoading
+
     fun deleteSelectedCourse(){
         viewModelScope.launch {
             deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
@@ -74,9 +77,11 @@ class HomeViewModel  @Inject constructor(
                             if (totalUC != 0) _totalAverage.doubleValue = totalGrades / totalUC
                             else _totalAverage.doubleValue = 0.0
                         }else _totalAverage.doubleValue = 0.0
+
+                        _isLoading.value = false
                     }
                     is Resource.Loading -> {
-                        // Handle loading state if needed
+                        _isLoading.value = true
                     }
                     is Resource.Error -> {
                         Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
