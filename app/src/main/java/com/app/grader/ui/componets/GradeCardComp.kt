@@ -63,8 +63,10 @@ fun GradeCardComp(
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = {
-                    onLongClick?.invoke()
-                    requestFocus = true
+                    if (onLongClick != null){
+                        onLongClick()
+                        requestFocus = true
+                    }
                 }
             ),
         colors = CardDefaults.cardColors(
