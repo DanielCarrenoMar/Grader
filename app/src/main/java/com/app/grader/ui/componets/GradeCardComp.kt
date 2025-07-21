@@ -46,6 +46,17 @@ fun GradeCardComp(
     val focusRequester = remember { FocusRequester() }
     var requestFocus by remember { mutableStateOf(false) }
 
+    LaunchedEffect(requestFocus, Unit) {
+        if (requestFocus) {
+            requestFocus = false
+            focusRequester.requestFocus()
+            val currentText = gradeTextFieldValue.text
+            gradeTextFieldValue = gradeTextFieldValue.copy(
+                selection = TextRange(currentText.length)
+            )
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -86,15 +97,6 @@ fun GradeCardComp(
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                     )
-                    LaunchedEffect(Unit) {
-                        if (requestFocus) {
-                            requestFocus = false
-                            focusRequester.requestFocus()
-                            gradeTextFieldValue = gradeTextFieldValue.copy(
-                                selection = TextRange(gradeTextFieldValue.text.length)
-                            )
-                        }
-                    }
                 } else{
                     CircleGrade(
                         grade = grade.grade,
