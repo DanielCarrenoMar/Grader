@@ -1,5 +1,8 @@
 package com.app.grader.ui.pages.course
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -51,7 +54,7 @@ import com.app.grader.ui.componets.AddMenuComp
 import com.app.grader.ui.componets.AddMenuCompItem
 import com.app.grader.ui.componets.CardContainer
 import com.app.grader.ui.componets.CircleGrade
-import com.app.grader.ui.componets.CirclePie
+import com.app.grader.ui.componets.CircleAverage
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
@@ -59,10 +62,7 @@ import com.app.grader.ui.componets.IconCardButton
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
-import com.app.grader.ui.theme.Secondary600
-import com.app.grader.ui.theme.Success500
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -210,6 +210,18 @@ fun CourseScreen(
 
 @Composable
 fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade, uc: Int){
+    val animatedAccumulatePoints by animateFloatAsState(
+        targetValue = accumulatePoints.getGrade().toFloat(),
+        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        label = "accumulatePointsAnimation"
+    )
+
+    val animatedPendingPoints by animateFloatAsState(
+        targetValue = pendingPoints.getGrade().toFloat(),
+        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        label = "pendingPointsAnimation"
+    )
+
     CardContainer{ innerPading ->
         Column (
             modifier = Modifier.padding(innerPading)
@@ -223,7 +235,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
             Row( modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CirclePie(average ,accumulatePoints.getGrade(), pendingPoints.getGrade())
+                CircleAverage(average ,accumulatePoints.getGrade(), pendingPoints.getGrade())
                 Column(modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 0.dp)
                 ) {
@@ -238,7 +250,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
                         ) {
                             Row (verticalAlignment = Alignment.Bottom){
                                 Text(
-                                    text = "$accumulatePoints",
+                                    text =  Grade.formatText(animatedAccumulatePoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
@@ -253,7 +265,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
                             Spacer(Modifier.height(3.dp))
                             Row (verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = "$pendingPoints",
+                                    text = Grade.formatText(animatedPendingPoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.secondary

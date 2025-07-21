@@ -1,5 +1,7 @@
 package com.app.grader.domain.types
 
+import java.util.Locale
+
 data class Grade(
     private var grade: Double
 ){
@@ -40,13 +42,7 @@ data class Grade(
             return ""
         }
 
-        if (grade % 1.0 == 0.0) {
-            return grade.toLong().toString() // Convertir a Long y luego a String para quitar ".0"
-        }
-
-        val maxDecimalPlaces = 2
-        val formattedString = String.format(java.util.Locale.US, "%.${maxDecimalPlaces}f", grade)
-        return formattedString.trimEnd('0').removeSuffix(".")
+        return formatText(grade)
     }
 
     companion object {
@@ -55,6 +51,20 @@ data class Grade(
         }
         fun check(grade: Int): Boolean {
             return grade in 0..20
+        }
+
+        fun formatText(grade: Double): String {
+            return if (grade % 1.0 == 0.0) {
+                grade.toLong().toString() // Convertir a Long y luego a String para quitar ".0"
+            } else {
+                val maxDecimalPlaces = 2
+                val formattedString = String.format(Locale.US, "%.${maxDecimalPlaces}f", grade)
+                formattedString.trimEnd('0').removeSuffix(".")
+            }
+        }
+
+        fun formatText(grade: Float): String {
+            return formatText(grade.toDouble())
         }
     }
 }
