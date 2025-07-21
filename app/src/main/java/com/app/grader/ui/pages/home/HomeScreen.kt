@@ -106,6 +106,26 @@ fun HomeScreen(
                 )
                 Spacer(Modifier.height(10.dp))
             }
+            if (courses.value.isEmpty()) {
+                item {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        EmptyCoursesImg()
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = "No hay asignaturas",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            } else {
+                item {
+                    Spacer(Modifier.height(80.dp))
+                }
+            }
             item {
                 Spacer(Modifier.height(80.dp))
             }
@@ -178,4 +198,13 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
             }
         }
     }
+}
+
+@Composable
+fun EmptyCoursesImg(){
+    val image = painterResource(id = R.drawable.chick)
+    Image(
+        painter = image,
+        contentDescription = "Empty Courses",
+    )
 }
