@@ -73,6 +73,7 @@ fun NavigationWrapper() {
             CourseScreen (
                 course.courseId,
                 { navController.popBackStack() },
+                {courseId -> navController.navigate(EditCourse(courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }

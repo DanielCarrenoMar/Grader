@@ -70,6 +70,7 @@ import kotlinx.coroutines.launch
 fun CourseScreen(
     courseId: Int,
     navigateBack: () -> Unit,
+    navigateToEditCourse: (Int) -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
@@ -123,7 +124,8 @@ fun CourseScreen(
         },
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Eliminar"){showDeleteSelfConfirmation = true}
+            MenuAction("Editar"){navigateToEditCourse(courseId)},
+            MenuAction("Eliminar"){showDeleteSelfConfirmation = true},
         )
     ) { innerPadding ->
         Column(
