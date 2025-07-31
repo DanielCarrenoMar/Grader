@@ -197,7 +197,7 @@ fun CourseScreen(
                 }
             }
             if (showBottomSheet) {
-                InfoGradeBottonCar(
+                InfoGradeBottomCar(
                     onDismissRequest = {
                         showBottomSheet = false
                     },
@@ -237,9 +237,9 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
         label = "pendingPointsAnimation"
     )
 
-    CardContainer{ innerPading ->
+    CardContainer{ innerPadding ->
         Column (
-            modifier = Modifier.padding(innerPading)
+            modifier = Modifier.padding(innerPadding)
         ){
             TitleIcon(
                 iconName = "chart pie",
@@ -320,7 +320,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoGradeBottonCar(
+fun InfoGradeBottomCar(
     onDismissRequest: ()-> Unit,
     sheetState: SheetState,
     showGrade: GradeModel,
