@@ -12,7 +12,7 @@ data class CourseModel(
 ){
     companion object {
         val DEFAULT = CourseModel(
-            title = "NULL",
+            title = "",
             uc = -1,
             average = Grade()
         )
