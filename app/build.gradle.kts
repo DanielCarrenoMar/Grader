@@ -11,6 +11,10 @@ android {
     namespace = "com.app.grader"
     compileSdk = 35
 
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
     defaultConfig {
         applicationId = "com.app.grader"
         minSdk = 24
@@ -19,10 +23,6 @@ android {
         versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
 
     buildTypes {
@@ -43,6 +43,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
@@ -82,6 +85,10 @@ dependencies {
     implementation(libs.vico.views)
     implementation(libs.donut.views)
     implementation(libs.donut.compose)
+
+    //Widgets
+    implementation (libs.androidx.glance.appwidget)
+    implementation (libs.androidx.glance.material3)
 
     testImplementation(libs.mockito.kotlin)
 
