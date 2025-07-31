@@ -10,6 +10,7 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
+import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
 import com.app.grader.domain.usecase.course.GetAverageFromCourseIdUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
@@ -28,6 +29,7 @@ class CourseViewModel  @Inject constructor(
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
     private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
+    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
@@ -47,6 +49,25 @@ class CourseViewModel  @Inject constructor(
 
     private val _isEditingGrade = mutableStateOf(false)
     val isEditingGrade = _isEditingGrade
+
+    fun deleteSelf(navigateTo: () -> Unit) {
+        if (_course.value.id == -1) return
+        viewModelScope.launch {
+            deleteCourseFromIdUseCase(_course.value.id).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        navigateTo()
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading state if needed
+                    }
+                    is Resource.Error -> {
+                        Log.e("CourseViewModel", "Error deleteSelf: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun updateGrade(grade: GradeModel) {
         viewModelScope.launch {
@@ -190,20 +211,6 @@ class CourseViewModel  @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    fun updateGradeGradeUseCase(gradeId: Int){
-        viewModelScope.launch {
-            /*updateGradeUseCase(
-
-            ).collect { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error updateGradeUseCase: ${result.message}")
-                    }
-                }
-            }*/
         }
     }
 }

@@ -59,6 +59,7 @@ import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.IconCardButton
+import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
@@ -68,7 +69,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CourseScreen(
     courseId: Int,
-    navegateBack: () -> Unit,
+    navigateBack: () -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
@@ -76,7 +77,8 @@ fun CourseScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showDeleteGradeConfirmation by remember { mutableStateOf(false) }
+    var showDeleteSelfConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -87,10 +89,16 @@ fun CourseScreen(
         }
     }
 
-    if (showDeleteConfirmation){
+    if (showDeleteGradeConfirmation){
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
-            { showDeleteConfirmation = false }
+            { showDeleteGradeConfirmation = false }
+        )
+    }
+    if (showDeleteSelfConfirmation){
+        DeleteConfirmationComp(
+            { viewModel.deleteSelf(navigateBack) },
+            { showDeleteSelfConfirmation = false }
         )
     }
     HeaderBack(
@@ -100,7 +108,6 @@ fun CourseScreen(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState,
@@ -114,7 +121,10 @@ fun CourseScreen(
                 }
             )
         },
-        navigateBack = navegateBack
+        navigateBack = navigateBack,
+        actions = listOf(
+            MenuAction("Eliminar"){showDeleteSelfConfirmation = true}
+        )
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -197,7 +207,7 @@ fun CourseScreen(
                         navigateToEditGrade(viewModel.showGrade.value.id, courseId)
                         showBottomSheet = false
                                   },
-                    deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }
+                    deleteOnClick = { showDeleteGradeConfirmation = true; showBottomSheet = false }
                 )
             }
         }
