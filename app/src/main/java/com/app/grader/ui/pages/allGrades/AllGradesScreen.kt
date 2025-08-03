@@ -28,7 +28,7 @@ import com.app.grader.ui.pages.course.InfoGradeBottomCar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllGradesScreen(
-    navegateToHome: () -> Unit,
+    navigateToHome: () -> Unit,
     navigateToConfig: () -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: AllGradesViewModel = hiltViewModel()
@@ -51,7 +51,7 @@ fun AllGradesScreen(
         )
     }
     HeaderMenu ("Todas las Calificaciones",
-        {navegateToHome()},
+        {navigateToHome()},
         null,
         {navigateToConfig()}
     ) { innerPadding ->
