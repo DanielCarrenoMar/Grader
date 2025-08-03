@@ -23,7 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.pages.course.InfoGradeBottomCar
+import com.app.grader.ui.componets.InfoGradeBottomCar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
