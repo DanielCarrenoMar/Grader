@@ -20,7 +20,6 @@ ksp = "2.1.10-1.0.30"
 vico = "2.1.0"
 donut = "2.2.4"
 mockito = "6.0.0"
-glanceAppwidget = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,8 +52,6 @@ vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref 
 donut-views = { group = "app.futured.donut", name = "donut", version.ref = "donut" }
 donut-compose = { group = "app.futured.donut", name = "donut-compose", version.ref = "donut" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito" }
-androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
-androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
