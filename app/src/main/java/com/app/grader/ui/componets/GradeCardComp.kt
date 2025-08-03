@@ -12,7 +12,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -98,6 +100,9 @@ fun GradeCardComp(
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onSurface
                         ),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = getColorForGrade(grade.grade)
+                        )
                     )
                 } else{
                     CircleGrade(
