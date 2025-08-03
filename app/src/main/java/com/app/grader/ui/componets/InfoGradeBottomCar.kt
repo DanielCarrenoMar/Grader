@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -19,30 +20,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.types.Grade
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoGradeBottomCar(
-    onDismissRequest: ()-> Unit,
+    onDismissRequest: () -> Unit,
     sheetState: SheetState,
     showGrade: GradeModel,
-    editOnClick: ()->Unit,
-    deleteOnClick: ()->Unit
-){
+    editOnClick: () -> Unit,
+    deleteOnClick: () -> Unit
+) {
+    val accumulatePoints =
+        Grade(showGrade.grade.getGrade() * (showGrade.percentage.getPercentage() / 100))
+
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        LazyColumn  (
+        LazyColumn(
             modifier = Modifier
-                .padding(horizontal =  20.dp)
+                .padding(horizontal = 20.dp)
         ) {
             item {
                 Row(
@@ -77,6 +83,21 @@ fun InfoGradeBottomCar(
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 12.dp)
                     )
+                    Spacer(Modifier.weight(1f))
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        Text(
+                            text = Grade.formatText(accumulatePoints.getGrade()),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "Ptos",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                 }
 
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
@@ -97,7 +118,7 @@ fun InfoGradeBottomCar(
                     icon = R.drawable.pen_outline,
                     text = "Editar"
                 )
-                HorizontalDivider( modifier = Modifier.alpha(0.5f))
+                HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 IconCardButton(
                     onClick = deleteOnClick,
                     contentColor = Error500,
