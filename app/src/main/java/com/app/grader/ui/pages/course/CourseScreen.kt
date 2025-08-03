@@ -162,9 +162,10 @@ fun CourseScreen(
                         Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
                         Spacer(Modifier.width(6.dp))
                         if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
+                            modifier = Modifier.alpha(if (viewModel.totalPercentaje.value.getPercentage() >= 100) 0.4f else 1f),
                             text = viewModel.totalPercentaje.value.toString() + "%",
                             style = MaterialTheme.typography.labelMedium,
-                            color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
+                            color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
                         )
                     }
                     Spacer(modifier = Modifier.height(15.dp))
