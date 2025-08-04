@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.isEmpty
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -39,11 +40,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.domain.model.CourseModel // Asegúrate que CourseModel está importado
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.AddMenuComp
 import com.app.grader.ui.componets.AddMenuCompItem
 import com.app.grader.ui.componets.CardContainer
 import com.app.grader.ui.componets.CourseCardComp
+import com.app.grader.ui.componets.CourseCardType
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.LineChartAverage
@@ -73,7 +76,7 @@ fun HomeScreen(
         }
     }
 
-    if (showDeleteConfirmation){
+    if (showDeleteConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelectedCourse() },
             { showDeleteConfirmation = false }
@@ -104,25 +107,21 @@ fun HomeScreen(
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
                 }
-            }else {
-                items(courses.value) { course ->
-                    CourseCardComp(
-                        course,
-                        { navigateToCourse(course.id) },
-                        {
-                            viewModel.selectDeleteCourse(course.id)
-                            showDeleteConfirmation = true
-                        },
-                        { navigateToEditCourse(course.id) },
-                    )
-                    Spacer(Modifier.height(10.dp))
+            } else {
+                val sortedCourses = courses.value.sortedByDescending { course ->
+                    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
+                    (pendingPoints + accumulatedPoints) >= 9.45
                 }
-                if (courses.value.isEmpty()) {
+
+                if (sortedCourses.isEmpty()) {
                     item {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
                         ) {
                             EmptyCoursesImg()
                             Spacer(Modifier.height(10.dp))
@@ -131,6 +130,30 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }
+                    }
+                }else {
+                    items(sortedCourses) { course ->
+                        val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+                        val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
+                        val courseCardType: CourseCardType = if (accumulatedPoints >= 9.45) {
+                            CourseCardType.Pass
+                        } else if (pendingPoints + accumulatedPoints < 9.45) {
+                            CourseCardType.Fail
+                        } else {
+                            CourseCardType.Normal
+                        }
+
+                        CourseCardComp(
+                            course,
+                            { navigateToCourse(course.id) },
+                            {
+                                viewModel.selectDeleteCourse(course.id)
+                                showDeleteConfirmation = true
+                            },
+                            { navigateToEditCourse(course.id) },
+                            courseCardType
+                        )
+                        Spacer(Modifier.height(10.dp))
                     }
                 }
             }
@@ -154,43 +177,48 @@ fun HomeScreen(
 }
 
 @Composable
-fun InfoHomeCard(average: Double, grades: List<GradeModel>){
-    CardContainer{ innerPading ->
-        Row (
+fun InfoHomeCard(average: Double, grades: List<GradeModel>) {
+    CardContainer { innerPading ->
+        Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(innerPading)
                 .fillMaxWidth()
                 .height(150.dp)
-        ){
-            Column (
+        ) {
+            Column(
                 modifier = Modifier.weight(1f)
-            ){
+            ) {
                 TitleIcon(
-                    iconName =  "chart mixed",
-                    iconId =  R.drawable.chart_mixed
-                ){
+                    iconName = "chart mixed",
+                    iconId = R.drawable.chart_mixed
+                ) {
                     Text(text = "Progresión", style = MaterialTheme.typography.labelLarge)
                 }
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(vertical = 15.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 15.dp),
                     contentAlignment = Alignment.Center
-                ){
-                    if (grades.isNotEmpty()) LineChartAverage(grades.map { it.grade }, Modifier.fillMaxSize())
+                ) {
+                    if (grades.isNotEmpty()) LineChartAverage(
+                        grades.map { it.grade },
+                        Modifier.fillMaxSize()
+                    )
                     else Text(
-                            text = "No hay calificaciones",
-                            style = MaterialTheme.typography.titleSmall
-                        )
+                        text = "No hay calificaciones",
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
             }
-            Box (
+            Box(
                 modifier = Modifier.weight(0.9f),
-            ){
-                Column (
+            ) {
+                Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
+                ) {
                     Text(
                         text = if (average != 0.0) "${(average * 100).roundToInt() / 100.0}" else "--",
                         style = MaterialTheme.typography.titleMedium,
@@ -209,7 +237,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>){
 }
 
 @Composable
-fun EmptyCoursesImg(){
+fun EmptyCoursesImg() {
     val image = painterResource(id = R.drawable.chick)
     Image(
         painter = image,
