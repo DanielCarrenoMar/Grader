@@ -29,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.isEmpty
+import androidx.compose.ui.geometry.isEmpty // This import might be unused now
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -108,11 +108,27 @@ fun HomeScreen(
                     )
                 }
             } else {
-                val sortedCourses = courses.value.sortedByDescending { course ->
+                val sortedCourses = courses.value.sortedWith(compareBy { course ->
                     val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
                     val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
-                    (pendingPoints + accumulatedPoints) >= 9.45
-                }
+                    
+                    val typeForSort = if (pendingPoints + accumulatedPoints < 9.45) {
+                        CourseCardType.Fail
+                    } else if (pendingPoints == 0.0) {
+                        CourseCardType.Finish
+                    } else if (accumulatedPoints >= 9.45) {
+                        CourseCardType.Pass
+                    } else {
+                        CourseCardType.Normal
+                    }
+
+                    when (typeForSort) {
+                        CourseCardType.Normal -> 1
+                        CourseCardType.Pass -> 1
+                        CourseCardType.Finish -> 2
+                        CourseCardType.Fail -> 3
+                    }
+                })
 
                 if (sortedCourses.isEmpty()) {
                     item {
@@ -131,14 +147,16 @@ fun HomeScreen(
                             )
                         }
                     }
-                }else {
+                } else {
                     items(sortedCourses) { course ->
                         val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
                         val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
-                        val courseCardType: CourseCardType = if (accumulatedPoints >= 9.45) {
-                            CourseCardType.Pass
-                        } else if (pendingPoints + accumulatedPoints < 9.45) {
+                        val courseCardType: CourseCardType = if (pendingPoints + accumulatedPoints < 9.45) {
                             CourseCardType.Fail
+                        } else if (pendingPoints == 0.0) {
+                            CourseCardType.Finish
+                        } else if (accumulatedPoints >= 9.45) {
+                            CourseCardType.Pass
                         } else {
                             CourseCardType.Normal
                         }
@@ -151,7 +169,7 @@ fun HomeScreen(
                                 showDeleteConfirmation = true
                             },
                             { navigateToEditCourse(course.id) },
-                            courseCardType
+                            courseCardType 
                         )
                         Spacer(Modifier.height(10.dp))
                     }

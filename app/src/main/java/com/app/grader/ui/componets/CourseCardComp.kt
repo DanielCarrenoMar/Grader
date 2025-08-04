@@ -29,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.transition.Visibility
 import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
 
@@ -37,6 +36,7 @@ sealed class CourseCardType {
     object Normal : CourseCardType()
     object Fail : CourseCardType()
     object Pass : CourseCardType()
+    object Finish : CourseCardType()
 }
 
 @Composable
@@ -51,18 +51,21 @@ fun CourseCardComp(
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
     val iconResId: Int = when (type) {
         is CourseCardType.Normal -> R.drawable.education_cap
-        is CourseCardType.Pass -> R.drawable.star
         is CourseCardType.Fail -> R.drawable.skull
+        is CourseCardType.Pass -> R.drawable.star
+        is CourseCardType.Finish -> R.drawable.check
     }
     val iconName: String = when (type) {
         is CourseCardType.Normal -> "education cap"
-        is CourseCardType.Pass -> "start"
         is CourseCardType.Fail -> "skull"
+        is CourseCardType.Pass -> "start"
+        is CourseCardType.Finish -> "check"
     }
     val primaryColor: Color = when (type) {
         is CourseCardType.Normal -> MaterialTheme.colorScheme.primary
         is CourseCardType.Pass -> MaterialTheme.colorScheme.primary
         is CourseCardType.Fail -> MaterialTheme.colorScheme.onSurface
+        is CourseCardType.Finish -> MaterialTheme.colorScheme.secondary
     }
 
     CardContainer(
@@ -145,7 +148,7 @@ fun CourseCardComp(
                                     "Editar",
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
-                                    color = primaryColor
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             },
 
@@ -153,7 +156,7 @@ fun CourseCardComp(
                         DropdownMenuItem(onClick = {deleteCourse();expanded = false},
                         text = {
                             Text("Eliminar", style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Medium, color = primaryColor)
+                                fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
                         }
                         )
                     }
