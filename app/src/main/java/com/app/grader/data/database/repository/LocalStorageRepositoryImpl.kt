@@ -13,6 +13,7 @@ import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
 import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.Percentage
 import javax.inject.Inject
 
 class LocalStorageRepositoryImpl @Inject constructor(
@@ -48,6 +49,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                     title = courseEntity.title,
                     uc = courseEntity.uc,
                     average = getAverageFromCourse(courseEntity.id),
+                    totalPercentage = getTotalPercentageFromCourse(courseEntity.id),
                     id = courseEntity.id
                 )
             }
@@ -63,6 +65,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                     title = courseEntity.title,
                     uc = courseEntity.uc,
                     average = getAverageFromCourse(courseEntity.id),
+                    totalPercentage = getTotalPercentageFromCourse(courseEntity.id),
                     id = courseEntity.id
                 )
         } catch (e: Exception) {
@@ -98,6 +101,17 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage.getPercentage() } / totalWeight
 
             return Grade(weightedAverage)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {
+        try {
+            val grades = getGradesFromCourse(courseId)
+            if (grades.isEmpty()) return Percentage()
+            val totalPercentage = grades.sumOf { it.percentage.getPercentage() }
+            return Percentage(totalPercentage)
         } catch (e: Exception) {
             throw e
         }

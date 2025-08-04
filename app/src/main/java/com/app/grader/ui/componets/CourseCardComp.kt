@@ -1,7 +1,6 @@
 package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
@@ -23,27 +21,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
-import com.app.grader.ui.theme.IconSmall
+
+sealed class Mode {
+    object Normal : Mode()
+    object Fail : Mode()
+    object Pass : Mode()
+}
 
 @Composable
 fun CourseCardComp(
     course: CourseModel,
     navigateToCourse: () -> Unit,
     deleteCourse: ()-> Unit,
-    editCourse: ()-> Unit
+    editCourse: ()-> Unit,
+    mode: Mode = Mode.Normal
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+    val iconResId = when (mode) {
+        is Mode.Normal -> R.drawable.education_cap
+        is Mode.Pass -> R.drawable.ic_pass_icon
+        is Mode.Fail -> R.drawable.ic_fail_icon
+    }
 
     CardContainer(
         onClick = navigateToCourse
@@ -60,7 +67,7 @@ fun CourseCardComp(
             ){
                 TitleIcon(
                     iconName = "education cap",
-                    iconId =  R.drawable.education_cap,
+                    iconId =  iconResId,
                     backgroundColor = MaterialTheme.colorScheme.primary
                 ){
                     Text(
@@ -118,13 +125,18 @@ fun CourseCardComp(
                         modifier = Modifier.width(200.dp),
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
-                        DropdownMenuItem(onClick = {editCourse();expanded = false},
+                        DropdownMenuItem(
+                            onClick = { editCourse();expanded = false },
                             text = {
-                                Text("Editar", style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                                Text(
+                                    "Editar",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             },
 
-                        )
+                            )
                         DropdownMenuItem(onClick = {deleteCourse();expanded = false},
                         text = {
                             Text("Eliminar", style = MaterialTheme.typography.labelMedium,
