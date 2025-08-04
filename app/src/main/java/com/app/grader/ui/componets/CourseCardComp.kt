@@ -54,6 +54,11 @@ fun CourseCardComp(
         is CourseCardType.Pass -> R.drawable.star
         is CourseCardType.Fail -> R.drawable.skull
     }
+    val iconName: String = when (type) {
+        is CourseCardType.Normal -> "education cap"
+        is CourseCardType.Pass -> "start"
+        is CourseCardType.Fail -> "skull"
+    }
     val primaryColor: Color = when (type) {
         is CourseCardType.Normal -> MaterialTheme.colorScheme.primary
         is CourseCardType.Pass -> MaterialTheme.colorScheme.primary
@@ -74,7 +79,7 @@ fun CourseCardComp(
                 verticalArrangement = Arrangement.Top
             ){
                 TitleIcon(
-                    iconName = "education cap",
+                    iconName = iconName,
                     iconId =  iconResId,
                     backgroundColor = primaryColor
                 ){
