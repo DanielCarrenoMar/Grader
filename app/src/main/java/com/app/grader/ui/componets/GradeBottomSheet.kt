@@ -26,12 +26,14 @@ import androidx.compose.ui.unit.sp
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.types.Grade
+import com.app.grader.ui.componets.card.IconCardButton
+import com.app.grader.ui.componets.chart.CircleGrade
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoGradeBottomCar(
+fun GradeBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
     showGrade: GradeModel,

@@ -21,9 +21,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.DeleteConfirmationComp
-import com.app.grader.ui.componets.GradeCardComp
+import com.app.grader.ui.componets.card.GradeCardComp
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.InfoGradeBottomCar
+import com.app.grader.ui.componets.GradeBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +73,7 @@ fun AllGradesScreen(
             }
         }
         if (showBottomSheet) {
-            InfoGradeBottomCar(
+            GradeBottomSheet(
                 onDismissRequest = {
                     showBottomSheet = false
                 },

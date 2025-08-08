@@ -1,4 +1,4 @@
-package com.app.grader.ui.componets
+package com.app.grader.ui.componets.chart
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,8 +17,6 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.BaseAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer

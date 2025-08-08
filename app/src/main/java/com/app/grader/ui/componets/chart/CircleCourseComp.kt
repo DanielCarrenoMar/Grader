@@ -1,16 +1,12 @@
-package com.app.grader.ui.componets
+package com.app.grader.ui.componets.chart
 
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -21,44 +17,45 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
+import com.app.grader.core.navigation.lib.getColorForGrade
 import com.app.grader.domain.types.Grade
 
 @Composable
-fun CircleAverage(
-    average: Grade,
-    accumulatePoints:Double,
-    pendingPoints: Double,
-    strokeWith: Dp = 7.dp,
-    radius: Dp = 40.dp
-){
+fun CircleCourse(
+    modifier: Modifier = Modifier,
+    grade: Grade,
+    strokeWith: Dp = 5.dp,
+    radius : Dp = 40.dp
+) {
+    if (strokeWith < 0.dp) throw IllegalArgumentException("Stroke width must be positive")
+    if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
+    if (strokeWith > radius) throw IllegalArgumentException("Stroke width must be less than radius")
+
     val density = LocalDensity.current
-
-    val animatedAverage by animateFloatAsState(
-        targetValue = average.getGrade().toFloat(),
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = "averageAnimation"
-    )
-
-    val textAverage = when{
-        average.isBlank() -> "--"
-        else -> Grade.formatText(animatedAverage)
+    val colorOnBase = getColorForGrade(grade)
+    val textGrade = when{
+        grade.isBlank() -> "--"
+        else -> grade.toString()
     }
-    val sections = if (average.isNotBlank()) {
+    val sections = if (grade.isNotBlank()) {
         listOf(
-            DonutSection(amount = accumulatePoints.toFloat(), color = MaterialTheme.colorScheme.tertiary),
-            DonutSection(amount = pendingPoints.toFloat(), color = MaterialTheme.colorScheme.secondary),
+            DonutSection(
+                amount = grade.getGrade().toFloat(),
+                color = colorOnBase
+            )
         )
     } else {
         listOf(
-            DonutSection(amount = 0f, color = MaterialTheme.colorScheme.tertiary),
-            DonutSection(amount = 0f, color = MaterialTheme.colorScheme.secondary),
+            DonutSection(
+                amount = 20f,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            )
         )
     }
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(radius * 2)
+        modifier = Modifier.size(radius * 2)
     ) {
         DonutProgress(
             modifier = Modifier
@@ -73,8 +70,8 @@ fun CircleAverage(
                 sections = sections
             ),
             config = DonutConfig(
-                gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessLow),
-                gapAngleAnimationSpec = spring(stiffness = Spring.StiffnessLow),
+                gapWidthAnimationSpec = spring(stiffness = Spring.StiffnessVeryLow),
+                gapAngleAnimationSpec = spring(stiffness = Spring.StiffnessVeryLow),
                 capAnimationSpec = spring(),
                 strokeWidthAnimationSpec = spring(),
                 sectionColorAnimationSpec = spring(),
@@ -84,12 +81,10 @@ fun CircleAverage(
             )
         )
         Text(
-            text= textAverage,
-            style = MaterialTheme.typography.titleMedium,
+            text = textGrade,
+            style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
-
-
 }

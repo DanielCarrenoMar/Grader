@@ -1,6 +1,5 @@
-package com.app.grader.ui.componets
+package com.app.grader.ui.componets.card
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +30,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.ui.componets.TitleIcon
+import com.app.grader.ui.componets.chart.CircleCourse
 
 sealed class CourseCardType {
     object Normal : CourseCardType()
@@ -83,9 +84,9 @@ fun CourseCardComp(
             ){
                 TitleIcon(
                     iconName = iconName,
-                    iconId =  iconResId,
+                    iconId = iconResId,
                     backgroundColor = primaryColor
-                ){
+                ) {
                     Text(
                         text = course.title,
                         style = MaterialTheme.typography.labelLarge,
@@ -121,7 +122,8 @@ fun CourseCardComp(
                 ){
                     CircleCourse(
                         grade = course.average,
-                        radius =  33.dp)
+                        radius = 33.dp
+                    )
                 }
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(

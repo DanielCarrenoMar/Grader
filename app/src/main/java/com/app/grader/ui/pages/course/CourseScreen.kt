@@ -43,12 +43,12 @@ import com.app.grader.R
 import com.app.grader.domain.types.Grade
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
-import com.app.grader.ui.componets.CardContainer
-import com.app.grader.ui.componets.CircleAverage
+import com.app.grader.ui.componets.card.CardContainer
+import com.app.grader.ui.componets.chart.CircleAverage
 import com.app.grader.ui.componets.DeleteConfirmationComp
-import com.app.grader.ui.componets.GradeCardComp
+import com.app.grader.ui.componets.card.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.componets.InfoGradeBottomCar
+import com.app.grader.ui.componets.GradeBottomSheet
 import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.TitleIcon
 import kotlinx.coroutines.launch
@@ -188,7 +188,7 @@ fun CourseScreen(
                 }
             }
             if (showBottomSheet) {
-                InfoGradeBottomCar(
+                GradeBottomSheet(
                     onDismissRequest = {
                         showBottomSheet = false
                     },

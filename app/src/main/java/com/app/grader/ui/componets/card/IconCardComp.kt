@@ -1,4 +1,4 @@
-package com.app.grader.ui.componets;
+package com.app.grader.ui.componets.card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.app.grader.R
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 

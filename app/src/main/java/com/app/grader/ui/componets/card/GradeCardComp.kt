@@ -1,4 +1,4 @@
-package com.app.grader.ui.componets
+package com.app.grader.ui.componets.card
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.core.navigation.lib.getColorForGrade
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.ui.componets.chart.CircleGrade
 
 const val MAX_GRADE_LENGTH = 2
 @Composable

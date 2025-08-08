@@ -1,4 +1,4 @@
-package com.app.grader.ui.componets
+package com.app.grader.ui.componets.chart
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.core.navigation.lib.getColorForGrade
 import com.app.grader.domain.types.Grade
-import kotlin.math.roundToInt
 
 @Composable
 fun CircleGrade(

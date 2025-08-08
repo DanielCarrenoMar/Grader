@@ -1,7 +1,6 @@
 package com.app.grader.ui.pages.config
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.IconCardButton
+import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.R
 import androidx.core.net.toUri
 import com.app.grader.ui.theme.Error500

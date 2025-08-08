@@ -35,12 +35,12 @@ import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
-import com.app.grader.ui.componets.CardContainer
-import com.app.grader.ui.componets.CourseCardComp
-import com.app.grader.ui.componets.CourseCardType
+import com.app.grader.ui.componets.card.CardContainer
+import com.app.grader.ui.componets.card.CourseCardComp
+import com.app.grader.ui.componets.card.CourseCardType
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.LineChartAverage
+import com.app.grader.ui.componets.chart.LineChartAverage
 import com.app.grader.ui.componets.TitleIcon
 import kotlin.math.roundToInt
 
