@@ -1,11 +1,9 @@
 package com.app.grader.data.database.dao
 
-import android.health.connect.datatypes.units.Percentage
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.CourseEntity
 import com.app.grader.data.database.entitites.GradeEntity
 
 @Dao
@@ -33,7 +31,7 @@ interface GradeDao {
     suspend fun deleteGradeFromId(gradeId: Int): Int
 
     @Query("DELETE FROM sqlite_sequence WHERE name = 'grade'")
-    suspend fun resetIncremetalGrade()
+    suspend fun resetIncrementalGrade()
 
     @Query("SELECT * FROM grade WHERE id = :gradeId")
     suspend fun getGradeFromId(gradeId: Int): GradeEntity?

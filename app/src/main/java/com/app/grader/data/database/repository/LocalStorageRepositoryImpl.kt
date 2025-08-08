@@ -75,7 +75,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllCourses(): Int {
         try {
-            courseDao.resetIncremetalCourse()
+            courseDao.resetIncrementalCourse()
             return courseDao.deleteAllCourses()
         } catch (e: Exception) {
             throw e
@@ -148,7 +148,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllGrades(): Int {
         try {
-            gradeDao.resetIncremetalGrade()
+            gradeDao.resetIncrementalGrade()
             return gradeDao.deleteAllGrades()
         } catch (e: Exception) {
             throw e
@@ -218,7 +218,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllSubGrades(): Int {
         try {
-            subGradeDao.resetIncremetalSubGrade()
+            subGradeDao.resetIncrementalSubGrade()
             return subGradeDao.deleteAllSubGrades()
         } catch (e: Exception) {
             throw e

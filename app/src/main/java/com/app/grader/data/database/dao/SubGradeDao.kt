@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.GradeEntity
 import com.app.grader.data.database.entitites.SubGradeEntity
 
 @Dao
@@ -29,7 +28,7 @@ interface SubGradeDao {
     suspend fun deleteSubGradeFromId(subGradeId: Int): Int
 
     @Query("DELETE FROM sqlite_sequence WHERE name = 'sub_grade'")
-    suspend fun resetIncremetalSubGrade()
+    suspend fun resetIncrementalSubGrade()
 
     @Query("SELECT * FROM sub_grade WHERE id = :subGradeId")
     suspend fun getSubGradeFromId(subGradeId: Int): SubGradeEntity?
