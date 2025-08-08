@@ -93,14 +93,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
-            val grades = getGradesFromCourse(courseId)
-            val filteredGrades = grades.filter { it.grade.isNotBlank() }
-            if (filteredGrades.isEmpty()) return Grade()
-
-            val totalWeight = filteredGrades.sumOf { it.percentage.getPercentage() }
-            val weightedAverage = filteredGrades.sumOf { it.grade.getGrade() * it.percentage.getPercentage() } / totalWeight
-
-            return Grade(weightedAverage)
+            val average = courseDao.getAverageFromCourse(courseId)
+            if (average == null) return Grade()
+            return Grade(average)
         } catch (e: Exception) {
             throw e
         }
@@ -108,9 +103,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {
         try {
-            val grades = getGradesFromCourse(courseId)
-            if (grades.isEmpty()) return Percentage()
-            val totalPercentage = grades.sumOf { it.percentage.getPercentage() }
+            val totalPercentage = courseDao.getTotalPercentageFromCourse(courseId)
+            if (totalPercentage == null) return Percentage()
             return Percentage(totalPercentage)
         } catch (e: Exception) {
             throw e
