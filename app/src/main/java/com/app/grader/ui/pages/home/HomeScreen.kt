@@ -1,9 +1,6 @@
 package com.app.grader.ui.pages.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,9 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.isEmpty // This import might be unused now
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,10 +32,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.domain.model.CourseModel // Asegúrate que CourseModel está importado
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.ui.componets.AddMenuComp
-import com.app.grader.ui.componets.AddMenuCompItem
+import com.app.grader.ui.componets.FloatingMenuComp
+import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.CardContainer
 import com.app.grader.ui.componets.CourseCardComp
 import com.app.grader.ui.componets.CourseCardType
@@ -51,9 +42,6 @@ import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.LineChartAverage
 import com.app.grader.ui.componets.TitleIcon
-import com.app.grader.ui.theme.IconMedium
-import com.app.grader.ui.theme.IconSmall
-import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
@@ -179,13 +167,13 @@ fun HomeScreen(
                 Spacer(Modifier.height(80.dp))
             }
         }
-        AddMenuComp(
+        FloatingMenuComp(
             listOf(
-                AddMenuCompItem(
+                FloatingMenuCompItem(
                     "Asignatura",
                     R.drawable.education_cap_outline
                 ) { navigateToEditCourse(-1) },
-                AddMenuCompItem(
+                FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
                 ) { navigateToEditGrade(-1, -1) },

@@ -3,7 +3,6 @@ package com.app.grader.ui.pages.course
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -14,15 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -38,32 +33,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.types.Grade
-import com.app.grader.ui.componets.AddMenuComp
-import com.app.grader.ui.componets.AddMenuCompItem
+import com.app.grader.ui.componets.FloatingMenuComp
+import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.CardContainer
-import com.app.grader.ui.componets.CircleGrade
 import com.app.grader.ui.componets.CircleAverage
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeCardComp
 import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.componets.IconCardButton
 import com.app.grader.ui.componets.InfoGradeBottomCar
 import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.TitleIcon
-import com.app.grader.ui.theme.Error500
-import com.app.grader.ui.theme.IconLarge
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -215,8 +202,8 @@ fun CourseScreen(
                 )
             }
         }
-        AddMenuComp(listOf(
-            AddMenuCompItem("Calificación", R.drawable.star_outline){
+        FloatingMenuComp(listOf(
+            FloatingMenuCompItem("Calificación", R.drawable.star_outline){
                 if (viewModel.pedingPoints.value.getGrade() > 0){
                     navigateToEditGrade(-1, courseId)
                 }else coroutineScope.launch {

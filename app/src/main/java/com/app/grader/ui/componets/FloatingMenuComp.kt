@@ -46,14 +46,14 @@ import androidx.compose.ui.zIndex
 import com.app.grader.R
 import com.app.grader.ui.theme.IconMedium
 
-data class AddMenuCompItem(
+data class FloatingMenuCompItem(
     val title : String,
     val iconId: Int,
     val navFun: () -> Unit
 )
 
 @Composable
-fun AddMenuComp(items: List<AddMenuCompItem>) {
+fun FloatingMenuComp(items: List<FloatingMenuCompItem>) {
     var expanded by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
         targetValue = if (expanded) MaterialTheme.colorScheme.background.copy(0.9f) else MaterialTheme.colorScheme.background.copy(0.0f),
