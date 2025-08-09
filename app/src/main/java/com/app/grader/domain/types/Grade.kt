@@ -10,6 +10,7 @@ data class Grade(
     }
     constructor() : this(-1.0)
     constructor(grade:Grade) : this(grade.getGrade())
+    constructor(grade:Int) : this(grade.toDouble())
     fun setGrade(grade:Double){
         if (grade < 0.0) this.grade = -1.0
         else if (grade > 20.0) this.grade = 20.0
