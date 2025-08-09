@@ -46,7 +46,8 @@ fun CourseCardComp(
     navigateToCourse: () -> Unit,
     deleteCourse: ()-> Unit,
     editCourse: ()-> Unit,
-    type: CourseCardType = CourseCardType.Normal
+    type: CourseCardType = CourseCardType.Normal,
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
@@ -70,7 +71,8 @@ fun CourseCardComp(
     }
 
     CardContainer(
-        onClick = navigateToCourse
+        onClick = navigateToCourse,
+        modifier = modifier
     ) { innerPading ->
         Row (
             modifier = Modifier

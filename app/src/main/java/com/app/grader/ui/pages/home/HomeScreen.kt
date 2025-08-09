@@ -53,7 +53,7 @@ fun HomeScreen(
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val courses by remember { mutableStateOf(viewModel.courses) }
+    val courses by viewModel.courses
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -96,7 +96,7 @@ fun HomeScreen(
                     )
                 }
             } else {
-                val sortedCourses = courses.value.sortedWith(compareBy { course ->
+                val sortedCourses = courses.sortedWith(compareBy { course ->
                     val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
                     val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
                     
