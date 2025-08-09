@@ -3,18 +3,18 @@ package com.app.grader.domain.types
 import java.util.Locale
 
 open class Grade(
-    protected var grade: Double
+    private var value: Double
 ){
     init {
-        require(grade in 0.0..20.0 || grade == -1.0) { "Grade must be between 0 and 20 or -1. Not $grade" }
+        require(value in 0.0..20.0 || value == -1.0) { "Grade must be between 0 and 20 or -1. Not $value" }
     }
     constructor() : this(-1.0)
     constructor(grade:Grade) : this(grade.getGrade())
     constructor(grade:Int) : this(grade.toDouble())
     fun setGrade(grade:Double){
-        if (grade < 0.0) this.grade = -1.0
-        else if (grade > 20.0) this.grade = 20.0
-        else this.grade = grade
+        if (grade < 0.0) this.value = -1.0
+        else if (grade > 20.0) this.value = 20.0
+        else this.value = grade
     }
     fun setGrade(grade:Int){
         setGrade(grade.toDouble())
@@ -22,12 +22,12 @@ open class Grade(
     fun setGrade(grade:Grade){
         setGrade(grade.getGrade())
     }
-    open fun getGrade(): Double {
-        return grade
+    fun getGrade(): Double {
+        return value
     }
 
     fun isBlank(): Boolean{
-        return grade == -1.0
+        return value == -1.0
     }
 
     fun isNotBlank(): Boolean {
@@ -35,7 +35,7 @@ open class Grade(
     }
 
     fun setBlank() {
-        grade = -1.0
+        value = -1.0
     }
 
     override fun toString(): String {
@@ -43,7 +43,7 @@ open class Grade(
             return ""
         }
 
-        return formatText(grade)
+        return formatText(value)
     }
 
     companion object {
