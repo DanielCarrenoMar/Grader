@@ -2,8 +2,8 @@ package com.app.grader.domain.types
 
 import java.util.Locale
 
-data class Grade(
-    private var grade: Double
+open class Grade(
+    protected var grade: Double
 ){
     init {
         require(grade in 0.0..20.0 || grade == -1.0) { "Grade must be between 0 and 20 or -1. Not $grade" }
@@ -22,7 +22,7 @@ data class Grade(
     fun setGrade(grade:Grade){
         setGrade(grade.getGrade())
     }
-    fun getGrade(): Double {
+    open fun getGrade(): Double {
         return grade
     }
 

@@ -30,7 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.grader.core.navigation.lib.getColorForGrade
+import com.app.grader.core.lib.getColorForGrade
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.chart.CircleGrade
 

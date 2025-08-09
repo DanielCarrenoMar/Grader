@@ -1,4 +1,4 @@
-package com.app.grader.core.navigation.lib
+package com.app.grader.core.lib
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp

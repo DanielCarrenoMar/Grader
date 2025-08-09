@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.grader.core.navigation.lib.getColorForGrade
+import com.app.grader.core.lib.getColorForGrade
 import com.app.grader.domain.types.Grade
 
 @Composable

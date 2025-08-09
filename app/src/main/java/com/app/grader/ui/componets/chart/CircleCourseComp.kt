@@ -17,7 +17,7 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
-import com.app.grader.core.navigation.lib.getColorForGrade
+import com.app.grader.core.lib.getColorForGrade
 import com.app.grader.domain.types.Grade
 
 @Composable
