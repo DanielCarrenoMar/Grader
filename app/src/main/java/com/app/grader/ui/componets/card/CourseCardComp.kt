@@ -51,6 +51,8 @@ fun CourseCardComp(
     modifier: Modifier = Modifier,
     type: CourseCardType = CourseCardType.Normal,
 ) {
+    val context = LocalContext.current
+    val appConfig = AppConfig(context)
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
     val iconResId: Int = when (type) {
@@ -125,7 +127,7 @@ fun CourseCardComp(
                     modifier = Modifier.padding(vertical = 4.dp),
                 ){
                     CircleCourse(
-                        grade = course.average,
+                        grade = if (appConfig.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
                         radius = 33.dp
                     )
                 }
