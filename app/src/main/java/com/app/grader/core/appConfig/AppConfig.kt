@@ -9,17 +9,17 @@ class AppConfig(private val context: Context) {
         context.getSharedPreferences("app_config", Context.MODE_PRIVATE)
     }
 
-    fun isRoundAverageEnable(): Boolean {
+    fun isRoundFinalCourseAverage(): Boolean {
         return sharedPreferences.getBoolean("roundAverageEnable", false)
     }
-    fun setRoundAverageEnable(enabled: Boolean) {
+    fun setRoundFinalCourseAverage(enabled: Boolean) {
         sharedPreferences.edit { putBoolean("roundAverageEnable", enabled) }
     }
 
-    fun isDarkModeEnable(): Boolean {
+    fun isDarkMode(): Boolean {
         return sharedPreferences.getBoolean("darkModeEnable", false)
     }
-    fun setDarkModeEnable(enabled: Boolean) {
+    fun setDarkMode(enabled: Boolean) {
         sharedPreferences.edit { putBoolean("darkModeEnable", enabled) }
     }
 }

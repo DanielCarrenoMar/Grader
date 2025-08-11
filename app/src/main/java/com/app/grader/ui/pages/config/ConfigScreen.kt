@@ -60,21 +60,21 @@ fun ConfigScreen(
             Spacer(Modifier.height(10.dp))
             IconCardButton(
                 onClick = {
-                    appConfig.setRoundAverageEnable(!appConfig.isRoundAverageEnable())
+                    appConfig.setRoundFinalCourseAverage(!appConfig.isRoundFinalCourseAverage())
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.info_outline,
-                text = "Activar Redondeo: " + appConfig.isRoundAverageEnable(),
+                text = "Activar Redondeo: " + appConfig.isRoundFinalCourseAverage(),
             )
             IconCardButton(
                 onClick = {
-                    appConfig.setDarkModeEnable(!appConfig.isDarkModeEnable())
+                    appConfig.setDarkMode(!appConfig.isDarkMode())
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.info_outline,
-                text = "Activar Modo Oscuro: " + appConfig.isDarkModeEnable(),
+                text = "Activar Modo Oscuro: " + appConfig.isDarkMode(),
             )
             IconCardButton(
                 onClick = {
