@@ -157,7 +157,7 @@ fun HomeScreen(
                                 showDeleteConfirmation = true
                             },
                             { navigateToEditCourse(course.id) },
-                            courseCardType 
+                            type = courseCardType
                         )
                         Spacer(Modifier.height(10.dp))
                     }
