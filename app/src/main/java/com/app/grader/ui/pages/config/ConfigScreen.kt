@@ -23,6 +23,7 @@ import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.R
 import androidx.core.net.toUri
+import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.ui.theme.Error500
 
 @Composable
@@ -34,7 +35,7 @@ fun ConfigScreen(
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
-
+    val appConfig = AppConfig(context)
 
     if (showDeleteConfirmation){
         DeleteConfirmationComp(
@@ -57,6 +58,24 @@ fun ConfigScreen(
                 .padding(horizontal = 20.dp),
         ) {
             Spacer(Modifier.height(10.dp))
+            IconCardButton(
+                onClick = {
+                    appConfig.setRoundAverageEnable(!appConfig.isRoundAverageEnable())
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.info_outline,
+                text = "Activar Redondeo: " + appConfig.isRoundAverageEnable(),
+            )
+            IconCardButton(
+                onClick = {
+                    appConfig.setDarkModeEnable(!appConfig.isDarkModeEnable())
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.info_outline,
+                text = "Activar Modo Oscuro: " + appConfig.isDarkModeEnable(),
+            )
             IconCardButton(
                 onClick = {
                     val url = "https://github.com/DanielCarrenoMar/Grader/releases"

@@ -1,8 +1,9 @@
 package com.app.grader.domain.types
 
 import java.util.Locale
+import kotlin.math.roundToInt
 
-open class Grade(
+data class Grade(
     private var value: Double
 ){
     init {
@@ -24,6 +25,9 @@ open class Grade(
     }
     fun getGrade(): Double {
         return value
+    }
+    fun getRoundedGrade(): Double {
+        return if (isBlank()) -1.0 else (value).roundToInt().toDouble()
     }
 
     fun isBlank(): Boolean{
