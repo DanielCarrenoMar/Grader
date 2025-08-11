@@ -23,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
+import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.CircleCourse
@@ -46,8 +48,8 @@ fun CourseCardComp(
     navigateToCourse: () -> Unit,
     deleteCourse: ()-> Unit,
     editCourse: ()-> Unit,
-    type: CourseCardType = CourseCardType.Normal,
     modifier: Modifier = Modifier,
+    type: CourseCardType = CourseCardType.Normal,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
@@ -73,11 +75,11 @@ fun CourseCardComp(
     CardContainer(
         onClick = navigateToCourse,
         modifier = modifier
-    ) { innerPading ->
+    ) { innerPadding ->
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(innerPading),
+                .padding(innerPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Column (
