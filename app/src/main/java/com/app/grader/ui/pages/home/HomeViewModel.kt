@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class HomeViewModel  @Inject constructor(
     private val getAllCoursesUserCase: GetAllCoursesUserCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
-    private val getAllGradesUseCase: GetAllGradesUserCase
+    private val getAllGradesUseCase: GetAllGradesUserCase,
+    private val appConfig: AppConfig,
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
@@ -70,7 +72,10 @@ class HomeViewModel  @Inject constructor(
 
                             _courses.value.forEach { course ->
                                 if (course.average.isNotBlank()) {
-                                    totalGrades += course.average.getGrade() * course.uc
+                                    val grade = if (appConfig.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
+                                    else course.average.getGrade()
+
+                                    totalGrades += grade * course.uc
                                     totalUC += course.uc
                                 }
                             }

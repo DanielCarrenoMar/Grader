@@ -29,6 +29,9 @@ data class Grade(
     fun getRounded(): Grade {
         return Grade(value.roundToInt().toDouble())
     }
+    fun getRoundedGrade(): Double {
+        return value.roundToInt().toDouble()
+    }
 
     fun isBlank(): Boolean{
         return value == -1.0
