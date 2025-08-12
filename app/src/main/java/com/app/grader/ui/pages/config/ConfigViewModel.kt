@@ -1,8 +1,10 @@
 package com.app.grader.ui.pages.config
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
@@ -16,7 +18,26 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllGradesUseCase: DeleteAllGradesUseCase,
     private val deleteAllCoursesUseCase: DeleteAllCoursesUseCase,
     private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
+    private val appConfig: AppConfig
 ): ViewModel() {
+    private val _isDarkMode = mutableStateOf(appConfig.isDarkMode())
+    val isDarkMode = _isDarkMode
+    private val _isRoundFinalCourseAverage = mutableStateOf(appConfig.isDarkMode())
+    val isRoundFinalCourseAverage = _isRoundFinalCourseAverage
+
+    fun updateConfiguration() {
+        _isDarkMode.value = appConfig.isDarkMode()
+        _isRoundFinalCourseAverage.value = appConfig.isRoundFinalCourseAverage()
+    }
+
+    fun setDarkMode(isDarkMode: Boolean) {
+        _isDarkMode.value = isDarkMode
+        appConfig.setDarkMode(isDarkMode)
+    }
+    fun setRoundFinalCourseAverage(isRoundFinalCourseAverage: Boolean) {
+        _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
+        appConfig.setRoundFinalCourseAverage(isRoundFinalCourseAverage)
+    }
     fun deleteAll(){
         viewModelScope.launch {
             deleteAllGradesUseCase().collect { result ->

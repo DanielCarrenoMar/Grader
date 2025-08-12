@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +24,11 @@ import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.R
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
 
 @Composable
@@ -35,7 +40,13 @@ fun ConfigScreen(
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
-    val appConfig = AppConfig(context)
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(viewModel) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.updateConfiguration()
+        }
+    }
 
     if (showDeleteConfirmation){
         DeleteConfirmationComp(
@@ -58,23 +69,25 @@ fun ConfigScreen(
                 .padding(horizontal = 20.dp),
         ) {
             Spacer(Modifier.height(10.dp))
-            IconCardButton(
-                onClick = {
-                    appConfig.setRoundFinalCourseAverage(!appConfig.isRoundFinalCourseAverage())
+            SwitchCardComp(
+                checked = viewModel.isRoundFinalCourseAverage.value,
+                onCheckedChange = {
+                    viewModel.setRoundFinalCourseAverage(it)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.info_outline,
-                text = "Activar Redondeo: " + appConfig.isRoundFinalCourseAverage(),
+                text = "Redondeo de promedio final",
             )
-            IconCardButton(
-                onClick = {
-                    appConfig.setDarkMode(!appConfig.isDarkMode())
+            SwitchCardComp(
+                checked = viewModel.isDarkMode.value,
+                onCheckedChange = {
+                    viewModel.setDarkMode(it)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.info_outline,
-                text = "Activar Modo Oscuro: " + appConfig.isDarkMode(),
+                text = "Modo Oscuro",
             )
             IconCardButton(
                 onClick = {
