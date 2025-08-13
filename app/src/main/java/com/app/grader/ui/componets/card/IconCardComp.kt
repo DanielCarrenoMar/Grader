@@ -39,7 +39,7 @@ fun IconCardButton(
     ){
         Row (
             modifier = Modifier
-                .padding(vertical = 15.dp)
+                .padding(vertical = 24.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ){
