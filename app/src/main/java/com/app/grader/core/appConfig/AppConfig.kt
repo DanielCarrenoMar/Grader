@@ -2,6 +2,7 @@ package com.app.grader.core.appConfig
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import androidx.core.content.edit
 
 class AppConfig(private val context: Context) {
@@ -9,8 +10,13 @@ class AppConfig(private val context: Context) {
         context.getSharedPreferences("app_config", Context.MODE_PRIVATE)
     }
 
+    private fun isSystemInDarkMode(): Boolean {
+        val uiModeManager = context.resources.configuration.uiMode
+        return (uiModeManager and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+    }
+
     fun isRoundFinalCourseAverage(): Boolean {
-        return sharedPreferences.getBoolean("roundAverageEnable", false)
+        return sharedPreferences.getBoolean("roundAverageEnable", isSystemInDarkMode())
     }
     fun setRoundFinalCourseAverage(enabled: Boolean) {
         sharedPreferences.edit { putBoolean("roundAverageEnable", enabled) }

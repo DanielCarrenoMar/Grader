@@ -45,7 +45,7 @@ val replyShapes = Shapes(
 @Composable
 fun NavigationGuideTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    isDynamicColor: Boolean = false, // Dynamic color is available on Android 12+
+    isDynamicColor: Boolean = Build.VERSION.SDK_INT >= 32, // Dynamic color is available on Android 12+ (api 32)
     content: @Composable () -> Unit
 ) {
     val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
