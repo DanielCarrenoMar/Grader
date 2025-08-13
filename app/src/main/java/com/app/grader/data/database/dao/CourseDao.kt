@@ -10,7 +10,7 @@ import com.app.grader.domain.types.Grade
 @Dao
 interface CourseDao {
 
-    @Query("SELECT * FROM course")
+    @Query("SELECT * FROM course ORDER BY id DESC")
     suspend fun getAllCourses(): List<CourseEntity>
 
     @Query("SELECT SUM(grade * percentage) / SUM(percentage) FROM grade WHERE course_id = :courseId")
