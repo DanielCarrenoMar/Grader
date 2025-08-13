@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,6 +57,13 @@ fun HomeScreen(
     val courses by viewModel.courses
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
+    val listState = rememberLazyListState()
+    LaunchedEffect(courses) {
+        if (courses.isNotEmpty()) {
+            listState.animateScrollToItem(index = 0)
+        }
+    }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -80,7 +88,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = listState,
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
