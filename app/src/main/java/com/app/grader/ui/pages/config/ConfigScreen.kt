@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,7 +77,7 @@ fun ConfigScreen(
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.info_outline,
+                icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
             )
             SwitchCardComp(
@@ -87,9 +88,10 @@ fun ConfigScreen(
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.info_outline,
+                icon = if (viewModel.isDarkMode.value) R.drawable.moon_outline else R.drawable.sun_outline,
                 text = "Modo Oscuro",
             )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = {
                     val url = "https://github.com/DanielCarrenoMar/Grader/releases"
@@ -112,7 +114,7 @@ fun ConfigScreen(
                 icon = R.drawable.exclamation_outline,
                 text = "Reportar bug o sugerencia",
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = { showDeleteConfirmation = true },
                 contentColor = Error500,
