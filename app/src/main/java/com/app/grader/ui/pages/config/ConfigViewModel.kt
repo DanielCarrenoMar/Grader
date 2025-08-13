@@ -1,5 +1,7 @@
 package com.app.grader.ui.pages.config
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,7 +11,10 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
+import com.patrykandpatrick.vico.compose.common.shader.component
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +30,17 @@ class ConfigViewModel  @Inject constructor(
     private val _isRoundFinalCourseAverage = mutableStateOf(appConfig.isDarkMode())
     val isRoundFinalCourseAverage = _isRoundFinalCourseAverage
 
+    fun restartApp(context: Context) {
+        viewModelScope.launch {
+            delay(1000L)
+            val packageManager = context.packageManager
+            val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+            val componentName = intent?.component
+            val mainIntent = Intent.makeRestartActivityTask(componentName)
+            context.startActivity(mainIntent)
+            Runtime.getRuntime().exit(0)
+        }
+    }
     fun updateConfiguration() {
         _isDarkMode.value = appConfig.isDarkMode()
         _isRoundFinalCourseAverage.value = appConfig.isRoundFinalCourseAverage()

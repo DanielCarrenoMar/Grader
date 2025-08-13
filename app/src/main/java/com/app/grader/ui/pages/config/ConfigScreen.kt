@@ -77,12 +77,13 @@ fun ConfigScreen(
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.info_outline,
-                text = "Redondeo de promedio final",
+                text = "Redondear promedio para asignaturas finalizadas",
             )
             SwitchCardComp(
                 checked = viewModel.isDarkMode.value,
                 onCheckedChange = {
                     viewModel.setDarkMode(it)
+                    viewModel.restartApp(context)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
@@ -111,6 +112,7 @@ fun ConfigScreen(
                 icon = R.drawable.exclamation_outline,
                 text = "Reportar bug o sugerencia",
             )
+            Spacer(modifier = Modifier.height(10.dp))
             IconCardButton(
                 onClick = { showDeleteConfirmation = true },
                 contentColor = Error500,
