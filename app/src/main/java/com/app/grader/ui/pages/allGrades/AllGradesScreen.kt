@@ -1,12 +1,15 @@
 package com.app.grader.ui.pages.allGrades
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,9 +24,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.ui.componets.DeleteConfirmationComp
-import com.app.grader.ui.componets.card.GradeCardComp
-import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.GradeBottomSheet
+import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.card.GradeCardComp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,14 +65,30 @@ fun AllGradesScreen(
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 20.dp)
         ){
-            items(viewModel.grades.value){ grade ->
-                GradeCardComp(
-                    grade = grade,
-                    onClick = {
-                    viewModel.setShowGrade(grade.id)
-                    showBottomSheet = true
+            itemsIndexed(viewModel.courses.value){ index, course ->
+                Text(course.title)
+
+                if (viewModel.grades.value.size <= index) return@itemsIndexed
+
+                val gradesForCurrentCourse = viewModel.grades.value[index]
+                if (gradesForCurrentCourse.isNotEmpty()) {
+                    gradesForCurrentCourse.forEach { grade ->
+                        GradeCardComp(
+                            grade = grade,
+                            onClick = {
+                                viewModel.setShowGrade(grade.id)
+                                showBottomSheet = true
+                            }
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                } else {
+                    Text(
+                        text = "No hay calificaciones para esta asignatura.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
                 }
-                )
             }
         }
         if (showBottomSheet) {
