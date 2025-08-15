@@ -1,12 +1,17 @@
 package com.app.grader.ui.pages.allGrades
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,64 +48,84 @@ fun AllGradesScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllGrades()
+            viewModel.getAllGradesWithCourses()
         }
     }
 
-    if (showDeleteConfirmation){
+    if (showDeleteConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
             { showDeleteConfirmation = false }
         )
     }
-    HeaderMenu ("Todas las Calificaciones",
-        {navigateToHome()},
+    HeaderMenu(
+        "Todas las Calificaciones",
+        { navigateToHome() },
         null,
-        {navigateToConfig()}
+        { navigateToConfig() }
     ) { innerPadding ->
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 20.dp)
-        ){
-            itemsIndexed(viewModel.courses.value){ index, course ->
-                Text(course.title)
-
-                if (viewModel.grades.value.size <= index) return@itemsIndexed
-
-                val gradesForCurrentCourse = viewModel.grades.value[index]
-                if (gradesForCurrentCourse.isNotEmpty()) {
-                    gradesForCurrentCourse.forEach { grade ->
-                        GradeCardComp(
-                            grade = grade,
-                            onClick = {
-                                viewModel.setShowGrade(grade.id)
-                                showBottomSheet = true
-                            }
+        ) {
+            if (viewModel.isLoading.value) {
+                item {
+                    Spacer(Modifier.height(10.dp))
+                    Row (
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(64.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         )
-                        Spacer(Modifier.height(8.dp))
                     }
-                } else {
-                    Text(
-                        text = "No hay calificaciones para esta asignatura.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                }
+            } else {
+                itemsIndexed(viewModel.courses.value) { index, course ->
+                    Text(course.title)
+
+                    val gradesForCurrentCourse = viewModel.grades.value[index]
+                    if (gradesForCurrentCourse.isNotEmpty()) {
+                        gradesForCurrentCourse.forEach { grade ->
+                            GradeCardComp(
+                                grade = grade,
+                                onClick = {
+                                    viewModel.setShowGrade(grade.id)
+                                    showBottomSheet = true
+                                }
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    } else {
+                        Text(
+                            text = "No hay calificaciones para esta asignatura.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
                 }
             }
         }
-        if (showBottomSheet) {
-            GradeBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
-                sheetState = sheetState,
-                showGrade = viewModel.showGrade.value,
-                editOnClick = { navigateToEditGrade(viewModel.showGrade.value.id, viewModel.showGrade.value.courseId); showBottomSheet = false },
-                deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }
-            )
-        }
+    }
+    if (showBottomSheet) {
+        GradeBottomSheet(
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+            sheetState = sheetState,
+            showGrade = viewModel.showGrade.value,
+            editOnClick = {
+                navigateToEditGrade(
+                    viewModel.showGrade.value.id,
+                    viewModel.showGrade.value.courseId
+                ); showBottomSheet = false
+            },
+            deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }
+        )
     }
 }

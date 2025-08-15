@@ -9,7 +9,6 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
-import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +19,11 @@ import javax.inject.Inject
 class AllGradesViewModel  @Inject constructor(
     private val getAllCoursesUseCase: GetAllCoursesUserCase,
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
-    private val getAllGradesUseCase: GetAllGradesUserCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
 ): ViewModel() {
+    private val _isLoading = mutableStateOf(true)
+    val isLoading = _isLoading
     private val _grades = mutableStateOf<List<List<GradeModel>>>(emptyList())
     val grades = _grades
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
@@ -36,7 +36,7 @@ class AllGradesViewModel  @Inject constructor(
             deleteGradeFromIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        getAllGrades()
+                        getAllGradesWithCourses()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -67,7 +67,8 @@ class AllGradesViewModel  @Inject constructor(
         }
     }
 
-    fun getAllGrades() {
+    fun getAllGradesWithCourses() {
+        _isLoading.value = true
         viewModelScope.launch {
             getAllCoursesUseCase().collect { result ->
                 when (result) {
@@ -99,6 +100,7 @@ class AllGradesViewModel  @Inject constructor(
                             }
                         }
                         _grades.value = newGradesByCourses
+                        _isLoading.value = false
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
