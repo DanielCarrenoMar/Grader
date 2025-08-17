@@ -36,6 +36,7 @@ import com.app.grader.ui.theme.Error500
 fun ConfigScreen(
     navigateToHome: () -> Unit,
     navigateToAllGrades: () -> Unit,
+    navigateToRecord: () -> Unit,
     viewModel: ConfigViewModel = hiltViewModel(),
 ) {
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -60,6 +61,7 @@ fun ConfigScreen(
         "Ajustes",
         { navigateToHome() },
         { navigateToAllGrades() },
+        {},
         null,
     ) { innerPadding ->
         Column(

@@ -74,6 +74,7 @@ fun HeaderMenu(
     title: String,
     navigateHome: (() -> Unit)?,
     navigateAllGrades: (() -> Unit)?,
+    navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -109,6 +110,11 @@ fun HeaderMenu(
                         title = "Todas las calificaciones",
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
+                    )
+                    MyNavigationDrawerItem(
+                        title = "Hist. Académico",
+                        iconId = R.drawable.book_outline,
+                        onClick = navigateRecord
                     )
                     MyNavigationDrawerItem(
                         title = "Ajustes",

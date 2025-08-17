@@ -18,6 +18,7 @@ import com.app.grader.ui.pages.course.CourseScreen
 import com.app.grader.ui.pages.editCourse.EditCourseScreen
 import com.app.grader.ui.pages.editGrade.EditGradeScreen
 import com.app.grader.ui.pages.home.HomeScreen
+import com.app.grader.ui.pages.record.RecordScreen
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas
@@ -42,6 +43,7 @@ fun NavigationWrapper() {
             HomeScreen(
                 { navController.navigate(AllGrades) },
                 { navController.navigate(Config) },
+                { navController.navigate(Record) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  courseId ->  navController.navigate(EditCourse(courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
@@ -52,6 +54,7 @@ fun NavigationWrapper() {
             AllGradesScreen (
                 { navController.navigatePop(Home) },
                 { navController.navigate(Config) },
+                { navController.navigate(Record) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -59,7 +62,16 @@ fun NavigationWrapper() {
         composable<Config> {
             ConfigScreen(
                 { navController.navigatePop(Home) },
-                { navController.navigate(AllGrades) }
+                { navController.navigate(AllGrades) },
+                { navController.navigate(Record) },
+            )
+        }
+
+        composable<Record>{
+            RecordScreen(
+                { navController.navigatePop(Home) },
+                { navController.navigate(AllGrades) },
+                { navController.navigate(Config) },
             )
         }
 

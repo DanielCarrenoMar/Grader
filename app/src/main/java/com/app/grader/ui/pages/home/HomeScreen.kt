@@ -49,6 +49,7 @@ import kotlin.math.roundToInt
 fun HomeScreen(
     navigateToAllGrades: () -> Unit,
     navigateToConfig: () -> Unit,
+    navigateToRecord: () -> Unit,
     navigateToCourse: (Int) -> Unit,
     navigateToEditCourse: (Int) -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
@@ -82,6 +83,7 @@ fun HomeScreen(
         "Asignaturas",
         null,
         { navigateToAllGrades() },
+        {},
         { navigateToConfig() }
     ) { innerPadding ->
         LazyColumn(

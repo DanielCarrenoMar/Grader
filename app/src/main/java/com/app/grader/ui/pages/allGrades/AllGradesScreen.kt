@@ -38,6 +38,7 @@ import com.app.grader.ui.componets.card.GradeCardComp
 fun AllGradesScreen(
     navigateToHome: () -> Unit,
     navigateToConfig: () -> Unit,
+    navigateToRecord: () -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: AllGradesViewModel = hiltViewModel()
 ) {
@@ -62,6 +63,7 @@ fun AllGradesScreen(
         "Todas las Calificaciones",
         { navigateToHome() },
         null,
+        {},
         { navigateToConfig() }
     ) { innerPadding ->
         LazyColumn(

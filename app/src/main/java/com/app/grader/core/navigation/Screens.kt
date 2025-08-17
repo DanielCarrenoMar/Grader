@@ -13,6 +13,9 @@ object AllGrades
 object Config
 
 @Serializable
+object Record
+
+@Serializable
 data class Course(val courseId: Int)
 
 @Serializable
