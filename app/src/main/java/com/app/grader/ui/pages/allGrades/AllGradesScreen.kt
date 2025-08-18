@@ -1,16 +1,20 @@
 package com.app.grader.ui.pages.allGrades
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,16 +26,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import com.app.grader.R
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.GradeBottomSheet
 import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.card.CardContainer
 import com.app.grader.ui.componets.card.GradeCardComp
+import com.app.grader.ui.theme.IconMedium
+import com.app.grader.ui.theme.IconSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,11 +100,27 @@ fun AllGradesScreen(
                 }
             } else {
                 itemsIndexed(viewModel.courses.value) { index, course ->
-                    Text(
-                        course.title,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                    CardContainer(
+                        onClick = {}
+                    ){
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                course.title,
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.arrow_right),
+                                contentDescription = "arrow",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                                modifier = Modifier.size(IconMedium)
+                            )
+                        }
+                    }
+
 
                     val gradesForCurrentCourse = viewModel.grades.value[index]
                     if (gradesForCurrentCourse.isNotEmpty()) {

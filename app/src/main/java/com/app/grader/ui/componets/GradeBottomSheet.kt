@@ -41,7 +41,7 @@ fun GradeBottomSheet(
     deleteOnClick: () -> Unit
 ) {
     val accumulatePoints =
-        Grade(showGrade.grade.getGrade() * (showGrade.percentage.getPercentage() / 100))
+        if (showGrade.grade.isBlank()) Grade() else Grade(showGrade.grade.getGrade() * (showGrade.percentage.getPercentage() / 100))
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -85,20 +85,22 @@ fun GradeBottomSheet(
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 12.dp)
                     )
-                    Spacer(Modifier.weight(1f))
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        Text(
-                            text = Grade.formatText(accumulatePoints.getGrade()),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.tertiary,
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = "Ptos",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
+                    if (accumulatePoints.isNotBlank()){
+                        Spacer(Modifier.weight(1f))
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                text = Grade.formatText(accumulatePoints.getGrade()),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                text = "Ptos",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
                     }
                 }
 
