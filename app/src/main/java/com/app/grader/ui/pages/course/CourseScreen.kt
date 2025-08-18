@@ -144,8 +144,8 @@ fun CourseScreen(
                     .padding(innerPadding)
                     .fillMaxHeight()) {
                     TitleIcon(
-                        iconName = "star",
-                        iconId =  R.drawable.star
+                        iconName = "book",
+                        iconId =  R.drawable.book
                     ) {
                         Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
                         Spacer(Modifier.width(6.dp))

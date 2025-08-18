@@ -61,10 +61,10 @@ fun AllGradesScreen(
     }
     HeaderMenu(
         "Todas las Calificaciones",
-        { navigateToHome() },
+        navigateToHome,
         null,
-        {},
-        { navigateToConfig() }
+        navigateToRecord ,
+        navigateToConfig
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -89,7 +89,11 @@ fun AllGradesScreen(
                 }
             } else {
                 itemsIndexed(viewModel.courses.value) { index, course ->
-                    Text(course.title)
+                    Text(
+                        course.title,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
 
                     val gradesForCurrentCourse = viewModel.grades.value[index]
                     if (gradesForCurrentCourse.isNotEmpty()) {

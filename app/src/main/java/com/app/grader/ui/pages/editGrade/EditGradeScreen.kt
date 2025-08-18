@@ -141,7 +141,7 @@ fun EditGradeScreen(
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = R.drawable.star_outline,
+                    leadingIconId = if (viewModel.showSubGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
                     maxLength = 5,
                     suffix = {
                         IconButton(

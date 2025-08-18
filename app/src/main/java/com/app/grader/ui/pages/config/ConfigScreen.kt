@@ -59,9 +59,9 @@ fun ConfigScreen(
     }
     HeaderMenu(
         "Ajustes",
-        { navigateToHome() },
-        { navigateToAllGrades() },
-        {},
+        navigateToHome,
+        navigateToAllGrades,
+        navigateToRecord,
         null,
     ) { innerPadding ->
         Column(

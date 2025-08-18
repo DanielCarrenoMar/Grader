@@ -111,11 +111,11 @@ fun HeaderMenu(
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
                     )
-                    MyNavigationDrawerItem(
+                    /*MyNavigationDrawerItem(
                         title = "Hist. Académico",
                         iconId = R.drawable.book_outline,
                         onClick = navigateRecord
-                    )
+                    )*/
                     MyNavigationDrawerItem(
                         title = "Ajustes",
                         iconId = R.drawable.cog_outline,

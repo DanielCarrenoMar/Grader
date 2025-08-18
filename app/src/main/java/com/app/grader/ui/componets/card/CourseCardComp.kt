@@ -58,13 +58,13 @@ fun CourseCardComp(
     val iconResId: Int = when (type) {
         is CourseCardType.Normal -> R.drawable.education_cap
         is CourseCardType.Fail -> R.drawable.skull
-        is CourseCardType.Pass -> R.drawable.star
+        is CourseCardType.Pass -> R.drawable.fire
         is CourseCardType.Finish -> R.drawable.check
     }
     val iconName: String = when (type) {
         is CourseCardType.Normal -> "education cap"
         is CourseCardType.Fail -> "skull"
-        is CourseCardType.Pass -> "start"
+        is CourseCardType.Pass -> "fire"
         is CourseCardType.Finish -> "check"
     }
     val primaryColor: Color = when (type) {
