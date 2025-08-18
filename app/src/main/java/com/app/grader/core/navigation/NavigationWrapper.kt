@@ -56,6 +56,7 @@ fun NavigationWrapper() {
                 { navController.navigate(Config) },
                 { navController.navigate(Record) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+                { courseId -> navController.navigate(Course(courseId)) },
             )
         }
 

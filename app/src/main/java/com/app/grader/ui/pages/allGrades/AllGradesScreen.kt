@@ -51,6 +51,7 @@ fun AllGradesScreen(
     navigateToConfig: () -> Unit,
     navigateToRecord: () -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
+    navigateToCourse: (Int) -> Unit,
     viewModel: AllGradesViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -101,7 +102,8 @@ fun AllGradesScreen(
             } else {
                 itemsIndexed(viewModel.courses.value) { index, course ->
                     CardContainer(
-                        onClick = {}
+                        onClick = {navigateToCourse(course.id)},
+                        modifier = Modifier.padding(vertical = 10.dp)
                     ){
                         Row (
                             verticalAlignment = Alignment.CenterVertically
