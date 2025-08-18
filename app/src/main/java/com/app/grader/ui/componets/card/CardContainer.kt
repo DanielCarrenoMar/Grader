@@ -22,8 +22,7 @@ fun CardContainer(
         Card(
             onClick = onClick,
             modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp),
+                .fillMaxWidth(),
             colors = CardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.onBackground,
@@ -38,7 +37,6 @@ fun CardContainer(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 15.dp)
                 .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large),
         ) {
             content(PaddingValues(18.dp))

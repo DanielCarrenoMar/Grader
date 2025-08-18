@@ -78,13 +78,13 @@ fun CourseScreen(
         }
     }
 
-    if (showDeleteGradeConfirmation){
+    if (showDeleteGradeConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
             { showDeleteGradeConfirmation = false }
         )
     }
-    if (showDeleteSelfConfirmation){
+    if (showDeleteSelfConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelf(navigateBack) },
             { showDeleteSelfConfirmation = false }
@@ -99,7 +99,8 @@ fun CourseScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState,
+            SnackbarHost(
+                hostState = snackbarHostState,
                 snackbar = {
                     Snackbar(
                         it,
@@ -112,77 +113,86 @@ fun CourseScreen(
         },
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Editar"){navigateToEditCourse(courseId)},
-            MenuAction("Eliminar"){showDeleteSelfConfirmation = true},
+            MenuAction("Editar") { navigateToEditCourse(courseId) },
+            MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         )
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .let { baseModifier ->
-                    if (viewModel.isEditingGrade.value) {
-                        baseModifier.clickable(
-                            onClick = { viewModel.isEditingGrade.value = false },
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        )
-                    } else baseModifier
-                },
+            modifier = Modifier.let { baseModifier ->
+                if (viewModel.isEditingGrade.value) {
+                    baseModifier.clickable(
+                        onClick = { viewModel.isEditingGrade.value = false },
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
+                } else baseModifier
+            },
         ) {
-            InfoCourseCard(
-                viewModel.course.value.average,
-                viewModel.accumulatePoints.value,
-                viewModel.pedingPoints.value,
-                viewModel.course.value.uc
-            )
-            Spacer(modifier = Modifier.height(25.dp))
-            CardContainer (
-                modifier = Modifier.weight(1f)
-            ){ innerPadding ->
-                Column (modifier = Modifier
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(innerPadding)
-                    .fillMaxHeight()) {
-                    TitleIcon(
-                        iconName = "book",
-                        iconId =  R.drawable.book
+                    .padding(horizontal = 15.dp)
+            ) {
+                InfoCourseCard(
+                    viewModel.course.value.average,
+                    viewModel.accumulatePoints.value,
+                    viewModel.pedingPoints.value,
+                    viewModel.course.value.uc
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                CardContainer(
+                    modifier = Modifier.weight(1f)
+                ) { innerPadding ->
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxHeight()
                     ) {
-                        Text(text = "Calificaciones", style = MaterialTheme.typography.labelLarge)
-                        Spacer(Modifier.width(6.dp))
-                        if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
-                            modifier = Modifier.alpha(if (viewModel.totalPercentaje.value.getPercentage() >= 100) 0.4f else 1f),
-                            text = viewModel.totalPercentaje.value.toString() + "%",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(15.dp))
-                    LazyColumn {
-                        items(viewModel.grades.value) { grade ->
-                            GradeCardComp(
-                                grade = grade,
-                                onClick = {
-                                    viewModel.setShowGrade(grade.id)
-                                    showBottomSheet = true
-                                },
-                                onLongClick = {
-                                    viewModel.setShowGrade(grade.id)
-                                    viewModel.isEditingGrade.value = true
-                                },
-                                isEditing = viewModel.isEditingGrade.value,
-                                onInputValueChange = { newValue ->
-                                    if (newValue.isBlank()) {
-                                        grade.grade.setBlank()
-                                        viewModel.updateGrade(grade)
-                                        return@GradeCardComp
-                                    }
-                                    val numberValue = newValue.toDoubleOrNull()
-                                    if (numberValue == null) return@GradeCardComp
-                                    if (!Grade.check(numberValue)) return@GradeCardComp
-                                    grade.grade.setGrade(numberValue)
-                                    viewModel.updateGrade(grade)
-                                },
+                        TitleIcon(
+                            iconName = "book",
+                            iconId = R.drawable.book
+                        ) {
+                            Text(
+                                text = "Calificaciones",
+                                style = MaterialTheme.typography.labelLarge
                             )
+                            Spacer(Modifier.width(6.dp))
+                            if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
+                                modifier = Modifier.alpha(if (viewModel.totalPercentaje.value.getPercentage() >= 100) 0.4f else 1f),
+                                text = viewModel.totalPercentaje.value.toString() + "%",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(15.dp))
+                        LazyColumn {
+                            items(viewModel.grades.value) { grade ->
+                                GradeCardComp(
+                                    grade = grade,
+                                    onClick = {
+                                        viewModel.setShowGrade(grade.id)
+                                        showBottomSheet = true
+                                    },
+                                    onLongClick = {
+                                        viewModel.setShowGrade(grade.id)
+                                        viewModel.isEditingGrade.value = true
+                                    },
+                                    isEditing = viewModel.isEditingGrade.value,
+                                    onInputValueChange = { newValue ->
+                                        if (newValue.isBlank()) {
+                                            grade.grade.setBlank()
+                                            viewModel.updateGrade(grade)
+                                            return@GradeCardComp
+                                        }
+                                        val numberValue = newValue.toDoubleOrNull()
+                                        if (numberValue == null) return@GradeCardComp
+                                        if (!Grade.check(numberValue)) return@GradeCardComp
+                                        grade.grade.setGrade(numberValue)
+                                        viewModel.updateGrade(grade)
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -197,25 +207,27 @@ fun CourseScreen(
                     editOnClick = {
                         navigateToEditGrade(viewModel.showGrade.value.id, courseId)
                         showBottomSheet = false
-                                  },
+                    },
                     deleteOnClick = { showDeleteGradeConfirmation = true; showBottomSheet = false }
                 )
             }
         }
-        FloatingMenuComp(listOf(
-            FloatingMenuCompItem("Calificación", R.drawable.star_outline){
-                if (viewModel.pedingPoints.value.getGrade() > 0){
-                    navigateToEditGrade(-1, courseId)
-                }else coroutineScope.launch {
-                    snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
-                }
-            },
-        ))
+        FloatingMenuComp(
+            listOf(
+                FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
+                    if (viewModel.pedingPoints.value.getGrade() > 0) {
+                        navigateToEditGrade(-1, courseId)
+                    } else coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
+                    }
+                },
+            )
+        )
     }
 }
 
 @Composable
-fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade, uc: Int){
+fun InfoCourseCard(average: Grade, accumulatePoints: Grade, pendingPoints: Grade, uc: Int) {
     val animatedAccumulatePoints by animateFloatAsState(
         targetValue = accumulatePoints.getGrade().toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
@@ -228,22 +240,24 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
         label = "pendingPointsAnimation"
     )
 
-    CardContainer{ innerPadding ->
-        Column (
+    CardContainer { innerPadding ->
+        Column(
             modifier = Modifier.padding(innerPadding)
-        ){
+        ) {
             TitleIcon(
                 iconName = "chart pie",
                 iconId = R.drawable.chart_pie
             ) {
                 Text(text = "Promedio", style = MaterialTheme.typography.labelLarge)
             }
-            Row( modifier = Modifier
-                .padding(horizontal = 0.dp, vertical = 10.dp)
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CircleAverage(average ,accumulatePoints.getGrade(), pendingPoints.getGrade())
-                Column(modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 0.dp)
+                CircleAverage(average, accumulatePoints.getGrade(), pendingPoints.getGrade())
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 0.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -254,9 +268,9 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
                                 .weight(1f)
                                 .align(Alignment.CenterVertically)
                         ) {
-                            Row (verticalAlignment = Alignment.Bottom){
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text =  Grade.formatText(animatedAccumulatePoints),
+                                    text = Grade.formatText(animatedAccumulatePoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
@@ -269,7 +283,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
                                 )
                             }
                             Spacer(Modifier.height(3.dp))
-                            Row (verticalAlignment = Alignment.Bottom) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
                                     text = Grade.formatText(animatedPendingPoints),
                                     style = MaterialTheme.typography.labelMedium,
@@ -286,9 +300,9 @@ fun InfoCourseCard(average: Grade, accumulatePoints:Grade, pendingPoints: Grade,
                         }
                     }
                     Spacer(Modifier.height(16.dp))
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
-                    ){
+                    ) {
                         Text(
                             text = "$uc",
                             style = MaterialTheme.typography.labelLarge,

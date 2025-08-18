@@ -82,14 +82,15 @@ fun HomeScreen(
     HeaderMenu(
         "Asignaturas",
         null,
-        { navigateToAllGrades() },
-        {},
-        { navigateToConfig() }
+        navigateToAllGrades,
+        navigateToRecord,
+        navigateToConfig
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .padding(horizontal = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             state = listState,
         ) {

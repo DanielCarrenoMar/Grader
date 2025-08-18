@@ -76,6 +76,7 @@ fun HeaderMenu(
     navigateAllGrades: (() -> Unit)?,
     navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
+    modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
