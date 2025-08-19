@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.editGrade
 
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.course.*
 import com.app.grader.domain.usecase.grade.*
@@ -20,7 +21,8 @@ object EditGradeViewModelMother {
             mock(GetCourseFromIdUseCase::class.java),
             mock(GetSubGradesFromGradeUseCase::class.java),
             mock(SaveSubGradeUseCase::class.java),
-            mock(DeleteAllSubGradesFromGradeIdUseCase::class.java)
+            mock(DeleteAllSubGradesFromGradeIdUseCase::class.java),
+            mock(GradeFactory::class.java)
         )
     }
 }
@@ -68,7 +70,7 @@ class ValidateInputsModelTest {
 
     @Test
     fun `syncInvalidInputs retorna false con grade en valor en Blank`() {
-        val value = Grade().getGrade().toString()
+        val value = Grade(-1, 9.5, 20).getGrade().toString()
         viewModel.setGrade(value)
         val result = viewModel.syncInvalidInputs()
         assertFalse(result)
