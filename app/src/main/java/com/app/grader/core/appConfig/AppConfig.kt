@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.core.content.edit
+import com.app.grader.domain.types.TypeGrade
 
 class AppConfig(private val context: Context) {
     private val sharedPreferences: SharedPreferences by lazy {
@@ -27,5 +28,12 @@ class AppConfig(private val context: Context) {
     }
     fun setDarkMode(enabled: Boolean) {
         sharedPreferences.edit { putBoolean("darkModeEnable", enabled) }
+    }
+
+    fun getTypeGrade(): TypeGrade {
+        return TypeGrade.valueOf(sharedPreferences.getString("typeGrade", TypeGrade.NUMERIC_20.name)!!)
+    }
+    fun setTypeGrade(typeGrade: TypeGrade) {
+        sharedPreferences.edit { putString("typeGrade", typeGrade.name) }
     }
 }

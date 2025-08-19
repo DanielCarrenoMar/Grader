@@ -2,6 +2,7 @@ package com.app.grader.di
 
 import android.content.Context
 import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.core.appConfig.GradeFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +17,11 @@ class AppConfigModule {
     @Singleton
     fun provideAppConfig(@ApplicationContext context: Context): AppConfig {
         return AppConfig(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGradeFactory(@ApplicationContext context: Context): GradeFactory {
+        return GradeFactory(context)
     }
 }

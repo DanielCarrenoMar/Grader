@@ -4,14 +4,18 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 data class Grade(
-    private var value: Double
+    private var value: Double,
+    private var min:Double,
+    private var max:Int,
 ){
     init {
         require(value in 0.0..20.0 || value == -1.0) { "Grade must be between 0 and 20 or -1. Not $value" }
+        require(min > 0) { "Min must be greater than 0. Not $min" }
+        require(max > 0) { "Max must be greater than 0. Not $max" }
     }
-    constructor() : this(-1.0)
-    constructor(grade:Grade) : this(grade.getGrade())
-    constructor(grade:Int) : this(grade.toDouble())
+    constructor(min:Double, max:Int) : this(-1.0, min, max)
+    constructor(grade:Grade) : this(grade.getGrade(), grade.getMin(), grade.getMax())
+    constructor(grade:Int, min:Double, max:Int) : this(grade.toDouble(), min, max)
     fun setGrade(grade:Double){
         if (grade < 0.0) this.value = -1.0
         else if (grade > 20.0) this.value = 20.0
@@ -26,11 +30,25 @@ data class Grade(
     fun getGrade(): Double {
         return value
     }
+    fun getMin(): Double {
+        return min
+    }
+    fun getMax(): Int {
+        return max
+    }
     fun getRounded(): Grade {
-        return Grade(value.roundToInt().toDouble())
+        return Grade(value.roundToInt().toDouble(), min, max)
     }
     fun getRoundedGrade(): Double {
         return value.roundToInt().toDouble()
+    }
+
+    fun isFail(): Boolean {
+        return value < min
+    }
+
+    fun getGradeRating(): Float {
+        return (value / max).toFloat()
     }
 
     fun isBlank(): Boolean{
@@ -77,10 +95,10 @@ data class Grade(
     }
 }
 
-fun Iterable<Grade>.averageGrade(): Grade {
-    if (this.none()) return Grade()
+fun Iterable<Grade>.averageGrade(): Double {
+    if (this.none()) return 0.0
     val filters = this.filter { !it.isBlank() }
-    if (filters.isEmpty()) return Grade()
+    if (filters.isEmpty()) return 0.0
     val sum = filters.sumOf { it.getGrade() } / filters.count()
-    return Grade(sum)
+    return Grade(sum, this.first().getMin(), this.first().getMax()).getGrade()
 }
