@@ -20,7 +20,7 @@ class AllGradesViewModel  @Inject constructor(
     private val getAllCoursesUseCase: GetAllCoursesUserCase,
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
-    private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
+    private val getGradeFromIdUseCase: GetGradeFromIdUseCase
 ): ViewModel() {
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading

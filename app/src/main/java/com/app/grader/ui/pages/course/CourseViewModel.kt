@@ -1,10 +1,10 @@
 package com.app.grader.ui.pages.course
 
 import android.util.Log
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
@@ -29,13 +29,14 @@ class CourseViewModel  @Inject constructor(
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
     private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
-    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase
+    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
+    private val gradeFactory: GradeFactory
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableStateOf(Grade(0.0))
+    private val _accumulatePoints = mutableStateOf(Grade(0.0,0.0,0))
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableStateOf(Grade(0.0))
+    private val _pedingPoints = mutableStateOf(Grade(0.0,0.0,0))
     val pedingPoints = _pedingPoints
     private val _totalPercentaje = mutableStateOf(Percentage(0.0))
     val totalPercentaje = _totalPercentaje
@@ -123,8 +124,8 @@ class CourseViewModel  @Inject constructor(
                             }
                         }
                         _totalPercentaje.value = Percentage(totalPercentage)
-                        _accumulatePoints.value = Grade(accumulatePointsTemp)
-                        _pedingPoints.value = Grade((100 - totalPercentage) / 100 * 20)
+                        _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
+                        _pedingPoints.value = gradeFactory.instGrade((100 - totalPercentage) / 100 * 20)
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed

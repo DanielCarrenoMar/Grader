@@ -8,5 +8,4 @@ enum class TypeGrade() {
     //LETTER_A_F,        // Letters: A, B, C, D, E, F (Colombia, international)
     //CONCEPTUAL,        // Concepts: Excellent, Good, Regular, Insufficient, etc.
     //PASS_FAIL,         // Only Pass/Fail
-    PERCENTAGE
 }

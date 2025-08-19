@@ -1,5 +1,6 @@
 package com.app.grader.domain.model
 
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.entitites.GradeEntity
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
@@ -18,7 +19,7 @@ data class GradeModel(
             courseId = -1,
             title = "",
             description = "",
-            grade = Grade(),
+            grade = Grade(-1,0.0,0),
             percentage = Percentage(),
         )
     }
@@ -34,13 +35,13 @@ fun GradeModel.toGradeEntity(): GradeEntity {
     )
 }
 
-fun GradeEntity.toGradeModel(): GradeModel {
+fun GradeEntity.toGradeModel(gradeFactory: GradeFactory): GradeModel {
     return GradeModel(
         id = this.id,
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        grade = Grade(this.grade),
+        grade = gradeFactory.instGrade(this.grade),
         percentage = Percentage(this.percentage),
     )
 }

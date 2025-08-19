@@ -8,7 +8,7 @@ import com.app.grader.domain.types.Percentage
 data class CourseModel(
     val title: String,
     val uc: Int,
-    val average: Grade = Grade(),
+    val average: Grade = Grade(-1, 0.0, 0),
     val totalPercentage: Percentage = Percentage(),
     val id: Int = -1,
 ){
@@ -16,7 +16,6 @@ data class CourseModel(
         val DEFAULT = CourseModel(
             title = "",
             uc = -1,
-            average = Grade()
         )
     }
 }

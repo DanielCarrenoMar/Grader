@@ -13,7 +13,6 @@ class GradeFactory (context: Context) {
             TypeGrade.NUMERIC_20 -> 9.5
             TypeGrade.NUMERIC_10 -> 4.5
             TypeGrade.NUMERIC_100 -> 50.0
-            TypeGrade.PERCENTAGE -> 50.0
         }
     }
 
@@ -23,29 +22,23 @@ class GradeFactory (context: Context) {
             TypeGrade.NUMERIC_20 -> 20
             TypeGrade.NUMERIC_10 -> 10
             TypeGrade.NUMERIC_100 -> 100
-            TypeGrade.PERCENTAGE -> 100
         }
     }
 
-    fun fromDouble(value: Double): Grade {
+    fun instGrade(value: Double): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
         return Grade(value, min, max)
     }
-
-    fun fromInt(value: Int): Grade {
-        val min = getMinFromTypeGrade()
-        val max = getMaxFromTypeGrade()
-        return Grade(value.toDouble(), min, max)
-    }
-
-    fun blank(): Grade {
+    fun instGrade(): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
         return Grade(-1.0, min, max)
     }
 
-    fun copyOf(grade: Grade): Grade {
-        return Grade(grade.getGrade(), grade.getMin(), grade.getMax())
+    fun convertToActualType(grade: Grade): Grade {
+        val min = getMinFromTypeGrade()
+        val max = getMaxFromTypeGrade()
+        return Grade(grade.getGrade(), min, max)
     }
 }

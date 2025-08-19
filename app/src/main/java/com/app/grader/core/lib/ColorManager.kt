@@ -32,6 +32,6 @@ fun getColorForGrade(grade: Grade): Color {
             Color(0xFF8BC441),
             Color(0xFF4CA649),
         ),
-        (grade.getGrade() / 20).toFloat()
+        grade.getGradeRating()
     )
 }

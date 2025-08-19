@@ -1,5 +1,6 @@
 package com.app.grader.domain.model
 
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.entitites.SubGradeEntity
 import com.app.grader.domain.types.Grade
 
@@ -9,15 +10,7 @@ data class SubGradeModel(
     val title: String,
     val grade: Grade,
     val id: Int = -1,
-){
-    companion object {
-        val DEFAULT = SubGradeModel(
-            gradeId = -1,
-            title = "",
-            grade = Grade(),
-        )
-    }
-}
+)
 
 fun SubGradeModel.toSubGradeEntity(): SubGradeEntity {
     return SubGradeEntity(
@@ -26,11 +19,11 @@ fun SubGradeModel.toSubGradeEntity(): SubGradeEntity {
         grade = this.grade.getGrade(),
     )
 }
-fun SubGradeEntity.toSubGradeModel(): SubGradeModel {
+fun SubGradeEntity.toSubGradeModel(gradeFactory: GradeFactory): SubGradeModel {
     return SubGradeModel(
         gradeId = this.gradeId,
         title = this.title,
-        grade = Grade(this.grade),
+        grade = gradeFactory.instGrade(this.grade),
         id = this.id,
     )
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
@@ -38,7 +39,8 @@ class EditGradeViewModel @Inject constructor(
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
-    private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeIdUseCase
+    private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeIdUseCase,
+    private val gradeFactory: GradeFactory,
 ): ViewModel() {
     private val gradesCache = mutableStateOf<List<GradeModel>>(emptyList())
 
@@ -46,7 +48,7 @@ class EditGradeViewModel @Inject constructor(
     val title = _title
     private val _description = mutableStateOf("Sin descripción")
     val description = _description
-    private val _grade = mutableStateOf(Grade(20.0))
+    private val _grade = mutableStateOf(gradeFactory.instGrade(20.0))
     val grade = _grade
     private val _percentage = mutableStateOf(Percentage(100.0))
     val percentage = _percentage
@@ -163,7 +165,7 @@ class EditGradeViewModel @Inject constructor(
             _subGrades.add(Grade(_grade.value))
             _showSubGrades.add(_grade.value.toString())
         }else{
-            _subGrades.add(Grade())
+            _subGrades.add(gradeFactory.instGrade())
             _showSubGrades.add("")
         }
         calGradeFromSubGrades()
