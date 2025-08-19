@@ -51,12 +51,12 @@ fun GradeCardComp(
 
     LaunchedEffect(requestFocus, Unit) {
         if (requestFocus) {
-            requestFocus = false
-            focusRequester.requestFocus()
-            val currentText = gradeTextFieldValue.text
-            gradeTextFieldValue = gradeTextFieldValue.copy(
+            val currentText = TextFieldValue(grade.grade.toString()).text
+            gradeTextFieldValue = TextFieldValue(grade.grade.toString()).copy(
                 selection = TextRange(currentText.length)
             )
+            focusRequester.requestFocus()
+            requestFocus = false
         }
     }
 
