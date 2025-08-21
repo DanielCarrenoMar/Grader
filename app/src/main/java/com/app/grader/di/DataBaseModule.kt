@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.app.grader.data.database.AppDatabase
+import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_3_4
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -22,7 +23,7 @@ class DataBaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java, "grader_database"
-        ).fallbackToDestructiveMigration(true).build()
+        ).addMigrations(MIGRATION_3_4).build()
     }
 
     @Singleton

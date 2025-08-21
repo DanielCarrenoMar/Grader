@@ -43,6 +43,10 @@ data class Grade(
         return value.roundToInt().toDouble()
     }
 
+    fun getGradePercentage(): Double {
+        return (value / max) * 100.0
+    }
+
     fun isFail(): Boolean {
         return value < minToPass
     }

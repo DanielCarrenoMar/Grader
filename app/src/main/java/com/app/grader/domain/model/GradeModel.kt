@@ -30,7 +30,7 @@ fun GradeModel.toGradeEntity(): GradeEntity {
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        grade = this.grade.getGrade(),
+        grade = this.grade.getGradePercentage(),
         percentage = this.percentage.getPercentage(),
     )
 }

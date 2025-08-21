@@ -15,6 +15,10 @@ android {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
 
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     defaultConfig {
         applicationId = "com.app.grader"
         minSdk = 24
@@ -49,6 +53,8 @@ android {
 dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.room.testing.android)
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.hilt.android)
@@ -69,7 +75,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Tests
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(kotlin("test"))
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -82,7 +93,4 @@ dependencies {
     implementation(libs.vico.views)
     implementation(libs.donut.views)
     implementation(libs.donut.compose)
-
-    testImplementation(libs.mockito.kotlin)
-
 }

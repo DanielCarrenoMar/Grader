@@ -10,5 +10,5 @@ data class SubGradeEntity (
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "grade_id") val gradeId: Int,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "grade") val grade: Double,
+    @ColumnInfo(name = "grade_percentage") val grade: Double,
 )

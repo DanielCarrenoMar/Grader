@@ -185,7 +185,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 gradeModel.id,
                 gradeModel.title,
                 gradeModel.description,
-                gradeModel.grade.getGrade(),
+                gradeModel.grade.getGradePercentage(),
                 gradeModel.percentage.getPercentage()
             )
             return result == 1
@@ -251,7 +251,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val result = subGradeDao.updateSubGradeById(
                 subGradeModel.id,
                 subGradeModel.title,
-                subGradeModel.grade.getGrade(),
+                subGradeModel.grade.getGradePercentage(),
             )
             return result == 1
         } catch (e: Exception) {

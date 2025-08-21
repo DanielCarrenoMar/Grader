@@ -13,10 +13,10 @@ interface CourseDao {
     @Query("SELECT * FROM course ORDER BY id DESC")
     suspend fun getAllCourses(): List<CourseEntity>
 
-    @Query("SELECT SUM(grade * percentage) / SUM(percentage) FROM grade WHERE course_id = :courseId AND grade > 0")
+    @Query("SELECT SUM(grade_percentage * percentage) / SUM(percentage) FROM grade WHERE course_id = :courseId AND grade_percentage > 0")
     suspend fun getAverageFromCourse(courseId: Int): Double?
 
-    @Query("SELECT SUM(percentage) FROM grade WHERE course_id = :courseId AND grade > 0")
+    @Query("SELECT SUM(percentage) FROM grade WHERE course_id = :courseId AND grade_percentage > 0")
     suspend fun getTotalPercentageFromCourse(courseId: Int): Double?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

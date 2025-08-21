@@ -16,7 +16,7 @@ fun SubGradeModel.toSubGradeEntity(): SubGradeEntity {
     return SubGradeEntity(
         gradeId = this.gradeId,
         title = this.title,
-        grade = this.grade.getGrade(),
+        grade = this.grade.getGradePercentage(),
     )
 }
 fun SubGradeEntity.toSubGradeModel(gradeFactory: GradeFactory): SubGradeModel {
