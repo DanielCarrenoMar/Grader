@@ -1,5 +1,6 @@
 package com.app.grader
 
+import android.util.Log
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.platform.app.InstrumentationRegistry
@@ -23,6 +24,26 @@ class RoomMigrationTest {
         InstrumentationRegistry.getInstrumentation(),
         AppDatabase::class.java
     )
+
+    private fun dumpQuery(db: androidx.sqlite.db.SupportSQLiteDatabase, query: String, tag: String = "RoomMigrationTest") {
+        db.query(query).use { c ->
+            val cols = (0 until c.columnCount).map { c.getColumnName(it) }
+            Log.d(tag, "Query: $query -> columns=$cols, rows=${c.count}")
+            while (c.moveToNext()) {
+                val row = (0 until c.columnCount).joinToString(", ") { idx ->
+                    val v = when (c.getType(idx)) {
+                        android.database.Cursor.FIELD_TYPE_INTEGER -> c.getLong(idx).toString()
+                        android.database.Cursor.FIELD_TYPE_FLOAT -> c.getDouble(idx).toString()
+                        android.database.Cursor.FIELD_TYPE_STRING -> c.getString(idx)
+                        android.database.Cursor.FIELD_TYPE_NULL -> "NULL"
+                        else -> "?"
+                    }
+                    "${cols[idx]}=$v"
+                }
+                Log.d(tag, row)
+            }
+        }
+    }
 
     @Test
     @Throws(IOException::class)
@@ -62,7 +83,32 @@ class RoomMigrationTest {
     fun migrate3To4_convertsGradesPercentage() {
         val dbName = "migration-test-grades"
 
-        val db = helper.runMigrationsAndValidate(dbName, 4, true, MIGRATION_3_4)
+        var db = helper.createDatabase(dbName, 3).apply {
+            // Insert some data into the database.
+            execSQL(
+                "INSERT INTO grade (course_id, title, description, grade, percentage) " +
+                        "VALUES (1, 'Math', 'Final Exam', 14, 100.0)"
+            )
+            execSQL(
+                "INSERT INTO grade (course_id, title, description, grade, percentage) "
+                        + "VALUES (1, 'Science', 'Midterm Exam', 20, 100.0)"
+            )
+            execSQL(
+                "INSERT INTO sub_grade (grade_id, title, grade) " +
+                        "VALUES (0, 'Math', 14)"
+            )
+            execSQL(
+                "INSERT INTO course (id, title, uc) " +
+                        "VALUES (1, 'Math', 1)"
+            )
+            execSQL(
+                "INSERT INTO course (id, title, uc) " +
+                        "VALUES (2, 'Science', 3)"
+            )
+            close()
+        }
+
+        db = helper.runMigrationsAndValidate(dbName, 4, true, MIGRATION_3_4)
 
         // Validar conversion: percentage = grade/20
         db.query("SELECT grade_percentage FROM grade WHERE title = 'Math'").use { c ->
@@ -71,5 +117,7 @@ class RoomMigrationTest {
         db.query("SELECT grade_percentage FROM grade WHERE title = 'Science'").use { c ->
             require(c.moveToFirst()); assert(abs(c.getDouble(0)) == 20/20.0)
         }
+
+        dumpQuery(db, "SELECT id, title, description, grade_percentage, percentage FROM grade ORDER BY id")
     }
 }
