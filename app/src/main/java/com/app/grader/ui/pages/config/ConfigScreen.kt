@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +35,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
+import com.app.grader.domain.types.TypeGrade
 
 @Composable
 fun ConfigScreen(
@@ -93,6 +98,12 @@ fun ConfigScreen(
                 icon = if (viewModel.isDarkMode.value) R.drawable.moon_outline else R.drawable.sun_outline,
                 text = "Modo Oscuro",
             )
+
+            // Selector de tipo de nota
+            GradeTypeSelector(
+                current = viewModel.typeGrade.value,
+                onSelect = { viewModel.setTypeGrade(it) }
+            )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = {
@@ -136,4 +147,48 @@ fun ConfigScreen(
         }
     }
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun GradeTypeSelector(current: TypeGrade, onSelect: (TypeGrade) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val options = listOf(TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_10, TypeGrade.NUMERIC_100)
+    val label = when(current){
+        TypeGrade.NUMERIC_20 -> "Notas base 20"
+        TypeGrade.NUMERIC_10 -> "Notas base 10"
+        TypeGrade.NUMERIC_100 -> "Notas base 100"
+    }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.padding(top = 12.dp)
+    ) {
+        TextField(
+            readOnly = true,
+            value = label,
+            onValueChange = {},
+            label = { Text("Tipo de nota") },
+            modifier = Modifier.menuAnchor(),
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                val optionLabel = when(option){
+                    TypeGrade.NUMERIC_20 -> "Notas base 20"
+                    TypeGrade.NUMERIC_10 -> "Notas base 10"
+                    TypeGrade.NUMERIC_100 -> "Notas base 100"
+                }
+                DropdownMenuItem(
+                    text = { Text(optionLabel) },
+                    onClick = {
+                        onSelect(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }

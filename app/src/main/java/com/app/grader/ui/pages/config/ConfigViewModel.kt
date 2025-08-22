@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.types.TypeGrade
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
@@ -30,6 +31,9 @@ class ConfigViewModel  @Inject constructor(
     private val _isRoundFinalCourseAverage = mutableStateOf(appConfig.isDarkMode())
     val isRoundFinalCourseAverage = _isRoundFinalCourseAverage
 
+    private val _typeGrade = mutableStateOf(appConfig.getTypeGrade())
+    val typeGrade = _typeGrade
+
     fun restartApp(context: Context) {
         viewModelScope.launch {
             delay(1000L)
@@ -44,6 +48,7 @@ class ConfigViewModel  @Inject constructor(
     fun updateConfiguration() {
         _isDarkMode.value = appConfig.isDarkMode()
         _isRoundFinalCourseAverage.value = appConfig.isRoundFinalCourseAverage()
+        _typeGrade.value = appConfig.getTypeGrade()
     }
 
     fun setDarkMode(isDarkMode: Boolean) {
@@ -53,6 +58,10 @@ class ConfigViewModel  @Inject constructor(
     fun setRoundFinalCourseAverage(isRoundFinalCourseAverage: Boolean) {
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
         appConfig.setRoundFinalCourseAverage(isRoundFinalCourseAverage)
+    }
+    fun setTypeGrade(typeGrade: TypeGrade) {
+        _typeGrade.value = typeGrade
+        appConfig.setTypeGrade(typeGrade)
     }
     fun deleteAll(){
         viewModelScope.launch {
