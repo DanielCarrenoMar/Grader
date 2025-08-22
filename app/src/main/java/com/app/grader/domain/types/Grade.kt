@@ -18,7 +18,7 @@ data class Grade(
     constructor(grade:Int, min:Double, max:Int) : this(grade.toDouble(), min, max)
     fun setGrade(grade:Double){
         if ((grade < 0.0 && !isBlankValue(grade)
-                    || grade > max)) throw IllegalArgumentException("Grade must be between 0 and $max or -1. Not $value")
+                    || grade > max)) throw IllegalArgumentException("Grade must be between 0 and $max or -1. Not $grade")
         else this.value = grade
     }
     fun setGrade(grade:Int){
