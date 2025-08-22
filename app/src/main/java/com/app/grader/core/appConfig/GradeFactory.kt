@@ -46,6 +46,6 @@ class GradeFactory (context: Context) {
     fun convertToActualType(grade: Grade): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        return Grade(grade.getGrade(), min, max)
+        return Grade(grade.getGradePercentage()  * max / 100, min, max)
     }
 }
