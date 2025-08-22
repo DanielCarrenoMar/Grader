@@ -125,7 +125,7 @@ class CourseViewModel  @Inject constructor(
                         }
                         _totalPercentaje.value = Percentage(totalPercentage)
                         _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
-                        _pedingPoints.value = gradeFactory.instGrade((100 - totalPercentage) / 100 * 20)
+                        _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalPercentage)
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
