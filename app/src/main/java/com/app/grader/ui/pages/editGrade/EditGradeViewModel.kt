@@ -48,7 +48,7 @@ class EditGradeViewModel @Inject constructor(
     val title = _title
     private val _description = mutableStateOf("Sin descripción")
     val description = _description
-    private val _grade = mutableStateOf(gradeFactory.instGrade(20.0))
+    private val _grade = mutableStateOf(gradeFactory.instGradeFromPercentage(100.0))
     val grade = _grade
     private val _percentage = mutableStateOf(Percentage(100.0))
     val percentage = _percentage
