@@ -76,6 +76,7 @@ class AllGradesViewModel  @Inject constructor(
                         val courses = result.data
                         if (courses.isNullOrEmpty()) {
                             _grades.value = emptyList()
+                            _isLoading.value = false
                             return@collect
                         }
                         _courses.value = courses
