@@ -80,7 +80,7 @@ class EditGradeViewModel @Inject constructor(
         _showGrade.value = grade
         val value = grade.toDoubleOrNull()
 
-        if (grade.isNotBlank() && value != null && Grade.check(value) ) _grade.value.setGrade(value)
+        if (grade.isNotBlank() && value != null && _grade.value.check(value) ) _grade.value.setGrade(value)
         else _grade.value.setBlank()
     }
 
@@ -155,7 +155,7 @@ class EditGradeViewModel @Inject constructor(
         _showSubGrades[index] = subGrade
         val value = subGrade.toDoubleOrNull()
 
-        if (subGrade.isNotBlank() && value != null && Grade.check(value) ) _subGrades[index].setGrade(value)
+        if (subGrade.isNotBlank() && value != null && _grade.value.check(value) ) _subGrades[index].setGrade(value)
         else _subGrades[index].setBlank()
         calGradeFromSubGrades()
     }
@@ -326,7 +326,7 @@ class EditGradeViewModel @Inject constructor(
             ) {
             _grade.value.setBlank()
         }
-        else if (!Grade.check(showGradeValue)) {
+        else if (!_grade.value.check(showGradeValue) ) {
             _showGrade.value = _grade.value.toString()
             _grade.value.setGrade(_showGrade.value.toDoubleOrNull() ?: 0.0)
             result = false

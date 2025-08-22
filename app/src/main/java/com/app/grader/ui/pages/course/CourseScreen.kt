@@ -187,7 +187,7 @@ fun CourseScreen(
                                         }
                                         val numberValue = newValue.toDoubleOrNull()
                                         if (numberValue == null) return@GradeCardComp
-                                        if (!Grade.check(numberValue)) return@GradeCardComp
+                                        if (!grade.grade.check(numberValue)) return@GradeCardComp
                                         grade.grade.setGrade(numberValue)
                                         viewModel.updateGrade(grade)
                                     },
