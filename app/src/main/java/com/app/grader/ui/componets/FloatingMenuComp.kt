@@ -88,7 +88,10 @@ fun FloatingMenuComp(items: List<FloatingMenuCompItem>) {
             ) {
                 LazyColumn(Modifier.padding(bottom = 8.dp)) {
                     items(items) { item ->
-                        ItemMenu(iconId = item.iconId, title = item.title, onClick = item.navFun)
+                        ItemMenu(iconId = item.iconId, title = item.title, onClick = {
+                            expanded = false
+                            item.navFun()
+                        })
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
