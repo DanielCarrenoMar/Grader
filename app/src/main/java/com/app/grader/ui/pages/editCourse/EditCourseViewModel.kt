@@ -57,12 +57,8 @@ class EditCourseViewModel @Inject constructor(
         viewModelScope.launch {
             saveCourseUseCase(courseModel = courseModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {
-                        Log.i("EditCourseViewModel", "saveGrade id: ${courseModel.id}")
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
