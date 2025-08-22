@@ -11,7 +11,7 @@ class GradeFactory (context: Context) {
         val type = appConfig.getTypeGrade()
         return when (type) {
             TypeGrade.NUMERIC_20 -> 9.5
-            TypeGrade.NUMERIC_10 -> 4.5
+            TypeGrade.NUMERIC_10 -> 4.0
             TypeGrade.NUMERIC_100 -> 50.0
         }
     }

@@ -13,6 +13,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
+import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,6 +36,21 @@ class HomeViewModel  @Inject constructor(
 
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
+
+    fun cardTypeFromCourse(course: CourseModel): CourseCardType {
+        val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+        val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
+
+        return if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
+            CourseCardType.Fail
+        } else if (pendingPoints == 0.0) {
+            CourseCardType.Finish
+        } else if (!course.average.isFailValue(accumulatedPoints)) {
+            CourseCardType.Pass
+        } else {
+            CourseCardType.Normal
+        }
+    }
 
     fun deleteSelectedCourse(){
         viewModelScope.launch {

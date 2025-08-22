@@ -50,6 +50,9 @@ data class Grade(
     fun isFail(): Boolean {
         return value < minToPass
     }
+    fun isFailValue(grade: Double): Boolean {
+        return grade < minToPass
+    }
 
     fun getGradeRating(): Float {
         return (value / max).toFloat()

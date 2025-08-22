@@ -109,18 +109,8 @@ fun HomeScreen(
                 }
             } else {
                 val sortedCourses = courses.sortedWith(compareBy { course ->
-                    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
-                    
-                    val typeForSort = if (pendingPoints + accumulatedPoints < 9.45) {
-                        CourseCardType.Fail
-                    } else if (pendingPoints == 0.0) {
-                        CourseCardType.Finish
-                    } else if (accumulatedPoints >= 9.45) {
-                        CourseCardType.Pass
-                    } else {
-                        CourseCardType.Normal
-                    }
+
+                    val typeForSort = viewModel.cardTypeFromCourse(course)
 
                     when (typeForSort) {
                         CourseCardType.Normal -> 1
@@ -149,18 +139,7 @@ fun HomeScreen(
                     }
                 } else {
                     items(sortedCourses) { course ->
-                        val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-                        val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
-                        val courseCardType: CourseCardType = if (pendingPoints + accumulatedPoints < 9.45) {
-                            CourseCardType.Fail
-                        } else if (pendingPoints == 0.0) {
-                            CourseCardType.Finish
-                        } else if (accumulatedPoints >= 9.45) {
-                            CourseCardType.Pass
-                        } else {
-                            CourseCardType.Normal
-                        }
-
+                        val courseCardType = viewModel.cardTypeFromCourse(course)
                         CourseCardComp(
                             course,
                             { navigateToCourse(course.id) },
