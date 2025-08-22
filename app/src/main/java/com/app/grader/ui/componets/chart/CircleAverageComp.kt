@@ -64,7 +64,7 @@ fun CircleAverage(
             modifier = Modifier
                 .size(radius * 2),
             model = DonutModel(
-                cap = 20f,
+                cap = average.getMax().toFloat(),
                 masterProgress = 1f,
                 gapWidthDegrees = 0f,
                 gapAngleDegrees = 270f,

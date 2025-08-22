@@ -61,7 +61,7 @@ fun CircleCourse(
             modifier = Modifier
                 .size(radius * 2),
             model = DonutModel(
-                cap = 20f,
+                cap = grade.getMax().toFloat(),
                 masterProgress = 1f,
                 gapWidthDegrees = 0f,
                 gapAngleDegrees = 270f,
