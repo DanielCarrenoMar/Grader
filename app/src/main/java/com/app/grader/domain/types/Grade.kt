@@ -75,15 +75,16 @@ data class Grade(
         return formatText(value)
     }
 
+    fun check(grade: Double): Boolean {
+        return grade in 0.0..max.toDouble()
+    }
+    fun check(grade: Int): Boolean {
+        return grade in 0..max
+    }
+
     companion object {
         fun isBlankValue(value:Double): Boolean{
             return value == -1.0
-        }
-        fun check(grade: Double): Boolean {
-            return grade in 0.0..20.0
-        }
-        fun check(grade: Int): Boolean {
-            return grade in 0..20
         }
 
         fun formatText(grade: Double): String {
