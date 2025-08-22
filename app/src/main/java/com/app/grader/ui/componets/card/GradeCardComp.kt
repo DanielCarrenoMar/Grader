@@ -34,7 +34,6 @@ import com.app.grader.core.lib.getColorForGrade
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.chart.CircleGrade
 
-const val MAX_GRADE_LENGTH = 2
 @Composable
 fun GradeCardComp(
     grade: GradeModel,
@@ -43,6 +42,8 @@ fun GradeCardComp(
     isEditing: Boolean = false,
     onInputValueChange: (String) -> Unit = {},
 ) {
+    val maxGradeLength = grade.grade.getMax().toString().length
+
     var gradeTextFieldValue by remember {
         mutableStateOf(TextFieldValue(grade.grade.toString()))
     }
@@ -87,7 +88,7 @@ fun GradeCardComp(
                             .focusRequester(focusRequester),
                         value = gradeTextFieldValue,
                         onValueChange = {
-                            if (it.text.length <= MAX_GRADE_LENGTH) {
+                            if (it.text.length <= maxGradeLength) {
                                 gradeTextFieldValue = it
                                 onInputValueChange(it.text)
                             }
