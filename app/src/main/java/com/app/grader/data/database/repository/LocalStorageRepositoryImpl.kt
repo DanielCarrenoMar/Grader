@@ -95,9 +95,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
-            val average = courseDao.getAverageFromCourse(courseId)
-            if (average == null) return gradeFactory.instGrade()
-            return gradeFactory.instGrade(average)
+            val averagePercentage = courseDao.getAverageFromCourse(courseId)
+            if (averagePercentage == null) return gradeFactory.instGrade()
+            return gradeFactory.instGradeFromPercentage(averagePercentage)
         } catch (e: Exception) {
             throw e
         }

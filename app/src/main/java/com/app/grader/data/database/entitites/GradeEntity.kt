@@ -11,6 +11,6 @@ data class GradeEntity(
     @ColumnInfo(name = "course_id") val courseId: Int,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "grade_percentage") val grade: Double,
+    @ColumnInfo(name = "grade_percentage") val gradePercentage: Double,
     @ColumnInfo(name = "percentage") val percentage: Double,
 )

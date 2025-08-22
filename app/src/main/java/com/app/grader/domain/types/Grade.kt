@@ -9,7 +9,7 @@ data class Grade(
     private var max:Int,
 ){
     init {
-        require(value in 0.0..max.toDouble() || value == -1.0) { "Grade must be between 0 and 20 or -1. Not $value" }
+        require(value in 0.0..max.toDouble() || value == -1.0) { "Grade must be between 0 and $max or -1. Not $value" }
         require(minToPass >= 0) { "Min must be greater than 0. Not $minToPass" }
         require(max >= 0) { "Max must be greater than 0. Not $max" }
     }
@@ -17,8 +17,8 @@ data class Grade(
     constructor(grade:Grade) : this(grade.getGrade(), grade.getMinToPass(), grade.getMax())
     constructor(grade:Int, min:Double, max:Int) : this(grade.toDouble(), min, max)
     fun setGrade(grade:Double){
-        if (grade < 0.0) this.value = -1.0
-        else if (grade > 20.0) this.value = 20.0
+        if ((grade < 0.0 && !isBlankValue(grade)
+                    || grade > max)) throw IllegalArgumentException("Grade must be between 0 and $max or -1. Not $value")
         else this.value = grade
     }
     fun setGrade(grade:Int){
@@ -44,7 +44,7 @@ data class Grade(
     }
 
     fun getGradePercentage(): Double {
-        return (value / max) * 100.0
+        return if (isBlank()) -1.0 else (value / max) * 100.0
     }
 
     fun isFail(): Boolean {
@@ -56,7 +56,7 @@ data class Grade(
     }
 
     fun isBlank(): Boolean{
-        return value == -1.0
+        return isBlankValue(value)
     }
 
     fun isNotBlank(): Boolean {
@@ -76,6 +76,9 @@ data class Grade(
     }
 
     companion object {
+        fun isBlankValue(value:Double): Boolean{
+            return value == -1.0
+        }
         fun check(grade: Double): Boolean {
             return grade in 0.0..20.0
         }
