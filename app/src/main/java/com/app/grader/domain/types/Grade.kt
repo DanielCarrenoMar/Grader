@@ -107,9 +107,9 @@ data class Grade(
 }
 
 fun Iterable<Grade>.averageGrade(): Double {
-    if (this.none()) return 0.0
+    if (this.none()) return -1.0
     val filters = this.filter { !it.isBlank() }
-    if (filters.isEmpty()) return 0.0
+    if (filters.isEmpty()) return -1.0
     val sum = filters.sumOf { it.getGrade() } / filters.count()
     return Grade(sum, this.first().getMinToPass(), this.first().getMax()).getGrade()
 }
