@@ -135,7 +135,7 @@ fun EditGradeScreen(
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
                     enabled = viewModel.showSubGrades.isEmpty(),
-                    placeHolderText = "Agregar calificación",
+                    placeHolderText = "Agregar calificación 0-${viewModel.grade.value.getMax()}",
                     value = viewModel.showGrade.value,
                     onValueChange = {
                         viewModel.setGrade(it)
