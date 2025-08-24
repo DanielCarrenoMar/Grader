@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.types.TypeGrade
+import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase

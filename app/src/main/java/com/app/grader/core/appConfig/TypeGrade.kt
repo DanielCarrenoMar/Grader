@@ -1,4 +1,4 @@
-package com.app.grader.domain.types
+package com.app.grader.core.appConfig
 
 enum class TypeGrade() {
     NUMERIC_20,        // Grade from 0 to 20 (Peru, Venezuela)

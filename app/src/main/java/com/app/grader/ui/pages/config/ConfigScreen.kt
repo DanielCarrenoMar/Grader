@@ -46,7 +46,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
-import com.app.grader.domain.types.TypeGrade
+import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.ui.theme.IconLarge
 
 @Composable
@@ -175,7 +175,7 @@ private fun GradeTypeSelector(
     var expanded by remember { mutableStateOf(false) }
     val options = listOf(TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_10, TypeGrade.NUMERIC_100)
     val label = when(current){
-        TypeGrade.NUMERIC_20 -> "Notas base 20"
+        TypeGrade.NUMERIC_20 -> "Calificaciones base 20"
         TypeGrade.NUMERIC_10 -> "Notas base 10"
         TypeGrade.NUMERIC_100 -> "Notas base 100"
     }

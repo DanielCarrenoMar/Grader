@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.core.content.edit
-import com.app.grader.domain.types.TypeGrade
+import com.app.grader.core.appConfig.TypeGrade
 
 class AppConfig(private val context: Context) {
     private val sharedPreferences: SharedPreferences by lazy {
