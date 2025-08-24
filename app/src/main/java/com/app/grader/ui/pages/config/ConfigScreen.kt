@@ -93,7 +93,7 @@ fun ConfigScreen(
                 onSelect = { viewModel.setTypeGrade(it) },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.round,
+                icon = R.drawable.rectangle_list_outline,
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             SwitchCardComp(
@@ -172,7 +172,7 @@ private fun GradeTypeSelector(
     icon: Int,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf(TypeGrade.NUMERIC_7_CHI, TypeGrade.NUMERIC_10_ARG, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_100)
+    val options = listOf(TypeGrade.NUMERIC_7_CHI, TypeGrade.NUMERIC_10_ARG, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_10_MEX, TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_100)
     val optionsText = listOf("0-7", "0-10 (Argentina)", "0-10 (España)", "0-10 (México)", "0-20", "0-100")
     val label = optionsText[options.indexOf(current)]
     Card(
