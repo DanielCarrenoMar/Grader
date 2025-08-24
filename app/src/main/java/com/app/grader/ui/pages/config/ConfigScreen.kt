@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
@@ -34,19 +34,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.app.grader.ui.componets.DeleteConfirmationComp
-import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.card.IconCardButton
-import com.app.grader.R
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.R
+import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.ui.componets.DeleteConfirmationComp
+import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
-import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.ui.theme.IconLarge
 
 @Composable
@@ -173,12 +172,9 @@ private fun GradeTypeSelector(
     icon: Int,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf(TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_10, TypeGrade.NUMERIC_100)
-    val label = when(current){
-        TypeGrade.NUMERIC_20 -> "Calificaciones base 20"
-        TypeGrade.NUMERIC_10 -> "Notas base 10"
-        TypeGrade.NUMERIC_100 -> "Notas base 100"
-    }
+    val options = listOf(TypeGrade.NUMERIC_7_CHI, TypeGrade.NUMERIC_10_ARG, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_100)
+    val optionsText = listOf("0-7", "0-10 (Argentina)", "0-10 (España)", "0-10 (México)", "0-20", "0-100")
+    val label = optionsText[options.indexOf(current)]
     Card(
         colors = CardColors(
             containerColor = Color.Transparent,
@@ -208,7 +204,7 @@ private fun GradeTypeSelector(
                     readOnly = true,
                     value = label,
                     onValueChange = {},
-                    label = { Text("Tipo de nota") },
+                    label = { Text("Tipo de calificación") },
                     modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable).fillMaxWidth(),
                 )
                 ExposedDropdownMenu(
@@ -216,11 +212,7 @@ private fun GradeTypeSelector(
                     onDismissRequest = { expanded = false }
                 ) {
                     options.forEach { option ->
-                        val optionLabel = when (option) {
-                            TypeGrade.NUMERIC_20 -> "Notas base 20"
-                            TypeGrade.NUMERIC_10 -> "Notas base 10"
-                            TypeGrade.NUMERIC_100 -> "Notas base 100"
-                        }
+                        val optionLabel = optionsText[options.indexOf(option)]
                         DropdownMenuItem(
                             text = { Text(optionLabel) },
                             onClick = {
