@@ -12,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.app.grader.data.database.AppDatabase
 import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_3_4
+import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_4_5
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,7 +24,7 @@ class DataBaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java, "grader_database"
-        ).addMigrations(MIGRATION_3_4).build()
+        ).addMigrations(MIGRATION_3_4, MIGRATION_4_5).build()
     }
 
     @Singleton

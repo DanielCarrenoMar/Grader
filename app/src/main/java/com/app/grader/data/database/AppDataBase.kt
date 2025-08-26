@@ -1,5 +1,6 @@
 package com.app.grader.data.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
@@ -8,8 +9,8 @@ import com.app.grader.data.database.entitites.*
 import com.app.grader.data.database.dao.*
 
 @Database(
-    version = 4,
-    entities = [CourseEntity::class, GradeEntity::class, SubGradeEntity::class],
+    version = 5,
+    entities = [SemesterEntity::class,CourseEntity::class, GradeEntity::class, SubGradeEntity::class],
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -21,9 +22,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getSubGradeDao(): SubGradeDao
 
     companion object {
+        /**
+         * Se cambia las calificaciones base 20 a un porcentaje de esta para usar tipos de calificacion variables
+         * Grade: grade -> grade_percentage
+         * SubGrade: grade -> grade_percentage
+         */
         val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                // Grade: agregar percentage, copiar grade/20, eliminar grade
+                // Grade
                 db.execSQL("ALTER TABLE grade ADD COLUMN grade_percentage REAL NOT NULL DEFAULT 0.0")
                 db.execSQL("UPDATE grade SET grade_percentage = grade / 20.0")
                 db.execSQL(
@@ -45,7 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("DROP TABLE grade")
                 db.execSQL("ALTER TABLE grade_new RENAME TO grade")
 
-                // SubGrade: agregar percentage, copiar grade/20, eliminar grade
+                // SubGrade
                 db.execSQL("ALTER TABLE sub_grade ADD COLUMN grade_percentage REAL NOT NULL DEFAULT 0.0")
                 db.execSQL("UPDATE sub_grade SET grade_percentage = grade / 20.0")
                 db.execSQL(
@@ -64,6 +70,25 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 db.execSQL("DROP TABLE sub_grade")
                 db.execSQL("ALTER TABLE sub_grade_new RENAME TO sub_grade")
+            }
+        }
+
+        /**
+         * Agrega tabla semester y agregar semester_id  que puede ser null en courses.
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS semester (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        title TEXT NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    " ALTER TABLE course ADD COLUMN semester_id INTEGER"
+                )
             }
         }
     }

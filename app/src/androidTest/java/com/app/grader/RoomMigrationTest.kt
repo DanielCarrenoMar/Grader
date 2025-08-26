@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.app.grader.data.database.AppDatabase
 import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_3_4
+import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_4_5
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +48,7 @@ class RoomMigrationTest {
 
     @Test
     @Throws(IOException::class)
-    fun migrate3To4() {
+    fun migrate3To5() {
 
         var db = helper.createDatabase(TEST_DB, 3).apply {
             // Insert some data into the database.
@@ -76,11 +77,11 @@ class RoomMigrationTest {
 
         // Open latest version of the database. Room validates the schema
         // once all migrations execute.
-        db = helper.runMigrationsAndValidate(TEST_DB, 4, true, MIGRATION_3_4)
+        db = helper.runMigrationsAndValidate(TEST_DB, 5, true, MIGRATION_3_4, MIGRATION_4_5)
     }
 
     @Test
-    fun migrate3To4_convertsGradesPercentage() {
+    fun migrate3To5_convertsGradesPercentage() {
         val dbName = "migration-test-grades"
 
         var db = helper.createDatabase(dbName, 3).apply {
@@ -108,7 +109,7 @@ class RoomMigrationTest {
             close()
         }
 
-        db = helper.runMigrationsAndValidate(dbName, 4, true, MIGRATION_3_4)
+        db = helper.runMigrationsAndValidate(dbName, 5, true, MIGRATION_3_4, MIGRATION_4_5)
 
         // Validar conversion: percentage = grade/20
         db.query("SELECT grade_percentage FROM grade WHERE title = 'Math'").use { c ->
