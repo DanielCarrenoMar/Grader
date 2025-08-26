@@ -63,7 +63,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCoursesFromSemester(semesterId: Int): List<CourseModel> {
+    override suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel> {
         try {
             return courseDao.getAllCoursesFromSemesterId(semesterId).map { courseEntity ->
                 courseEntity.toCourseModel(
@@ -100,7 +100,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int {
+    override suspend fun deleteAllCoursesFromSemesterId(semesterId: Int?): Int {
         try {
             val courses = courseDao.getAllCoursesFromSemesterId(semesterId)
             courses.forEach { course ->

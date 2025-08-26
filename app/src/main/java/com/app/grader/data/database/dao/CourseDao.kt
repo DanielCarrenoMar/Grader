@@ -14,7 +14,7 @@ interface CourseDao {
     suspend fun getAllCourses(): List<CourseEntity>
 
     @Query("SELECT * FROM course WHERE semester_id = :semesterId ORDER BY id DESC")
-    suspend fun getAllCoursesFromSemesterId(semesterId: Int): List<CourseEntity>
+    suspend fun getAllCoursesFromSemesterId(semesterId: Int?): List<CourseEntity>
 
     @Query("SELECT * FROM course WHERE id = :courseId")
     suspend fun getCourseFromId(courseId: Int): CourseEntity?
@@ -35,7 +35,7 @@ interface CourseDao {
     suspend fun deleteAllCourses(): Int
 
     @Query("DELETE FROM course WHERE semester_id = :semesterId")
-    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int
+    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int?): Int
 
     @Query("DELETE FROM sqlite_sequence WHERE name = 'course'")
     suspend fun resetIncrementalCourse()

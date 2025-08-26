@@ -20,10 +20,10 @@ interface LocalStorageRepository {
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int
-    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int
+    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int?): Int
     suspend fun deleteCourseFromId(courseId: Int): Boolean
     suspend fun getAllCourses(): List<CourseModel>
-    suspend fun getCoursesFromSemester(semesterId: Int): List<CourseModel>
+    suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel>
     suspend fun getCourseFromId(courseId: Int):CourseModel?
     /**
      * Actualiza la informacion de una asignatura guiandose por el id
