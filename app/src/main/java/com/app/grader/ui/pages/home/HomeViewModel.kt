@@ -12,6 +12,7 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
 import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel  @Inject constructor(
-    private val getAllCoursesUserCase: GetAllCoursesUserCase,
+    private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
     private val getAllGradesUseCase: GetAllGradesUserCase,
     private val appConfig: AppConfig,
@@ -78,7 +79,7 @@ class HomeViewModel  @Inject constructor(
 
     fun getAllCoursesAndCalTotalAverage() {
         viewModelScope.launch {
-            getAllCoursesUserCase().collect { result ->
+            getCoursesFromSemesterIdUseCase(null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!

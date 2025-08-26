@@ -8,6 +8,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllGradesViewModel  @Inject constructor(
-    private val getAllCoursesUseCase: GetAllCoursesUserCase,
+    private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase
@@ -70,7 +71,7 @@ class AllGradesViewModel  @Inject constructor(
     fun getAllGradesWithCourses() {
         _isLoading.value = true
         viewModelScope.launch {
-            getAllCoursesUseCase().collect { result ->
+            getCoursesFromSemesterIdUseCase(null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val courses = result.data
