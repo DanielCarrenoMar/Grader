@@ -2,8 +2,6 @@ package com.app.grader.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +24,9 @@ class DataBaseModule {
             AppDatabase::class.java, "grader_database"
         ).addMigrations(MIGRATION_3_4, MIGRATION_4_5).build()
     }
+    @Singleton
+    @Provides
+    fun provideSemesterDao(db: AppDatabase) = db.getSemesterDao()
 
     @Singleton
     @Provides

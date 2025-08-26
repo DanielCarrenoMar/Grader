@@ -28,3 +28,16 @@ fun CourseModel.toCourseEntity():CourseEntity{
         semesterId = this.semesterId
     )
 }
+fun CourseEntity.toCourseModel(
+    average: Grade,
+    totalPercentage: Percentage,
+):CourseModel{
+    return CourseModel(
+        id = this.id,
+        title = this.title,
+        uc = this.uc,
+        semesterId = this.semesterId,
+        average = average,
+        totalPercentage = totalPercentage
+    )
+}

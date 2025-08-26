@@ -3,13 +3,18 @@ package com.app.grader.data.database.repository
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
+import com.app.grader.data.database.dao.SemesterDao
 import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
+import com.app.grader.domain.model.toCourseModel
 import com.app.grader.domain.model.toGradeEntity
 import com.app.grader.domain.model.toGradeModel
+import com.app.grader.domain.model.toSemesterEntity
+import com.app.grader.domain.model.toSemesterModel
 import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
@@ -18,6 +23,7 @@ import com.app.grader.domain.types.Percentage
 import javax.inject.Inject
 
 class LocalStorageRepositoryImpl @Inject constructor(
+    private val semesterDao: SemesterDao,
     private val courseDao: CourseDao,
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
@@ -47,12 +53,22 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getAllCourses(): List<CourseModel> {
         try {
             return courseDao.getAllCourses().map { courseEntity ->
-                CourseModel(
-                    title = courseEntity.title,
-                    uc = courseEntity.uc,
-                    average = getAverageFromCourse(courseEntity.id),
-                    totalPercentage = getTotalPercentageFromCourse(courseEntity.id),
-                    id = courseEntity.id
+                courseEntity.toCourseModel(
+                    getAverageFromCourse(courseEntity.id),
+                    getTotalPercentageFromCourse(courseEntity.id)
+                )
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getCoursesFromSemester(semesterId: Int): List<CourseModel> {
+        try {
+            return courseDao.getAllCoursesFromSemesterId(semesterId).map { courseEntity ->
+                courseEntity.toCourseModel(
+                    getAverageFromCourse(courseEntity.id),
+                    getTotalPercentageFromCourse(courseEntity.id)
                 )
             }
         } catch (e: Exception) {
@@ -84,10 +100,79 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int {
+        try {
+            val courses = courseDao.getAllCoursesFromSemesterId(semesterId)
+            courses.forEach { course ->
+                deleteAllGradesFromCourseId(course.id)
+            }
+            return courseDao.deleteAllCoursesFromSemesterId(semesterId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun deleteCourseFromId(courseId: Int): Boolean {
         try {
             deleteAllGradesFromCourseId(courseId)
             return courseDao.deleteCourseFromId(courseId) == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun saveSemester(semesterModel: SemesterModel): Long {
+        try {
+            return semesterDao.insertSemester(semesterModel.toSemesterEntity())
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteAllSemesters(): Int {
+        try {
+            semesterDao.resetIncrementalSemester()
+            return semesterDao.deleteAllSemesters()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteSemesterFromId(semesterId: Int): Boolean {
+        try {
+            deleteAllCoursesFromSemesterId(semesterId)
+            return semesterDao.deleteSemesterFromId(semesterId) == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getAllSemesters(): List<SemesterModel> {
+        try {
+            return semesterDao.getAllSemesters().map { semesterEntity ->
+                semesterEntity.toSemesterModel()
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getSemesterFromId(semesterId: Int): SemesterModel? {
+        try {
+            val semesterEntity = semesterDao.getSemesterFromId(semesterId) ?: return null
+            return semesterEntity.toSemesterModel()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun updateSemester(semesterModel: SemesterModel): Boolean {
+        try {
+            val result = semesterDao.updateSemesterById(
+                semesterModel.id,
+                semesterModel.title
+            )
+            return result == 1
         } catch (e: Exception) {
             throw e
         }

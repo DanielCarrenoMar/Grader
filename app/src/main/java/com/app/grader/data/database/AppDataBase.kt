@@ -15,6 +15,8 @@ import com.app.grader.data.database.dao.*
 )
 abstract class AppDatabase : RoomDatabase() {
 
+    abstract fun getSemesterDao(): SemesterDao
+
     abstract fun getCourseDao(): CourseDao
 
     abstract fun getGradeDao(): GradeDao

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.GradeEntity
 import com.app.grader.data.database.entitites.SemesterEntity
 
 @Dao
@@ -18,9 +17,6 @@ interface SemesterDao {
 
     @Query("UPDATE semester SET title = :title  WHERE id = :semesterId")
     suspend fun updateSemesterById(semesterId: Int, title: String): Int
-
-    @Query("DELETE FROM course WHERE semester_id = :semesterId")
-    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int
 
     @Query("DELETE FROM semester")
     suspend fun deleteAllSemesters(): Int

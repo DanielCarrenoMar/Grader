@@ -3,17 +3,27 @@ package com.app.grader.domain.repository
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 
 interface LocalStorageRepository {
+    suspend fun saveSemester(semesterModel: SemesterModel): Long
+    suspend fun deleteAllSemesters(): Int
+    suspend fun deleteSemesterFromId(semesterId: Int): Boolean
+    suspend fun getAllSemesters(): List<SemesterModel>
+    suspend fun getSemesterFromId(semesterId: Int): SemesterModel?
+    suspend fun updateSemester(semesterModel: SemesterModel): Boolean
+
     suspend fun getAverageFromCourse(courseId:Int) : Grade
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int
+    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int
     suspend fun deleteCourseFromId(courseId: Int): Boolean
     suspend fun getAllCourses(): List<CourseModel>
+    suspend fun getCoursesFromSemester(semesterId: Int): List<CourseModel>
     suspend fun getCourseFromId(courseId: Int):CourseModel?
     /**
      * Actualiza la informacion de una asignatura guiandose por el id

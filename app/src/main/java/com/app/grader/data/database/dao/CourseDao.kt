@@ -13,6 +13,12 @@ interface CourseDao {
     @Query("SELECT * FROM course ORDER BY id DESC")
     suspend fun getAllCourses(): List<CourseEntity>
 
+    @Query("SELECT * FROM course WHERE semester_id = :semesterId ORDER BY id DESC")
+    suspend fun getAllCoursesFromSemesterId(semesterId: Int): List<CourseEntity>
+
+    @Query("SELECT * FROM course WHERE id = :courseId")
+    suspend fun getCourseFromId(courseId: Int): CourseEntity?
+
     @Query("SELECT SUM(grade_percentage * percentage) / SUM(percentage) FROM grade WHERE course_id = :courseId AND grade_percentage > 0")
     suspend fun getAverageFromCourse(courseId: Int): Double?
 
@@ -28,12 +34,12 @@ interface CourseDao {
     @Query("DELETE FROM course")
     suspend fun deleteAllCourses(): Int
 
+    @Query("DELETE FROM course WHERE semester_id = :semesterId")
+    suspend fun deleteAllCoursesFromSemesterId(semesterId: Int): Int
+
     @Query("DELETE FROM sqlite_sequence WHERE name = 'course'")
     suspend fun resetIncrementalCourse()
 
     @Query("DELETE FROM course WHERE id = :courseId")
     suspend fun deleteCourseFromId(courseId: Int): Int
-
-    @Query("SELECT * FROM course WHERE id = :courseId")
-    suspend fun getCourseFromId(courseId: Int): CourseEntity?
 }
