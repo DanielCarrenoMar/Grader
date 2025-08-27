@@ -68,14 +68,14 @@ fun HomeScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllCoursesAndCalTotalAverage()
-            viewModel.getAllGrades()
+            viewModel.getAllCoursesAndCalTotalAverage(null)
+            viewModel.getGradeFromSemester(null)
         }
     }
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse() },
+            { viewModel.deleteSelectedCourse({viewModel.getAllCoursesAndCalTotalAverage(null)}) },
             { showDeleteConfirmation = false }
         )
     }

@@ -14,6 +14,7 @@ import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
+import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class HomeViewModel  @Inject constructor(
     private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
-    private val getAllGradesUseCase: GetAllGradesUserCase,
+    private val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     private val appConfig: AppConfig,
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
@@ -52,12 +53,12 @@ class HomeViewModel  @Inject constructor(
         }
     }
 
-    fun deleteSelectedCourse(){
+    fun deleteSelectedCourse(onDeleteAction : () -> Unit = {}) {
         viewModelScope.launch {
             deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
                 when (result){
                     is Resource.Success -> {
-                        getAllCoursesAndCalTotalAverage()
+                        onDeleteAction()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
@@ -76,9 +77,9 @@ class HomeViewModel  @Inject constructor(
         }
     }
 
-    fun getAllCoursesAndCalTotalAverage() {
+    fun getAllCoursesAndCalTotalAverage(semesterId: Int?) {
         viewModelScope.launch {
-            getCoursesFromSemesterIdUseCase(null).collect { result ->
+            getCoursesFromSemesterIdUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
@@ -118,9 +119,9 @@ class HomeViewModel  @Inject constructor(
         }
     }
 
-    fun getAllGrades() {
+    fun getGradeFromSemester(semesterId: Int?) {
         viewModelScope.launch {
-            getAllGradesUseCase().collect { result ->
+            getGradesFromSemesterUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!
