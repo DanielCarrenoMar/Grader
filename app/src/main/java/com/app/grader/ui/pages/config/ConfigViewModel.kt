@@ -11,6 +11,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
+import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
 import com.patrykandpatrick.vico.compose.common.shader.component
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,7 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllGradesUseCase: DeleteAllGradesUseCase,
     private val deleteAllCoursesUseCase: DeleteAllCoursesUseCase,
     private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
+    private val deleteAllSemestersUseCase: DeleteAllSemestersUseCase,
     private val appConfig: AppConfig
 ): ViewModel() {
     private val _isDarkMode = mutableStateOf(appConfig.isDarkMode())
@@ -65,44 +67,49 @@ class ConfigViewModel  @Inject constructor(
     }
     fun deleteAll(){
         viewModelScope.launch {
-            deleteAllGradesUseCase().collect { result ->
+            var finished = true
+            deleteAllSemestersUseCase().collect { result ->
                 when (result) {
-                    is Resource.Success -> {
-                        Log.d("ConfigViewModel", "deleteAllGradesUseCase: Success ${result.data}")
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
-                        Log.e("ConfigViewModel", "Error deleteAllGradesUseCase: ${result.message}")
+                        finished = false
+                        Log.e("ConfigViewModel", "Error deleteAllSemestersUseCase: ${result.message}")
                     }
                 }
             }
             deleteAllCoursesUseCase().collect { result ->
                 when (result) {
-                    is Resource.Success -> {
-                        Log.d("ConfigViewModel", "deleteAllCoursesUseCase: Success ${result.data}")
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
+                        finished = false
                         Log.e("ConfigViewModel", "Error deleteAllCoursesUseCase: ${result.message}")
+                    }
+                }
+            }
+            deleteAllGradesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        finished = false
+                        Log.e("ConfigViewModel", "Error deleteAllGradesUseCase: ${result.message}")
                     }
                 }
             }
             deleteAllSubGradesUseCase().collect { result ->
                 when (result) {
-                    is Resource.Success -> {
-                        Log.d("ConfigViewModel", "deleteAllSubGradesUseCase: Success ${result.data}")
-                    }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
+                        finished = false
                         Log.e("ConfigViewModel", "Error deleteAllSubGradesUseCase: ${result.message}")
                     }
                 }
+            }
+            if (finished){
+                Log.i("ConfigViewModel", "All data deleted successfully")
             }
         }
     }
