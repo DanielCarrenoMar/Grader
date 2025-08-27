@@ -155,7 +155,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             return semesterDao.getAllSemesters().map { semesterEntity ->
                 semesterEntity.toSemesterModel(
                     average = getAverageFromCourse(semesterEntity.id),
-                    size = getSizeOfSemesters()
+                    size = getSizeOfSemesters(semesterEntity.id)
                 )
             }
         } catch (e: Exception) {
@@ -168,7 +168,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
             return semesterEntity.toSemesterModel(
                 average = getAverageFromCourse(semesterId),
-                size = getSizeOfSemesters()
+                size = getSizeOfSemesters(semesterId)
             )
         } catch (e: Exception) {
             throw e
@@ -207,9 +207,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSizeOfSemesters(): Int {
+    override suspend fun getSizeOfSemesters(semesterId: Int?): Int {
         try {
-            return semesterDao.getCoursesCountById()
+            return semesterDao.getCoursesCountById(semesterId)
         } catch (e: Exception) {
             throw e
         }

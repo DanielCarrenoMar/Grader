@@ -30,6 +30,6 @@ interface SemesterDao {
     @Query("SELECT * FROM semester WHERE id = :semesterId")
     suspend fun getSemesterById(semesterId: Int): SemesterEntity?
 
-    @Query("SELECT COUNT(*) FROM semester")
-    suspend fun getCoursesCountById(): Int
+    @Query("SELECT COUNT(*) FROM course WHERE ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )")
+    suspend fun getCoursesCountById(semesterId: Int?): Int
 }
