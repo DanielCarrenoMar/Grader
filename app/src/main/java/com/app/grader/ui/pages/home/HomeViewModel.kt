@@ -15,6 +15,8 @@ import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,7 +27,7 @@ class HomeViewModel  @Inject constructor(
     private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
     private val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
-    private val appConfig: AppConfig,
+    private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
 ): ViewModel() {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
@@ -77,40 +79,36 @@ class HomeViewModel  @Inject constructor(
         }
     }
 
-    fun getAllCoursesAndCalTotalAverage(semesterId: Int?) {
+    fun getAllCoursesAndCalTotalAverage(semesterId: Int?){
+        getAllCourses(semesterId)
+        calTotalAverage(semesterId)
+    }
+// Se calcula el promedio individualmente para tomar en cuenta si semesterId es null
+    private fun calTotalAverage(semesterId: Int?){
+        viewModelScope.launch {
+            getAverageFromSemesterUseCase(semesterId).collect{ result ->
+                when (result){
+                    is Resource.Success -> {
+                        _totalAverage.doubleValue = result.data!!.getGrade()
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("HomeViewModel", "Error calTotalAverage: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getAllCourses(semesterId: Int?) {
         viewModelScope.launch {
             getCoursesFromSemesterIdUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
-                        if (_courses.value.isNotEmpty()){
-                            var totalGrades = 0.0
-                            var totalUC = 0
-
-                            _courses.value.forEach { course ->
-                                if (course.average.isNotBlank()) {
-                                    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-                                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
-                                    if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
-                                        return@forEach
-                                    }
-
-                                    val grade = if (appConfig.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
-                                    else course.average.getGrade()
-
-                                    totalGrades += grade * course.uc
-                                    totalUC += course.uc
-                                }
-                            }
-                            if (totalUC != 0) _totalAverage.doubleValue = totalGrades / totalUC
-                            else _totalAverage.doubleValue = 0.0
-                        }else _totalAverage.doubleValue = 0.0
-
                         _isLoading.value = false
                     }
-                    is Resource.Loading -> {
-                        _isLoading.value = true
-                    }
+                    is Resource.Loading -> { _isLoading.value = true }
                     is Resource.Error -> {
                         Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
                     }
