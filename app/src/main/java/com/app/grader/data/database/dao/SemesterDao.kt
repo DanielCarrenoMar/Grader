@@ -22,11 +22,14 @@ interface SemesterDao {
     suspend fun deleteAllSemesters(): Int
 
     @Query("DELETE FROM semester WHERE id = :semesterId")
-    suspend fun deleteSemesterFromId(semesterId: Int): Int
+    suspend fun deleteSemesterById(semesterId: Int): Int
 
     @Query("DELETE FROM sqlite_sequence WHERE name = 'semester'")
     suspend fun resetIncrementalSemester()
 
     @Query("SELECT * FROM semester WHERE id = :semesterId")
-    suspend fun getSemesterFromId(semesterId: Int): SemesterEntity?
+    suspend fun getSemesterById(semesterId: Int): SemesterEntity?
+
+    @Query("SELECT COUNT(*) FROM semester")
+    suspend fun getCoursesCountById(): Int
 }

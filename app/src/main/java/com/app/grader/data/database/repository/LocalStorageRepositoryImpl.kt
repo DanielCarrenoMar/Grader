@@ -1,5 +1,6 @@
 package com.app.grader.data.database.repository
 
+import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
@@ -7,6 +8,7 @@ import com.app.grader.data.database.dao.SemesterDao
 import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
@@ -27,7 +29,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val courseDao: CourseDao,
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
-    private val gradeFactory: GradeFactory
+    private val gradeFactory: GradeFactory,
+    private val appConfig: AppConfig
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Long {
         try {
@@ -141,7 +144,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun deleteSemesterFromId(semesterId: Int): Boolean {
         try {
             deleteAllCoursesFromSemesterId(semesterId)
-            return semesterDao.deleteSemesterFromId(semesterId) == 1
+            return semesterDao.deleteSemesterById(semesterId) == 1
         } catch (e: Exception) {
             throw e
         }
@@ -150,7 +153,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getAllSemesters(): List<SemesterModel> {
         try {
             return semesterDao.getAllSemesters().map { semesterEntity ->
-                semesterEntity.toSemesterModel()
+                semesterEntity.toSemesterModel(
+                    average = getAverageFromCourse(semesterEntity.id),
+                    size = getSizeOfSemesters()
+                )
             }
         } catch (e: Exception) {
             throw e
@@ -159,8 +165,51 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getSemesterFromId(semesterId: Int): SemesterModel? {
         try {
-            val semesterEntity = semesterDao.getSemesterFromId(semesterId) ?: return null
-            return semesterEntity.toSemesterModel()
+            val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
+            return semesterEntity.toSemesterModel(
+                average = getAverageFromCourse(semesterId),
+                size = getSizeOfSemesters()
+            )
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getAverageFromSemester(semesterId: Int?): Grade {
+        try {
+            val courses = getCoursesFromSemester(semesterId)
+            if (courses.isEmpty()) return gradeFactory.instGrade(0.0)
+
+            var totalGrades = 0.0
+            var totalUC = 0
+
+            courses.forEach { course ->
+                if (course.average.isNotBlank()) {
+                    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
+                    if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
+                        return@forEach
+                    }
+
+                    val grade = if (appConfig.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
+                    else course.average.getGrade()
+
+                    totalGrades += grade * course.uc
+                    totalUC += course.uc
+                }
+            }
+            val totalAverage = if (totalUC != 0) totalGrades / totalUC
+            else 0.0
+
+            return gradeFactory.instGrade(totalAverage)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getSizeOfSemesters(): Int {
+        try {
+            return semesterDao.getCoursesCountById()
         } catch (e: Exception) {
             throw e
         }
