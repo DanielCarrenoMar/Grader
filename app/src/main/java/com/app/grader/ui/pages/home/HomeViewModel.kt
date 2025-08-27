@@ -90,7 +90,7 @@ class HomeViewModel  @Inject constructor(
                             _courses.value.forEach { course ->
                                 if (course.average.isNotBlank()) {
                                     val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-                                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
+                                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
                                     if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
                                         return@forEach
                                     }
