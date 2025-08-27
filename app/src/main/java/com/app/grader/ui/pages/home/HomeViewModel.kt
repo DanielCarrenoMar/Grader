@@ -31,7 +31,6 @@ class HomeViewModel  @Inject constructor(
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
     private val _deleteCourseId = mutableIntStateOf(-1)
-    val deleteCourseId = _deleteCourseId
     private val _totalAverage = mutableDoubleStateOf(0.0)
     val totalAverage = _totalAverage
 
