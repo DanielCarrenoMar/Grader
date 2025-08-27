@@ -208,6 +208,16 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getGradesFromSemester(semesterId: Int?): List<GradeModel> {
+        try {
+            return gradeDao.getGradesFromSemesterId(semesterId).map { gradeEntity ->
+                gradeEntity.toGradeModel(gradeFactory)
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun saveGrade(gradeModel: GradeModel): Long {
         try {
             return gradeDao.insertGrade(gradeModel.toGradeEntity())

@@ -34,6 +34,7 @@ interface LocalStorageRepository {
      * Si existe devuelve un CoruseModel sino devuelve null
      */
     suspend fun getGradesFromCourse(courseId: Int): List<GradeModel>
+    suspend fun getGradesFromSemester(semesterId: Int?): List<GradeModel>
     suspend fun saveGrade(gradeModel: GradeModel): Long
     suspend fun deleteAllGrades(): Int
     suspend fun deleteAllGradesFromCourseId(courseId: Int): Int
