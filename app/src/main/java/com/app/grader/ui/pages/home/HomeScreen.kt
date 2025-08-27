@@ -58,18 +58,18 @@ fun HomeScreen(
     val courses by viewModel.courses
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
-    val listState = rememberLazyListState()
-    LaunchedEffect(courses) {
-        if (courses.isNotEmpty()) {
-            listState.animateScrollToItem(index = 0)
-        }
-    }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllCoursesAndCalTotalAverage(null)
             viewModel.getGradeFromSemester(null)
+        }
+    }
+
+    val listState = rememberLazyListState()
+    LaunchedEffect(courses) {
+        if (courses.isNotEmpty()) {
+            listState.animateScrollToItem(index = 0)
         }
     }
 
