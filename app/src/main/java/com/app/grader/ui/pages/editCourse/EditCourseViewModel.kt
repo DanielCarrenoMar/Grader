@@ -85,13 +85,14 @@ class EditCourseViewModel @Inject constructor(
         }
     }
 
-    fun updateOrCreateCourse(courseId: Int){
+    fun updateOrCreateCourse(semesterId: Int, courseId: Int){
         viewModelScope.launch {
             if (courseId == -1) {
                 saveCourse(
                     CourseModel(
                         title = title.value,
                         uc = uc.intValue,
+                        semesterId = semesterId
                     )
                 )
             } else {

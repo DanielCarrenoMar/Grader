@@ -47,7 +47,7 @@ fun NavigationWrapper() {
                 { navController.navigate(Config) },
                 { navController.navigate(Record) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
-                {  courseId ->  navController.navigate(EditCourse(courseId)) },
+                {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -92,7 +92,7 @@ fun NavigationWrapper() {
                 { navController.popBackStack() },
                 { semesterId -> navController.navigate(EditSemester(semesterId)) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
-                {  courseId ->  navController.navigate(EditCourse(courseId)) },
+                {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -107,7 +107,7 @@ fun NavigationWrapper() {
             CourseScreen (
                 course.courseId,
                 { navController.popBackStack() },
-                {courseId -> navController.navigate(EditCourse(courseId)) },
+                {semesterId, courseId -> navController.navigate(EditCourse(semesterId, courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
@@ -129,7 +129,11 @@ fun NavigationWrapper() {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
         ) { backStateEntry ->
             val editCourse:EditCourse = backStateEntry.toRoute()
-            EditCourseScreen (editCourse.courseId, { navController.popBackStack() })
+            EditCourseScreen (
+                editCourse.semesterId,
+                editCourse.courseId,
+                { navController.popBackStack() }
+            )
         }
 
         composable<EditGrade>(

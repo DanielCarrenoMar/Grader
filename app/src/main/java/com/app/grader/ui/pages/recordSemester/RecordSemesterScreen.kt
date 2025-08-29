@@ -46,10 +46,10 @@ import com.app.grader.ui.pages.home.InfoHomeCard
 fun RecordSemesterScreen(
     semesterId: Int,
     navigateBack: () -> Unit,
-    navigateToEditSemester: (Int) -> Unit,
-    navigateToCourse: (Int) -> Unit,
-    navigateToEditCourse: (Int) -> Unit,
-    navigateToEditGrade: (Int, Int) -> Unit,
+    navigateToEditSemester: (semesterId:Int) -> Unit,
+    navigateToCourse: (courseId:Int) -> Unit,
+    navigateToEditCourse: (semesterId:Int, courseId:Int) -> Unit,
+    navigateToEditGrade: (courseId:Int, gradeId:Int) -> Unit,
     viewModel: RecordSemesterViewModel = hiltViewModel()
 ) {
     val courses by viewModel.courses
@@ -173,7 +173,7 @@ fun RecordSemesterScreen(
                                 viewModel.selectDeleteCourse(course.id)
                                 showDeleteConfirmation = true
                             },
-                            { navigateToEditCourse(course.id) },
+                            { navigateToEditCourse(-1 ,course.id) },
                             type = courseCardType
                         )
                         Spacer(Modifier.height(10.dp))
@@ -189,7 +189,7 @@ fun RecordSemesterScreen(
                 FloatingMenuCompItem(
                     "Asignatura",
                     R.drawable.education_cap_outline
-                ) { navigateToEditCourse(-1) },
+                ) { navigateToEditCourse(semesterId ,-1) },
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline

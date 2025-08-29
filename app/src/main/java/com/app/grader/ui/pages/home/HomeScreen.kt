@@ -53,7 +53,7 @@ fun HomeScreen(
     navigateToConfig: () -> Unit,
     navigateToRecord: () -> Unit,
     navigateToCourse: (Int) -> Unit,
-    navigateToEditCourse: (Int) -> Unit,
+    navigateToEditCourse: (semesterId:Int, courseId:Int) -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -149,7 +149,7 @@ fun HomeScreen(
                                 viewModel.selectDeleteCourse(course.id)
                                 showDeleteConfirmation = true
                             },
-                            { navigateToEditCourse(course.id) },
+                            { navigateToEditCourse(-1, course.id) },
                             type = courseCardType
                         )
                         Spacer(Modifier.height(10.dp))
@@ -165,7 +165,7 @@ fun HomeScreen(
                 FloatingMenuCompItem(
                     "Asignatura",
                     R.drawable.education_cap_outline
-                ) { navigateToEditCourse(-1) },
+                ) { navigateToEditCourse(-1 ,-1) },
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
