@@ -56,6 +56,7 @@ class HomeViewModel  @Inject constructor(
     }
 
     fun deleteSelectedCourse(onDeleteAction : () -> Unit = {}) {
+        if (_deleteCourseId.intValue == -1) return
         viewModelScope.launch {
             deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
                 when (result){
