@@ -48,6 +48,7 @@ import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigScreen(
     navigateToHome: () -> Unit,
