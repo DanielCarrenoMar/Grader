@@ -200,8 +200,10 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>) {
                         .padding(vertical = 15.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (grades.isNotEmpty()) LineChartAverage(
-                        grades.map { it.grade },
+                    val gradeSeries = grades.filter { it.grade.isNotBlank() }.map { it.grade.getGrade() }
+
+                    if (gradeSeries.isNotEmpty()) LineChartAverage(
+                        gradeSeries,
                         Modifier.fillMaxSize()
                     )
                     else Text(
