@@ -16,11 +16,17 @@ object Config
 object Record
 
 @Serializable
+data class RecordSemester(val semesterId: Int)
+
+@Serializable
 data class Course(val courseId: Int)
 
+@Serializable
+data class EditSemester(val semesterId: Int)
 @Serializable
 data class EditCourse(val courseId: Int)
 
 @Serializable
 data class EditGrade(val gradeId: Int, val courseId: Int)
+
 

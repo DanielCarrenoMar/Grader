@@ -17,6 +17,7 @@ import com.app.grader.ui.pages.config.ConfigScreen
 import com.app.grader.ui.pages.course.CourseScreen
 import com.app.grader.ui.pages.editCourse.EditCourseScreen
 import com.app.grader.ui.pages.editGrade.EditGradeScreen
+import com.app.grader.ui.pages.editSemester.EditSemesterScreen
 import com.app.grader.ui.pages.home.HomeScreen
 import com.app.grader.ui.pages.record.RecordScreen
 
@@ -73,6 +74,24 @@ fun NavigationWrapper() {
                 { navController.navigatePop(Home) },
                 { navController.navigate(AllGrades) },
                 { navController.navigate(Config) },
+                { semesterId -> navController.navigate(EditSemester(semesterId)) },
+            )
+        }
+
+        composable<RecordSemester> (
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) { backStateEntry ->
+            val recordSemester:RecordSemester = backStateEntry.toRoute()
+            HomeScreen(
+                { navController.navigate(AllGrades) },
+                { navController.navigate(Config) },
+                { navController.navigate(Record) },
+                {  courseId ->  navController.navigate(Course(courseId)) },
+                {  courseId ->  navController.navigate(EditCourse(courseId)) },
+                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
         }
 
@@ -89,6 +108,16 @@ fun NavigationWrapper() {
                 {courseId -> navController.navigate(EditCourse(courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
             )
+        }
+
+        composable<EditSemester>(
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) { backStateEntry ->
+            val editSemester:EditSemester = backStateEntry.toRoute()
+            EditSemesterScreen (editSemester.semesterId, { navController.popBackStack() })
         }
 
         composable<EditCourse>(
