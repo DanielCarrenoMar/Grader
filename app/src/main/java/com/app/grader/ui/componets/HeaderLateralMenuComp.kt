@@ -77,12 +77,12 @@ fun HeaderMenu(
     navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
     modifier: Modifier = Modifier,
-    topAppBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-        navigationIconContentColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onBackground,
-        actionIconContentColor = MaterialTheme.colorScheme.primary,
+    topAppBarColors: TopAppBarColors = TopAppBarColors(
+        MaterialTheme.colorScheme.background,
+        MaterialTheme.colorScheme.surfaceVariant,
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.onBackground,
+        MaterialTheme.colorScheme.primary,
     ),
     content: @Composable (PaddingValues) -> Unit
 ) {
