@@ -46,6 +46,8 @@ import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.chart.LineChartAverage
 import com.app.grader.ui.componets.TitleIcon
+import com.app.grader.ui.pages.home.EmptyCoursesImg
+import com.app.grader.ui.pages.home.InfoHomeCard
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -182,73 +184,4 @@ fun RecordSemesterScreen(
             )
         )
     }
-}
-
-@Composable
-fun InfoHomeCard(average: Double, grades: List<GradeModel>) {
-    CardContainer { innerPading ->
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(innerPading)
-                .fillMaxWidth()
-                .height(150.dp)
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                TitleIcon(
-                    iconName = "chart mixed",
-                    iconId = R.drawable.chart_mixed
-                ) {
-                    Text(text = "Progresión", style = MaterialTheme.typography.labelLarge)
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 15.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (grades.isNotEmpty()) LineChartAverage(
-                        grades.map { it.grade },
-                        Modifier.fillMaxSize()
-                    )
-                    else Text(
-                        text = "No hay calificaciones",
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier.weight(0.9f),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = if (average != 0.0) "${(average * 100).roundToInt() / 100.0}" else "--",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 32.sp,
-                    )
-                    Text(
-                        text = "Tu Promedio",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EmptyCoursesImg() {
-    val image = painterResource(id = R.drawable.chick)
-    Image(
-        painter = image,
-        contentDescription = "Empty Courses",
-    )
 }
