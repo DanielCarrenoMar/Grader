@@ -45,9 +45,9 @@ sealed class CourseCardType {
 @Composable
 fun CourseCardComp(
     course: CourseModel,
-    navigateToCourse: () -> Unit,
-    deleteCourse: ()-> Unit,
-    editCourse: ()-> Unit,
+    onClick: () -> Unit,
+    onDelete: ()-> Unit,
+    onEdit: ()-> Unit,
     modifier: Modifier = Modifier,
     type: CourseCardType = CourseCardType.Normal,
 ) {
@@ -75,7 +75,7 @@ fun CourseCardComp(
     }
 
     CardContainer(
-        onClick = navigateToCourse,
+        onClick = onClick,
         modifier = modifier
     ) { innerPadding ->
         Row (
@@ -150,7 +150,7 @@ fun CourseCardComp(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
                         DropdownMenuItem(
-                            onClick = { editCourse();expanded = false },
+                            onClick = { onEdit();expanded = false },
                             text = {
                                 Text(
                                     "Editar",
@@ -161,7 +161,7 @@ fun CourseCardComp(
                             },
 
                             )
-                        DropdownMenuItem(onClick = {deleteCourse();expanded = false},
+                        DropdownMenuItem(onClick = {onDelete();expanded = false},
                         text = {
                             Text("Eliminar", style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
