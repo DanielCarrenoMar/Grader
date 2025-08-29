@@ -77,6 +77,13 @@ fun HeaderMenu(
     navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    topAppBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        navigationIconContentColor = MaterialTheme.colorScheme.primary,
+        titleContentColor = MaterialTheme.colorScheme.onBackground,
+        actionIconContentColor = MaterialTheme.colorScheme.primary,
+    ),
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -112,11 +119,11 @@ fun HeaderMenu(
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
                     )
-                    /*MyNavigationDrawerItem(
+                    MyNavigationDrawerItem(
                         title = "Hist. Académico",
                         iconId = R.drawable.book_outline,
                         onClick = navigateRecord
-                    )*/
+                    )
                     MyNavigationDrawerItem(
                         title = "Ajustes",
                         iconId = R.drawable.cog_outline,
@@ -139,13 +146,7 @@ fun HeaderMenu(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     },
-                    colors = TopAppBarColors(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.onBackground,
-                        MaterialTheme.colorScheme.primary,
-                    ),
+                    colors = topAppBarColors,
                     navigationIcon = {
                         IconButton(
                             modifier = Modifier.padding(start = 8.dp, end = 15.dp),
