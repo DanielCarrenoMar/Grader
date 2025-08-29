@@ -20,6 +20,7 @@ import com.app.grader.ui.pages.editGrade.EditGradeScreen
 import com.app.grader.ui.pages.editSemester.EditSemesterScreen
 import com.app.grader.ui.pages.home.HomeScreen
 import com.app.grader.ui.pages.record.RecordScreen
+import com.app.grader.ui.pages.recordSemester.RecordSemesterScreen
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas
@@ -75,6 +76,7 @@ fun NavigationWrapper() {
                 { navController.navigate(AllGrades) },
                 { navController.navigate(Config) },
                 { semesterId -> navController.navigate(EditSemester(semesterId)) },
+                { semesterId -> navController.navigate(RecordSemester(semesterId)) },
             )
         }
 
@@ -85,10 +87,10 @@ fun NavigationWrapper() {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
         ) { backStateEntry ->
             val recordSemester:RecordSemester = backStateEntry.toRoute()
-            HomeScreen(
-                { navController.navigate(AllGrades) },
-                { navController.navigate(Config) },
-                { navController.navigate(Record) },
+            RecordSemesterScreen(
+                recordSemester.semesterId,
+                { navController.popBackStack() },
+                { semesterId -> navController.navigate(EditSemester(semesterId)) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  courseId ->  navController.navigate(EditCourse(courseId)) },
                 { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },

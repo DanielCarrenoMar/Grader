@@ -2,16 +2,14 @@ package com.app.grader.ui.pages.record
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,11 +36,14 @@ import com.app.grader.ui.componets.card.CardContainer
 import com.app.grader.ui.componets.card.RecordSemesterCard
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordScreen(
     navigateToHome: () -> Unit,
     navigateToAllGrades: () -> Unit,
     navigateToConfig: () -> Unit,
+    navigateToEditSemester: (Int) -> Unit,
+    navigateToRecordSemester: (Int) -> Unit,
     viewModel: RecordViewModel = hiltViewModel(),
 ) {
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -56,7 +57,7 @@ fun RecordScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { },
+            { viewModel.deleteSelectSemester({viewModel.getAllSemestersAndCalTotalAverage()}) },
             { showDeleteConfirmation = false }
         )
     }
@@ -68,30 +69,25 @@ fun RecordScreen(
         null,
         navigateToConfig
     ) { innerPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                start = 14.dp,
-                end = 14.dp,
-                top = innerPadding.calculateTopPadding() + 10.dp,
-                bottom = innerPadding.calculateBottomPadding() + 80.dp
-            ),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            item(
-                span = { GridItemSpan(2) }
-            ) {
+            item{
                 Spacer(modifier = Modifier.height(10.dp))
-                InforecordCard(viewModel.totalAverage.doubleValue)
+                InfoRecordCard(viewModel.totalAverage.doubleValue)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             items(viewModel.semesters.value) { semester ->
                 RecordSemesterCard(
-                    average = semester.average,
-                    title = semester.title,
-                    coursesNum = semester.size,
-                    onClick = { }
+                    semester,
+                    { navigateToRecordSemester(semester.id)},
+                    { viewModel.selectDeleteSemester(semester.id)
+                        showDeleteConfirmation = true },
+                    { navigateToEditSemester(semester.id) },
                 )
             }
         }
@@ -99,12 +95,12 @@ fun RecordScreen(
         FloatingMenuComp(
             listOf(
                 FloatingMenuCompItem(
-                    "Guardar actual",
-                    R.drawable.education_cap_outline
-                ) { },
-                FloatingMenuCompItem(
                     "Crear nuevo",
                     R.drawable.star_outline
+                ) { navigateToEditSemester(-1) },
+                FloatingMenuCompItem(
+                    "Guardar actual",
+                    R.drawable.education_cap_outline
                 ) { },
             )
         )
@@ -112,7 +108,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InforecordCard(average: Double) {
+fun InfoRecordCard(average: Double) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier

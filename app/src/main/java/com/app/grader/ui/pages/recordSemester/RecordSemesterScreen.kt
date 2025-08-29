@@ -1,13 +1,9 @@
 package com.app.grader.ui.pages.recordSemester
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,8 +13,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,48 +25,44 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.core.navigation.RecordSemester
-import com.app.grader.domain.model.GradeModel
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
-import com.app.grader.ui.componets.card.CardContainer
 import com.app.grader.ui.componets.card.CourseCardComp
 import com.app.grader.ui.componets.card.CourseCardType
 import com.app.grader.ui.componets.DeleteConfirmationComp
-import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.chart.LineChartAverage
-import com.app.grader.ui.componets.TitleIcon
+import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.pages.home.EmptyCoursesImg
 import com.app.grader.ui.pages.home.InfoHomeCard
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordSemesterScreen(
-    navigateToAllGrades: () -> Unit,
-    navigateToConfig: () -> Unit,
-    navigateToRecord: () -> Unit,
+    semesterId: Int,
+    navigateBack: () -> Unit,
+    navigateToEditSemester: (Int) -> Unit,
     navigateToCourse: (Int) -> Unit,
     navigateToEditCourse: (Int) -> Unit,
     navigateToEditGrade: (Int, Int) -> Unit,
     viewModel: RecordSemesterViewModel = hiltViewModel()
 ) {
     val courses by viewModel.courses
+    val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showDeleteSelfConfirmation by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllCoursesAndCalTotalAverage(null)
-            viewModel.getGradeFromSemester(null)
+            viewModel.getAllCoursesAndCalTotalAverage(semesterId)
+            viewModel.getGradeFromSemester(semesterId)
+            viewModel.getSemester(semesterId)
         }
     }
 
@@ -85,18 +79,37 @@ fun RecordSemesterScreen(
             { showDeleteConfirmation = false }
         )
     }
-    HeaderMenu(
-        "Asignaturas",
-        null,
-        navigateToAllGrades,
-        navigateToRecord,
-        navigateToConfig,
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            MaterialTheme.colorScheme.inverseSurface,
-            MaterialTheme.colorScheme.surfaceVariant,
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.onBackground,
-            MaterialTheme.colorScheme.primary,
+    if (showDeleteSelfConfirmation) {
+        DeleteConfirmationComp(
+            { viewModel.deleteSelf(navigateBack) },
+            { showDeleteSelfConfirmation = false }
+        )
+    }
+    HeaderBack (
+        text = {
+            Text(
+                text = viewModel.semester.value.title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = {
+                    Snackbar(
+                        it,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                }
+            )
+        },
+        navigateBack = navigateBack,
+        actions = listOf(
+            MenuAction("Editar") { navigateToEditSemester(semesterId) },
+            MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         )
     ) { innerPadding ->
         LazyColumn(

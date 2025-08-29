@@ -9,10 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,11 +23,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordSemesterViewModel  @Inject constructor(
+    private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
+    private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
     private val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
 ): ViewModel() {
+    private val _semester = mutableStateOf(SemesterModel.DEFAULT)
+    val semester = _semester
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
@@ -48,6 +55,39 @@ class RecordSemesterViewModel  @Inject constructor(
             CourseCardType.Pass
         } else {
             CourseCardType.Normal
+        }
+    }
+
+    fun getSemester(semesterId: Int){
+        viewModelScope.launch {
+            getSemesterByIdUseCase(semesterId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _semester.value = result.data!!
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordSemesterViewModel", "Error getSemesterTitle: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun deleteSelf(navigateTo: () -> Unit) {
+        if (_semester.value.id == -1) return
+        viewModelScope.launch {
+            deleteSemesterByIdUseCase(_semester.value.id).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        navigateTo()
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordSemesterViewModel", "Error deleteSelf: ${result.message}")
+                    }
+                }
+            }
         }
     }
 
