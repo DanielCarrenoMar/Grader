@@ -4,9 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -41,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -52,7 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -60,17 +55,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
-import com.app.grader.ui.theme.IconMedium
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun EditGradeScreen(
     gradeId: Int,
     courseId:Int,
-    navegateBack: () -> Unit,
+    navigateBack: () -> Unit,
     viewModel: EditGradeViewModel = hiltViewModel(),
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -97,7 +89,7 @@ fun EditGradeScreen(
                     .padding(end = 30.dp), horizontalArrangement = Arrangement.End
             ) {
                 Button(onClick = {
-                    if (viewModel.updateOrCreateGrade(gradeId)) navegateBack()
+                    if (viewModel.updateOrCreateGrade(gradeId)) navigateBack()
                     else {
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar("Campos invalidos")
@@ -122,7 +114,7 @@ fun EditGradeScreen(
                 modifier = Modifier.imePadding()
             )
         },
-        navigateBack = navegateBack
+        navigateBack = navigateBack
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
