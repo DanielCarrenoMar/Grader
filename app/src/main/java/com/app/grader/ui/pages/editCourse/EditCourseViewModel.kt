@@ -86,13 +86,14 @@ class EditCourseViewModel @Inject constructor(
     }
 
     fun updateOrCreateCourse(semesterId: Int, courseId: Int){
+        val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             if (courseId == -1) {
                 saveCourse(
                     CourseModel(
                         title = title.value,
                         uc = uc.intValue,
-                        semesterId = semesterId
+                        semesterId = semesterIdOrNull
                     )
                 )
             } else {
