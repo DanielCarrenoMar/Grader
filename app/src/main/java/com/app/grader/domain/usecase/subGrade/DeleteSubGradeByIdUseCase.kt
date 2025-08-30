@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class DeleteSubGradeFromIdUseCase  @Inject constructor(
+class DeleteSubGradeByIdUseCase  @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
     operator fun invoke(subGradeId: Int): Flow<Resource<Unit>> = channelFlow {

@@ -20,7 +20,7 @@ import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
-import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesFromGradeIdUseCase
+import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.SaveSubGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +39,7 @@ class EditGradeViewModel @Inject constructor(
     private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
-    private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeIdUseCase,
+    private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
     private val gradesCache = mutableStateOf<List<GradeModel>>(emptyList())
