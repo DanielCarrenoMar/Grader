@@ -1,5 +1,6 @@
 package com.app.grader.data.database.repository
 
+import android.util.Log
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
@@ -153,7 +154,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         try {
             return semesterDao.getAllSemesters().map { semesterEntity ->
                 semesterEntity.toSemesterModel(
-                    average = getAverageFromCourse(semesterEntity.id),
+                    average = getAverageFromSemester(semesterEntity.id),
                     size = getSizeOfSemesters(semesterEntity.id)
                 )
             }
@@ -177,7 +178,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getAverageFromSemester(semesterId: Int?): Grade {
         try {
             val courses = getCoursesFromSemester(semesterId)
-            if (courses.isEmpty()) return gradeFactory.instGrade(0.0)
+            if (courses.isEmpty()) return gradeFactory.instGrade()
 
             var totalGrades = 0.0
             var totalUC = 0
@@ -197,10 +198,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
                     totalUC += course.uc
                 }
             }
-            val totalAverage = if (totalUC != 0) totalGrades / totalUC
-            else 0.0
+            val totalAverageGrade = if (totalUC != 0) gradeFactory.instGrade(totalGrades / totalUC)
+            else gradeFactory.instGrade()
 
-            return gradeFactory.instGrade(totalAverage)
+            return totalAverageGrade
         } catch (e: Exception) {
             throw e
         }

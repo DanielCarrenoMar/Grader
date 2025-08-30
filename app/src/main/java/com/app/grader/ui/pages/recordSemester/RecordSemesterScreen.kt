@@ -132,7 +132,7 @@ fun RecordSemesterScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
-                InfoHomeCard(viewModel.totalAverage.doubleValue, viewModel.grades.value)
+                InfoHomeCard(viewModel.totalAverage.value, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             if (viewModel.isLoading.value) {

@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.types.Grade
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.card.CardContainer
@@ -98,7 +99,7 @@ fun HomeScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
-                InfoHomeCard(viewModel.totalAverage.doubleValue, viewModel.grades.value)
+                InfoHomeCard(viewModel.totalAverage.value, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             if (viewModel.isLoading.value) {
@@ -176,7 +177,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun InfoHomeCard(average: Double, grades: List<GradeModel>) {
+fun InfoHomeCard(average: Grade, grades: List<GradeModel>) {
     CardContainer { innerPading ->
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -221,7 +222,7 @@ fun InfoHomeCard(average: Double, grades: List<GradeModel>) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (average != 0.0) "${(average * 100).roundToInt() / 100.0}" else "--",
+                        text = if (average.isNotBlank()) average.toString() else "--",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.secondary,
                         fontSize = 32.sp,
