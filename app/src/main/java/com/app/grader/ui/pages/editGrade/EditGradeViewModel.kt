@@ -14,9 +14,8 @@ import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
-import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
-import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
-import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
+import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
@@ -36,8 +35,8 @@ class EditGradeViewModel @Inject constructor(
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
-    private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
-    private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
+    private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
+    private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
     private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeIdUseCase,
@@ -395,7 +394,7 @@ class EditGradeViewModel @Inject constructor(
     private fun getCourseFromId(courseId: Int){
         if (courseId == -1) return
         viewModelScope.launch {
-            getCourseFromIdUseCase(courseId).collect { result ->
+            getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _showCourse.value = result.data!!
@@ -414,7 +413,7 @@ class EditGradeViewModel @Inject constructor(
     fun loadCourseOptionsFromSemester(semesterId:Int ,courseId: Int = _courseId.intValue) {
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
-            getCoursesFromSemesterIdUseCase(semesterIdOrNull).collect { result ->
+            getCoursesFromSemesterUseCase(semesterIdOrNull).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!

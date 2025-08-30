@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class GetCourseFromIdUseCase  @Inject constructor(
+class GetAllCoursesUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
-    operator fun invoke(courseId:Int): Flow<Resource<CourseModel?>> = channelFlow {
+    operator fun invoke(): Flow<Resource<List<CourseModel>>> = channelFlow {
         try {
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.getCourseFromId(courseId)
+                    data = repository.getAllCourses()
                 )
             )
         } catch (e: Exception) {

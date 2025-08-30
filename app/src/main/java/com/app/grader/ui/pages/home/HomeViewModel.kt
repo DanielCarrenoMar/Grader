@@ -6,17 +6,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
-import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
-import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
-import com.app.grader.domain.usecase.grade.GetAllGradesUserCase
+import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
-import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.ui.componets.card.CourseCardType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,8 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel  @Inject constructor(
-    private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
-    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
+    private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
+    private val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     private val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
 ): ViewModel() {
@@ -58,7 +54,7 @@ class HomeViewModel  @Inject constructor(
     fun deleteSelectedCourse(onDeleteAction : () -> Unit = {}) {
         if (_deleteCourseId.intValue == -1) return
         viewModelScope.launch {
-            deleteCourseFromIdUseCase(_deleteCourseId.intValue).collect{ result ->
+            deleteCourseByIdUseCase(_deleteCourseId.intValue).collect{ result ->
                 when (result){
                     is Resource.Success -> {
                         onDeleteAction()
@@ -103,7 +99,7 @@ class HomeViewModel  @Inject constructor(
 
     private fun getAllCourses(semesterId: Int?) {
         viewModelScope.launch {
-            getCoursesFromSemesterIdUseCase(semesterId).collect { result ->
+            getCoursesFromSemesterUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.course.SaveCourseUseCase
 import com.app.grader.domain.usecase.course.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditCourseViewModel @Inject constructor(
-    private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
+    private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val saveCourseUseCase: SaveCourseUseCase,
     private val updateCourseUseCase: UpdateCourseUseCase,
 ): ViewModel() {
@@ -33,7 +33,7 @@ class EditCourseViewModel @Inject constructor(
     fun getCourseFromId(courseId: Int) {
         if (courseId == -1) return
         viewModelScope.launch {
-            getCourseFromIdUseCase(courseId).collect { result ->
+            getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val course = result.data!!

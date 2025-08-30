@@ -10,10 +10,10 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
-import com.app.grader.domain.usecase.course.DeleteCourseFromIdUseCase
-import com.app.grader.domain.usecase.course.GetAverageFromCourseIdUseCase
+import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
+import com.app.grader.domain.usecase.course.GetAverageFromCourseUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
-import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
@@ -24,12 +24,12 @@ import javax.inject.Inject
 @HiltViewModel
 class CourseViewModel  @Inject constructor(
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
-    private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
+    private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
     private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
-    private val getAverageFromCourseIdUseCase: GetAverageFromCourseIdUseCase,
+    private val getAverageFromCourseUseCase: GetAverageFromCourseUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
-    private val deleteCourseFromIdUseCase: DeleteCourseFromIdUseCase,
+    private val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     private val gradeFactory: GradeFactory
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
@@ -54,7 +54,7 @@ class CourseViewModel  @Inject constructor(
     fun deleteSelf(navigateTo: () -> Unit) {
         if (_course.value.id == -1) return
         viewModelScope.launch {
-            deleteCourseFromIdUseCase(_course.value.id).collect { result ->
+            deleteCourseByIdUseCase(_course.value.id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         navigateTo()
@@ -140,7 +140,7 @@ class CourseViewModel  @Inject constructor(
 
     fun getCourseFromId(courseId: Int) {
         viewModelScope.launch {
-            getCourseFromIdUseCase(courseId).collect { result ->
+            getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         if (result.data != null) _course.value = result.data
@@ -176,7 +176,7 @@ class CourseViewModel  @Inject constructor(
 
     fun calAverageFromCourseId(courseId: Int) {
         viewModelScope.launch {
-            getAverageFromCourseIdUseCase(courseId).collect { result ->
+            getAverageFromCourseUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val average = result.data!!
