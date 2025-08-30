@@ -40,8 +40,8 @@ import com.app.grader.ui.componets.card.CourseCardType
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.MenuAction
+import com.app.grader.ui.componets.card.InfoSemesterCard
 import com.app.grader.ui.pages.home.EmptyCoursesImg
-import com.app.grader.ui.pages.home.InfoHomeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,7 +132,7 @@ fun RecordSemesterScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
-                InfoHomeCard(viewModel.totalAverage.value, viewModel.grades.value)
+                InfoSemesterCard(viewModel.totalAverage.value, viewModel.grades.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             if (viewModel.isLoading.value) {
