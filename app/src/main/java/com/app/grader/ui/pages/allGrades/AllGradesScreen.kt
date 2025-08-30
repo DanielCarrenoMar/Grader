@@ -50,7 +50,7 @@ fun AllGradesScreen(
     navigateToHome: () -> Unit,
     navigateToConfig: () -> Unit,
     navigateToRecord: () -> Unit,
-    navigateToEditGrade: (Int, Int) -> Unit,
+    navigateToEditGrade: (Int, Int, Int) -> Unit,
     navigateToCourse: (Int) -> Unit,
     viewModel: AllGradesViewModel = hiltViewModel()
 ) {
@@ -156,8 +156,9 @@ fun AllGradesScreen(
             showGrade = viewModel.showGrade.value,
             editOnClick = {
                 navigateToEditGrade(
-                    viewModel.showGrade.value.id,
-                    viewModel.showGrade.value.courseId
+                    -1,
+                    viewModel.showGrade.value.courseId,
+                    viewModel.showGrade.value.id
                 ); showBottomSheet = false
             },
             deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }

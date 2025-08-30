@@ -48,7 +48,7 @@ fun NavigationWrapper() {
                 { navController.navigate(Record) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
-                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
@@ -57,7 +57,7 @@ fun NavigationWrapper() {
                 { navController.navigatePop(Home) },
                 { navController.navigate(Config) },
                 { navController.navigate(Record) },
-                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
                 { courseId -> navController.navigate(Course(courseId)) },
             )
         }
@@ -93,7 +93,7 @@ fun NavigationWrapper() {
                 { semesterId -> navController.navigate(EditSemester(semesterId)) },
                 {  courseId ->  navController.navigate(Course(courseId)) },
                 {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
-                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
@@ -108,7 +108,7 @@ fun NavigationWrapper() {
                 course.courseId,
                 { navController.popBackStack() },
                 {semesterId, courseId -> navController.navigate(EditCourse(semesterId, courseId)) },
-                { gradeId, courseId -> navController.navigate(EditGrade(gradeId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
@@ -119,7 +119,10 @@ fun NavigationWrapper() {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
         ) { backStateEntry ->
             val editSemester:EditSemester = backStateEntry.toRoute()
-            EditSemesterScreen (editSemester.semesterId, { navController.popBackStack() })
+            EditSemesterScreen (
+                editSemester.semesterId,
+                { navController.popBackStack() }
+            )
         }
 
         composable<EditCourse>(
@@ -143,7 +146,11 @@ fun NavigationWrapper() {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
         ) {  backStateEntry ->
             val editGrade:EditGrade = backStateEntry.toRoute()
-            EditGradeScreen (editGrade.gradeId, editGrade.courseId, { navController.popBackStack() })
+            EditGradeScreen (
+                editGrade.semesterId,
+                editGrade.courseId,
+                editGrade.gradeId,
+                { navController.popBackStack() })
         }
     }
 }

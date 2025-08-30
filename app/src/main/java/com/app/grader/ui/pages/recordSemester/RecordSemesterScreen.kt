@@ -47,10 +47,10 @@ import com.app.grader.ui.pages.home.InfoHomeCard
 fun RecordSemesterScreen(
     semesterId: Int,
     navigateBack: () -> Unit,
-    navigateToEditSemester: (semesterId:Int) -> Unit,
-    navigateToCourse: (courseId:Int) -> Unit,
-    navigateToEditCourse: (semesterId:Int, courseId:Int) -> Unit,
-    navigateToEditGrade: (courseId:Int, gradeId:Int) -> Unit,
+    navigateToEditSemester: (Int) -> Unit,
+    navigateToCourse: (Int) -> Unit,
+    navigateToEditCourse: (Int, Int) -> Unit,
+    navigateToEditGrade: (Int, Int, Int) -> Unit,
     viewModel: RecordSemesterViewModel = hiltViewModel()
 ) {
     val courses by viewModel.courses
@@ -195,7 +195,7 @@ fun RecordSemesterScreen(
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
-                ) { navigateToEditGrade(-1, -1) },
+                ) { navigateToEditGrade(semesterId, -1, -1) },
             )
         )
     }

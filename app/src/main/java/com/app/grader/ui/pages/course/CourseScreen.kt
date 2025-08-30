@@ -58,8 +58,8 @@ import kotlinx.coroutines.launch
 fun CourseScreen(
     courseId: Int,
     navigateBack: () -> Unit,
-    navigateToEditCourse: (semesterId:Int, courseId:Int) -> Unit,
-    navigateToEditGrade: (Int, Int) -> Unit,
+    navigateToEditCourse: (Int, Int) -> Unit,
+    navigateToEditGrade: (Int, Int, Int) -> Unit,
     viewModel: CourseViewModel = hiltViewModel(),
 ) {
     val sheetState = rememberModalBottomSheetState(true)
@@ -205,7 +205,7 @@ fun CourseScreen(
                     sheetState = sheetState,
                     showGrade = viewModel.showGrade.value,
                     editOnClick = {
-                        navigateToEditGrade(viewModel.showGrade.value.id, courseId)
+                        navigateToEditGrade(viewModel.course.value.semesterId ?: -1, courseId, viewModel.showGrade.value.id)
                         showBottomSheet = false
                     },
                     deleteOnClick = { showDeleteGradeConfirmation = true; showBottomSheet = false }
@@ -216,7 +216,7 @@ fun CourseScreen(
             listOf(
                 FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
                     if (viewModel.pedingPoints.value.getGrade() > 0) {
-                        navigateToEditGrade(-1, courseId)
+                        navigateToEditGrade(viewModel.course.value.semesterId ?: -1 ,courseId, -1)
                     } else coroutineScope.launch {
                         snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
                     }

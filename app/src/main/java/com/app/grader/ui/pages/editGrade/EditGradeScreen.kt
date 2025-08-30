@@ -61,8 +61,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EditGradeScreen(
-    gradeId: Int,
+    semesterId: Int,
     courseId:Int,
+    gradeId: Int,
     navigateBack: () -> Unit,
     viewModel: EditGradeViewModel = hiltViewModel(),
 ) {
@@ -77,7 +78,7 @@ fun EditGradeScreen(
             viewModel.courseId.intValue = courseId
             viewModel.loadGradeFromId(gradeId)
             viewModel.loadSubGradesFromGrade(gradeId)
-            viewModel.loadCourseOptions(courseId)
+            viewModel.loadCourseOptionsFromSemester(semesterId, courseId)
             if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
         }
     }

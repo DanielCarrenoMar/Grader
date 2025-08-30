@@ -53,8 +53,8 @@ fun HomeScreen(
     navigateToConfig: () -> Unit,
     navigateToRecord: () -> Unit,
     navigateToCourse: (Int) -> Unit,
-    navigateToEditCourse: (semesterId:Int, courseId:Int) -> Unit,
-    navigateToEditGrade: (Int, Int) -> Unit,
+    navigateToEditCourse: (Int, Int) -> Unit,
+    navigateToEditGrade: (Int, Int, Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val courses by viewModel.courses
@@ -169,7 +169,7 @@ fun HomeScreen(
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
-                ) { navigateToEditGrade(-1, -1) },
+                ) { navigateToEditGrade(-1, -1, -1) },
             )
         )
     }
