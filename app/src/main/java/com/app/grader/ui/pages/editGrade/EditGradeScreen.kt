@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
@@ -83,20 +84,27 @@ fun EditGradeScreen(
 
     HeaderBack(
         text = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 30.dp), horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = {
-                    if (viewModel.updateOrCreateGrade(gradeId)) navigateBack()
-                    else {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Campos invalidos")
+            Row (
+                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = "Asignatura",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Button(
+                    modifier = Modifier.width(120.dp),
+                    onClick = {
+                        if (viewModel.updateOrCreateGrade(gradeId)) navigateBack()
+                        else {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Campos invalidos")
+                            }
                         }
-                    }
-                }) {
-                    Text(text = "Guardar")
+                    }) {
+                    Text(text = if (gradeId == -1) "Crear" else "Guardar")
                 }
             }
         },

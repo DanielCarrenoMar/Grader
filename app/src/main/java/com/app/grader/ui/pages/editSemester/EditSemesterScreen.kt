@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -31,7 +31,7 @@ import com.app.grader.ui.componets.HeaderBack
 @Composable
 fun EditSemesterScreen(
     semesterId: Int,
-    navegateBack: () -> Unit,
+    navigateBack: () -> Unit,
     viewModel: EditSemesterViewModel = hiltViewModel(),
     ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -43,16 +43,27 @@ fun EditSemesterScreen(
 
     HeaderBack(
         text = {
-            Row (modifier = Modifier.fillMaxWidth().padding(end = 30.dp), horizontalArrangement = Arrangement.End){
-                Button(onClick = {
-                    viewModel.updateOrCreateCourse(semesterId)
-                    navegateBack()
+            Row (
+                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = "Registro",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Button(
+                    modifier = Modifier.width(120.dp),
+                    onClick = {
+                        viewModel.updateOrCreateCourse(semesterId)
+                        navigateBack()
                 }) {
-                    Text(text = "Guardar")
+                    Text(text = if (semesterId == -1) "Crear" else "Guardar")
                 }
             }
         },
-        navigateBack = navegateBack
+        navigateBack = navigateBack
     ) { innerPadding ->
         Column(
             modifier = Modifier

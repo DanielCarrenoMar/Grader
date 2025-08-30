@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -44,12 +45,23 @@ fun EditCourseScreen(
 
     HeaderBack(
         text = {
-            Row (modifier = Modifier.fillMaxWidth().padding(end = 30.dp), horizontalArrangement = Arrangement.End){
-                Button(onClick = {
-                    viewModel.updateOrCreateCourse(semesterId, courseId)
-                    navigateBack()
-                }) {
-                    Text(text = "Guardar")
+            Row (
+                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = "Asignatura",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Button(
+                    modifier = Modifier.width(120.dp),
+                    onClick = {
+                        viewModel.updateOrCreateCourse(semesterId, courseId)
+                        navigateBack()
+                    }) {
+                    Text(text = if (courseId == -1) "Crear" else "Guardar")
                 }
             }
         },
