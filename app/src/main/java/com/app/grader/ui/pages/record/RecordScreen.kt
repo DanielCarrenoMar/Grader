@@ -27,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.domain.types.Grade
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
@@ -78,7 +79,7 @@ fun RecordScreen(
         ) {
             item{
                 Spacer(modifier = Modifier.height(10.dp))
-                InfoRecordCard(viewModel.totalAverage.doubleValue)
+                InfoRecordCard(viewModel.totalAverage.value)
                 Spacer(modifier = Modifier.height(25.dp))
             }
             items(viewModel.semesters.value) { semester ->
@@ -109,7 +110,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InfoRecordCard(average: Double) {
+fun InfoRecordCard(average: Grade) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier
@@ -129,7 +130,7 @@ fun InfoRecordCard(average: Double) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = if (average != 0.0) "${(average * 100).roundToInt() / 100.0}" else "--",
+                    text = if (average.isNotBlank()) average.toString() else "--",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 52.sp,

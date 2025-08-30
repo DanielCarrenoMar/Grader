@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
@@ -19,12 +20,13 @@ import javax.inject.Inject
 @HiltViewModel
 class RecordViewModel @Inject constructor(
     private val getAllSemestersUseCase: GetAllSemestersUseCase,
-    private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase
+    private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
+    private val gradeFactory: GradeFactory,
 ) : ViewModel() {
     private val _semesters = mutableStateOf<List<SemesterModel>>(emptyList())
     val semesters = _semesters
 
-    private val _totalAverage = mutableDoubleStateOf(0.0)
+    private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
 
     private val _deleteSemesterId = mutableIntStateOf(-1)
@@ -36,9 +38,10 @@ class RecordViewModel @Inject constructor(
                     is Resource.Success -> {
                         _semesters.value = result.data!!
                         if (_semesters.value.isEmpty()) {
-                            _totalAverage.doubleValue = 0.0
+                            _totalAverage.value = gradeFactory.instGrade()
                             return@collect
                         }
+
 
                         var sumAverage = 0.0
                         var sumSemesterCount = 0
@@ -47,7 +50,12 @@ class RecordViewModel @Inject constructor(
                             sumAverage += semester.average.getGrade()
                             sumSemesterCount++
                         }
-                        _totalAverage.doubleValue = sumAverage / sumSemesterCount
+                        if (sumSemesterCount == 0) {
+                            _totalAverage.value = gradeFactory.instGrade()
+                            return@collect
+                        }
+
+                        _totalAverage.value = gradeFactory.instGrade(sumAverage / sumSemesterCount)
                     }
 
                     is Resource.Loading -> {}
