@@ -16,6 +16,7 @@ import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
 import com.app.grader.domain.usecase.course.GetAllCoursesUserCase
 import com.app.grader.domain.usecase.course.GetCourseFromIdUseCase
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
@@ -35,7 +36,7 @@ class EditGradeViewModel @Inject constructor(
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
-    private val getAllCoursesUserCase: GetAllCoursesUserCase,
+    private val getCoursesFromSemesterIdUseCase: GetCoursesFromSemesterIdUseCase,
     private val getCourseFromIdUseCase: GetCourseFromIdUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
@@ -410,9 +411,10 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    fun loadCourseOptions(courseId: Int = _courseId.intValue) {
+    fun loadCourseOptionsFromSemester(semesterId:Int ,courseId: Int = _courseId.intValue) {
+        val semesterIdOrNull = if (semesterId != -1) semesterId else return
         viewModelScope.launch {
-            getAllCoursesUserCase().collect { result ->
+            getCoursesFromSemesterIdUseCase(semesterIdOrNull).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
@@ -430,7 +432,7 @@ class EditGradeViewModel @Inject constructor(
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
-                        Log.e("HomeViewModel", "Error getAllcourse: ${result.message}")
+                        Log.e("HomeViewModel", "Error getCoursesFromSemesterUseCase: ${result.message}")
                     }
                 }
             }
