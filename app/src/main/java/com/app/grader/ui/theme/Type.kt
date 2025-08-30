@@ -23,14 +23,14 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        lineHeight = 24.sp,
+        fontSize = 22.sp,
+        lineHeight = 22.sp,
     ),
     titleMedium = TextStyle(
         fontFamily = QuickSandsFont,
         fontWeight = FontWeight.Medium,
-        fontSize = 24.sp,
-        lineHeight = 24.sp,
+        fontSize = 22.sp,
+        lineHeight = 22.sp,
     ),
     bodySmall = TextStyle(
         fontFamily = QuickSandsFont,
