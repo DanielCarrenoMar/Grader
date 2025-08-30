@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.recordSemester
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -75,7 +76,7 @@ fun RecordSemesterScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({viewModel.getAllCoursesAndCalTotalAverage(null)}) },
+            { viewModel.deleteSelectedCourse({viewModel.getAllCoursesAndCalTotalAverage(semesterId)}) },
             { showDeleteConfirmation = false }
         )
     }
@@ -99,7 +100,7 @@ fun RecordSemesterScreen(
                 snackbar = {
                     Snackbar(
                         it,
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        containerColor = MaterialTheme.colorScheme.inverseSurface,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         shape = MaterialTheme.shapes.medium
                     )
@@ -115,6 +116,7 @@ fun RecordSemesterScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.inverseSurface)
                 .padding(innerPadding)
                 .padding(horizontal = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
