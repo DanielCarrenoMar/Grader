@@ -12,9 +12,9 @@ import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetAverageFromCourseUseCase
-import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.DeleteGradeByIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
-import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +25,8 @@ import javax.inject.Inject
 class CourseViewModel  @Inject constructor(
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val getCourseByIdUseCase: GetCourseByIdUseCase,
-    private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
-    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
+    private val getGradeByIdUseCase: GetGradeByIdUseCase,
+    private val deleteGradeByIdUseCase: DeleteGradeByIdUseCase,
     private val getAverageFromCourseUseCase: GetAverageFromCourseUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
     private val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
@@ -93,7 +93,7 @@ class CourseViewModel  @Inject constructor(
 
     fun setShowGrade(gradeId: Int){
         viewModelScope.launch {
-            getGradeFromIdUseCase(gradeId).collect { result ->
+            getGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         if (result.data != null) _showGrade.value = result.data
@@ -197,7 +197,7 @@ class CourseViewModel  @Inject constructor(
 
     fun deleteGradeFromId(gradeId: Int){
         viewModelScope.launch {
-            deleteGradeFromIdUseCase(gradeId).collect { result ->
+            deleteGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         getGradesFromCourse(_course.value.id)

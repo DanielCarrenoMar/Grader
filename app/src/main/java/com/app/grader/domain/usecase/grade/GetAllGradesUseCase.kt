@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class GetAllGradesUserCase @Inject constructor(
+class GetAllGradesUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
     operator fun invoke(): Flow<Resource<List<GradeModel>>> = channelFlow {

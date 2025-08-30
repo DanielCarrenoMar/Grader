@@ -8,8 +8,8 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
-import com.app.grader.domain.usecase.grade.DeleteGradeFromIdUseCase
-import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.DeleteGradeByIdUseCase
+import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,8 +19,8 @@ import javax.inject.Inject
 class AllGradesViewModel  @Inject constructor(
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
-    private val deleteGradeFromIdUseCase: DeleteGradeFromIdUseCase,
-    private val getGradeFromIdUseCase: GetGradeFromIdUseCase
+    private val deleteGradeByIdUseCase: DeleteGradeByIdUseCase,
+    private val getGradeByIdUseCase: GetGradeByIdUseCase
 ): ViewModel() {
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
@@ -33,7 +33,7 @@ class AllGradesViewModel  @Inject constructor(
 
     fun deleteGradeFromId(gradeId: Int){
         viewModelScope.launch {
-            deleteGradeFromIdUseCase(gradeId).collect { result ->
+            deleteGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         getAllGradesWithCourses()
@@ -51,7 +51,7 @@ class AllGradesViewModel  @Inject constructor(
 
     fun setShowGrade(gradeId: Int){
         viewModelScope.launch {
-            getGradeFromIdUseCase(gradeId).collect { result ->
+            getGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         if (result.data != null) _showGrade.value = result.data

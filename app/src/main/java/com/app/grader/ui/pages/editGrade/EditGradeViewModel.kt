@@ -16,7 +16,7 @@ import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
-import com.app.grader.domain.usecase.grade.GetGradeFromIdUseCase
+import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
@@ -31,7 +31,7 @@ import kotlin.text.toDoubleOrNull
 
 @HiltViewModel
 class EditGradeViewModel @Inject constructor(
-    private val getGradeFromIdUseCase: GetGradeFromIdUseCase,
+    private val getGradeByIdUseCase: GetGradeByIdUseCase,
     private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
@@ -251,7 +251,7 @@ class EditGradeViewModel @Inject constructor(
     fun loadGradeFromId(gradeId: Int) {
         if (gradeId == -1) return
         viewModelScope.launch {
-            getGradeFromIdUseCase(gradeId).collect { result ->
+            getGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         val grade = result.data!!
