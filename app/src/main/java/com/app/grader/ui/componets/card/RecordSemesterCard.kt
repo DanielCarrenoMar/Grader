@@ -69,7 +69,7 @@ fun RecordSemesterCard(
                 }
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 27.dp, start = 40.dp)
+                    modifier = Modifier.padding(top = 41.dp, start = 40.dp)
                 ){
                     Text(
                         text = "${semester.size}",
@@ -97,7 +97,7 @@ fun RecordSemesterCard(
                 ){
                     CircleCourse(
                         grade = semester.average,
-                        radius = 33.dp
+                        radius = 40.dp
                     )
                 }
             }
