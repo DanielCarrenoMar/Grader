@@ -412,7 +412,7 @@ class EditGradeViewModel @Inject constructor(
     }
 
     fun loadCourseOptionsFromSemester(semesterId:Int ,courseId: Int = _courseId.intValue) {
-        val semesterIdOrNull = if (semesterId != -1) semesterId else return
+        val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             getCoursesFromSemesterIdUseCase(semesterIdOrNull).collect { result ->
                 when (result) {
