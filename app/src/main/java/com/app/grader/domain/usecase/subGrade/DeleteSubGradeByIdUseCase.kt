@@ -12,7 +12,7 @@ class DeleteSubGradeByIdUseCase  @Inject constructor(
     operator fun invoke(subGradeId: Int): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.deleteSubGradeFromId(subGradeId)){
+            if (repository.deleteSubGradeById(subGradeId)){
                 send(
                     Resource.Success(Unit)
                 )

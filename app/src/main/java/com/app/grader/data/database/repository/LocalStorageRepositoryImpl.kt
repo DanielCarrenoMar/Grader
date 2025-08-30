@@ -8,7 +8,6 @@ import com.app.grader.data.database.dao.SemesterDao
 import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
@@ -79,7 +78,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCourseFromId(courseId: Int): CourseModel? {
+    override suspend fun getCourseById(courseId: Int): CourseModel? {
         try {
             val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
             return CourseModel(
@@ -103,11 +102,11 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllCoursesFromSemesterId(semesterId: Int?): Int {
+    override suspend fun deleteAllCoursesFromSemester(semesterId: Int?): Int {
         try {
             val courses = courseDao.getAllCoursesFromSemesterId(semesterId)
             courses.forEach { course ->
-                deleteAllGradesFromCourseId(course.id)
+                deleteAllGradesFromCourse(course.id)
             }
             return courseDao.deleteAllCoursesFromSemesterId(semesterId)
         } catch (e: Exception) {
@@ -115,9 +114,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteCourseFromId(courseId: Int): Boolean {
+    override suspend fun deleteCourseById(courseId: Int): Boolean {
         try {
-            deleteAllGradesFromCourseId(courseId)
+            deleteAllGradesFromCourse(courseId)
             return courseDao.deleteCourseFromId(courseId) == 1
         } catch (e: Exception) {
             throw e
@@ -141,9 +140,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteSemesterFromId(semesterId: Int): Boolean {
+    override suspend fun deleteSemesterById(semesterId: Int): Boolean {
         try {
-            deleteAllCoursesFromSemesterId(semesterId)
+            deleteAllCoursesFromSemester(semesterId)
             return semesterDao.deleteSemesterById(semesterId) == 1
         } catch (e: Exception) {
             throw e
@@ -163,7 +162,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSemesterFromId(semesterId: Int): SemesterModel? {
+    override suspend fun getSemesterById(semesterId: Int): SemesterModel? {
         try {
             val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
             return semesterEntity.toSemesterModel(
@@ -275,7 +274,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllGradesFromCourseId(courseId: Int): Int {
+    override suspend fun deleteAllGradesFromCourse(courseId: Int): Int {
         try {
             gradeDao.getGradesFromCourseId(courseId).forEach { grade ->
                 subGradeDao.deleteAllSubGradesFromGradeId(grade.id)
@@ -295,7 +294,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteGradeFromId(gradeId: Int): Boolean {
+    override suspend fun deleteGradeById(gradeId: Int): Boolean {
         try {
             subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
             return gradeDao.deleteGradeFromId(gradeId) == 1
@@ -314,7 +313,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getGradeFromId(gradeId: Int): GradeModel? {
+    override suspend fun getGradeById(gradeId: Int): GradeModel? {
         try {
             val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
             return gradeEntity.toGradeModel(gradeFactory)
@@ -365,7 +364,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllSubGradesFromGradeId(gradeId: Int): Int {
+    override suspend fun deleteAllSubGradesFromGrade(gradeId: Int): Int {
         try {
             return subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
         } catch (e: Exception) {
@@ -373,7 +372,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteSubGradeFromId(subGradeId: Int): Boolean {
+    override suspend fun deleteSubGradeById(subGradeId: Int): Boolean {
         try {
             return subGradeDao.deleteSubGradeFromId(subGradeId) == 1
         } catch (e: Exception) {
@@ -381,7 +380,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSubGradeFromId(subGradeId: Int): SubGradeModel? {
+    override suspend fun getSubGradeById(subGradeId: Int): SubGradeModel? {
         try {
             val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
             return subGradeEntity.toSubGradeModel(gradeFactory)

@@ -15,7 +15,7 @@ class GetCourseByIdUseCase  @Inject constructor(
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.getCourseFromId(courseId)
+                    data = repository.getCourseById(courseId)
                 )
             )
         } catch (e: Exception) {

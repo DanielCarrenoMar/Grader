@@ -12,7 +12,7 @@ class DeleteCourseByIdUseCase  @Inject constructor(
     operator fun invoke(courseId: Int): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (repository.deleteCourseFromId(courseId)){
+            if (repository.deleteCourseById(courseId)){
                 send(
                     Resource.Success(Unit)
                 )

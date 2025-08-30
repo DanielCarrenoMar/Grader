@@ -1,6 +1,5 @@
 package com.app.grader.domain.usecase.semester
 
-import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.repository.LocalStorageRepository
@@ -16,7 +15,7 @@ class GetSemesterByIdUseCase @Inject constructor(
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.getSemesterFromId(semesterId)
+                    data = repository.getSemesterById(semesterId)
                 )
             )
         } catch (e: Exception) {

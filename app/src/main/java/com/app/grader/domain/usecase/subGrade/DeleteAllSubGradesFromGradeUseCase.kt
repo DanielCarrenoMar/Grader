@@ -14,7 +14,7 @@ class DeleteAllSubGradesFromGradeUseCase @Inject constructor(
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.deleteAllSubGradesFromGradeId(gradeId)
+                    data = repository.deleteAllSubGradesFromGrade(gradeId)
                 )
             )
         } catch (e: Exception) {

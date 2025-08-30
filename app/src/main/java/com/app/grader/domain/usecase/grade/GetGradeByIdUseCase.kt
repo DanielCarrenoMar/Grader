@@ -15,7 +15,7 @@ class GetGradeByIdUseCase  @Inject constructor(
             send(Resource.Loading())
             send(
                 Resource.Success(
-                    data = repository.getGradeFromId(gradeId)
+                    data = repository.getGradeById(gradeId)
                 )
             )
         } catch (e: Exception) {
