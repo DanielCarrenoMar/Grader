@@ -41,6 +41,13 @@ fun HeaderBack(
     snackbarHost: @Composable () -> Unit = {},
     navigateBack: () -> Unit,
     actions: List<MenuAction> = emptyList(),
+    topAppBarColors: TopAppBarColors = TopAppBarColors(
+        MaterialTheme.colorScheme.background,
+        MaterialTheme.colorScheme.surfaceVariant,
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.onBackground,
+        MaterialTheme.colorScheme.primary,
+    ),
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -52,13 +59,7 @@ fun HeaderBack(
             TopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = text,
-                colors = TopAppBarColors(
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.colorScheme.surfaceVariant,
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.onBackground,
-                    MaterialTheme.colorScheme.primary,
-                ),
+                colors = topAppBarColors,
                 actions = {
                     if (actions.isNotEmpty()) {
                         IconButton(

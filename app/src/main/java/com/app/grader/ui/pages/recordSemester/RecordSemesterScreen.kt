@@ -18,6 +18,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -111,6 +112,13 @@ fun RecordSemesterScreen(
         actions = listOf(
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
+        ),
+        topAppBarColors = TopAppBarColors(
+            MaterialTheme.colorScheme.inverseSurface,
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.onBackground,
+            MaterialTheme.colorScheme.primary,
         )
     ) { innerPadding ->
         LazyColumn(
