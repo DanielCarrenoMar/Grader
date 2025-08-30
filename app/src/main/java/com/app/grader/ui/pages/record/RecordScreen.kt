@@ -63,7 +63,7 @@ fun RecordScreen(
     }
 
     HeaderMenu(
-        "Hist. Académico",
+        "Registro Académico",
         navigateToHome,
         navigateToAllGrades,
         null,
@@ -89,6 +89,7 @@ fun RecordScreen(
                         showDeleteConfirmation = true },
                     { navigateToEditSemester(semester.id) },
                 )
+                Spacer(Modifier.height(10.dp))
             }
         }
 

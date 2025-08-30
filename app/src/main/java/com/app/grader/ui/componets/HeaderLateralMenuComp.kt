@@ -120,7 +120,7 @@ fun HeaderMenu(
                         onClick = navigateAllGrades
                     )
                     MyNavigationDrawerItem(
-                        title = "Hist. Académico",
+                        title = "Registro Académico",
                         iconId = R.drawable.book_outline,
                         onClick = navigateRecord
                     )
