@@ -121,17 +121,6 @@ fun ConfigScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = {
-                    val url = "https://github.com/DanielCarrenoMar/Grader/releases"
-                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-                    context.startActivity(intent)
-                },
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.info_outline,
-                text = "Buscar si hay actualización",
-            )
-            IconCardButton(
-                onClick = {
                     val url = "https://github.com/DanielCarrenoMar/Grader/issues/new"
                     val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                     context.startActivity(intent)
