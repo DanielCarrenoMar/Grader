@@ -93,7 +93,7 @@ fun EditGradeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Asignatura",
+                    text = "Calificación",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
