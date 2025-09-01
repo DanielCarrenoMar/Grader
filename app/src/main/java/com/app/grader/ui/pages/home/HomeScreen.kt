@@ -170,7 +170,7 @@ fun HomeScreen(
                 ) {
                     if (courses.isEmpty()) {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar("No se encontro ninguna asignatura, por favor crea una antes 2")
+                            snackbarHostState.showSnackbar("Por favor agrega una asignatura primero")
                         }
                     } else {
                         navigateToEditGrade(-1, -1, -1)

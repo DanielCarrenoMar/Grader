@@ -197,7 +197,7 @@ fun RecordSemesterScreen(
                 ) {
                     if (courses.isEmpty()) {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar("No se encontro ninguna asignatura, por favor crea una antes")
+                            snackbarHostState.showSnackbar("Por favor agrega una asignatura primero")
                         }
                     } else {
                         navigateToEditGrade(semesterId, -1, -1)
