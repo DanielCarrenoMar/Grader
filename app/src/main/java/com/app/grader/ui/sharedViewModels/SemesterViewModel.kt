@@ -14,6 +14,8 @@ import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import com.app.grader.ui.componets.card.CourseCardType
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 open class SemesterViewModel(

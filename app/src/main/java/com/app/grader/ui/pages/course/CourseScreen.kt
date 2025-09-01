@@ -91,26 +91,14 @@ fun CourseScreen(
         )
     }
     HeaderBack(
-        text = {
+        title = {
             Text(
                 text = viewModel.course.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Snackbar(
-                        it,
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                }
-            )
-        },
+        snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
             MenuAction("Editar") { navigateToEditCourse(-1, courseId) },

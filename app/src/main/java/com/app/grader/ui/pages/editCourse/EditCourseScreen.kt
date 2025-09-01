@@ -46,7 +46,7 @@ fun EditCourseScreen(
     }
 
     HeaderBack(
-        text = {
+        title = {
             Row (
                 modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,

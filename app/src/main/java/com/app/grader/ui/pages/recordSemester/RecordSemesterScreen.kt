@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.card.InfoSemesterCard
 import com.app.grader.ui.pages.home.EmptyCoursesImg
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +60,7 @@ fun RecordSemesterScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var showDeleteSelfConfirmation by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -77,7 +80,7 @@ fun RecordSemesterScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({viewModel.getAllCoursesAndCalTotalAverage(semesterId)}) },
+            { viewModel.deleteSelectedCourse({ viewModel.getAllCoursesAndCalTotalAverage(semesterId) }) },
             { showDeleteConfirmation = false }
         )
     }
@@ -87,27 +90,15 @@ fun RecordSemesterScreen(
             { showDeleteSelfConfirmation = false }
         )
     }
-    HeaderBack (
-        text = {
+    HeaderBack(
+        title = {
             Text(
                 text = viewModel.semester.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Snackbar(
-                        it,
-                        containerColor = MaterialTheme.colorScheme.inverseSurface,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                }
-            )
-        },
+        snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
@@ -183,7 +174,7 @@ fun RecordSemesterScreen(
                                 viewModel.selectDeleteCourse(course.id)
                                 showDeleteConfirmation = true
                             },
-                            { navigateToEditCourse(-1 ,course.id) },
+                            { navigateToEditCourse(-1, course.id) },
                             type = courseCardType
                         )
                         Spacer(Modifier.height(10.dp))
@@ -199,11 +190,19 @@ fun RecordSemesterScreen(
                 FloatingMenuCompItem(
                     "Asignatura",
                     R.drawable.education_cap_outline
-                ) { navigateToEditCourse(semesterId ,-1) },
+                ) { navigateToEditCourse(semesterId, -1) },
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
-                ) { navigateToEditGrade(semesterId, -1, -1) },
+                ) {
+                    if (courses.isEmpty()) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("No se encontro ninguna asignatura, por favor crea una antes")
+                        }
+                    } else {
+                        navigateToEditGrade(semesterId, -1, -1)
+                    }
+                },
             )
         )
     }

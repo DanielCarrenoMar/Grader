@@ -14,12 +14,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +39,7 @@ import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.CourseCardComp
 import com.app.grader.ui.componets.card.CourseCardType
 import com.app.grader.ui.componets.card.InfoSemesterCard
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +54,8 @@ fun HomeScreen(
 ) {
     val courses by viewModel.courses
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -69,7 +74,7 @@ fun HomeScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({viewModel.getAllCoursesAndCalTotalAverage(null)}) },
+            { viewModel.deleteSelectedCourse({ viewModel.getAllCoursesAndCalTotalAverage(null) }) },
             { showDeleteConfirmation = false }
         )
     }
@@ -78,7 +83,8 @@ fun HomeScreen(
         null,
         navigateToAllGrades,
         navigateToRecord,
-        navigateToConfig
+        navigateToConfig,
+        snackbarHostState = snackbarHostState
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -157,11 +163,19 @@ fun HomeScreen(
                 FloatingMenuCompItem(
                     "Asignatura",
                     R.drawable.education_cap_outline
-                ) { navigateToEditCourse(-1 ,-1) },
+                ) { navigateToEditCourse(-1, -1) },
                 FloatingMenuCompItem(
                     "Calificación",
                     R.drawable.star_outline
-                ) { navigateToEditGrade(-1, -1, -1) },
+                ) {
+                    if (courses.isEmpty()) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("No se encontro ninguna asignatura, por favor crea una antes 2")
+                        }
+                    } else {
+                        navigateToEditGrade(-1, -1, -1)
+                    }
+                },
             )
         )
     }

@@ -86,7 +86,7 @@ fun EditGradeScreen(
     }
 
     HeaderBack(
-        text = {
+        title = {
             Row (
                 modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -111,20 +111,7 @@ fun EditGradeScreen(
                 }
             }
         },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Snackbar(
-                        it,
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                },
-                modifier = Modifier.imePadding()
-            )
-        },
+        snackbarHostState = snackbarHostState,
         navigateBack = navigateBack
     ) { innerPadding ->
         LazyColumn(
@@ -164,7 +151,6 @@ fun EditGradeScreen(
             itemsIndexed (viewModel.showSubGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
-                val focusManager = LocalFocusManager.current
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(Unit) {

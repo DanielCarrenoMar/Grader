@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -77,6 +81,7 @@ fun HeaderMenu(
     navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     topAppBarColors: TopAppBarColors = TopAppBarColors(
         MaterialTheme.colorScheme.background,
         MaterialTheme.colorScheme.surfaceVariant,
@@ -102,7 +107,8 @@ fun HeaderMenu(
                 modifier = Modifier.width(300.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
@@ -134,41 +140,24 @@ fun HeaderMenu(
         },
         drawerState = drawerState
     ) {
-        Scaffold(
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                TopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    },
-                    colors = topAppBarColors,
-                    navigationIcon = {
-                        IconButton(
-                            modifier = Modifier.padding(start = 8.dp, end = 15.dp),
-                            onClick = {
-                            scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
-                                }
-                            }
-                        }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.bars_outline),
-                                contentDescription = "Menu",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                                modifier = Modifier.size(IconLarge),
-                            )
-                        }
-                    }
+        HeaderScaffold(
+            title = {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-            }
+            },
+            scrollBehavior = scrollBehavior,
+            snackbarHostState = snackbarHostState,
+            topAppBarColors = topAppBarColors,
+            iconId = R.drawable.bars_outline,
+            onClickIcon = {
+                scope.launch {
+                    drawerState.open()
+                }
+            },
+            modifier = modifier,
         ) { innerPadding ->
             content(innerPadding)
         }
