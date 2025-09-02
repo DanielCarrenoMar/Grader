@@ -3,7 +3,10 @@ package com.app.grader.core.lib
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import com.app.grader.domain.types.Grade
+import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.Neutral100
+import com.app.grader.ui.theme.SuccessLight
+import com.app.grader.ui.theme.Warning
 
 fun interpolateColors(colors: List<Color>, fraction: Float): Color {
     require(colors.isNotEmpty()) { "Color list must not be empty" }
@@ -22,15 +25,19 @@ fun interpolateColors(colors: List<Color>, fraction: Float): Color {
     }
 }
 
+fun interpolatedColor(fraction: Float, start: Color, end: Color): Color {
+    return lerp(start, end, fraction.coerceIn(0f, 1f))
+}
+
 fun getColorForGrade(grade: Grade): Color {
     if (grade.isBlank()) return Neutral100
 
     return  interpolateColors(
         listOf(
-            Color(0xFFF28705),
-            Color(0xFFF2B705),
-            Color(0xFF8BC441),
-            Color(0xFF4CA649),
+            interpolatedColor(0.55f, Warning, Error500),
+            Warning,
+            interpolatedColor(0.20f, SuccessLight, Warning),
+            SuccessLight
         ),
         grade.getGradeRating()
     )
