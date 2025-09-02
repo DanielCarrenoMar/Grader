@@ -9,7 +9,7 @@ import com.app.grader.data.database.entitites.SemesterEntity
 @Dao
 interface SemesterDao {
 
-    @Query("SELECT * FROM semester")
+    @Query("SELECT * FROM semester ORDER BY id DESC")
     suspend fun getAllSemesters(): List<SemesterEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
