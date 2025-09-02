@@ -60,6 +60,7 @@ fun RecordSemesterCard(
                         text = semester.title,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold,
                     )
                 }
                 Spacer(Modifier.weight(1f))
