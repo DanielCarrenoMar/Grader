@@ -44,18 +44,18 @@ class RecordViewModel @Inject constructor(
 
 
                         var sumAverage = 0.0
-                        var sumSemesterCount = 0
+                        var sumSemesterWeight = 0
                         _semesters.value.forEach { semester ->
                             if (semester.average.isBlank()) return@forEach
-                            sumAverage += semester.average.getGrade()
-                            sumSemesterCount++
+                            sumAverage += semester.average.getGrade() * semester.weight
+                            sumSemesterWeight += semester.weight
                         }
-                        if (sumSemesterCount == 0) {
+                        if (sumSemesterWeight == 0) {
                             _totalAverage.value = gradeFactory.instGrade()
                             return@collect
                         }
 
-                        _totalAverage.value = gradeFactory.instGrade(sumAverage / sumSemesterCount)
+                        _totalAverage.value = gradeFactory.instGrade(sumAverage / sumSemesterWeight)
                     }
 
                     is Resource.Loading -> {}
