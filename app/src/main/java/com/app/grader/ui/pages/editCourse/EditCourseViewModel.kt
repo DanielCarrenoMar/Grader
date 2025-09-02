@@ -20,7 +20,7 @@ class EditCourseViewModel @Inject constructor(
     private val saveCourseUseCase: SaveCourseUseCase,
     private val updateCourseUseCase: UpdateCourseUseCase,
 ): ViewModel() {
-    private val _title = mutableStateOf("Sin Titulo")
+    private val _title = mutableStateOf("Sin Título")
     val title = _title
     private val _uc = mutableIntStateOf(1)
     val uc = _uc

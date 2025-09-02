@@ -44,7 +44,7 @@ class EditGradeViewModel @Inject constructor(
 ): ViewModel() {
     private val gradesCache = mutableStateOf<List<GradeModel>>(emptyList())
 
-    private val _title = mutableStateOf("Sin Titulo")
+    private val _title = mutableStateOf("Sin Título")
     val title = _title
     private val _description = mutableStateOf("Sin descripción")
     val description = _description

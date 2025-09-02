@@ -21,7 +21,7 @@ class EditSemesterViewModel @Inject constructor(
     private val saveSemesterUseCase: SaveSemesterUseCase,
     private val updateSemesterUseCase: UpdateSemesterUseCase
 ): ViewModel() {
-    private val _title = mutableStateOf("Sin Titulo")
+    private val _title = mutableStateOf("Sin Título")
     val title = _title
 
     private val _showTitle = mutableStateOf("")
