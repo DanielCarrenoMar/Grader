@@ -132,7 +132,7 @@ fun InfoRecordCard(average: Grade) {
                 iconName = "chart mixed",
                 iconId = R.drawable.chart_mixed
             ) {
-                Text(text = "Promedio General", style = MaterialTheme.typography.labelLarge)
+                Text(text = "Promedio Final", style = MaterialTheme.typography.labelLarge)
             }
             Column(
                 modifier = Modifier.fillMaxSize(),
