@@ -12,6 +12,7 @@ import com.app.grader.domain.usecase.course.SaveCourseUseCase
 import com.app.grader.domain.usecase.course.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -85,7 +86,20 @@ class EditCourseViewModel @Inject constructor(
         }
     }
 
+    fun setTitle(newTitle: String) {
+        if (newTitle.isBlank()) {
+            _title.value = "Sin Título"
+            return
+        }
+        _title.value = newTitle
+    }
+
+    fun validCourse(){
+        if (uc.intValue < 0) throw InvalidParameterException("UC debe ser mayor que 0")
+    }
+
     fun updateOrCreateCourse(semesterId: Int, courseId: Int){
+        validCourse()
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             if (courseId == -1) {

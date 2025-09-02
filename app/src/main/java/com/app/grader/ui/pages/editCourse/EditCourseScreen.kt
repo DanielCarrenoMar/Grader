@@ -14,9 +14,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -29,6 +32,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
+import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +43,8 @@ fun EditCourseScreen(
     navigateBack: () -> Unit,
     viewModel: EditCourseViewModel = hiltViewModel(),
     ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -46,6 +53,7 @@ fun EditCourseScreen(
     }
 
     HeaderBack(
+        snackbarHostState = snackbarHostState,
         title = {
             Row (
                 modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
@@ -60,8 +68,14 @@ fun EditCourseScreen(
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
-                        viewModel.updateOrCreateCourse(semesterId, courseId)
-                        navigateBack()
+                        try {
+                            viewModel.updateOrCreateCourse(semesterId, courseId)
+                            navigateBack()
+                        }catch (e: InvalidParameterException){
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(e.message?: "Error desconocido")
+                            }
+                        }
                     }) {
                     Text(text = if (courseId == -1) "Crear" else "Guardar")
                 }
@@ -82,7 +96,7 @@ fun EditCourseScreen(
                 value = viewModel.showTitle.value,
                 onValueChange = {
                     viewModel.showTitle.value = it
-                    viewModel.title.value = it
+                    viewModel.setTitle(it)
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences
