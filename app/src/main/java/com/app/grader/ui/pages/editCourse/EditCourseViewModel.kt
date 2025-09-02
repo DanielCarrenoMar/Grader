@@ -54,11 +54,13 @@ class EditCourseViewModel @Inject constructor(
         }
     }
 
-    private fun saveCourse(courseModel:CourseModel) {
+    private fun saveCourse(courseModel:CourseModel, onComplete: (Long) -> Unit = {}) {
         viewModelScope.launch {
             saveCourseUseCase(courseModel = courseModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {}
+                    is Resource.Success -> {
+                        onComplete(result.data!!)
+                    }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
@@ -68,16 +70,14 @@ class EditCourseViewModel @Inject constructor(
         }
     }
 
-    private fun updateCourse(courseModel:CourseModel) {
+    private fun updateCourse(courseModel:CourseModel, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             updateCourseUseCase(courseModel = courseModel).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.i("EditCourseViewModel", "updateCourse id: ${courseModel.id}")
+                        onComplete()
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
@@ -98,7 +98,7 @@ class EditCourseViewModel @Inject constructor(
         if (uc.intValue < 0) throw InvalidParameterException("UC debe ser mayor que 0")
     }
 
-    fun updateOrCreateCourse(semesterId: Int, courseId: Int){
+    fun updateOrCreateCourse(semesterId: Int, courseId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {
         validCourse()
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
@@ -108,7 +108,8 @@ class EditCourseViewModel @Inject constructor(
                         title = title.value,
                         uc = uc.intValue,
                         semesterId = semesterIdOrNull
-                    )
+                    ),
+                    onComplete = onCreate
                 )
             } else {
                 updateCourse(
@@ -116,7 +117,8 @@ class EditCourseViewModel @Inject constructor(
                         title = title.value,
                         uc = uc.intValue,
                         id = courseId
-                    )
+                    ),
+                    onComplete = onUpdate
                 )
             }
         }

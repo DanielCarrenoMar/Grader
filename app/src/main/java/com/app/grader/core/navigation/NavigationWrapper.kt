@@ -135,7 +135,8 @@ fun NavigationWrapper() {
             EditCourseScreen (
                 editCourse.semesterId,
                 editCourse.courseId,
-                { navController.popBackStack() }
+                { navController.popBackStack() },
+                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 

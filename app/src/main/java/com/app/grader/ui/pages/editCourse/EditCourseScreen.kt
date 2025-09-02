@@ -41,6 +41,7 @@ fun EditCourseScreen(
     semesterId: Int,
     courseId: Int,
     navigateBack: () -> Unit,
+    navigateToEditGrade: (Int, Int, Int) -> Unit,
     viewModel: EditCourseViewModel = hiltViewModel(),
     ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -69,8 +70,18 @@ fun EditCourseScreen(
                     modifier = Modifier.width(120.dp),
                     onClick = {
                         try {
-                            viewModel.updateOrCreateCourse(semesterId, courseId)
-                            navigateBack()
+                            viewModel.updateOrCreateCourse(
+                                semesterId,
+                                courseId,
+                                onCreate = { newCourseId ->
+                                    navigateBack()
+                                    if (semesterId != -1) navigateToEditGrade(semesterId, newCourseId.toInt(), -1)
+                                },
+                                onUpdate = {
+                                    navigateBack()
+                                }
+                            )
+
                         }catch (e: InvalidParameterException){
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(e.message?: "Error desconocido")
