@@ -3,6 +3,7 @@ package com.app.grader.ui.componets
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -112,8 +114,15 @@ fun HeaderMenu(
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
-                    Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary)
+                    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(2.dp)){
+                        Image(
+                            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                            contentDescription = "logo",
+                            modifier = Modifier.size(70.dp),
+                        )
+                        Text("Grader", style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary)
+                    }
                     HorizontalDivider()
                     MyNavigationDrawerItem(
                         title = "Asignaturas",
