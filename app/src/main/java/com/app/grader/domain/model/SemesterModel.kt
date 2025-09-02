@@ -7,6 +7,7 @@ data class SemesterModel (
     val title: String,
     val average: Grade = Grade(0.0, 0.0, 0),
     val size: Int = 0,
+    val weight: Int = 0,
     val id: Int = -1,
 ){
     companion object {
@@ -20,11 +21,12 @@ fun SemesterModel.toSemesterEntity():SemesterEntity{
         title = this.title,
     )
 }
-fun SemesterEntity.toSemesterModel(average: Grade, size: Int):SemesterModel{
+fun SemesterEntity.toSemesterModel(average: Grade, size: Int, weight: Int):SemesterModel{
     return SemesterModel(
         title = this.title,
         average = average,
         size = size,
+        weight = weight,
         id = this.id
     )
 }

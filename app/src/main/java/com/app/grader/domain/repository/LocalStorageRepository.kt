@@ -15,6 +15,7 @@ interface LocalStorageRepository {
     suspend fun getSemesterById(semesterId: Int): SemesterModel?
     suspend fun getAverageFromSemester(semesterId: Int?): Grade
     suspend fun getSizeOfSemesters(semesterId: Int?): Int
+    suspend fun getWeightOfSemester(semesterId: Int?): Int
     suspend fun updateSemester(semesterModel: SemesterModel): Boolean
 
     suspend fun getAverageFromCourse(courseId:Int) : Grade
