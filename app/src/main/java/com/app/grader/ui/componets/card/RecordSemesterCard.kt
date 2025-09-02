@@ -55,15 +55,15 @@ fun RecordSemesterCard(
     ) { innerPadding ->
         Column (modifier = Modifier.padding(innerPadding)){
             Row {
-                Box {
+                Box (modifier = Modifier.weight(4f)){
                     Text(
                         text = semester.title,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                Box(contentAlignment = Alignment.TopEnd) {
+                Box(contentAlignment = Alignment.TopEnd, modifier = Modifier.weight(1f)) {
                     IconButton(
                         onClick = { expanded = true },
                         modifier = Modifier.size(32.dp)
@@ -120,28 +120,28 @@ fun RecordSemesterCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "${semester.size}",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = if (semester.size == 1) " asignatura" else " asignaturas",
                     modifier = Modifier
-                        .padding(start = 6.dp),
+                        .padding(start = 2.dp),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(8.dp))
                 Text(
                     text = "${semester.weight}",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = "UC",
                     modifier = Modifier
-                        .padding(start = 6.dp),
+                        .padding(start = 4.dp),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
