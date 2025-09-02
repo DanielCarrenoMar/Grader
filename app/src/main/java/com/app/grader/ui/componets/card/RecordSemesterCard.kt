@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,7 +56,7 @@ fun RecordSemesterCard(
                 .padding(innerPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
-            Column {
+            Column{
                 TitleIcon(
                     iconName = "star",
                     iconId = R.drawable.star,
@@ -67,23 +68,43 @@ fun RecordSemesterCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
+                Spacer(Modifier.height(20.dp))
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 41.dp, start = 40.dp)
+                    modifier = Modifier.padding(start = 40.dp)
                 ){
-                    Text(
-                        text = "${semester.size}",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = if (semester.size == 1) " asignatura" else " asignaturas",
-                        modifier = Modifier
-                            .padding(start = 8.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    Column {
+                        Row (verticalAlignment = Alignment.Bottom){
+                            Text(
+                                text = "${semester.weight}",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "UC",
+                                modifier = Modifier
+                                    .padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                        Row (verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                text = "${semester.size}",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = if (semester.size == 1) " asignatura" else " asignaturas",
+                                modifier = Modifier
+                                    .padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
                 }
             }
             Row (
@@ -97,7 +118,8 @@ fun RecordSemesterCard(
                 ){
                     CircleCourse(
                         grade = semester.average,
-                        radius = 40.dp
+                        radius = 41.dp,
+                        strokeWith = 6.dp
                     )
                 }
             }
