@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -70,27 +74,33 @@ fun RecordScreen(
         null,
         navigateToConfig
     ) { innerPadding ->
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            item{
-                Spacer(modifier = Modifier.height(10.dp))
-                InfoRecordCard(viewModel.totalAverage.value)
-                Spacer(modifier = Modifier.height(25.dp))
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Column {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    InfoRecordCard(viewModel.totalAverage.value)
+                    Spacer(modifier = Modifier.height(25.dp))
+                }
             }
+
             items(viewModel.semesters.value) { semester ->
                 RecordSemesterCard(
                     semester,
-                    { navigateToRecordSemester(semester.id)},
-                    { viewModel.selectDeleteSemester(semester.id)
-                        showDeleteConfirmation = true },
+                    { navigateToRecordSemester(semester.id) },
+                    {
+                        viewModel.selectDeleteSemester(semester.id)
+                        showDeleteConfirmation = true
+                    },
                     { navigateToEditSemester(semester.id) },
                 )
-                Spacer(Modifier.height(10.dp))
             }
         }
 

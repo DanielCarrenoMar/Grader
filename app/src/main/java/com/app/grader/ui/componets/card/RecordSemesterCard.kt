@@ -1,6 +1,7 @@
 package com.app.grader.ui.componets.card
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
@@ -34,15 +36,16 @@ import com.app.grader.R
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.CircleCourse
+import com.app.grader.ui.theme.IconSmall
 
 @Composable
 fun RecordSemesterCard(
     semester: SemesterModel,
     onClick: () -> Unit,
-    onDelete: ()-> Unit,
-    onEdit: ()-> Unit,
+    onDelete: () -> Unit,
+    onEdit: () -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
 
@@ -50,84 +53,17 @@ fun RecordSemesterCard(
         onClick = onClick,
         modifier = modifier
     ) { innerPadding ->
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ){
-            Column{
-                TitleIcon(
-                    iconName = "star",
-                    iconId = R.drawable.star,
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                ) {
+        Column (modifier = Modifier.padding(innerPadding)){
+            Row {
+                Box {
                     Text(
                         text = semester.title,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                Spacer(Modifier.height(20.dp))
-                Row (
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 40.dp)
-                ){
-                    Column {
-                        Row (verticalAlignment = Alignment.Bottom){
-                            Text(
-                                text = "${semester.weight}",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = "UC",
-                                modifier = Modifier
-                                    .padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                        Row (verticalAlignment = Alignment.Bottom) {
-                            Text(
-                                text = "${semester.size}",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = if (semester.size == 1) " asignatura" else " asignaturas",
-                                modifier = Modifier
-                                    .padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    }
-                }
-            }
-            Row (
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.End
-            ){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                ){
-                    CircleCourse(
-                        grade = semester.average,
-                        radius = 41.dp,
-                        strokeWith = 6.dp
-                    )
-                }
-            }
-            Row (
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Box(contentAlignment = Alignment.TopEnd){
+                Spacer(Modifier.weight(1f))
+                Box(contentAlignment = Alignment.TopEnd) {
                     IconButton(
                         onClick = { expanded = true },
                         modifier = Modifier.size(32.dp)
@@ -157,14 +93,58 @@ fun RecordSemesterCard(
                             },
 
                             )
-                        DropdownMenuItem(onClick = {onDelete();expanded = false},
+                        DropdownMenuItem(
+                            onClick = { onDelete();expanded = false },
                             text = {
-                                Text("Eliminar", style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                                Text(
+                                    "Eliminar",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             }
                         )
                     }
                 }
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp).fillMaxWidth(),
+            ) {
+                CircleCourse(
+                    grade = semester.average,
+                    radius = 42.dp,
+                    strokeWith = 6.dp
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "${semester.size}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = if (semester.size == 1) " asignatura" else " asignaturas",
+                    modifier = Modifier
+                        .padding(start = 6.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = "${semester.weight}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "UC",
+                    modifier = Modifier
+                        .padding(start = 6.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
         }
 
