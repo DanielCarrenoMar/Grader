@@ -203,7 +203,7 @@ fun CourseScreen(
         FloatingMenuComp(
             listOf(
                 FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
-                    if (viewModel.pedingPoints.value.getGrade() > 0) {
+                    if (viewModel.totalPercentaje.value.getPercentage() < 100.0) {
                         navigateToEditGrade(viewModel.course.value.semesterId ?: -1 ,courseId, -1)
                     } else coroutineScope.launch {
                         snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
