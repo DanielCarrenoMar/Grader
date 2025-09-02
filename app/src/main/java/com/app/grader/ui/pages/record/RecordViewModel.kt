@@ -1,18 +1,17 @@
 package com.app.grader.ui.pages.record
 
 import android.util.Log
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.usecase.grade.GetAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
-import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +20,7 @@ import javax.inject.Inject
 class RecordViewModel @Inject constructor(
     private val getAllSemestersUseCase: GetAllSemestersUseCase,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
+    private val getAllGradesUseCase: GetAllGradesUseCase,
     private val gradeFactory: GradeFactory,
 ) : ViewModel() {
     private val _semesters = mutableStateOf<List<SemesterModel>>(emptyList())
@@ -29,7 +29,27 @@ class RecordViewModel @Inject constructor(
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
 
+    private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
+    val grades = _grades
+
     private val _deleteSemesterId = mutableIntStateOf(-1)
+
+    fun getAllGrades(){
+        viewModelScope.launch {
+            getAllGradesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _grades.value = result.data!!
+                    }
+
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordViewModel", "Error getAllGradesUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun getAllSemestersAndCalTotalAverage() {
         viewModelScope.launch {
@@ -41,7 +61,6 @@ class RecordViewModel @Inject constructor(
                             _totalAverage.value = gradeFactory.instGrade()
                             return@collect
                         }
-
 
                         var sumAverage = 0.0
                         var sumSemesterWeight = 0

@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +32,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.types.Grade
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
@@ -39,6 +41,7 @@ import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.card.CardContainer
 import com.app.grader.ui.componets.card.RecordSemesterCard
+import com.app.grader.ui.componets.chart.LineChartAverage
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +60,7 @@ fun RecordScreen(
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllSemestersAndCalTotalAverage()
+            viewModel.getAllGrades()
         }
     }
 
@@ -86,7 +90,7 @@ fun RecordScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Column {
                     Spacer(modifier = Modifier.height(10.dp))
-                    InfoRecordCard(viewModel.totalAverage.value)
+                    InfoRecordCard(viewModel.totalAverage.value, viewModel.grades.value)
                     Spacer(modifier = Modifier.height(25.dp))
                 }
             }
@@ -120,7 +124,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InfoRecordCard(average: Grade) {
+fun InfoRecordCard(average: Grade, grades: List<GradeModel>) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier
@@ -135,7 +139,7 @@ fun InfoRecordCard(average: Grade) {
                 Text(text = "Promedio Final", style = MaterialTheme.typography.labelLarge)
             }
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -143,8 +147,17 @@ fun InfoRecordCard(average: Grade) {
                     text = if (average.isNotBlank()) average.toString() else "--",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 52.sp,
+                    fontSize = 48.sp,
                 )
+                if (grades.isNotEmpty()){
+                    LineChartAverage(
+                        gradeSeries = grades.map { it.grade.getGrade() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .alpha(0.7f)
+                    )
+                }
             }
         }
     }
