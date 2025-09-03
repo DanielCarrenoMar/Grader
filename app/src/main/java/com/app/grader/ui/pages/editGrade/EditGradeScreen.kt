@@ -103,7 +103,7 @@ fun EditGradeScreen(
                         if (viewModel.updateOrCreateGrade(gradeId)) navigateBack()
                         else {
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Campos invalidos")
+                                snackbarHostState.showSnackbar("Campos inválidos")
                             }
                         }
                     }) {
