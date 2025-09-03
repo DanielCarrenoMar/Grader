@@ -55,6 +55,7 @@ fun EditSemesterScreen(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(Modifier.weight(1f))
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
@@ -63,6 +64,7 @@ fun EditSemesterScreen(
                 }) {
                     Text(text = if (semesterId == -1) "Crear" else "Guardar")
                 }
+                Spacer(Modifier.weight(0.3f))
             }
         },
         navigateBack = navigateBack

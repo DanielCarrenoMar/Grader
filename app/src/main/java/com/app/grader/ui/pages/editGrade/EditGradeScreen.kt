@@ -88,7 +88,7 @@ fun EditGradeScreen(
     HeaderBack(
         title = {
             Row (
-                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ){
@@ -97,6 +97,7 @@ fun EditGradeScreen(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(Modifier.weight(1f))
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
@@ -109,6 +110,7 @@ fun EditGradeScreen(
                     }) {
                     Text(text = if (gradeId == -1) "Crear" else "Guardar")
                 }
+                Spacer(Modifier.weight(0.3f))
             }
         },
         snackbarHostState = snackbarHostState,
