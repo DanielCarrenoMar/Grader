@@ -3,6 +3,7 @@ package com.app.grader.ui.pages.config
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.core.appConfig.TypeTheme
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
@@ -67,7 +69,7 @@ fun ConfigScreen(
         }
     }
 
-    if (showDeleteConfirmation){
+    if (showDeleteConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteAll() },
             { showDeleteConfirmation = false },
@@ -89,12 +91,41 @@ fun ConfigScreen(
                 .padding(horizontal = 20.dp),
         ) {
             Spacer(Modifier.height(10.dp))
-            GradeTypeSelector(
-                current = viewModel.typeGrade.value,
-                onSelect = { viewModel.setTypeGrade(it) },
+            SelectorCard(
+                title = "Tipo de calificación",
+                items = listOf(
+                    SelectorItem("0-7", TypeGrade.NUMERIC_7_CHI.name),
+                    SelectorItem("0-10 (Argentina)", TypeGrade.NUMERIC_10_ARG.name),
+                    SelectorItem("0-10 (España)", TypeGrade.NUMERIC_10_ESP.name),
+                    SelectorItem("0-10 (México)", TypeGrade.NUMERIC_10_MEX.name),
+                    SelectorItem("0-20", TypeGrade.NUMERIC_20.name),
+                    SelectorItem("0-100", TypeGrade.NUMERIC_100.name),
+                ),
+                current = viewModel.typeGrade.value.name,
+                onSelect = { viewModel.setTypeGrade(TypeGrade.valueOf(it)) },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.rectangle_list_outline,
+            )
+            SelectorCard(
+                title = "Tema",
+                items = listOf(
+                    SelectorItem("Usar mi tema del sistema", TypeTheme.SYSTEM_DEFAULT.name),
+                    SelectorItem("Tema Claro", TypeTheme.LIGHT.name),
+                    SelectorItem("Tema Oscuro", TypeTheme.DARK.name),
+                ),
+                current = viewModel.typeTheme.value.name,
+                onSelect = {
+                    viewModel.setTypeTheme(TypeTheme.valueOf(it))
+                    viewModel.restartApp(context)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = when(viewModel.typeTheme.value){
+                    TypeTheme.DARK -> R.drawable.moon_outline
+                    TypeTheme.LIGHT -> R.drawable.sun_outline
+                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.sun_outline else R.drawable.moon_outline
+                },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             SwitchCardComp(
@@ -106,17 +137,6 @@ fun ConfigScreen(
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
-            )
-            SwitchCardComp(
-                checked = viewModel.isDarkMode.value,
-                onCheckedChange = {
-                    viewModel.setDarkMode(it)
-                    viewModel.restartApp(context)
-                },
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
-                icon = if (viewModel.isDarkMode.value) R.drawable.moon_outline else R.drawable.sun_outline,
-                text = "Modo Oscuro",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
@@ -152,19 +172,20 @@ fun ConfigScreen(
 
 }
 
+data class SelectorItem(val title: String, val value: String)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GradeTypeSelector(
-    current: TypeGrade,
-    onSelect: (TypeGrade) -> Unit,
+fun SelectorCard(
+    title: String,
+    items: List<SelectorItem>,
+    current: String,
+    onSelect: (String) -> Unit,
     contentColor: Color,
     iconColor: Color = contentColor,
     icon: Int,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf(TypeGrade.NUMERIC_7_CHI, TypeGrade.NUMERIC_10_ARG, TypeGrade.NUMERIC_10_ESP, TypeGrade.NUMERIC_10_MEX, TypeGrade.NUMERIC_20, TypeGrade.NUMERIC_100)
-    val optionsText = listOf("0-7", "0-10 (Argentina)", "0-10 (España)", "0-10 (México)", "0-20", "0-100")
-    val label = optionsText[options.indexOf(current)]
     Card(
         colors = CardColors(
             containerColor = Color.Transparent,
@@ -188,25 +209,28 @@ private fun GradeTypeSelector(
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded },
-                modifier = Modifier.padding(start = 16.dp).fillMaxWidth()
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .fillMaxWidth()
             ) {
                 TextField(
                     readOnly = true,
-                    value = label,
+                    value = items.find { it.value == current }?.title ?: "",
                     onValueChange = {},
-                    label = { Text("Tipo de calificación") },
-                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable).fillMaxWidth(),
+                    label = { Text(title) },
+                    modifier = Modifier
+                        .menuAnchor(MenuAnchorType.PrimaryEditable)
+                        .fillMaxWidth(),
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    options.forEach { option ->
-                        val optionLabel = optionsText[options.indexOf(option)]
+                    items.forEach { item ->
                         DropdownMenuItem(
-                            text = { Text(optionLabel) },
+                            text = { Text(item.title) },
                             onClick = {
-                                onSelect(option)
+                                onSelect(item.value)
                                 expanded = false
                             }
                         )

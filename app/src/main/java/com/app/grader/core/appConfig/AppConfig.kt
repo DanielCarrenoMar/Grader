@@ -11,27 +11,26 @@ class AppConfig(private val context: Context) {
         context.getSharedPreferences("app_config", Context.MODE_PRIVATE)
     }
 
-    private fun isSystemInDarkMode(): Boolean {
-        val uiModeManager = context.resources.configuration.uiMode
-        return (uiModeManager and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-    }
-
     fun isRoundFinalCourseAverage(): Boolean {
-        return sharedPreferences.getBoolean("roundAverageEnable", isSystemInDarkMode())
+        return sharedPreferences.getBoolean("roundAverageEnable", false)
     }
     fun setRoundFinalCourseAverage(enabled: Boolean) {
         sharedPreferences.edit { putBoolean("roundAverageEnable", enabled) }
     }
 
-    fun isDarkMode(): Boolean {
-        return sharedPreferences.getBoolean("darkModeEnable", false)
+    fun getTypeTheme(): TypeTheme {
+        return TypeTheme.valueOf(
+            sharedPreferences.getString("typeTheme", TypeTheme.SYSTEM_DEFAULT.name)!!
+        )
     }
-    fun setDarkMode(enabled: Boolean) {
-        sharedPreferences.edit { putBoolean("darkModeEnable", enabled) }
+    fun setTypeTheme(typeTheme: TypeTheme) {
+        sharedPreferences.edit { putString("typeTheme", typeTheme.name) }
     }
 
     fun getTypeGrade(): TypeGrade {
-        return TypeGrade.valueOf(sharedPreferences.getString("typeGrade", TypeGrade.NUMERIC_20.name)!!)
+        return TypeGrade.valueOf(
+            sharedPreferences.getString("typeGrade", TypeGrade.NUMERIC_20.name)!!
+        )
     }
     fun setTypeGrade(typeGrade: TypeGrade) {
         sharedPreferences.edit { putString("typeGrade", typeGrade.name) }

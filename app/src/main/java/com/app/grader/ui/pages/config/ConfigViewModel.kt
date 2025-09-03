@@ -9,13 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
 import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.core.appConfig.TypeTheme
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
-import com.patrykandpatrick.vico.compose.common.shader.component
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,9 +27,9 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllSemestersUseCase: DeleteAllSemestersUseCase,
     private val appConfig: AppConfig
 ): ViewModel() {
-    private val _isDarkMode = mutableStateOf(appConfig.isDarkMode())
-    val isDarkMode = _isDarkMode
-    private val _isRoundFinalCourseAverage = mutableStateOf(appConfig.isDarkMode())
+    private val _typeTheme = mutableStateOf(appConfig.getTypeTheme())
+    val typeTheme = _typeTheme
+    private val _isRoundFinalCourseAverage = mutableStateOf(appConfig.isRoundFinalCourseAverage())
     val isRoundFinalCourseAverage = _isRoundFinalCourseAverage
 
     private val _typeGrade = mutableStateOf(appConfig.getTypeGrade())
@@ -48,14 +47,14 @@ class ConfigViewModel  @Inject constructor(
         }
     }
     fun updateConfiguration() {
-        _isDarkMode.value = appConfig.isDarkMode()
+        _typeTheme.value = appConfig.getTypeTheme()
         _isRoundFinalCourseAverage.value = appConfig.isRoundFinalCourseAverage()
         _typeGrade.value = appConfig.getTypeGrade()
     }
 
-    fun setDarkMode(isDarkMode: Boolean) {
-        _isDarkMode.value = isDarkMode
-        appConfig.setDarkMode(isDarkMode)
+    fun setTypeTheme(typeTheme: TypeTheme) {
+        _typeTheme.value = typeTheme
+        appConfig.setTypeTheme(typeTheme)
     }
     fun setRoundFinalCourseAverage(isRoundFinalCourseAverage: Boolean) {
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage

@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.platform.LocalContext
 import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.core.appConfig.TypeTheme
 import com.app.grader.core.navigation.NavigationWrapper
 import com.app.grader.ui.theme.NavigationGuideTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +22,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent{
             NavigationGuideTheme (
-                isDarkTheme = appConfig.isDarkMode(),
+                isDarkTheme = when (appConfig.getTypeTheme()){
+                    TypeTheme.DARK -> true
+                    TypeTheme.LIGHT -> false
+                    TypeTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+                },
             ) {
                 NavigationWrapper()
             }
