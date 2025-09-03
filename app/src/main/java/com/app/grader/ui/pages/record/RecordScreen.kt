@@ -2,17 +2,20 @@ package com.app.grader.ui.pages.record
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +43,7 @@ import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.card.CardContainer
+import com.app.grader.ui.componets.card.CurrentRecordSemesterCard
 import com.app.grader.ui.componets.card.RecordSemesterCard
 import com.app.grader.ui.componets.chart.LineChartAverage
 import kotlin.math.roundToInt
@@ -60,6 +64,7 @@ fun RecordScreen(
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllSemestersAndCalTotalAverage()
+            viewModel.getCurrentSemester()
             viewModel.getAllGrades()
         }
     }
@@ -95,16 +100,41 @@ fun RecordScreen(
                 }
             }
 
-            items(viewModel.semesters.value) { semester ->
-                RecordSemesterCard(
-                    semester,
-                    { navigateToRecordSemester(semester.id) },
-                    {
-                        viewModel.selectDeleteSemester(semester.id)
-                        showDeleteConfirmation = true
-                    },
-                    { navigateToEditSemester(semester.id) },
-                )
+            if (viewModel.isLoading.value) {
+                item (
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    Spacer(Modifier.height(10.dp))
+                    Row (
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(64.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        )
+                    }
+                }
+            }else {
+                item {
+                    CurrentRecordSemesterCard(
+                        viewModel.currentSemester.value,
+                        { navigateToHome() },
+                        {}
+                    )
+                }
+                items(viewModel.semesters.value) { semester ->
+                    RecordSemesterCard(
+                        semester,
+                        { navigateToRecordSemester(semester.id) },
+                        {
+                            viewModel.selectDeleteSemester(semester.id)
+                            showDeleteConfirmation = true
+                        },
+                        { navigateToEditSemester(semester.id) },
+                    )
+                }
             }
         }
 

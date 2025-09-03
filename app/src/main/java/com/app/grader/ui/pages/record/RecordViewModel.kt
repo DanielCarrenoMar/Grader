@@ -9,10 +9,15 @@ import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.grade.GetAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
+import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetSizeFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetWeightFromSemesterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,10 +26,16 @@ class RecordViewModel @Inject constructor(
     private val getAllSemestersUseCase: GetAllSemestersUseCase,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getAllGradesUseCase: GetAllGradesUseCase,
+    private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
+    private val getSizeFromSemesterUseCase: GetSizeFromSemesterUseCase,
+    private val getWeightFromSemesterUSeCase: GetWeightFromSemesterUseCase,
     private val gradeFactory: GradeFactory,
 ) : ViewModel() {
     private val _semesters = mutableStateOf<List<SemesterModel>>(emptyList())
     val semesters = _semesters
+
+    private val _currentSemester = mutableStateOf(SemesterModel.DEFAULT)
+    val currentSemester = _currentSemester
 
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
@@ -33,6 +44,9 @@ class RecordViewModel @Inject constructor(
     val grades = _grades
 
     private val _deleteSemesterId = mutableIntStateOf(-1)
+
+    private val _isLoading = mutableStateOf(true)
+    val isLoading = _isLoading
 
     fun getAllGrades(){
         viewModelScope.launch {
@@ -48,6 +62,34 @@ class RecordViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun getCurrentSemester() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            val average = getAverageFromSemesterUseCase(null)
+                .firstOrNull { it is Resource.Success }
+                ?.let { (it as Resource.Success).data }
+                ?: gradeFactory.instGrade()
+
+            val size = getSizeFromSemesterUseCase(null)
+                .firstOrNull { it is Resource.Success }
+                ?.let { (it as Resource.Success).data }
+                ?: 0
+
+            val weight = getWeightFromSemesterUSeCase(null)
+                .firstOrNull { it is Resource.Success }
+                ?.let { (it as Resource.Success).data }
+                ?: 0
+
+            _currentSemester.value = SemesterModel(
+                title = "Registro Presente",
+                average = average,
+                size = size,
+                weight = weight
+            )
+            _isLoading.value = false
         }
     }
 
