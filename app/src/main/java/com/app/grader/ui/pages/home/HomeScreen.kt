@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -129,7 +130,11 @@ fun HomeScreen(
                                 .fillMaxSize()
                                 .padding(16.dp)
                         ) {
-                            EmptyCoursesImg()
+                            Image(
+                                painter = painterResource(id = R.drawable.mountain_bg),
+                                modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                contentDescription = "Empty Courses",
+                            )
                             Spacer(Modifier.height(10.dp))
                             Text(
                                 text = "No hay asignaturas",
@@ -179,13 +184,4 @@ fun HomeScreen(
             )
         )
     }
-}
-
-@Composable
-fun EmptyCoursesImg() {
-    val image = painterResource(id = R.drawable.chick)
-    Image(
-        painter = image,
-        contentDescription = "Empty Courses",
-    )
 }

@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.recordSemester
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -42,7 +45,6 @@ import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.card.InfoSemesterCard
-import com.app.grader.ui.pages.home.EmptyCoursesImg
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -156,7 +158,11 @@ fun RecordSemesterScreen(
                                 .fillMaxSize()
                                 .padding(16.dp)
                         ) {
-                            EmptyCoursesImg()
+                            Image(
+                                painter = painterResource(id = R.drawable.mountain_bg),
+                                modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                contentDescription = "Empty Courses",
+                            )
                             Spacer(Modifier.height(10.dp))
                             Text(
                                 text = "No hay asignaturas",

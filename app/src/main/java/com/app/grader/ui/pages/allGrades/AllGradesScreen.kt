@@ -3,7 +3,7 @@ package com.app.grader.ui.pages.allGrades
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -42,7 +42,6 @@ import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.CardContainer
 import com.app.grader.ui.componets.card.GradeCardComp
 import com.app.grader.ui.theme.IconMedium
-import com.app.grader.ui.theme.IconSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +98,28 @@ fun AllGradesScreen(
                         )
                     }
                 }
-            } else {
+            } else if (viewModel.courses.value.isEmpty()) {
+                item {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.mountain_bg),
+                            modifier = Modifier.clip(MaterialTheme.shapes.large),
+                            contentDescription = "Empty Grades",
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = "No hay califaciones",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            }else {
                 itemsIndexed(viewModel.courses.value) { index, course ->
                     CardContainer(
                         onClick = {navigateToCourse(course.id)},
