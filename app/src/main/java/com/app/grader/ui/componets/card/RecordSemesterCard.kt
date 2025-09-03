@@ -110,7 +110,7 @@ fun RecordSemesterCard(
             }
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp).fillMaxWidth(),
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp).fillMaxWidth(),
             ) {
                 CircleCourse(
                     grade = semester.average,
