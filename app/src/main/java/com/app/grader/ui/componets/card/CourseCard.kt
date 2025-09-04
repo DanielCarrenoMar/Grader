@@ -41,10 +41,10 @@ import com.app.grader.ui.componets.chart.CircleCourse
 @Composable
 fun CourseCard(
     course: CourseModel,
-    onClick: () -> Unit,
-    onDelete: ()-> Unit,
-    onEdit: ()-> Unit,
     modifier: Modifier = Modifier,
+    onClick: (()-> Unit)? = null,
+    onDelete: (()-> Unit)? = null,
+    onEdit: (()-> Unit)? = null,
     type: CourseCardType = CourseCardType.Normal,
 ) {
     val context = LocalContext.current
@@ -127,6 +127,7 @@ fun CourseCard(
                         radius = 33.dp
                     )
                 }
+                if (onDelete != null || onEdit != null)
                 Box(contentAlignment = Alignment.TopEnd){
                     IconButton(
                         onClick = { expanded = true },
@@ -145,6 +146,7 @@ fun CourseCard(
                         modifier = Modifier.width(200.dp),
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
+                        if (onEdit != null)
                         DropdownMenuItem(
                             onClick = { onEdit();expanded = false },
                             text = {
@@ -155,13 +157,14 @@ fun CourseCard(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
-
-                            )
-                        DropdownMenuItem(onClick = {onDelete();expanded = false},
-                        text = {
-                            Text("Eliminar", style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
-                        }
+                        )
+                        if (onDelete != null)
+                        DropdownMenuItem(
+                            onClick = {onDelete();expanded = false},
+                            text = {
+                                Text("Eliminar", style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                            }
                         )
                     }
                 }

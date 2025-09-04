@@ -104,9 +104,6 @@ fun TransferSemesterScreen(
                 val courseCardType = cardTypeFromCourse(course)
                 CourseCard(
                     course,
-                    {},
-                    {},
-                    {},
                     type = courseCardType
                 )
                 Spacer(Modifier.height(10.dp))

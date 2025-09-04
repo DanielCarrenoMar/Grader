@@ -146,12 +146,12 @@ fun HomeScreen(
                         val courseCardType = cardTypeFromCourse(course)
                         CourseCard(
                             course,
-                            { navigateToCourse(course.id) },
-                            {
+                            onClick =  { navigateToCourse(course.id) },
+                            onEdit =   { navigateToEditCourse(-1, course.id) },
+                            onDelete = {
                                 viewModel.selectDeleteCourse(course.id)
                                 showDeleteConfirmation = true
                             },
-                            { navigateToEditCourse(-1, course.id) },
                             type = courseCardType
                         )
                         Spacer(Modifier.height(10.dp))
