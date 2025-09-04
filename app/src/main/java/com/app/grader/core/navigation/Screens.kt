@@ -22,6 +22,9 @@ data class RecordSemester(val semesterId: Int)
 data class Course(val courseId: Int)
 
 @Serializable
+object TransferSemester
+
+@Serializable
 data class EditSemester(val semesterId: Int)
 @Serializable
 data class EditCourse(val semesterId: Int, val courseId: Int)

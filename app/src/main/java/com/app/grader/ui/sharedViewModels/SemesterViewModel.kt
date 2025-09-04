@@ -13,9 +13,6 @@ import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
-import com.app.grader.ui.componets.card.CourseCardType
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 open class SemesterViewModel(
@@ -37,20 +34,6 @@ open class SemesterViewModel(
 
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    fun cardTypeFromCourse(course: CourseModel): CourseCardType {
-        val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-        val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * 20.0
-
-        return if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
-            CourseCardType.Fail
-        } else if (pendingPoints == 0.0) {
-            CourseCardType.Finish
-        } else if (!course.average.isFailValue(accumulatedPoints)) {
-            CourseCardType.Pass
-        } else {
-            CourseCardType.Normal
-        }
-    }
 
     fun selectDeleteCourse(courseId: Int){
         viewModelScope.launch {

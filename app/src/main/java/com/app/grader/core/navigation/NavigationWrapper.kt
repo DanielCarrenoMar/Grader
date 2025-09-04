@@ -21,6 +21,7 @@ import com.app.grader.ui.pages.editSemester.EditSemesterScreen
 import com.app.grader.ui.pages.home.HomeScreen
 import com.app.grader.ui.pages.record.RecordScreen
 import com.app.grader.ui.pages.recordSemester.RecordSemesterScreen
+import com.app.grader.ui.pages.transferSemester.TransferSemesterScreen
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas
@@ -77,6 +78,7 @@ fun NavigationWrapper() {
                 { navController.navigate(Config) },
                 { semesterId -> navController.navigate(EditSemester(semesterId)) },
                 { semesterId -> navController.navigate(RecordSemester(semesterId)) },
+                { navController.navigate(TransferSemester) },
             )
         }
 
@@ -109,6 +111,17 @@ fun NavigationWrapper() {
                 { navController.popBackStack() },
                 {semesterId, courseId -> navController.navigate(EditCourse(semesterId, courseId)) },
                 { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
+            )
+        }
+
+        composable<TransferSemester>(
+            enterTransition = { slideInHorizontally(initialOffsetX = { full -> full }, animationSpec = tween(400)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popEnterTransition = { slideInHorizontally(initialOffsetX = { full -> -full }, animationSpec = tween(400)) },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { full -> full }, animationSpec = tween(400)) }
+        ) {
+            TransferSemesterScreen(
+                { navController.popBackStack() }
             )
         }
 

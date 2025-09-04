@@ -33,12 +33,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.domain.types.CourseCardType
+import com.app.grader.domain.types.cardTypeFromCourse
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.HeaderMenu
-import com.app.grader.ui.componets.card.CourseCardComp
-import com.app.grader.ui.componets.card.CourseCardType
+import com.app.grader.ui.componets.card.CourseCard
 import com.app.grader.ui.componets.card.InfoSemesterCard
 import kotlinx.coroutines.launch
 
@@ -110,9 +111,7 @@ fun HomeScreen(
                 }
             } else {
                 val sortedCourses = courses.sortedWith(compareBy { course ->
-
-                    val typeForSort = viewModel.cardTypeFromCourse(course)
-
+                    val typeForSort = cardTypeFromCourse(course)
                     when (typeForSort) {
                         CourseCardType.Normal -> 1
                         CourseCardType.Pass -> 1
@@ -144,8 +143,8 @@ fun HomeScreen(
                     }
                 } else {
                     items(sortedCourses) { course ->
-                        val courseCardType = viewModel.cardTypeFromCourse(course)
-                        CourseCardComp(
+                        val courseCardType = cardTypeFromCourse(course)
+                        CourseCard(
                             course,
                             { navigateToCourse(course.id) },
                             {

@@ -15,8 +15,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
@@ -37,10 +35,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.domain.types.CourseCardType
+import com.app.grader.domain.types.cardTypeFromCourse
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
-import com.app.grader.ui.componets.card.CourseCardComp
-import com.app.grader.ui.componets.card.CourseCardType
+import com.app.grader.ui.componets.card.CourseCard
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.MenuAction
@@ -139,7 +138,7 @@ fun RecordSemesterScreen(
             } else {
                 val sortedCourses = courses.sortedWith(compareBy { course ->
 
-                    val typeForSort = viewModel.cardTypeFromCourse(course)
+                    val typeForSort = cardTypeFromCourse(course)
 
                     when (typeForSort) {
                         CourseCardType.Normal -> 1
@@ -172,8 +171,8 @@ fun RecordSemesterScreen(
                     }
                 } else {
                     items(sortedCourses) { course ->
-                        val courseCardType = viewModel.cardTypeFromCourse(course)
-                        CourseCardComp(
+                        val courseCardType = cardTypeFromCourse(course)
+                        CourseCard(
                             course,
                             { navigateToCourse(course.id) },
                             {

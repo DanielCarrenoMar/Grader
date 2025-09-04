@@ -32,18 +32,14 @@ import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.types.CourseCardType
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.CircleCourse
 
-sealed class CourseCardType {
-    object Normal : CourseCardType()
-    object Fail : CourseCardType()
-    object Pass : CourseCardType()
-    object Finish : CourseCardType()
-}
+
 
 @Composable
-fun CourseCardComp(
+fun CourseCard(
     course: CourseModel,
     onClick: () -> Unit,
     onDelete: ()-> Unit,
@@ -56,22 +52,22 @@ fun CourseCardComp(
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
     val iconResId: Int = when (type) {
-        is CourseCardType.Normal -> R.drawable.education_cap
-        is CourseCardType.Fail -> R.drawable.skull
-        is CourseCardType.Pass -> R.drawable.fire
-        is CourseCardType.Finish -> R.drawable.check
+        CourseCardType.Normal -> R.drawable.education_cap
+        CourseCardType.Fail -> R.drawable.skull
+        CourseCardType.Pass -> R.drawable.fire
+        CourseCardType.Finish -> R.drawable.check
     }
     val iconName: String = when (type) {
-        is CourseCardType.Normal -> "education cap"
-        is CourseCardType.Fail -> "skull"
-        is CourseCardType.Pass -> "fire"
-        is CourseCardType.Finish -> "check"
+        CourseCardType.Normal -> "education cap"
+        CourseCardType.Fail -> "skull"
+        CourseCardType.Pass -> "fire"
+        CourseCardType.Finish -> "check"
     }
     val primaryColor: Color = when (type) {
-        is CourseCardType.Normal -> MaterialTheme.colorScheme.primary
-        is CourseCardType.Pass -> MaterialTheme.colorScheme.primary
-        is CourseCardType.Fail -> MaterialTheme.colorScheme.onSurface
-        is CourseCardType.Finish -> MaterialTheme.colorScheme.secondary
+        CourseCardType.Normal -> MaterialTheme.colorScheme.primary
+        CourseCardType.Pass -> MaterialTheme.colorScheme.primary
+        CourseCardType.Fail -> MaterialTheme.colorScheme.onSurface
+        CourseCardType.Finish -> MaterialTheme.colorScheme.secondary
     }
 
     CardContainer(

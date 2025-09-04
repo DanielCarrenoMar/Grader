@@ -42,11 +42,11 @@ open class EditSemesterViewModel(
         }
     }
 
-    private fun saveSemester(semesterModel: SemesterModel) {
+    protected fun saveSemester(semesterModel: SemesterModel, onComplete: (Long) -> Unit = {}) {
         viewModelScope.launch {
             saveSemesterUseCase(semesterModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {}
+                    is Resource.Success -> {onComplete(result.data!!)}
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("TransferSemesterViewModel", "Error saving course: ${result.message}")
@@ -56,12 +56,11 @@ open class EditSemesterViewModel(
         }
     }
 
-    private fun updateSemester(semesterModel: SemesterModel) {
+    protected fun updateSemester(semesterModel: SemesterModel, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             updateSemesterUseCase(semesterModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {
-                    }
+                    is Resource.Success -> {onComplete()}
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("TransferSemesterViewModel", "Error saving semester: ${result.message}")

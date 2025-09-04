@@ -56,6 +56,7 @@ fun RecordScreen(
     navigateToConfig: () -> Unit,
     navigateToEditSemester: (Int) -> Unit,
     navigateToRecordSemester: (Int) -> Unit,
+    navigateToTransferSemester: () -> Unit,
     viewModel: RecordViewModel = hiltViewModel(),
 ) {
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -121,7 +122,7 @@ fun RecordScreen(
                     CurrentRecordSemesterCard(
                         viewModel.currentSemester.value,
                         { navigateToHome() },
-                        {}
+                        { navigateToTransferSemester() }
                     )
                 }
                 items(viewModel.semesters.value) { semester ->
@@ -147,7 +148,7 @@ fun RecordScreen(
                 FloatingMenuCompItem(
                     "Guardar actual",
                     R.drawable.education_cap_outline
-                ) { },
+                ) { navigateToTransferSemester() },
             )
         )
     }
