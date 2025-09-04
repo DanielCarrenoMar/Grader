@@ -237,6 +237,14 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun transferActualCoursesToSemester(semesterId: Int): Int {
+        try {
+            return semesterDao.transferActualCoursesToSemester(semesterId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
             val averagePercentage = courseDao.getAverageFromCourse(courseId)
