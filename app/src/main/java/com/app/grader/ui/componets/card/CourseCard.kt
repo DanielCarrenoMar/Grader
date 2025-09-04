@@ -128,46 +128,46 @@ fun CourseCard(
                     )
                 }
                 if (onDelete != null || onEdit != null)
-                Box(contentAlignment = Alignment.TopEnd){
-                    IconButton(
-                        onClick = { expanded = true },
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.dots_vertical_outline),
-                            contentDescription = "edit",
-                            colorFilter = ColorFilter.tint(primaryColor),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        offset = DpOffset(x = screenWidth - 200.dp, y = 0.dp),
-                        modifier = Modifier.width(200.dp),
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ) {
-                        if (onEdit != null)
-                        DropdownMenuItem(
-                            onClick = { onEdit();expanded = false },
-                            text = {
-                                Text(
-                                    "Editar",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.primary
+                    Box(contentAlignment = Alignment.TopEnd){
+                        IconButton(
+                            onClick = { expanded = true },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.dots_vertical_outline),
+                                contentDescription = "edit",
+                                colorFilter = ColorFilter.tint(primaryColor),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            offset = DpOffset(x = screenWidth - 200.dp, y = 0.dp),
+                            modifier = Modifier.width(200.dp),
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            if (onEdit != null)
+                                DropdownMenuItem(
+                                    onClick = { onEdit();expanded = false },
+                                    text = {
+                                        Text(
+                                            "Editar",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = FontWeight.Medium,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    },
                                 )
-                            },
-                        )
-                        if (onDelete != null)
-                        DropdownMenuItem(
-                            onClick = {onDelete();expanded = false},
-                            text = {
-                                Text("Eliminar", style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
-                            }
-                        )
+                            if (onDelete != null)
+                                DropdownMenuItem(
+                                    onClick = {onDelete();expanded = false},
+                                    text = {
+                                        Text("Eliminar", style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                                    }
+                                )
+                        }
                     }
-                }
             }
         }
 
