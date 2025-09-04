@@ -102,7 +102,7 @@ fun RecordSemesterScreen(
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Transferir a registro actual") {
+            MenuAction("Transferir al registro actual") {
                 if (viewModel.semester.value.size <= 0) coroutineScope.launch {
                     snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
                     return@launch

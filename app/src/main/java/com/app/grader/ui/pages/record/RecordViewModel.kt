@@ -15,6 +15,7 @@ import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSizeFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetWeightFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.TransferSemesterToSemesterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ class RecordViewModel @Inject constructor(
     private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     private val getSizeFromSemesterUseCase: GetSizeFromSemesterUseCase,
     private val getWeightFromSemesterUSeCase: GetWeightFromSemesterUseCase,
+    private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
     private val gradeFactory: GradeFactory,
 ) : ViewModel() {
     private val _semesters = mutableStateOf<List<SemesterModel>>(emptyList())
@@ -47,6 +49,25 @@ class RecordViewModel @Inject constructor(
 
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
+
+    fun transferSelfToActualSemester(semesterIdSender: Int){
+        if (semesterIdSender == -1) return
+        viewModelScope.launch {
+            transferSemesterToSemesterUseCase(semesterIdSender, null).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        deleteSemester(semesterIdSender){
+                            getCurrentSemester()
+                        }
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordViewModel", "Error transferSelfToActualSemester: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun validActualSemesterToTransfer() {
         if (_currentSemester.value.size == 0) throw InvalidParameterException("No hay cursos para transferir")
@@ -137,14 +158,13 @@ class RecordViewModel @Inject constructor(
         }
     }
 
-    fun deleteSelectSemester(onDeleteAction: () -> Unit = {}) {
-        if (_deleteSemesterId.intValue == -1) return
+    fun deleteSemester(semesterId: Int, onDeleteAction: () -> Unit = {}){
         viewModelScope.launch {
-            deleteSemesterByIdUseCase(_deleteSemesterId.intValue).collect { result ->
+            deleteSemesterByIdUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        onDeleteAction()
                         getAllSemestersAndCalTotalAverage()
+                        onDeleteAction()
                     }
 
                     is Resource.Loading -> {}
@@ -154,5 +174,10 @@ class RecordViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteSelectSemester(onDeleteAction: () -> Unit = {}) {
+        if (_deleteSemesterId.intValue == -1) return
+        deleteSemester(_deleteSemesterId.intValue, onDeleteAction)
     }
 }

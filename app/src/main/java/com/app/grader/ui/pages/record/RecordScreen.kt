@@ -125,8 +125,8 @@ fun RecordScreen(
                 item {
                     CurrentRecordSemesterCard(
                         viewModel.currentSemester.value,
-                        { navigateToHome() },
-                        {
+                        onClick =  { navigateToHome() },
+                        onTransfer =  {
                             try {
                                 viewModel.validActualSemesterToTransfer()
                                 navigateToTransferSemester()
@@ -140,13 +140,27 @@ fun RecordScreen(
                 }
                 items(viewModel.semesters.value) { semester ->
                     RecordSemesterCard(
-                        semester,
-                        { navigateToRecordSemester(semester.id) },
-                        {
+                        semester =  semester,
+                        onClick =  { navigateToRecordSemester(semester.id) },
+                        onTransfer = {
+                            if (semester.size == 0) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
+                                }
+                                return@RecordSemesterCard
+                            } else if (viewModel.currentSemester.value.size != 0) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
+                                }
+                                return@RecordSemesterCard
+                            }
+                            viewModel.transferSelfToActualSemester(semester.id)
+                        },
+                        onEdit =  { navigateToEditSemester(semester.id) },
+                        onDelete =  {
                             viewModel.selectDeleteSemester(semester.id)
                             showDeleteConfirmation = true
                         },
-                        { navigateToEditSemester(semester.id) },
                     )
                 }
             }

@@ -42,6 +42,7 @@ import com.app.grader.ui.theme.IconSmall
 fun RecordSemesterCard(
     semester: SemesterModel,
     onClick: () -> Unit,
+    onTransfer: () -> Unit,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
     modifier: Modifier = Modifier,
@@ -83,6 +84,17 @@ fun RecordSemesterCard(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ) {
                         DropdownMenuItem(
+                            onClick = { onTransfer();expanded = false },
+                            text = {
+                                Text(
+                                    "Transferir al registro actual",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            },
+                        )
+                        DropdownMenuItem(
                             onClick = { onEdit();expanded = false },
                             text = {
                                 Text(
@@ -92,8 +104,7 @@ fun RecordSemesterCard(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
-
-                            )
+                        )
                         DropdownMenuItem(
                             onClick = { onDelete();expanded = false },
                             text = {
