@@ -30,6 +30,7 @@ import com.app.grader.R
 import com.app.grader.domain.types.cardTypeFromCourse
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.card.CourseCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +54,7 @@ fun TransferSemesterScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Registro",
+                    text = "Transferir",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -76,7 +77,6 @@ fun TransferSemesterScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Spacer(Modifier.height(10.dp))
@@ -93,11 +93,22 @@ fun TransferSemesterScreen(
                     leadingIconId = R.drawable.bookmark_outline,
                     maxLength = 50
                 )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = "El registro actual contiene:"
-                )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(40.dp))
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    TitleIcon(
+                        iconName = "star",
+                        iconId = R.drawable.star
+                    ) {
+                        Text(text = "Asignaturas del registro actual", style = MaterialTheme.typography.labelLarge)
+                    }
+                }
+                Spacer(Modifier.height(25.dp))
             }
 
             items(viewModel.courses.value){ course ->
@@ -106,7 +117,6 @@ fun TransferSemesterScreen(
                     course,
                     type = courseCardType
                 )
-                Spacer(Modifier.height(10.dp))
             }
         }
     }

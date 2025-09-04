@@ -159,7 +159,7 @@ fun RecordScreen(
                     R.drawable.star_outline
                 ) { navigateToEditSemester(-1) },
                 FloatingMenuCompItem(
-                    "Guardar actual",
+                    "Guardar semestre actual",
                     R.drawable.education_cap_outline
                 ) {
                     try {

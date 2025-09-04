@@ -87,7 +87,7 @@ class RecordViewModel @Inject constructor(
                 ?: 0
 
             _currentSemester.value = SemesterModel(
-                title = "Registro Presente",
+                title = "Registro Actual",
                 average = average,
                 size = size,
                 weight = weight
