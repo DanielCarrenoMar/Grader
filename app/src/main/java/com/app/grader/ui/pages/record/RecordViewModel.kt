@@ -9,7 +9,6 @@ import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
-import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.grade.GetAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
@@ -19,6 +18,7 @@ import com.app.grader.domain.usecase.semester.GetWeightFromSemesterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +48,9 @@ class RecordViewModel @Inject constructor(
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
 
+    fun validActualSemesterToTransfer() {
+        if (_currentSemester.value.size == 0) throw InvalidParameterException("No hay cursos para transferir")
+    }
     fun getAllGrades(){
         viewModelScope.launch {
             getAllGradesUseCase().collect { result ->
