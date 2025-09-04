@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
+import com.app.grader.domain.usecase.semester.GetSizeFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.TransferSemesterToSemesterUseCase
 import com.app.grader.ui.sharedViewModels.SemesterViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +30,7 @@ class RecordSemesterViewModel @Inject constructor(
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
+    private val getSizeOfSemestersUseCase: GetSizeFromSemesterUseCase
 ) : SemesterViewModel(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
@@ -86,6 +89,22 @@ class RecordSemesterViewModel @Inject constructor(
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun onGetSizeOfActualSemester(onComplete: (Int) -> Unit){
+        viewModelScope.launch {
+            getSizeOfSemestersUseCase(null).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        onComplete(result.data!!)
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordSemesterViewModel", "Error getSizeOfActualSemester: ${result.message}")
                     }
                 }
             }

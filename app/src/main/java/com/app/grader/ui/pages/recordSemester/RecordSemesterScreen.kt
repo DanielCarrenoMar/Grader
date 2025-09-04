@@ -102,7 +102,21 @@ fun RecordSemesterScreen(
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Transferir a registro actual") { viewModel.transferSelfToActualSemester(navigateBack) },
+            MenuAction("Transferir a registro actual") {
+                if (viewModel.semester.value.size <= 0) coroutineScope.launch {
+                    snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
+                    return@launch
+                }
+                viewModel.onGetSizeOfActualSemester{ size ->
+                    if (size > 0) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
+                        }
+                        return@onGetSizeOfActualSemester
+                    }
+                    viewModel.transferSelfToActualSemester(navigateBack)
+                }
+            },
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         ),
