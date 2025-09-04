@@ -1,11 +1,9 @@
-package com.app.grader.ui.pages.editSemester
+package com.app.grader.ui.pages.transferSemester
 
 import android.util.Log
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
@@ -17,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditSemesterViewModel @Inject constructor(
+class TransferSemesterViewModel @Inject constructor(
     getSemesterByIdUseCase: GetSemesterByIdUseCase,
     saveSemesterUseCase: SaveSemesterUseCase,
     updateSemesterUseCase: UpdateSemesterUseCase

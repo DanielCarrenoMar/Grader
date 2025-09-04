@@ -1,4 +1,4 @@
-package com.app.grader.ui.pages.editSemester
+package com.app.grader.ui.pages.transferSemester
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,10 +31,10 @@ import com.app.grader.ui.componets.HeaderBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditSemesterScreen(
+fun TransferSemesterScreen(
     semesterId: Int,
     navigateBack: () -> Unit,
-    viewModel: EditSemesterViewModel = hiltViewModel(),
+    viewModel: TransferSemesterViewModel = hiltViewModel(),
     ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
