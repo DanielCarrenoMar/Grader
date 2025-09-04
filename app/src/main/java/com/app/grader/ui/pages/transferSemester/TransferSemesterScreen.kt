@@ -54,7 +54,7 @@ fun TransferSemesterScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "Transferir",
+                    text = "Registro",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -105,7 +105,7 @@ fun TransferSemesterScreen(
                         iconName = "star",
                         iconId = R.drawable.star
                     ) {
-                        Text(text = "Asignaturas en el registro actual", style = MaterialTheme.typography.labelLarge)
+                        Text(text = "Asignaturas que se transferiran", style = MaterialTheme.typography.labelLarge)
                     }
                 }
                 Spacer(Modifier.height(25.dp))
