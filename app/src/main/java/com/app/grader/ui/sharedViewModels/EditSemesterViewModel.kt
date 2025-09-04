@@ -79,20 +79,22 @@ open class EditSemesterViewModel(
         }
     }
 
-    fun updateOrCreateSemester(semesterId: Int){
+    fun updateOrCreateSemester(semesterId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {
         viewModelScope.launch {
             if (semesterId == -1) {
                 saveSemester(
                     SemesterModel(
                         title = title.value,
-                    )
+                    ),
+                    onComplete = onCreate
                 )
             } else {
                 updateSemester(
                     SemesterModel(
                         title = title.value,
                         id = semesterId
-                    )
+                    ),
+                    onComplete = onUpdate
                 )
             }
         }

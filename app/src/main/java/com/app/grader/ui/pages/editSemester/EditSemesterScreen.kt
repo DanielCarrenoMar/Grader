@@ -59,8 +59,11 @@ fun EditSemesterScreen(
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
-                        viewModel.updateOrCreateSemester(semesterId)
-                        navigateBack()
+                        viewModel.updateOrCreateSemester(
+                            semesterId,
+                            onCreate = {navigateBack()},
+                            onUpdate = {navigateBack()}
+                        )
                 }) {
                     Text(text = if (semesterId == -1) "Crear" else "Guardar")
                 }
