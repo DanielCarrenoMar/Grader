@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.SaveSemesterUseCase
 import com.app.grader.domain.usecase.semester.TransferActualCoursesToSemesterUseCase
@@ -21,7 +22,8 @@ class TransferSemesterViewModel @Inject constructor(
     getSemesterByIdUseCase: GetSemesterByIdUseCase,
     saveSemesterUseCase: SaveSemesterUseCase,
     updateSemesterUseCase: UpdateSemesterUseCase,
-    private val transferActualCoursesToSemesterUseCase: TransferActualCoursesToSemesterUseCase
+    private val transferActualCoursesToSemesterUseCase: TransferActualCoursesToSemesterUseCase,
+    private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
 ) : EditSemesterViewModel(
     getSemesterByIdUseCase,
     saveSemesterUseCase,
@@ -29,6 +31,22 @@ class TransferSemesterViewModel @Inject constructor(
 ) {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
+
+    fun getCoursesFromSemester(semesterId: Int?) {
+        viewModelScope.launch {
+            getCoursesFromSemesterUseCase(semesterId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _courses.value = result.data!!
+                    }
+                    is Resource.Loading -> { }
+                    is Resource.Error -> {
+                        Log.e("TransferSemesterViewModel", "Error getCoursesFromSemester: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun transferCoursesToNewSemester() {
         saveSemester(

@@ -41,7 +41,7 @@ fun TransferSemesterScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+            viewModel.getCoursesFromSemester(null)
         }
     }
 
