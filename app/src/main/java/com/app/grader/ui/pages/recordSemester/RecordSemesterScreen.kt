@@ -66,7 +66,7 @@ fun RecordSemesterScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.getAllCoursesAndCalTotalAverage(semesterId)
+            viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId)
             viewModel.getGradeFromSemester(semesterId)
             viewModel.getSemester(semesterId)
         }
@@ -81,7 +81,7 @@ fun RecordSemesterScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({ viewModel.getAllCoursesAndCalTotalAverage(semesterId) }) },
+            { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId) }) },
             { showDeleteConfirmation = false }
         )
     }

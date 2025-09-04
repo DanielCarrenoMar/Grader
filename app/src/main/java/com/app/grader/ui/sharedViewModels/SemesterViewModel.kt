@@ -57,8 +57,8 @@ open class SemesterViewModel(
         }
     }
 
-    fun getAllCoursesAndCalTotalAverage(semesterId: Int?){
-        getAllCourses(semesterId)
+    fun getCoursesAndCalTotalAverageFromSemester(semesterId: Int?){
+        getCoursesFromSemester(semesterId)
         calTotalAverage(semesterId)
     }
 
@@ -78,7 +78,7 @@ open class SemesterViewModel(
         }
     }
 
-    private fun getAllCourses(semesterId: Int?) {
+    private fun getCoursesFromSemester(semesterId: Int?) {
         viewModelScope.launch {
             getCoursesFromSemesterUseCase(semesterId).collect { result ->
                 when (result) {
