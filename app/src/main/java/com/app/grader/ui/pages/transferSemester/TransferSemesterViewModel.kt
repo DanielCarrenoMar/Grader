@@ -9,7 +9,7 @@ import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.SaveSemesterUseCase
-import com.app.grader.domain.usecase.semester.TransferCoursesToSemesterUseCase
+import com.app.grader.domain.usecase.semester.TransferSemesterToSemesterUseCase
 import com.app.grader.domain.usecase.semester.UpdateSemesterUseCase
 import com.app.grader.ui.sharedViewModels.EditSemesterViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ class TransferSemesterViewModel @Inject constructor(
     getSemesterByIdUseCase: GetSemesterByIdUseCase,
     saveSemesterUseCase: SaveSemesterUseCase,
     updateSemesterUseCase: UpdateSemesterUseCase,
-    private val transferCoursesToSemesterUseCase: TransferCoursesToSemesterUseCase,
+    private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
 ) : EditSemesterViewModel(
     getSemesterByIdUseCase,
@@ -54,7 +54,7 @@ class TransferSemesterViewModel @Inject constructor(
             ),
             onComplete = { newSemesterId ->
                 viewModelScope.launch {
-                    transferCoursesToSemesterUseCase(null, newSemesterId.toInt()).collect { result ->
+                    transferSemesterToSemesterUseCase(null, newSemesterId.toInt()).collect { result ->
                         when (result) {
                             is Resource.Success -> {
                                 Log.d("TransferSemesterViewModel", "Courses transferred successfully")

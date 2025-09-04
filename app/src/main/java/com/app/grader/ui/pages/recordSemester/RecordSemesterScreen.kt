@@ -102,6 +102,7 @@ fun RecordSemesterScreen(
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
+            MenuAction("Transferir a registro actual") { viewModel.transferSelfToActualSemester(navigateBack) },
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         ),

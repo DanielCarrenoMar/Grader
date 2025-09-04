@@ -12,6 +12,7 @@ import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
+import com.app.grader.domain.usecase.semester.TransferSemesterToSemesterUseCase
 import com.app.grader.ui.sharedViewModels.SemesterViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,13 +20,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordSemesterViewModel @Inject constructor(
-    private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
-    private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
-    gradeFactory: GradeFactory
+    gradeFactory: GradeFactory,
+    private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
+    private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
+    private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
 ) : SemesterViewModel(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
@@ -67,6 +69,23 @@ class RecordSemesterViewModel @Inject constructor(
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("RecordSemesterViewModel", "Error deleteSelf: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    fun transferSelfToActualSemester(navigateTo: () -> Unit){
+        if (_semester.value.id == -1) return
+        viewModelScope.launch {
+            transferSemesterToSemesterUseCase(_semester.value.id, null).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        deleteSelf(navigateTo)
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester: ${result.message}")
                     }
                 }
             }
