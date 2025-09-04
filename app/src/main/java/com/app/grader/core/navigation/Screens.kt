@@ -13,11 +13,23 @@ object AllGrades
 object Config
 
 @Serializable
+object Record
+
+@Serializable
+data class RecordSemester(val semesterId: Int)
+
+@Serializable
 data class Course(val courseId: Int)
 
 @Serializable
-data class EditCourse(val courseId: Int)
+object TransferSemester
 
 @Serializable
-data class EditGrade(val gradeId: Int, val courseId: Int)
+data class EditSemester(val semesterId: Int)
+@Serializable
+data class EditCourse(val semesterId: Int, val courseId: Int)
+
+@Serializable
+data class EditGrade(val semesterId: Int, val courseId: Int, val gradeId: Int)
+
 

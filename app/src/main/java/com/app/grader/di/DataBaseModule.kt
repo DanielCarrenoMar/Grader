@@ -2,8 +2,6 @@ package com.app.grader.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,6 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.app.grader.data.database.AppDatabase
+import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_3_4
+import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_4_5
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -22,8 +22,11 @@ class DataBaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java, "grader_database"
-        ).fallbackToDestructiveMigration().build()
+        ).addMigrations(MIGRATION_3_4, MIGRATION_4_5).build()
     }
+    @Singleton
+    @Provides
+    fun provideSemesterDao(db: AppDatabase) = db.getSemesterDao()
 
     @Singleton
     @Provides

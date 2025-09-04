@@ -3,8 +3,10 @@ package com.app.grader.ui.componets
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +22,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -30,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -74,7 +80,17 @@ fun HeaderMenu(
     title: String,
     navigateHome: (() -> Unit)?,
     navigateAllGrades: (() -> Unit)?,
+    navigateRecord: (() -> Unit)?,
     navigateConfig: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    topAppBarColors: TopAppBarColors = TopAppBarColors(
+        MaterialTheme.colorScheme.background,
+        MaterialTheme.colorScheme.surfaceVariant,
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.onBackground,
+        MaterialTheme.colorScheme.primary,
+    ),
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -93,12 +109,20 @@ fun HeaderMenu(
                 modifier = Modifier.width(300.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
-                    Text("Grader", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary)
+                    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(2.dp)){
+                        Image(
+                            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                            contentDescription = "logo",
+                            modifier = Modifier.size(70.dp),
+                        )
+                        Text("Grader", style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary)
+                    }
                     HorizontalDivider()
                     MyNavigationDrawerItem(
                         title = "Asignaturas",
@@ -106,9 +130,14 @@ fun HeaderMenu(
                         onClick = navigateHome
                     )
                     MyNavigationDrawerItem(
-                        title = "Todas las notas",
+                        title = "Todas las calificaciones",
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
+                    )
+                    MyNavigationDrawerItem(
+                        title = "Registro Académico",
+                        iconId = R.drawable.book_outline,
+                        onClick = navigateRecord
                     )
                     MyNavigationDrawerItem(
                         title = "Ajustes",
@@ -120,47 +149,24 @@ fun HeaderMenu(
         },
         drawerState = drawerState
     ) {
-        Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                TopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    },
-                    colors = TopAppBarColors(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.onBackground,
-                        MaterialTheme.colorScheme.primary,
-                    ),
-                    navigationIcon = {
-                        IconButton(
-                            modifier = Modifier.padding(start = 8.dp, end = 15.dp),
-                            onClick = {
-                            scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
-                                }
-                            }
-                        }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.bars_outline),
-                                contentDescription = "Menu",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                                modifier = Modifier.size(IconLarge),
-                            )
-                        }
-                    }
+        HeaderScaffold(
+            title = {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-            }
+            },
+            scrollBehavior = scrollBehavior,
+            snackbarHostState = snackbarHostState,
+            topAppBarColors = topAppBarColors,
+            iconId = R.drawable.bars_outline,
+            onClickIcon = {
+                scope.launch {
+                    drawerState.open()
+                }
+            },
+            modifier = modifier,
         ) { innerPadding ->
             content(innerPadding)
         }
