@@ -36,6 +36,6 @@ interface SemesterDao {
     @Query("SELECT SUM(uc) FROM course WHERE ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )")
     suspend fun getSemesterUCSum(semesterId: Int?): Int
 
-    @Query("UPDATE course SET semester_id = :semesterId WHERE semester_id IS NULL")
-    suspend fun transferActualCoursesToSemester(semesterId: Int): Int
+    @Query("UPDATE course SET semester_id = :semesterIdReceiver WHERE ( (:semesterIdSender IS NULL AND semester_id IS NULL) OR semester_id = :semesterIdSender )")
+    suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int
 }

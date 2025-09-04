@@ -1,6 +1,5 @@
 package com.app.grader.data.database.repository
 
-import android.util.Log
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
@@ -237,9 +236,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun transferActualCoursesToSemester(semesterId: Int): Int {
+    override suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int {
         try {
-            return semesterDao.transferActualCoursesToSemester(semesterId)
+            return semesterDao.transferSemesterToSemester(semesterIdSender, semesterIdReceiver)
         } catch (e: Exception) {
             throw e
         }
