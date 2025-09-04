@@ -82,7 +82,7 @@ fun EditSemesterScreen(
                 value = viewModel.showTitle.value,
                 onValueChange = {
                     viewModel.showTitle.value = it
-                    viewModel.title.value = it
+                    viewModel.setTitle(it)
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences

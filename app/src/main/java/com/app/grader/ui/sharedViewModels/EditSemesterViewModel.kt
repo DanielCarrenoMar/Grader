@@ -10,6 +10,7 @@ import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.SaveSemesterUseCase
 import com.app.grader.domain.usecase.semester.UpdateSemesterUseCase
 import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 
 open class EditSemesterViewModel(
     protected val getSemesterByIdUseCase: GetSemesterByIdUseCase,
@@ -20,6 +21,14 @@ open class EditSemesterViewModel(
     val title = _title
     private val _showTitle = mutableStateOf("")
     val showTitle = _showTitle
+
+    fun setTitle(newTitle: String) {
+        if (newTitle.isBlank()) {
+            _title.value = "Sin Título"
+            return
+        }
+        _title.value = newTitle
+    }
 
     fun getSemesterFromId(semesteId: Int) {
         if (semesteId == -1) return
