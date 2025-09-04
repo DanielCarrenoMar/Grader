@@ -105,7 +105,7 @@ fun TransferSemesterScreen(
                         iconName = "star",
                         iconId = R.drawable.star
                     ) {
-                        Text(text = "Asignaturas del registro actual", style = MaterialTheme.typography.labelLarge)
+                        Text(text = "Asignaturas en el registro actual", style = MaterialTheme.typography.labelLarge)
                     }
                 }
                 Spacer(Modifier.height(25.dp))
