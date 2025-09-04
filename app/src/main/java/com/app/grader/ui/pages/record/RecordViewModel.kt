@@ -10,6 +10,7 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.usecase.grade.GetAllGradesUseCase
+import com.app.grader.domain.usecase.grade.GetGradesFromSemesterLessThanUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class RecordViewModel @Inject constructor(
     private val getAllSemestersUseCase: GetAllSemestersUseCase,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
-    private val getAllGradesUseCase: GetAllGradesUseCase,
+    private val getGradesFromSemesterLessThanUseCase: GetGradesFromSemesterLessThanUseCase,
     private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     private val getSizeFromSemesterUseCase: GetSizeFromSemesterUseCase,
     private val getWeightFromSemesterUSeCase: GetWeightFromSemesterUseCase,
@@ -72,17 +73,16 @@ class RecordViewModel @Inject constructor(
     fun validActualSemesterToTransfer() {
         if (_currentSemester.value.size == 0) throw InvalidParameterException("No hay cursos para transferir")
     }
-    fun getAllGrades(){
+    fun getAllGradesLessActualSemester(){
         viewModelScope.launch {
-            getAllGradesUseCase().collect { result ->
+            getGradesFromSemesterLessThanUseCase(null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!
                     }
-
                     is Resource.Loading -> {}
                     is Resource.Error -> {
-                        Log.e("RecordViewModel", "Error getAllGradesUseCase: ${result.message}")
+                        Log.e("RecordViewModel", "Error getAllGradesLessActualSemester: ${result.message}")
                     }
                 }
             }

@@ -69,7 +69,7 @@ fun RecordScreen(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.getAllSemestersAndCalTotalAverage()
             viewModel.getCurrentSemester()
-            viewModel.getAllGrades()
+            viewModel.getAllGradesLessActualSemester()
         }
     }
 
