@@ -10,9 +10,6 @@ import com.app.grader.domain.types.Grade
 @Dao
 interface CourseDao {
 
-    @Query("INSERT INTO course (id, title, uc, semester_id) VALUES (:id, :title, :uc, :semesterId)")
-    suspend fun insertCourseWithId(id: Int, title: String, uc: Int, semesterId: Int?): Long
-
     @Query("SELECT * FROM course ORDER BY id DESC")
     suspend fun getAllCourses(): List<CourseEntity>
 

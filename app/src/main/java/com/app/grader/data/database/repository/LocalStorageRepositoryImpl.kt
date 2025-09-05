@@ -6,10 +6,6 @@ import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.data.database.dao.SemesterDao
 import com.app.grader.data.database.dao.SubGradeDao
-import com.app.grader.data.database.entitites.CourseEntity
-import com.app.grader.data.database.entitites.GradeEntity
-import com.app.grader.data.database.entitites.SemesterEntity
-import com.app.grader.data.database.entitites.SubGradeEntity
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
@@ -51,21 +47,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 courseModel.uc
             )
             return result == 1
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun insertGradeWithId(gradeEntity: GradeEntity): Long {
-        try {
-            return gradeDao.insertGradeWithId(
-                id = gradeEntity.id,
-                title = gradeEntity.title,
-                description = gradeEntity.description,
-                gradePercentage = gradeEntity.gradePercentage,
-                percentage = gradeEntity.percentage,
-                courseId = gradeEntity.courseId
-            )
         } catch (e: Exception) {
             throw e
         }
@@ -137,17 +118,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
         try {
             deleteAllGradesFromCourse(courseId)
             return courseDao.deleteCourseFromId(courseId) == 1
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun insertSemesterWithId(semesterEntity: SemesterEntity): Long {
-        try {
-            return semesterDao.insertSemesterWithId(
-                id = semesterEntity.id,
-                title = semesterEntity.title
-            )
         } catch (e: Exception) {
             throw e
         }
@@ -274,19 +244,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertCourseWithId(courseEntity: CourseEntity): Long {
-        try {
-            return courseDao.insertCourseWithId(
-                id = courseEntity.id,
-                title = courseEntity.title,
-                uc = courseEntity.uc,
-                semesterId = courseEntity.semesterId
-            )
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
     override suspend fun getAverageFromCourse(courseId:Int): Grade {
         try {
             val averagePercentage = courseDao.getAverageFromCourse(courseId)
@@ -403,29 +360,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 gradeModel.percentage.getPercentage()
             )
             return result == 1
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun insertSubGradeWithId(subGradeEntity: SubGradeEntity): Long {
-        try {
-            return subGradeDao.insertSubGradeWithId(
-                id = subGradeEntity.id,
-                title = subGradeEntity.title,
-                gradeId = subGradeEntity.gradeId,
-                gradePercentage = subGradeEntity.gradePercentage
-            )
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun getAllSubGrades(): List<SubGradeModel> {
-        try {
-            return subGradeDao.getAllSubGrades().map { subGradeEntity ->
-                subGradeEntity.toSubGradeModel(gradeFactory)
-            }
         } catch (e: Exception) {
             throw e
         }

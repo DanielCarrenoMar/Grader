@@ -9,8 +9,6 @@ import com.app.grader.data.database.entitites.GradeEntity
 @Dao
 interface GradeDao {
 
-    @Query ("INSERT INTO grade (id, title, description, grade_percentage, percentage, course_id) VALUES (:id, :title, :description, :gradePercentage, :percentage, :courseId)")
-    suspend fun insertGradeWithId(id: Int, title: String, description: String, gradePercentage: Double, percentage: Double, courseId: Int): Long
     @Query("SELECT * FROM grade")
     suspend fun getAllGrades(): List<GradeEntity>
 
