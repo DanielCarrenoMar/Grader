@@ -1,6 +1,10 @@
 package com.app.grader.ui.pages.config
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -20,6 +24,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +55,9 @@ import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.IconLarge
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.InputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +70,19 @@ fun ConfigScreen(
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    var selectedUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
+
+    val multiplePermissionsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri>? ->
+        uris?.let {
+            selectedUris = it
+            viewModel.loadBackUps(context, selectedUris)
+        }
+    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -82,6 +104,7 @@ fun ConfigScreen(
         navigateToAllGrades,
         navigateToRecord,
         null,
+        snackbarHostState = snackbarHostState,
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -149,6 +172,25 @@ fun ConfigScreen(
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.exclamation_outline,
                 text = "Reportar bug o sugerencia",
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            IconCardButton(
+                onClick = { viewModel.backupDatabaseCVC {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Copia de seguridad exportada $it")
+                    }
+                } },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                icon = R.drawable.exclamation_outline,
+                text = "Exportar todos los datos",
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+            IconCardButton(
+                onClick = { multiplePermissionsLauncher.launch("*/*") },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                icon = R.drawable.exclamation_outline,
+                text = "Importar datos",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(

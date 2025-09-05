@@ -9,6 +9,9 @@ import com.app.grader.data.database.entitites.SemesterEntity
 @Dao
 interface SemesterDao {
 
+    @Query("INSERT INTO semester (id, title) VALUES (:id, :title)")
+    suspend fun insertSemesterWithId(id: Int, title: String): Long
+
     @Query("SELECT * FROM semester ORDER BY id DESC")
     suspend fun getAllSemesters(): List<SemesterEntity>
 

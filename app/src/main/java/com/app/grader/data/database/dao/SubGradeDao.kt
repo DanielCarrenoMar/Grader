@@ -9,6 +9,12 @@ import com.app.grader.data.database.entitites.SubGradeEntity
 @Dao
 interface SubGradeDao {
 
+    @Query("INSERT INTO sub_grade (id, title, grade_percentage, grade_id) VALUES (:id, :title, :gradePercentage, :gradeId)")
+    suspend fun insertSubGradeWithId(id: Int, title: String, gradePercentage: Double, gradeId: Int): Long
+
+    @Query("SELECT * FROM sub_grade")
+    suspend fun getAllSubGrades(): List<SubGradeEntity>
+
     @Query("SELECT * FROM sub_grade WHERE grade_id = :gradeId")
     suspend fun getSubGradesFromGradeId(gradeId: Int): List<SubGradeEntity>
 
