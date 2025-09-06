@@ -3,8 +3,10 @@ package com.app.grader.ui.pages.course
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -154,32 +158,53 @@ fun CourseScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(15.dp))
-                        LazyColumn {
-                            items(viewModel.grades.value) { grade ->
-                                GradeCardComp(
-                                    grade = grade,
-                                    onClick = {
-                                        viewModel.setShowGrade(grade.id)
-                                        showBottomSheet = true
-                                    },
-                                    onLongClick = {
-                                        viewModel.setShowGrade(grade.id)
-                                        viewModel.isEditingGrade.value = true
-                                    },
-                                    isEditing = viewModel.isEditingGrade.value,
-                                    onInputValueChange = { newValue ->
-                                        if (newValue.isBlank()) {
-                                            grade.grade.setBlank()
-                                            viewModel.updateGrade(grade)
-                                            return@GradeCardComp
-                                        }
-                                        val numberValue = newValue.toDoubleOrNull()
-                                        if (numberValue == null) return@GradeCardComp
-                                        if (!grade.grade.check(numberValue)) return@GradeCardComp
-                                        grade.grade.setGrade(numberValue)
-                                        viewModel.updateGrade(grade)
-                                    },
+                        if (viewModel.grades.value.isEmpty()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.mountain_bg),
+                                    modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                    contentDescription = "Empty Grades",
                                 )
+                                Spacer(Modifier.height(10.dp))
+                                Text(
+                                    text = "Aún no hay calificaciones",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        } else {
+                            LazyColumn {
+                                items(viewModel.grades.value) { grade ->
+                                    GradeCardComp(
+                                        grade = grade,
+                                        onClick = {
+                                            viewModel.setShowGrade(grade.id)
+                                            showBottomSheet = true
+                                        },
+                                        onLongClick = {
+                                            viewModel.setShowGrade(grade.id)
+                                            viewModel.isEditingGrade.value = true
+                                        },
+                                        isEditing = viewModel.isEditingGrade.value,
+                                        onInputValueChange = { newValue ->
+                                            if (newValue.isBlank()) {
+                                                grade.grade.setBlank()
+                                                viewModel.updateGrade(grade)
+                                                return@GradeCardComp
+                                            }
+                                            val numberValue = newValue.toDoubleOrNull()
+                                            if (numberValue == null) return@GradeCardComp
+                                            if (!grade.grade.check(numberValue)) return@GradeCardComp
+                                            grade.grade.setGrade(numberValue)
+                                            viewModel.updateGrade(grade)
+                                        },
+                                    )
+                                }
                             }
                         }
                     }

@@ -136,7 +136,7 @@ fun HomeScreen(
                             )
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                text = "No hay asignaturas",
+                                text = "Aún no hay asignaturas",
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }

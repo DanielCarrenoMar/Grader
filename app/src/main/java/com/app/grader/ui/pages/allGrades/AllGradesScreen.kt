@@ -114,7 +114,7 @@ fun AllGradesScreen(
                         )
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            text = "No hay califaciones",
+                            text = "Aún no hay califaciones",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
