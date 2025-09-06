@@ -322,7 +322,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints: Grade, pendingPoints: Grade
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "UC",
+                            text = "Peso",
                             modifier = Modifier
                                 .padding(start = 8.dp),
                             style = MaterialTheme.typography.bodySmall,
