@@ -161,7 +161,6 @@ fun CourseScreen(
                         if (viewModel.grades.value.isEmpty()) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp)
