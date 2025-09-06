@@ -24,7 +24,8 @@ open class SemesterViewModel(
 ): ViewModel() {
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
-    private val _deleteCourseId = mutableIntStateOf(-1)
+    private val _deleteCourse = mutableStateOf(CourseModel.DEFAULT)
+    val deleteCourse = _deleteCourse
 
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
@@ -35,15 +36,14 @@ open class SemesterViewModel(
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
 
-    fun selectDeleteCourse(courseId: Int){
-        viewModelScope.launch {
-            _deleteCourseId.intValue = courseId
-        }
+    fun selectDeleteCourse(courseModel: CourseModel){
+        _deleteCourse.value = courseModel
     }
 
     fun deleteSelectedCourse(onDeleteAction : () -> Unit = {}) {
+        if (_deleteCourse.value.id == -1) return
         viewModelScope.launch {
-            deleteCourseByIdUseCase(_deleteCourseId.intValue).collect{ result ->
+            deleteCourseByIdUseCase(_deleteCourse.value.id).collect{ result ->
                 when (result){
                     is Resource.Success -> {
                         onDeleteAction()

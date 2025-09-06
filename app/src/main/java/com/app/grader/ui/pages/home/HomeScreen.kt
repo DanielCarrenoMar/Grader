@@ -76,8 +76,9 @@ fun HomeScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(null) }) },
-            { showDeleteConfirmation = false }
+            { viewModel.deleteSelectedCourse { viewModel.getCoursesAndCalTotalAverageFromSemester(null) } },
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
         )
     }
     HeaderMenu(
@@ -149,7 +150,7 @@ fun HomeScreen(
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =   { navigateToEditCourse(-1, course.id) },
                             onDelete = {
-                                viewModel.selectDeleteCourse(course.id)
+                                viewModel.selectDeleteCourse(course)
                                 showDeleteConfirmation = true
                             },
                             type = courseCardType

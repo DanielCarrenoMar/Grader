@@ -76,8 +76,9 @@ fun RecordScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectSemester({ viewModel.getAllSemestersAndCalTotalAverage() }) },
-            { showDeleteConfirmation = false }
+            { viewModel.deleteSelectSemester { viewModel.getAllSemestersAndCalTotalAverage() } },
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.deleteSemester.value.title}?",
         )
     }
 
@@ -164,7 +165,7 @@ fun RecordScreen(
                         },
                         onEdit =  { navigateToEditSemester(semester.id) },
                         onDelete =  {
-                            viewModel.selectDeleteSemester(semester.id)
+                            viewModel.selectDeleteSemester(semester)
                             showDeleteConfirmation = true
                         },
                     )

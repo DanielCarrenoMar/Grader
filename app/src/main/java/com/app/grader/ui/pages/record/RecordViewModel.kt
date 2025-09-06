@@ -51,7 +51,8 @@ class RecordViewModel @Inject constructor(
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
 
-    private val _deleteSemesterId = mutableIntStateOf(-1)
+    private val _deleteSemester = mutableStateOf(SemesterModel.DEFAULT)
+    val deleteSemester = _deleteSemester
 
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
@@ -161,10 +162,8 @@ class RecordViewModel @Inject constructor(
         }
     }
 
-    fun selectDeleteSemester(semesterId: Int){
-        viewModelScope.launch {
-            _deleteSemesterId.intValue = semesterId
-        }
+    fun selectDeleteSemester(semesterModel: SemesterModel){
+        _deleteSemester.value = semesterModel
     }
 
     fun deleteSemester(semesterId: Int, onDeleteAction: () -> Unit = {}){
@@ -186,7 +185,7 @@ class RecordViewModel @Inject constructor(
     }
 
     fun deleteSelectSemester(onDeleteAction: () -> Unit = {}) {
-        if (_deleteSemesterId.intValue == -1) return
-        deleteSemester(_deleteSemesterId.intValue, onDeleteAction)
+        if (_deleteSemester.value.id == -1) return
+        deleteSemester(_deleteSemester.value.id, onDeleteAction)
     }
 }

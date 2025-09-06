@@ -85,13 +85,15 @@ fun CourseScreen(
     if (showDeleteGradeConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
-            { showDeleteGradeConfirmation = false }
+            { showDeleteGradeConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
         )
     }
     if (showDeleteSelfConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelf(navigateBack) },
-            { showDeleteSelfConfirmation = false }
+            { showDeleteSelfConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.course.value.title}?",
         )
     }
     HeaderBack(
