@@ -51,6 +51,9 @@ class CourseViewModel  @Inject constructor(
     private val _isEditingGrade = mutableStateOf(false)
     val isEditingGrade = _isEditingGrade
 
+    private val _isLoading = mutableStateOf(true)
+    val isLoading = _isLoading
+
     fun deleteSelf(navigateTo: () -> Unit) {
         if (_course.value.id == -1) return
         viewModelScope.launch {
@@ -162,10 +165,9 @@ class CourseViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!
+                        _isLoading.value = false
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> { _isLoading.value = true }
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getGradesFromCourse: ${result.message}")
                     }
