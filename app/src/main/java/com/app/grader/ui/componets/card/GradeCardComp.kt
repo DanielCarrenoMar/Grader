@@ -42,7 +42,7 @@ fun GradeCardComp(
     isEditing: Boolean = false,
     onInputValueChange: (String) -> Unit = {},
 ) {
-    val maxGradeLength = grade.grade.getMax().toString().length
+    val maxGradeLength = grade.grade.getMax().toString().length + 3 // +3 for decimal point and two decimal places
 
     var gradeTextFieldValue by remember {
         mutableStateOf(TextFieldValue(grade.grade.toString()))
