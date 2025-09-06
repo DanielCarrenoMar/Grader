@@ -53,8 +53,6 @@ fun setStatusBarColor(window: Window, color: Int) {
         window.decorView.setOnApplyWindowInsetsListener { view, insets ->
             val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
             view.setBackgroundColor(color)
-
-            // Adjust padding to avoid overlap
             view.setPadding(0, statusBarInsets.top, 0, 0)
             insets
         }
