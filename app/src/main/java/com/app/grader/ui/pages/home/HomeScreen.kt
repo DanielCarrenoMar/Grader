@@ -82,7 +82,7 @@ fun HomeScreen(
         )
     }
     HeaderMenu(
-        "Asignaturas",
+        "Inicio",
         null,
         navigateToAllGrades,
         navigateToRecord,

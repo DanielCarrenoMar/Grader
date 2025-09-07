@@ -125,7 +125,7 @@ fun HeaderMenu(
                     }
                     HorizontalDivider()
                     MyNavigationDrawerItem(
-                        title = "Asignaturas",
+                        title = "Inicio",
                         iconId = R.drawable.home_outline,
                         onClick = navigateHome
                     )
