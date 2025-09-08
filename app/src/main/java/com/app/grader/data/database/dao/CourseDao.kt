@@ -19,7 +19,18 @@ interface CourseDao {
     @Query("SELECT * FROM course WHERE id = :courseId")
     suspend fun getCourseFromId(courseId: Int): CourseEntity?
 
-    @Query("SELECT SUM(grade_percentage * percentage) / SUM(percentage) FROM grade WHERE course_id = :courseId AND grade_percentage >= 0")
+    @Query("SELECT \n" +
+            "    SUM(grade_avg * percentage) / SUM(percentage) AS average\n" +
+            "FROM (\n" +
+            "    SELECT \n" +
+            "        g.id,\n" +
+            "        COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_avg,\n" +
+            "        g.percentage\n" +
+            "    FROM grade g\n" +
+            "    LEFT JOIN sub_grade sg ON sg.grade_id = g.id\n" +
+            "    WHERE g.course_id = :courseId AND g.grade_percentage >= 0\n" +
+            "    GROUP BY g.id\n" +
+            ")")
     suspend fun getAverageFromCourse(courseId: Int): Double?
 
     @Query("SELECT SUM(percentage) FROM grade WHERE course_id = :courseId AND grade_percentage >= 0")
