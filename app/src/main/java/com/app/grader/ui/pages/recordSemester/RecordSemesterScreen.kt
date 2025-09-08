@@ -65,7 +65,7 @@ fun RecordSemesterScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId)
             viewModel.getGradeFromSemester(semesterId)
             viewModel.getSemester(semesterId)

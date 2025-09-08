@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,7 +62,7 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCoursesAndCalTotalAverageFromSemester(null)
             viewModel.getGradeFromSemester(null)
         }
@@ -70,6 +71,7 @@ fun HomeScreen(
     val listState = rememberLazyListState()
     LaunchedEffect(courses) {
         if (courses.isNotEmpty()) {
+            Log.d("HomeScreen", "animateScrollToItem")
             listState.animateScrollToItem(index = 0)
         }
     }
