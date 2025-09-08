@@ -186,9 +186,7 @@ class CourseViewModel  @Inject constructor(
                             average = average
                         )
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getAverageFromCourseId: ${result.message}")
                     }
