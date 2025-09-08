@@ -78,14 +78,10 @@ class CourseViewModel  @Inject constructor(
             updateGradeUseCase(grade).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-
-                        getGradesFromCourse(_course.value.id)
                         calPoints(_course.value.id)
                         calAverageFromCourseId(_course.value.id)
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error updateGrade: ${result.message}")
                     }
@@ -130,9 +126,7 @@ class CourseViewModel  @Inject constructor(
                         _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
                         _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalPercentage)
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
                     }
@@ -146,11 +140,9 @@ class CourseViewModel  @Inject constructor(
             getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        if (result.data != null) _course.value = result.data
+                        _course.value = result.data!!
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
                     }
