@@ -4,39 +4,32 @@
 
 # ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=Kotlin&logoColor=white) Grader. App de Calificaciones
 
+![](https://img.shields.io/badge/Google%20Play-34A853?style=flat&logo=google-play&logoColor=white)
 ![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
-![descargas](https://img.shields.io/github/downloads/DanielCarrenoMar/Grader/total)
 
-Una aplicación al estilo de Agenda Escolar únicamente enfocada a las notas y dirigida a estudiantes de la UCAB. Con una interfaz sencilla y fácil de usar, permitiéndote tanto proyectar notas a futuro como llevar un conteo preciso de tu promedio y puntos acumulados. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
+Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de usar la calculadora para calcular tu promedio. Calcula tu promedio ponderado, conoce cuántos puntos te faltan para aprobar y proyecta notas a futuro rápidamente. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
 
 > 👀 [Descargar última versión](https://github.com/DanielCarrenoMar/Grader/releases/latest/download/Grader.apk)
 
-
 ## Características ⭐
-- Enfoque en el usuario
-- Cálculo de promedio ponderado por UC
-- Cálculo de promedio por materia
-- SubNotas para calcular calificaciones acumulativas
-- Puntos acumulados y por evaluar
-- Visión general de notas
-- Gráfico de calificaciones obtenidas
+- Visualiza tu rendimiento con gráficos generados a partir de tus calificaciones.
+- Calcula el promedio ponderado de tu ciclo actual como el de los anteriores.
+- Proyecta fácilmente calificaciones a futuro y observa tu puntaje acumulado para cada asignatura. 
+- Cambia el tipo de calificación correspondiente a tu institución (como base 20 o base 10).
+- Crea calificaciones a partir de una lista de subnotas.
 ## Librerías Utilizadas 📚
 - HiltAndroid (inyección de dependencias)
 - Room (base de datos)
 - Vico (gráficos)
 - Material3 (UI)
 
-# Características Futuras 🔮
-1) Ordenar calificaciones en Todas las calificaciones
-2) Activar o desactivar el modo oscuro desde la app
-3) Atajo pulsar para eliminar
-4) Marcar cuando una materia está aprobada o desaprobada
+# Características planeadas a Futuro 🔮
+- Multilingüe.
+- Animaciones cuando una asignatura cambia de estado (finalizada, pasada, reprobada).
+- Estadísticas de mejor/peor asignatura, etc.
+- Crear tus propios tipos de nota con mínimo y máximo personalizado.
+- Exportar los datos de la app a un archivo local.
   
-# Como Instalar 📱
-1. Instala el APK que está en *releases* o en el link de arriba.
-2. Asegúrese de que tiene habilitada la opción de descargar APKS (por defecto Android no te deja descargar fuera de la Play Store).
-3. Instala la aplicación.
-
 ### Imagenes
 ![Home](https://github.com/user-attachments/assets/5db992fb-f3af-42c5-bfa3-7c3998603337)
 ![Asignatura](https://github.com/user-attachments/assets/57824d52-6314-494e-b65a-e1342bf6fb40)
