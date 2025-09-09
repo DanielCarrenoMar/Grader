@@ -68,14 +68,8 @@ fun NavigationGuideTheme(
     isDynamicColor: Boolean = Build.VERSION.SDK_INT >= 32, // Dynamic color is available on Android 12+ (api 32)
     content: @Composable () -> Unit
 ) {
-    val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    //val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colorScheme = when {
-        dynamicColor && isDarkTheme -> {
-            dynamicDarkColorScheme(LocalContext.current)
-        }
-        dynamicColor && !isDarkTheme -> {
-            dynamicLightColorScheme(LocalContext.current)
-        }
         isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
