@@ -1,6 +1,7 @@
 package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
+import com.app.grader.core.appConfig.TypeTheme
 import com.app.grader.ui.theme.IconLarge
 import com.app.grader.ui.theme.IconMedium
 import kotlinx.coroutines.launch
@@ -116,7 +118,7 @@ fun HeaderMenu(
                     Spacer(Modifier.height(12.dp))
                     Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(2.dp)){
                         Image(
-                            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                            painter = painterResource(id = R.drawable.logo),
                             contentDescription = "logo",
                             modifier = Modifier.size(70.dp),
                         )
@@ -125,7 +127,7 @@ fun HeaderMenu(
                     }
                     HorizontalDivider()
                     MyNavigationDrawerItem(
-                        title = "Asignaturas",
+                        title = "Inicio",
                         iconId = R.drawable.home_outline,
                         onClick = navigateHome
                     )

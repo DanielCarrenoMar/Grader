@@ -3,8 +3,10 @@ package com.app.grader.ui.pages.course
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
@@ -33,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -71,7 +76,7 @@ fun CourseScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getGradesFromCourse(courseId)
             viewModel.getCourseFromId(courseId)
             viewModel.calPoints(courseId)
@@ -81,13 +86,15 @@ fun CourseScreen(
     if (showDeleteGradeConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
-            { showDeleteGradeConfirmation = false }
+            { showDeleteGradeConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
         )
     }
     if (showDeleteSelfConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelf(navigateBack) },
-            { showDeleteSelfConfirmation = false }
+            { showDeleteSelfConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.course.value.title}?",
         )
     }
     HeaderBack(
@@ -154,32 +161,65 @@ fun CourseScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(15.dp))
-                        LazyColumn {
-                            items(viewModel.grades.value) { grade ->
-                                GradeCardComp(
-                                    grade = grade,
-                                    onClick = {
-                                        viewModel.setShowGrade(grade.id)
-                                        showBottomSheet = true
-                                    },
-                                    onLongClick = {
-                                        viewModel.setShowGrade(grade.id)
-                                        viewModel.isEditingGrade.value = true
-                                    },
-                                    isEditing = viewModel.isEditingGrade.value,
-                                    onInputValueChange = { newValue ->
-                                        if (newValue.isBlank()) {
-                                            grade.grade.setBlank()
-                                            viewModel.updateGrade(grade)
-                                            return@GradeCardComp
-                                        }
-                                        val numberValue = newValue.toDoubleOrNull()
-                                        if (numberValue == null) return@GradeCardComp
-                                        if (!grade.grade.check(numberValue)) return@GradeCardComp
-                                        grade.grade.setGrade(numberValue)
-                                        viewModel.updateGrade(grade)
-                                    },
+                        if (viewModel.isLoading.value) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.width(64.dp),
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
                                 )
+                            }
+                        } else if (viewModel.grades.value.isEmpty()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.mountain_bg),
+                                    modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                    contentDescription = "Empty Grades",
+                                )
+                                Spacer(Modifier.height(10.dp))
+                                Text(
+                                    text = "Aún no hay calificaciones",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        } else {
+                            LazyColumn {
+                                items(viewModel.grades.value) { grade ->
+                                    GradeCardComp(
+                                        grade = grade,
+                                        onClick = {
+                                            viewModel.setShowGrade(grade.id)
+                                            showBottomSheet = true
+                                        },
+                                        onLongClick = {
+                                            viewModel.setShowGrade(grade.id)
+                                            viewModel.isEditingGrade.value = true
+                                        },
+                                        isEditing = viewModel.isEditingGrade.value,
+                                        onInputValueChange = { newValue ->
+                                            if (newValue.isBlank()) {
+                                                grade.grade.setBlank()
+                                                viewModel.updateGrade(grade)
+                                                return@GradeCardComp
+                                            }
+                                            val numberValue = newValue.toDoubleOrNull()
+                                            if (numberValue == null) return@GradeCardComp
+                                            if (!grade.grade.check(numberValue)) return@GradeCardComp
+                                            grade.grade.setGrade(numberValue)
+                                            viewModel.updateGrade(grade)
+                                        },
+                                    )
+                                }
                             }
                         }
                     }
@@ -298,7 +338,7 @@ fun InfoCourseCard(average: Grade, accumulatePoints: Grade, pendingPoints: Grade
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "UC",
+                            text = "Peso",
                             modifier = Modifier
                                 .padding(start = 8.dp),
                             style = MaterialTheme.typography.bodySmall,

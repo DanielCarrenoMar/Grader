@@ -9,7 +9,6 @@ import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
-import com.app.grader.domain.usecase.grade.GetAllGradesUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterLessThanUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
@@ -43,10 +42,17 @@ class RecordViewModel @Inject constructor(
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
 
+    private val _totalWeight = mutableIntStateOf(0)
+    val totalWeight = _totalWeight
+
+    private val _totalCourses = mutableIntStateOf(0)
+    val totalCourses = _totalCourses
+
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
 
-    private val _deleteSemesterId = mutableIntStateOf(-1)
+    private val _deleteSemester = mutableStateOf(SemesterModel.DEFAULT)
+    val deleteSemester = _deleteSemester
 
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
@@ -130,16 +136,20 @@ class RecordViewModel @Inject constructor(
 
                         var sumAverage = 0.0
                         var sumSemesterWeight = 0
+                        var sumCoursesLength = 0
                         _semesters.value.forEach { semester ->
                             if (semester.average.isBlank()) return@forEach
                             sumAverage += semester.average.getGrade() * semester.weight
                             sumSemesterWeight += semester.weight
+                            sumCoursesLength += semester.size
                         }
                         if (sumSemesterWeight == 0) {
                             _totalAverage.value = gradeFactory.instGrade()
                             return@collect
                         }
 
+                        _totalCourses.intValue = sumCoursesLength
+                        _totalWeight.intValue = sumSemesterWeight
                         _totalAverage.value = gradeFactory.instGrade(sumAverage / sumSemesterWeight)
                     }
 
@@ -152,10 +162,8 @@ class RecordViewModel @Inject constructor(
         }
     }
 
-    fun selectDeleteSemester(semesterId: Int){
-        viewModelScope.launch {
-            _deleteSemesterId.intValue = semesterId
-        }
+    fun selectDeleteSemester(semesterModel: SemesterModel){
+        _deleteSemester.value = semesterModel
     }
 
     fun deleteSemester(semesterId: Int, onDeleteAction: () -> Unit = {}){
@@ -177,7 +185,7 @@ class RecordViewModel @Inject constructor(
     }
 
     fun deleteSelectSemester(onDeleteAction: () -> Unit = {}) {
-        if (_deleteSemesterId.intValue == -1) return
-        deleteSemester(_deleteSemesterId.intValue, onDeleteAction)
+        if (_deleteSemester.value.id == -1) return
+        deleteSemester(_deleteSemester.value.id, onDeleteAction)
     }
 }

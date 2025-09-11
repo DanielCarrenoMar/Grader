@@ -59,7 +59,7 @@ fun AllGradesScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getAllGradesWithCourses()
         }
     }
@@ -67,7 +67,8 @@ fun AllGradesScreen(
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
-            { showDeleteConfirmation = false }
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
         )
     }
     HeaderMenu(
@@ -114,7 +115,7 @@ fun AllGradesScreen(
                         )
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            text = "No hay califaciones",
+                            text = "Aún no hay califaciones",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }

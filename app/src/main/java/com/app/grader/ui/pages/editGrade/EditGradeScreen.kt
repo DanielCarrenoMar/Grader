@@ -75,7 +75,7 @@ fun EditGradeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.resetCacheGrade()
             viewModel.courseId.intValue = courseId
             viewModel.loadGradeFromId(gradeId)

@@ -65,7 +65,7 @@ fun RecordSemesterScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId)
             viewModel.getGradeFromSemester(semesterId)
             viewModel.getSemester(semesterId)
@@ -82,13 +82,15 @@ fun RecordSemesterScreen(
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId) }) },
-            { showDeleteConfirmation = false }
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
         )
     }
     if (showDeleteSelfConfirmation) {
         DeleteConfirmationComp(
             { viewModel.deleteSelf(navigateBack) },
-            { showDeleteSelfConfirmation = false }
+            { showDeleteSelfConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.semester.value.title}?",
         )
     }
     HeaderBack(
@@ -179,7 +181,7 @@ fun RecordSemesterScreen(
                             )
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                text = "No hay asignaturas",
+                                text = "Aún no hay asignaturas",
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }
@@ -192,7 +194,7 @@ fun RecordSemesterScreen(
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =  { navigateToEditCourse(-1, course.id) },
                             onDelete = {
-                                viewModel.selectDeleteCourse(course.id)
+                                viewModel.selectDeleteCourse(course)
                                 showDeleteConfirmation = true
                             },
                             type = courseCardType

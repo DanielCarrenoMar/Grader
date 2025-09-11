@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,7 +62,7 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCoursesAndCalTotalAverageFromSemester(null)
             viewModel.getGradeFromSemester(null)
         }
@@ -70,18 +71,20 @@ fun HomeScreen(
     val listState = rememberLazyListState()
     LaunchedEffect(courses) {
         if (courses.isNotEmpty()) {
+            Log.d("HomeScreen", "animateScrollToItem")
             listState.animateScrollToItem(index = 0)
         }
     }
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(null) }) },
-            { showDeleteConfirmation = false }
+            { viewModel.deleteSelectedCourse { viewModel.getCoursesAndCalTotalAverageFromSemester(null) } },
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
         )
     }
     HeaderMenu(
-        "Asignaturas",
+        "Inicio",
         null,
         navigateToAllGrades,
         navigateToRecord,
@@ -136,7 +139,7 @@ fun HomeScreen(
                             )
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                text = "No hay asignaturas",
+                                text = "Aún no hay asignaturas",
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }
@@ -149,7 +152,7 @@ fun HomeScreen(
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =   { navigateToEditCourse(-1, course.id) },
                             onDelete = {
-                                viewModel.selectDeleteCourse(course.id)
+                                viewModel.selectDeleteCourse(course)
                                 showDeleteConfirmation = true
                             },
                             type = courseCardType

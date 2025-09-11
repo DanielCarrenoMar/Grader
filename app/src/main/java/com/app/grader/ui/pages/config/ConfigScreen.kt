@@ -64,7 +64,7 @@ fun ConfigScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.updateConfiguration()
         }
     }
@@ -73,7 +73,7 @@ fun ConfigScreen(
         DeleteConfirmationComp(
             { viewModel.deleteAll() },
             { showDeleteConfirmation = false },
-            "Esta opción borrar todos los datos de la app: asignaturas y calificaciones.",
+            "Esta opción borrara TODOS los datos de la app.",
         )
     }
     HeaderMenu(

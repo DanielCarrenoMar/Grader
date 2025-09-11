@@ -48,7 +48,7 @@ fun EditCourseScreen(
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCourseFromId(courseId)
         }
     }
@@ -118,7 +118,7 @@ fun EditCourseScreen(
                 maxLength = 50
             )
             EditScreenInputComp(
-                placeHolderText = "Unidades de Credito",
+                placeHolderText = "Ponderación",
                 value = viewModel.showUc.value,
                 onValueChange = {
                     viewModel.showUc.value = it
@@ -128,7 +128,7 @@ fun EditCourseScreen(
                 leadingIconId = R.drawable.chart_pie,
                 suffix = {
                     Text(
-                        text = "UC",
+                        text = "Peso",
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 5.dp)
                     )

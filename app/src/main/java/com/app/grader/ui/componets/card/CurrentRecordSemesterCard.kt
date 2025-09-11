@@ -134,7 +134,7 @@ fun CurrentRecordSemesterCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "UC",
+                    text = "Peso",
                     modifier = Modifier
                         .padding(start = 4.dp),
                     style = MaterialTheme.typography.bodySmall,

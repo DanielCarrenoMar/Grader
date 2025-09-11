@@ -9,24 +9,73 @@ import com.app.grader.data.database.entitites.GradeEntity
 @Dao
 interface GradeDao {
 
-    @Query("SELECT * FROM grade")
+    @Query("SELECT\n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM\n" +
+            "    grade g\n" +
+            "LEFT JOIN\n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "GROUP BY\n" +
+            "    g.id;")
     suspend fun getAllGrades(): List<GradeEntity>
 
-    @Query("SELECT * FROM grade WHERE course_id = :courseId")
+    @Query("SELECT\n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM\n" +
+            "    grade g\n" +
+            "LEFT JOIN\n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "WHERE course_id = :courseId\n" +
+            "GROUP BY\n" +
+            "    g.id;\n")
     suspend fun getGradesFromCourseId(courseId: Int): List<GradeEntity>
 
-    @Query("SELECT g.*\n" +
-            "FROM course c\n" +
-            "INNER JOIN grade g\n" +
-            "ON g.course_id = c.id\n" +
-            "WHERE ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )")
+    @Query("SELECT \n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM \n" +
+            "    course c\n" +
+            "INNER JOIN \n" +
+            "    grade g ON g.course_id = c.id\n" +
+            "LEFT JOIN \n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "WHERE \n" +
+            "   ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )\n" +
+            "GROUP BY \n" +
+            "    g.id;")
     suspend fun getGradesFromSemesterId(semesterId: Int?): List<GradeEntity>
 
-    @Query("SELECT g.*\n" +
-            "FROM course c\n" +
-            "INNER JOIN grade g\n" +
-            "ON g.course_id = c.id\n" +
-            "WHERE ( (:semesterId IS NULL AND semester_id NOT NULL) OR semester_id != :semesterId )")
+    @Query("SELECT \n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM \n" +
+            "    course c\n" +
+            "INNER JOIN \n" +
+            "    grade g ON g.course_id = c.id\n" +
+            "LEFT JOIN \n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "WHERE \n" +
+            "   ( (:semesterId IS NULL AND semester_id NOT NULL) OR semester_id != :semesterId )\n" +
+            "GROUP BY \n" +
+            "    g.id;")
     suspend fun getGradesFromSemesterLessThanId(semesterId: Int?): List<GradeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -47,6 +96,19 @@ interface GradeDao {
     @Query("DELETE FROM sqlite_sequence WHERE name = 'grade'")
     suspend fun resetIncrementalGrade()
 
-    @Query("SELECT * FROM grade WHERE id = :gradeId")
+    @Query("SELECT\n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM\n" +
+            "    grade g\n" +
+            "LEFT JOIN\n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "WHERE g.id = :gradeId\n" +
+            "GROUP BY\n" +
+            "    g.id;\n")
     suspend fun getGradeFromId(gradeId: Int): GradeEntity?
 }

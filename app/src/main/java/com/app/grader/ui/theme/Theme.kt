@@ -53,8 +53,6 @@ fun setStatusBarColor(window: Window, color: Int) {
         window.decorView.setOnApplyWindowInsetsListener { view, insets ->
             val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
             view.setBackgroundColor(color)
-
-            // Adjust padding to avoid overlap
             view.setPadding(0, statusBarInsets.top, 0, 0)
             insets
         }
@@ -70,14 +68,8 @@ fun NavigationGuideTheme(
     isDynamicColor: Boolean = Build.VERSION.SDK_INT >= 32, // Dynamic color is available on Android 12+ (api 32)
     content: @Composable () -> Unit
 ) {
-    val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    //val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colorScheme = when {
-        dynamicColor && isDarkTheme -> {
-            dynamicDarkColorScheme(LocalContext.current)
-        }
-        dynamicColor && !isDarkTheme -> {
-            dynamicLightColorScheme(LocalContext.current)
-        }
         isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

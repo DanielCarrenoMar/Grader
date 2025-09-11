@@ -25,7 +25,7 @@ val Shadow100 = Color(0xFF000000)
 val SurfaceDark = Color(0xFF222328)
 
 val BackgroundLight = Color(0xFFE7EFFA)
-val BackgroundLightVar = Color(0xFFD4E3F8)
+val BackgroundLightVar = Color(0xFFCED8F2)
 val BackgroundLightInvert = Color(0xFFDFD7F5)
 
 val BackgroundDark = Color(0xFF1B1B1D)

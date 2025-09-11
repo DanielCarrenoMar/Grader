@@ -51,6 +51,9 @@ class CourseViewModel  @Inject constructor(
     private val _isEditingGrade = mutableStateOf(false)
     val isEditingGrade = _isEditingGrade
 
+    private val _isLoading = mutableStateOf(true)
+    val isLoading = _isLoading
+
     fun deleteSelf(navigateTo: () -> Unit) {
         if (_course.value.id == -1) return
         viewModelScope.launch {
@@ -75,14 +78,10 @@ class CourseViewModel  @Inject constructor(
             updateGradeUseCase(grade).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-
-                        getGradesFromCourse(_course.value.id)
                         calPoints(_course.value.id)
                         calAverageFromCourseId(_course.value.id)
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error updateGrade: ${result.message}")
                     }
@@ -127,9 +126,7 @@ class CourseViewModel  @Inject constructor(
                         _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
                         _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalPercentage)
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
                     }
@@ -143,11 +140,9 @@ class CourseViewModel  @Inject constructor(
             getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        if (result.data != null) _course.value = result.data
+                        _course.value = result.data!!
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
                     }
@@ -162,10 +157,9 @@ class CourseViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _grades.value = result.data!!
+                        _isLoading.value = false
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> { _isLoading.value = true }
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getGradesFromCourse: ${result.message}")
                     }
@@ -184,9 +178,7 @@ class CourseViewModel  @Inject constructor(
                             average = average
                         )
                     }
-                    is Resource.Loading -> {
-                        // Handle loading state if needed
-                    }
+                    is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("CourseViewModel", "Error getAverageFromCourseId: ${result.message}")
                     }

@@ -95,7 +95,7 @@ class EditCourseViewModel @Inject constructor(
     }
 
     fun validCourse(){
-        if (uc.intValue < 0) throw InvalidParameterException("UC debe ser mayor que 0")
+        if (uc.intValue < 0) throw InvalidParameterException("El peso debe ser mayor que 0")
     }
 
     fun updateOrCreateCourse(semesterId: Int, courseId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {

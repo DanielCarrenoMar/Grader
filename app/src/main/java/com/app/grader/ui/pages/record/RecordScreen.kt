@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,7 +67,7 @@ fun RecordScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getAllSemestersAndCalTotalAverage()
             viewModel.getCurrentSemester()
             viewModel.getAllGradesLessActualSemester()
@@ -75,8 +76,9 @@ fun RecordScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectSemester({ viewModel.getAllSemestersAndCalTotalAverage() }) },
-            { showDeleteConfirmation = false }
+            { viewModel.deleteSelectSemester { viewModel.getAllSemestersAndCalTotalAverage() } },
+            { showDeleteConfirmation = false },
+            "¿Realmente desea eliminar ${viewModel.deleteSemester.value.title}?",
         )
     }
 
@@ -100,7 +102,12 @@ fun RecordScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Column {
                     Spacer(modifier = Modifier.height(10.dp))
-                    InfoRecordCard(viewModel.totalAverage.value, viewModel.grades.value)
+                    InfoRecordCard(
+                        viewModel.totalAverage.value,
+                        viewModel.grades.value,
+                        viewModel.totalWeight.intValue,
+                        viewModel.totalCourses.intValue
+                    )
                     Spacer(modifier = Modifier.height(25.dp))
                 }
             }
@@ -158,7 +165,7 @@ fun RecordScreen(
                         },
                         onEdit =  { navigateToEditSemester(semester.id) },
                         onDelete =  {
-                            viewModel.selectDeleteSemester(semester.id)
+                            viewModel.selectDeleteSemester(semester)
                             showDeleteConfirmation = true
                         },
                     )
@@ -191,7 +198,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InfoRecordCard(average: Grade, grades: List<GradeModel>) {
+fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, coursesLength: Int) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier
@@ -225,6 +232,35 @@ fun InfoRecordCard(average: Grade, grades: List<GradeModel>) {
                             .fillMaxWidth()
                             .height(80.dp)
                             .alpha(0.7f)
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "$coursesLength",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = if (coursesLength == 1) " asignatura" else " asignaturas",
+                        modifier = Modifier
+                            .padding(start = 2.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "${totalWeight}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Peso",
+                        modifier = Modifier
+                            .padding(start = 4.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
