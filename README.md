@@ -15,7 +15,7 @@ Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de us
 - Visualiza tu rendimiento con gráficos generados a partir de tus calificaciones.
 - Calcula el promedio ponderado de tu ciclo actual como el de los anteriores.
 - Proyecta fácilmente calificaciones a futuro y observa tu puntaje acumulado para cada asignatura. 
-- Cambia el tipo de calificación correspondiente a tu institución (como base 20 o base 10).
+- Cambia el tipo de calificación al correspondiente en tu institución (como base 20 o base 10).
 - Crea calificaciones a partir de una lista de subnotas.
 ## Librerías Utilizadas 📚
 - HiltAndroid (inyección de dependencias)
