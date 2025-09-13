@@ -124,7 +124,7 @@ fun ConfigScreen(
                 icon = when(viewModel.typeTheme.value){
                     TypeTheme.DARK -> R.drawable.moon_outline
                     TypeTheme.LIGHT -> R.drawable.sun_outline
-                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.sun_outline else R.drawable.moon_outline
+                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
