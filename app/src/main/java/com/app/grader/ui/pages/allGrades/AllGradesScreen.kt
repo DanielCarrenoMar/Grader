@@ -101,29 +101,11 @@ fun AllGradesScreen(
                         )
                     }
                 }
-            } else if (viewModel.courses.value.isEmpty()) {
-                item {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.mountain_bg),
-                            modifier = Modifier.clip(MaterialTheme.shapes.large),
-                            contentDescription = "Empty Grades",
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "Aún no hay califaciones",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
-            }else {
+            } else {
+                var isGradesEmpty = true
                 itemsIndexed(viewModel.courses.value) { index, course ->
+                    if (viewModel.grades.value[index].isEmpty()) return@itemsIndexed
+                    isGradesEmpty = false
                     CardContainer(
                         onClick = {navigateToCourse(course.id)},
                     ){
@@ -149,25 +131,38 @@ fun AllGradesScreen(
                         }
                     }
 
-
                     val gradesForCurrentCourse = viewModel.grades.value[index]
-                    if (gradesForCurrentCourse.isNotEmpty()) {
-                        gradesForCurrentCourse.forEach { grade ->
-                            GradeCardComp(
-                                grade = grade,
-                                onClick = {
-                                    viewModel.setShowGrade(grade.id)
-                                    showBottomSheet = true
-                                }
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        }
-                    } else {
-                        Text(
-                            text = "No hay calificaciones para esta asignatura.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                    gradesForCurrentCourse.forEach { grade ->
+                        GradeCardComp(
+                            grade = grade,
+                            onClick = {
+                                viewModel.setShowGrade(grade.id)
+                                showBottomSheet = true
+                            }
                         )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+                if (isGradesEmpty) {
+                    item {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.mountain_bg),
+                                modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                contentDescription = "Empty Grades",
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                text = "Aún no hay califaciones",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
                 }
             }
