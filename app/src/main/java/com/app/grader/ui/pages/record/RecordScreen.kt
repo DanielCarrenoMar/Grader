@@ -84,7 +84,7 @@ fun RecordScreen(
     }
 
     HeaderMenu(
-        "Registro Académico",
+        "Registros Académicos",
         navigateToHome,
         navigateToAllGrades,
         null,
