@@ -1,6 +1,7 @@
 package com.app.grader.ui.pages.record
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -225,15 +226,21 @@ fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, c
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 48.sp,
                 )
-                if (grades.isNotEmpty()) {
-                    LineChartAverage(
-                        gradeSeries = grades.map { it.grade.getGrade() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
-                            .alpha(0.7f)
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                ) {
+                    if (grades.isNotEmpty()) {
+                        LineChartAverage(
+                            gradeSeries = grades.map { it.grade.getGrade() },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .alpha(0.7f)
+                        )
+                    }
                 }
+
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "$coursesLength",
