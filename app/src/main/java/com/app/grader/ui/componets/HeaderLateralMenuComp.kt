@@ -127,12 +127,12 @@ fun HeaderMenu(
                     }
                     HorizontalDivider()
                     MyNavigationDrawerItem(
-                        title = "Inicio",
+                        title = "Asignaturas",
                         iconId = R.drawable.home_outline,
                         onClick = navigateHome
                     )
                     MyNavigationDrawerItem(
-                        title = "Todas las calificaciones",
+                        title = "Calificaciones",
                         iconId = R.drawable.star_outline,
                         onClick = navigateAllGrades
                     )

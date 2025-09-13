@@ -72,7 +72,7 @@ fun AllGradesScreen(
         )
     }
     HeaderMenu(
-        "Todas las Calificaciones",
+        "Calificaciones",
         navigateToHome,
         null,
         navigateToRecord ,
