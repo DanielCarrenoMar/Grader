@@ -141,6 +141,17 @@ fun ConfigScreen(
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = {
+                    val url = "https://play.google.com/store/apps/details?id=com.app.grader&pcampaignid=web_share"
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    context.startActivity(intent)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.heart_outline,
+                text = "¿Te gusto la app? ¡Calificanos!",
+            )
+            IconCardButton(
+                onClick = {
                     val url = "https://github.com/DanielCarrenoMar/Grader/issues/new"
                     val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                     context.startActivity(intent)
