@@ -58,6 +58,7 @@ fun AllGradesScreen(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var isGradesEmpty  by remember { mutableStateOf(true) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -102,7 +103,7 @@ fun AllGradesScreen(
                     }
                 }
             } else {
-                var isGradesEmpty = true
+
                 itemsIndexed(viewModel.courses.value) { index, course ->
                     if (viewModel.grades.value[index].isEmpty()) return@itemsIndexed
                     isGradesEmpty = false
