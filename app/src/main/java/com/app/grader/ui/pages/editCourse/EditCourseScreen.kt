@@ -115,7 +115,8 @@ fun EditCourseScreen(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 leadingIconId = R.drawable.bookmark_outline,
-                maxLength = 50
+                maxLength = 50,
+                maxLines = 1
             )
             EditScreenInputComp(
                 placeHolderText = "Ponderación",
@@ -133,7 +134,8 @@ fun EditCourseScreen(
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },
-                maxLength = 3
+                maxLength = 3,
+                maxLines = 1
             )
             Spacer(modifier = Modifier.weight(1f))
         }

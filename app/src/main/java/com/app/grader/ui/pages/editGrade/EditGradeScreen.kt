@@ -147,7 +147,8 @@ fun EditGradeScreen(
                                 modifier = Modifier
                             )
                         }
-                    }
+                    },
+                    maxLines = 1
                 )
             }
             itemsIndexed (viewModel.showSubGrades) { index, subgrade ->
@@ -187,7 +188,8 @@ fun EditGradeScreen(
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             )
                         }
-                    }
+                    },
+                    maxLines = 1
                 )
             }
 
@@ -256,7 +258,8 @@ fun EditGradeScreen(
                             modifier = Modifier.padding(start = 5.dp)
                         )
                     },
-                    maxLength = 6
+                    maxLength = 6,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
@@ -271,7 +274,8 @@ fun EditGradeScreen(
                         capitalization = KeyboardCapitalization.Sentences
                     ),
                     leadingIconId = R.drawable.bookmark_outline,
-                    maxLength = 50
+                    maxLength = 50,
+                    maxLines = 1
                 )
                 EditScreenInputComp(
                     placeHolderText = "Agregar descripcción (Opcional)",
@@ -284,7 +288,8 @@ fun EditGradeScreen(
                         capitalization = KeyboardCapitalization.Sentences
                     ),
                     leadingIconId = R.drawable.align_center,
-                    maxLength = 200
+                    maxLength = 200,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(120.dp))
             }

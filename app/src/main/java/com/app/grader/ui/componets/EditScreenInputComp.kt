@@ -76,6 +76,7 @@ fun EditScreenInputComp(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
                 maxLines = maxLines,
+                singleLine = maxLines == 1,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
                     TextFieldDefaults.DecorationBox(
