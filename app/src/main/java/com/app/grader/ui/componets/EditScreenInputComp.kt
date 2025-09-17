@@ -55,7 +55,7 @@ fun EditScreenInputComp(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 15.dp),
+                .padding(horizontal = 20.dp, vertical = 15.dp),
             verticalAlignment = Alignment.Top // Alinea los elementos al inicio (arriba)
         ) {
             Image(
@@ -107,7 +107,6 @@ fun EditScreenInputComp(
                     )
                 }
             )
-            Spacer(modifier = Modifier.size(10.dp))
         }
         HorizontalDivider(modifier = Modifier.alpha(0.5f))
     }
