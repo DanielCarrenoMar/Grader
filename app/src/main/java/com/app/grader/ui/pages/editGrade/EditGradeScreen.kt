@@ -120,7 +120,8 @@ fun EditGradeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
@@ -287,11 +288,8 @@ fun EditGradeScreen(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences
                     ),
-                    leadingIconId = R.drawable.align_center,
-                    maxLength = 200,
-                    maxLines = 1
+                    leadingIconId = R.drawable.align_start,
                 )
-                Spacer(modifier = Modifier.height(120.dp))
             }
         }
     }

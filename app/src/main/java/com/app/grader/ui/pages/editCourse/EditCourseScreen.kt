@@ -130,7 +130,7 @@ fun EditCourseScreen(
                 suffix = {
                     Text(
                         text = "Peso",
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(start = 5.dp)
                     )
                 },
