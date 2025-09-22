@@ -124,7 +124,7 @@ fun ConfigScreen(
                 icon = when(viewModel.typeTheme.value){
                     TypeTheme.DARK -> R.drawable.moon_outline
                     TypeTheme.LIGHT -> R.drawable.sun_outline
-                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.sun_outline else R.drawable.moon_outline
+                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
@@ -139,6 +139,17 @@ fun ConfigScreen(
                 text = "Redondear promedio para asignaturas finalizadas",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            IconCardButton(
+                onClick = {
+                    val url = "https://play.google.com/store/apps/details?id=com.app.grader&pcampaignid=web_share"
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    context.startActivity(intent)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.heart_outline,
+                text = "¿Te gusto la app? ¡Calificanos!",
+            )
             IconCardButton(
                 onClick = {
                     val url = "https://github.com/DanielCarrenoMar/Grader/issues/new"

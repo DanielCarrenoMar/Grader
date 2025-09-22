@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
@@ -35,8 +39,6 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.types.CourseCardType
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.CircleCourse
-
-
 
 @Composable
 fun CourseCard(
@@ -76,13 +78,12 @@ fun CourseCard(
     ) { innerPadding ->
         Row (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
+                .padding(innerPadding).height(80.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Column (
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Top
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
             ){
                 TitleIcon(
                     iconName = iconName,
@@ -92,12 +93,14 @@ fun CourseCard(
                     Text(
                         text = course.title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = primaryColor
+                        color = primaryColor,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Row (
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 27.dp, start = 40.dp)
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.padding(start = 40.dp)
                 ){
                     Text(
                         text = "${course.uc}",
@@ -116,11 +119,12 @@ fun CourseCard(
             }
             Row (
                 verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxHeight()
             ){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(vertical = 4.dp),
+                Column (
+                    verticalArrangement = Arrangement.Bottom,
+                    modifier = Modifier.fillMaxHeight()
                 ){
                     CircleCourse(
                         grade = if (appConfig.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
@@ -128,7 +132,7 @@ fun CourseCard(
                     )
                 }
                 if (onDelete != null || onEdit != null)
-                    Box(contentAlignment = Alignment.TopEnd){
+                    Column(verticalArrangement = Arrangement.Top){
                         IconButton(
                             onClick = { expanded = true },
                             modifier = Modifier.size(32.dp)

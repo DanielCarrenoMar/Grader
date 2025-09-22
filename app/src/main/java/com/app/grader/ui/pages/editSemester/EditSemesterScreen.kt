@@ -91,7 +91,8 @@ fun EditSemesterScreen(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 leadingIconId = R.drawable.bookmark_outline,
-                maxLength = 50
+                maxLength = 50,
+                maxLines = 1
             )
             Spacer(modifier = Modifier.weight(1f))
         }

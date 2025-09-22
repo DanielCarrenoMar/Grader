@@ -27,9 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -56,6 +58,7 @@ fun AllGradesScreen(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var isGradesEmpty  by remember { mutableStateOf(true) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -72,7 +75,7 @@ fun AllGradesScreen(
         )
     }
     HeaderMenu(
-        "Todas las Calificaciones",
+        "Calificaciones",
         navigateToHome,
         null,
         navigateToRecord ,
@@ -99,42 +102,27 @@ fun AllGradesScreen(
                         )
                     }
                 }
-            } else if (viewModel.courses.value.isEmpty()) {
-                item {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.mountain_bg),
-                            modifier = Modifier.clip(MaterialTheme.shapes.large),
-                            contentDescription = "Empty Grades",
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "Aún no hay califaciones",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
-            }else {
+            } else {
+
                 itemsIndexed(viewModel.courses.value) { index, course ->
+                    if (viewModel.grades.value[index].isEmpty()) return@itemsIndexed
+                    isGradesEmpty = false
                     CardContainer(
                         onClick = {navigateToCourse(course.id)},
-                        modifier = Modifier.padding(vertical = 10.dp)
                     ){
                         Row (
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.alpha(0.7f).padding(10.dp, 10.dp, 0.dp, 10.dp)
                         ) {
                             Text(
-                                course.title,
+                                text = course.title,
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.primary,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(9f)
                             )
-                            Spacer(Modifier.width(10.dp))
+                            Spacer(Modifier.weight(1f))
                             Image(
                                 painter = painterResource(id = R.drawable.arrow_right),
                                 contentDescription = "arrow",
@@ -144,25 +132,38 @@ fun AllGradesScreen(
                         }
                     }
 
-
                     val gradesForCurrentCourse = viewModel.grades.value[index]
-                    if (gradesForCurrentCourse.isNotEmpty()) {
-                        gradesForCurrentCourse.forEach { grade ->
-                            GradeCardComp(
-                                grade = grade,
-                                onClick = {
-                                    viewModel.setShowGrade(grade.id)
-                                    showBottomSheet = true
-                                }
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        }
-                    } else {
-                        Text(
-                            text = "No hay calificaciones para esta asignatura.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                    gradesForCurrentCourse.forEach { grade ->
+                        GradeCardComp(
+                            grade = grade,
+                            onClick = {
+                                viewModel.setShowGrade(grade.id)
+                                showBottomSheet = true
+                            }
                         )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+                if (isGradesEmpty) {
+                    item {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.mountain_bg),
+                                modifier = Modifier.clip(MaterialTheme.shapes.large),
+                                contentDescription = "Empty Grades",
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                text = "Aún no hay califaciones",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
                 }
             }
