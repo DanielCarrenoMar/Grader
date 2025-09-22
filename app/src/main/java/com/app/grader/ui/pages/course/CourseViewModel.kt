@@ -116,15 +116,17 @@ class CourseViewModel  @Inject constructor(
                         val grades = result.data!!
                         var accumulatePointsTemp = 0.0
                         var totalPercentage = 0.0
+                        var totalEvaluledPercentage = 0.0
                         grades.forEach { grade ->
                             totalPercentage += grade.percentage.getPercentage()
                             if (grade.grade.isNotBlank()) {
+                                totalEvaluledPercentage += grade.percentage.getPercentage()
                                 accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * grade.grade.getGrade()
                             }
                         }
                         _totalPercentaje.value = Percentage(totalPercentage)
                         _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
-                        _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalPercentage)
+                        _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalEvaluledPercentage)
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
