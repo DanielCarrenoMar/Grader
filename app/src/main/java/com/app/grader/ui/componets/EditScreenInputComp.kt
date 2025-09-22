@@ -1,15 +1,11 @@
 package com.app.grader.ui.componets
 
-import android.widget.Space
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.app.grader.R
 import com.app.grader.ui.theme.IconLarge
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,20 +45,24 @@ fun EditScreenInputComp(
     maxLines: Int = Int.MAX_VALUE,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column (modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 15.dp),
             verticalAlignment = Alignment.Top // Alinea los elementos al inicio (arriba)
         ) {
-            Image(
-                painter = painterResource(id = leadingIconId),
-                contentDescription = placeHolderText,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                modifier = Modifier
-                    .size(IconLarge)
-            )
+            Box (
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ){
+                Image(
+                    painter = painterResource(id = leadingIconId),
+                    contentDescription = placeHolderText,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                    modifier = Modifier
+                        .size(IconLarge)
+                )
+            }
             Spacer(modifier = Modifier.size(10.dp))
             BasicTextField(
                 value = value.take(maxLength),
