@@ -16,12 +16,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -32,6 +41,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.theme.Shadow50
 import kotlinx.coroutines.launch
 import java.security.InvalidParameterException
 
@@ -47,10 +57,31 @@ fun EditCourseScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
+    // Estado para mostrar el diálogo informativo de "Peso"
+    var showPesoInfoDialog by remember { mutableStateOf(false) }
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCourseFromId(courseId)
         }
+    }
+
+    if (showPesoInfoDialog) {
+        AlertDialog(
+            onDismissRequest = { showPesoInfoDialog = false },
+            title = { Text("¿Qué significa Peso?", style = MaterialTheme.typography.titleMedium) },
+            text = { Text("Representa la ponderación que tendrá en el cálculo del promedio.", style = MaterialTheme.typography.labelMedium) },
+            confirmButton = {
+                TextButton(
+                    onClick = { showPesoInfoDialog = false },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Shadow50
+                    ),
+                ) {
+                    Text("Entendido")
+                }
+            }
+        )
     }
 
     HeaderBack(
@@ -128,11 +159,20 @@ fun EditCourseScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIconId = R.drawable.chart_pie,
                 suffix = {
-                    Text(
-                        text = "Peso",
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 5.dp)
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Peso",
+                            style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                        IconButton(onClick = { showPesoInfoDialog = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.info_outline),
+                                contentDescription = "Información sobre Peso",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 },
                 maxLength = 3,
                 maxLines = 1

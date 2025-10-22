@@ -7,12 +7,9 @@
 ![](https://img.shields.io/badge/Google%20Play-34A853?style=flat&logo=google-play&logoColor=white)
 ![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)
 
-> [!NOTE]
-> Se está en proceso de lanzar la 2.0.0 en Play Store; estará disponible en los próximos días.
-
 Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de usar la calculadora para calcular tu promedio. Calcula tu promedio ponderado, conoce cuántos puntos te faltan para aprobar y proyecta notas a futuro rápidamente. Creado y diseñado con la colaboración de: [@Kobalt09](https://github.com/Kobalt09), [@Queik5450](https://github.com/Queik5450), [@Bloodbay8](https://github.com/Bloodbay8) y [@davijuan69](https://github.com/davijuan69)
 
-> 👀 [Descargar última versión](https://github.com/DanielCarrenoMar/Grader/releases/latest/download/Grader.apk)
+> 👀 [Descargar última versión desde la Play Store](https://play.google.com/store/apps/details?id=com.app.grader)
 
 ## Características ⭐
 - Visualiza tu rendimiento con gráficos generados a partir de tus calificaciones.
