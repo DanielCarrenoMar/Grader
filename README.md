@@ -24,8 +24,7 @@ Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de us
 - Material3 (UI)
 
 # Características planeadas a Futuro 🔮
-- Multilingüe.![Screenshot_2025-09-04-14-08-45-263-edit_com app grader debug](https://github.com/user-attachments/assets/515d8e0c-731e-49c6-8221-4a9da17a2409)
-
+- Multilingüe.
 - Animaciones cuando una asignatura cambia de estado (finalizada, pasada, reprobada).
 - Estadísticas de mejor/peor asignatura, etc.
 - Crear tus propios tipos de nota con mínimo y máximo personalizado.
