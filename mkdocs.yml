@@ -1,21 +1,17 @@
-site_name: Grader
-site_description: Documentación del proyecto Grader (Android)
-site_url: https://<TU_USUARIO_O_ORG>.github.io/Grader/
-repo_name: <TU_USUARIO_O_ORG>/Grader
-repo_url: https://github.com/<TU_USUARIO_O_ORG>/Grader
-edit_uri: edit/main/docs/
-
-docs_dir: docs
-
+site_name: Documentación de Grader
 theme:
   name: material
-  language: es
   features:
     - navigation.tabs
     - navigation.sections
+    - toc.integrate
     - navigation.top
+    - search.suggest
     - search.highlight
+    - content.tabs.link
+    - content.code.annotation
     - content.code.copy
+  language: es
   palette:
     - scheme: default
       primary: blue
@@ -23,33 +19,45 @@ theme:
   font:
     text: Roboto
 
-plugins:
-  - search
 
 markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - admonition
-  - toc:
-      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - Inicio: index.md
-  - Arquitectura: arquitectura.md
-  - Desarrollo:
-      - Prerrequisitos: developing/prerequisites.md
-      - Setup: developing/setup.md
-      - Running: developing/running.md
-      - Debugging: developing/debugging.md
-      - Testing:
-          - Overview: testing/overview.md
-          - Prerrequisitos: testing/prerequisites.md
-          - Running: testing/running.md
-      - Releasing: releasing/overview.md
-  - Contribuir:
-      - Owner: owner.md
-      - Contributing: contributing.md
-      - Guía de contribución: contributing/how-to.md
-  - Legal:
-      - Política de privacidad: legal/privacidad.md
-      - Licencia: legal/licencia.md
+  - 'Inicio': 'index.md'
+  - 'Arquitectura': 'arquitectura.md'
+  - 'Desarrollo':
+    - 'Prerrequisitos': 'developing/prerequisites.md'
+    - 'Setup': 'developing/setup.md'
+    - 'Running': 'developing/running.md'
+    - 'Debugging': 'developing/debugging.md'
+    - 'Testing':
+      - 'Overview': 'testing/overview.md'
+      - 'Prerrequisitos': 'testing/prerequisites.md'
+      - 'Running': 'testing/running.md'
+    - 'Releasing': 'releasing/overview.md'
+  - 'Contribuir':
+    - 'Owner': 'owner.md'
+    - 'Contributing': 'contributing.md'
+    - 'Guía de contribución': 'contributing/how-to.md'
+  - 'Legal':
+    - 'Política de privacidad': 'legal/privacidad.md'
+    - 'Licencia': 'legal/licencia.md'
