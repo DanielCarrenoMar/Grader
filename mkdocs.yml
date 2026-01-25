@@ -1,0 +1,55 @@
+site_name: Grader
+site_description: Documentación del proyecto Grader (Android)
+site_url: https://<TU_USUARIO_O_ORG>.github.io/Grader/
+repo_name: <TU_USUARIO_O_ORG>/Grader
+repo_url: https://github.com/<TU_USUARIO_O_ORG>/Grader
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: blue
+      accent: purple
+  font:
+    text: Roboto
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Inicio: index.md
+  - Arquitectura: arquitectura.md
+  - Desarrollo:
+      - Prerrequisitos: developing/prerequisites.md
+      - Setup: developing/setup.md
+      - Running: developing/running.md
+      - Debugging: developing/debugging.md
+      - Testing:
+          - Overview: testing/overview.md
+          - Prerrequisitos: testing/prerequisites.md
+          - Running: testing/running.md
+      - Releasing: releasing/overview.md
+  - Contribuir:
+      - Owner: owner.md
+      - Contributing: contributing.md
+      - Guía de contribución: contributing/how-to.md
+  - Legal:
+      - Política de privacidad: legal/privacidad.md
+      - Licencia: legal/licencia.md

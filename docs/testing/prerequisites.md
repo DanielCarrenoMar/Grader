@@ -1,0 +1,3 @@
+# Prerequisites
+
+REPLACE ME with a list of the prerequisites that I need to run the tests, including permissions, test data, configuration, etc...
