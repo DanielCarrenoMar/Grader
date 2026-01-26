@@ -1,23 +1,3 @@
-# Grader
-
-
-
-Beneficios principales:
-- Cálculos automáticos y consistentes de promedios y ponderaciones.
-- Persistencia local con migraciones versionadas y sin conexión a internet.
-- Experiencia moderna con Compose, navegación animada y gráficos interactivos.
-- Configuraciones flexibles (tema claro/oscuro/sistema, tipos de calificación).
-- Flujo claro para registrar, editar y revisar historial por semestre/asignatura.
-
-Características clave:
-- Gestión de semestres, cursos, calificaciones y subcalificaciones.
-- Gráficas de progreso (Vico y Donut) y tarjetas resumidas.
-- Navegación con transiciones animadas y rutas tipadas.
-- DI con Hilt y configuración persistida en preferencias.
-- Base de datos Room con migraciones 3→4 y 4→5.
-
-Changelog: revisa la sección de Releases del repositorio para ver versiones y notas de cambios.
-
 # Arquitectura
 
 App modularizada en un solo módulo `app`, con capas claras de UI (Compose), dominio y datos. Se usan Hilt para inyección, Room para persistencia local y Navigation Compose para orquestar pantallas.
@@ -48,15 +28,13 @@ App modularizada en un solo módulo `app`, con capas claras de UI (Compose), dom
 
 ## Scope
 
-En alcance:
-- Gestión local de calificaciones, semestres y cursos en Android (minSdk 24).
-- Cálculo y visualización de promedios y proyecciones.
-- Preferencias locales (tema, tipo de calificación) y navegación en app.
-
-Fuera de alcance (actual):
-- Sin backend ni sincronización en la nube.
-- Sin exportaciones/respaldos automáticos más allá del almacenamiento local.
-- Sin soporte multilingüe (planeado) ni animaciones avanzadas por estado (planeado).
+- [x] Gestión local de calificaciones, semestres y cursos en Android.
+- [x] Cálculo y visualización de promedios y proyecciones.
+- [x] Preferencias locales (tema, tipo de calificación) y navegación en app.
+- [ ] Sincronización en la nube.
+- [ ] Exportaciones/respaldos automáticos más allá del almacenamiento local.
+- [ ] Soporte multilingüe ni animaciones avanzadas por estado.
+- [ ] Animaciones al cambiar las tarjestas de materias de estado.
 
 ## Design Decisions
 

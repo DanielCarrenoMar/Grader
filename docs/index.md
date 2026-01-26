@@ -1,7 +1,6 @@
 # Grader. App de Calificaciones
 
 Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de usar la calculadora para calcular tu promedio.
-
 Calcula tu promedio ponderado, conoce cuántos puntos te faltan para aprobar y proyecta notas a futuro rápidamente.
 
 - [Ver en Google Play](https://play.google.com/store/apps/details?id=com.app.grader)
