@@ -23,14 +23,14 @@ Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de us
 - Vico (gráficos)
 - Material3 (UI)
 
-# Características planeadas a Futuro 🔮
+## Características planeadas a Futuro 🔮
 - Multilingüe.
 - Animaciones cuando una asignatura cambia de estado (finalizada, pasada, reprobada).
 - Estadísticas de mejor/peor asignatura, etc.
 - Crear tus propios tipos de nota con mínimo y máximo personalizado.
 - Exportar los datos de la app a un archivo local.
 
-# Documentación
+## Documentación 📖
 Puedes ver la documentacion online [aquí](https://danielcarrenomar.github.io/Grader/).
   
 ### Imagenes
