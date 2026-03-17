@@ -1,27 +1,27 @@
 [versions]
-agp = "8.13.0"
-hiltAndroid = "2.51.1"
-hiltNavigationCompose = "1.2.0"
-kotlin = "2.1.10"
-coreKtx = "1.16.0"
+agp = "9.1.0"
+hiltAndroid = "2.59.2"
+hiltNavigationCompose = "1.3.0"
+kotlin = "2.3.10"
+coreKtx = "1.18.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.2"
-activityCompose = "1.10.1"
-composeBom = "2025.07.00"
-roomVersion = "2.7.2"
-material = "1.12.0"
-activity = "1.10.1"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.13.0"
+composeBom = "2026.03.00"
+roomVersion = "2.8.4"
+material = "1.13.0"
+activity = "1.13.0"
 constraintlayout = "2.2.1"
-navigationCompose = "2.9.2"
-kotlinxSerialization = "1.8.0"
-ksp = "2.1.10-1.0.30"
-vico = "2.1.0"
-donut = "2.2.4"
-mockito = "6.0.0"
+navigationCompose = "2.9.7"
+kotlinxSerialization = "1.10.0"
+ksp = "2.3.5"
+vico = "3.0.3"
+donut = "2.3.1"
+mockito = "6.2.3"
 junitKtx = "1.3.0"
-roomTestingAndroid = "2.7.2"
+roomTestingAndroid = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,7 +59,6 @@ androidx-room-testing-android = { group = "androidx.room", name = "room-testing-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrainsKotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

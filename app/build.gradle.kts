@@ -1,28 +1,38 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsKotlinSerialization)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.android.hilt)
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+    }
+}
+
 android {
     namespace = "com.app.grader"
-    compileSdk = 35
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
+    compileSdk = 36
 
     sourceSets {
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest") {
+            assets {
+                directories += "$projectDir/schemas"
+            }
+        }
     }
 
     defaultConfig {
         applicationId = "com.app.grader"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 21
         versionName = "2.0.1"
         ndk.debugSymbolLevel = "FULL"
@@ -48,9 +58,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
