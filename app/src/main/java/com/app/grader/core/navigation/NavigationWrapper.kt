@@ -1,6 +1,5 @@
 package com.app.grader.core.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,6 +31,13 @@ fun NavController.navigatePop(route: Any) {
     }
 }
 
+fun NavController.navigateSingleTop(route: Any, builder: androidx.navigation.NavOptionsBuilder.() -> Unit = {}) {
+    this.navigate(route) {
+        launchSingleTop = true
+        builder()
+    }
+}
+
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
@@ -44,41 +50,41 @@ fun NavigationWrapper() {
     ) {
         composable<Home> {
             HomeScreen(
-                { navController.navigate(AllGrades) },
-                { navController.navigate(Config) },
-                { navController.navigate(Record) },
-                {  courseId ->  navController.navigate(Course(courseId)) },
-                {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
-                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
+                { navController.navigateSingleTop(AllGrades) },
+                { navController.navigateSingleTop(Config) },
+                { navController.navigateSingleTop(Record) },
+                {  courseId ->  navController.navigateSingleTop(Course(courseId)) },
+                {  semesterId, courseId ->  navController.navigateSingleTop(EditCourse(semesterId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigateSingleTop(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
         composable<AllGrades> {
             AllGradesScreen (
                 { navController.navigatePop(Home) },
-                { navController.navigate(Config) },
-                { navController.navigate(Record) },
-                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
-                { courseId -> navController.navigate(Course(courseId)) },
+                { navController.navigateSingleTop(Config) },
+                { navController.navigateSingleTop(Record) },
+                { semesterId, courseId, gradeId -> navController.navigateSingleTop(EditGrade(semesterId, courseId, gradeId)) },
+                { courseId -> navController.navigateSingleTop(Course(courseId)) },
             )
         }
 
         composable<Config> {
             ConfigScreen(
                 { navController.navigatePop(Home) },
-                { navController.navigate(AllGrades) },
-                { navController.navigate(Record) },
+                { navController.navigateSingleTop(AllGrades) },
+                { navController.navigateSingleTop(Record) },
             )
         }
 
         composable<Record>{
             RecordScreen(
                 { navController.navigatePop(Home) },
-                { navController.navigate(AllGrades) },
-                { navController.navigate(Config) },
-                { semesterId -> navController.navigate(EditSemester(semesterId)) },
-                { semesterId -> navController.navigate(RecordSemester(semesterId)) },
-                { navController.navigate(TransferSemester) },
+                { navController.navigateSingleTop(AllGrades) },
+                { navController.navigateSingleTop(Config) },
+                { semesterId -> navController.navigateSingleTop(EditSemester(semesterId)) },
+                { semesterId -> navController.navigateSingleTop(RecordSemester(semesterId)) },
+                { navController.navigateSingleTop(TransferSemester) },
             )
         }
 
@@ -92,10 +98,10 @@ fun NavigationWrapper() {
             RecordSemesterScreen(
                 recordSemester.semesterId,
                 { navController.popBackStack() },
-                { semesterId -> navController.navigate(EditSemester(semesterId)) },
-                {  courseId ->  navController.navigate(Course(courseId)) },
-                {  semesterId, courseId ->  navController.navigate(EditCourse(semesterId, courseId)) },
-                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
+                { semesterId -> navController.navigateSingleTop(EditSemester(semesterId)) },
+                {  courseId ->  navController.navigateSingleTop(Course(courseId)) },
+                {  semesterId, courseId ->  navController.navigateSingleTop(EditCourse(semesterId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigateSingleTop(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
@@ -109,8 +115,8 @@ fun NavigationWrapper() {
             CourseScreen (
                 course.courseId,
                 { navController.popBackStack() },
-                {semesterId, courseId -> navController.navigate(EditCourse(semesterId, courseId)) },
-                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
+                {semesterId, courseId -> navController.navigateSingleTop(EditCourse(semesterId, courseId)) },
+                { semesterId, courseId, gradeId -> navController.navigateSingleTop(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
@@ -149,7 +155,7 @@ fun NavigationWrapper() {
                 editCourse.semesterId,
                 editCourse.courseId,
                 { navController.popBackStack() },
-                { semesterId, courseId, gradeId -> navController.navigate(EditGrade(semesterId, courseId, gradeId)) },
+                { semesterId, courseId, gradeId -> navController.navigateSingleTop(EditGrade(semesterId, courseId, gradeId)) },
             )
         }
 
