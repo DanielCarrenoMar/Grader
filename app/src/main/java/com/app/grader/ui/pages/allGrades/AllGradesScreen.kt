@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -56,9 +56,9 @@ fun AllGradesScreen(
     viewModel: AllGradesViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var isGradesEmpty  by remember { mutableStateOf(true) }
+    val showBottomSheet = remember { mutableStateOf(false) }
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
+    val isGradesEmpty  = remember { mutableStateOf(true) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -67,10 +67,10 @@ fun AllGradesScreen(
         }
     }
 
-    if (showDeleteConfirmation) {
+    if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
             { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
-            { showDeleteConfirmation = false },
+            { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
         )
     }
@@ -106,7 +106,7 @@ fun AllGradesScreen(
 
                 itemsIndexed(viewModel.courses.value) { index, course ->
                     if (viewModel.grades.value[index].isEmpty()) return@itemsIndexed
-                    isGradesEmpty = false
+                    isGradesEmpty.value = false
                     CardContainer(
                         onClick = {navigateToCourse(course.id)},
                     ){
@@ -138,13 +138,13 @@ fun AllGradesScreen(
                             grade = grade,
                             onClick = {
                                 viewModel.setShowGrade(grade.id)
-                                showBottomSheet = true
+                                showBottomSheet.value = true
                             }
                         )
                         Spacer(Modifier.height(8.dp))
                     }
                 }
-                if (isGradesEmpty) {
+                if (isGradesEmpty.value) {
                     item {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,10 +169,10 @@ fun AllGradesScreen(
             }
         }
     }
-    if (showBottomSheet) {
+    if (showBottomSheet.value) {
         GradeBottomSheet(
             onDismissRequest = {
-                showBottomSheet = false
+                showBottomSheet.value = false
             },
             sheetState = sheetState,
             showGrade = viewModel.showGrade.value,
@@ -181,9 +181,9 @@ fun AllGradesScreen(
                     -1,
                     viewModel.showGrade.value.courseId,
                     viewModel.showGrade.value.id
-                ); showBottomSheet = false
+                ); showBottomSheet.value = false
             },
-            deleteOnClick = { showDeleteConfirmation = true; showBottomSheet = false }
+            deleteOnClick = { showDeleteConfirmation.value = true; showBottomSheet.value = false }
         )
     }
 }

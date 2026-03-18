@@ -21,18 +21,16 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -62,7 +60,7 @@ fun RecordScreen(
     navigateToTransferSemester: () -> Unit,
     viewModel: RecordViewModel = hiltViewModel(),
 ) {
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -75,10 +73,10 @@ fun RecordScreen(
         }
     }
 
-    if (showDeleteConfirmation) {
+    if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
             { viewModel.deleteSelectSemester { viewModel.getAllSemestersAndCalTotalAverage() } },
-            { showDeleteConfirmation = false },
+            { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteSemester.value.title}?",
         )
     }
@@ -167,7 +165,7 @@ fun RecordScreen(
                         onEdit =  { navigateToEditSemester(semester.id) },
                         onDelete =  {
                             viewModel.selectDeleteSemester(semester)
-                            showDeleteConfirmation = true
+                            showDeleteConfirmation.value = true
                         },
                     )
                 }
@@ -257,7 +255,7 @@ fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, c
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "${totalWeight}",
+                        text = "$totalWeight",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold

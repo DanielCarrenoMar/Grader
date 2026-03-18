@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -56,7 +56,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val courses by viewModel.courses
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -76,10 +76,10 @@ fun HomeScreen(
         }
     }
 
-    if (showDeleteConfirmation) {
+    if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
             { viewModel.deleteSelectedCourse { viewModel.getCoursesAndCalTotalAverageFromSemester(null) } },
-            { showDeleteConfirmation = false },
+            { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
         )
     }
@@ -153,7 +153,7 @@ fun HomeScreen(
                             onEdit =   { navigateToEditCourse(-1, course.id) },
                             onDelete = {
                                 viewModel.selectDeleteCourse(course)
-                                showDeleteConfirmation = true
+                                showDeleteConfirmation.value = true
                             },
                             type = courseCardType
                         )

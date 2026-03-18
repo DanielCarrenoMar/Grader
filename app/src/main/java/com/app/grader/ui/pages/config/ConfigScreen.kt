@@ -17,9 +17,9 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -36,7 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -58,7 +58,7 @@ fun ConfigScreen(
     navigateToRecord: () -> Unit,
     viewModel: ConfigViewModel = hiltViewModel(),
 ) {
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
 
@@ -69,10 +69,10 @@ fun ConfigScreen(
         }
     }
 
-    if (showDeleteConfirmation) {
+    if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
             { viewModel.deleteAll() },
-            { showDeleteConfirmation = false },
+            { showDeleteConfirmation.value = false },
             "Esta opción borrara TODOS los datos de la app.",
         )
     }
@@ -163,7 +163,7 @@ fun ConfigScreen(
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
-                onClick = { showDeleteConfirmation = true },
+                onClick = { showDeleteConfirmation.value = true },
                 contentColor = Error500,
                 icon = R.drawable.trash_outline,
                 text = "Eliminar todos los datos",
@@ -230,7 +230,7 @@ fun SelectorCard(
                     onValueChange = {},
                     label = { Text(title) },
                     modifier = Modifier
-                        .menuAnchor(MenuAnchorType.PrimaryEditable)
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
                         .fillMaxWidth(),
                 )
                 ExposedDropdownMenu(

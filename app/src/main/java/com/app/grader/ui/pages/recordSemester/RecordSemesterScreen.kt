@@ -17,7 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -124,12 +124,13 @@ fun RecordSemesterScreen(
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         ),
-        topAppBarColors = TopAppBarColors(
-            MaterialTheme.colorScheme.inverseSurface,
-            MaterialTheme.colorScheme.surfaceVariant,
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.onBackground,
-            MaterialTheme.colorScheme.primary,
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.inverseSurface,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            navigationIconContentColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            subtitleContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.primary,
         )
     ) { innerPadding ->
         LazyColumn(
