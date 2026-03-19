@@ -14,6 +14,7 @@ interface GradeDao {
             "    g.course_id,\n" +
             "    g.title,\n" +
             "    g.description,\n" +
+            "    g.created_at,\n" +
             "    g.percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +
@@ -21,7 +22,9 @@ interface GradeDao {
             "LEFT JOIN\n" +
             "    sub_grade sg ON sg.grade_id = g.id\n" +
             "GROUP BY\n" +
-            "    g.id;")
+            "    g.id\n" +
+            "ORDER BY\n" +
+            "    g.created_at DESC")
     suspend fun getAllGrades(): List<GradeEntity>
 
     @Query("SELECT\n" +
@@ -29,6 +32,7 @@ interface GradeDao {
             "    g.course_id,\n" +
             "    g.title,\n" +
             "    g.description,\n" +
+            "    g.created_at,\n" +
             "    g.percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +
@@ -37,7 +41,9 @@ interface GradeDao {
             "    sub_grade sg ON sg.grade_id = g.id\n" +
             "WHERE course_id = :courseId\n" +
             "GROUP BY\n" +
-            "    g.id;\n")
+            "    g.id\n" +
+            "ORDER BY\n" +
+            "    g.created_at DESC")
     suspend fun getGradesFromCourseId(courseId: Int): List<GradeEntity>
 
     @Query("SELECT \n" +
@@ -45,6 +51,7 @@ interface GradeDao {
             "    g.course_id,\n" +
             "    g.title,\n" +
             "    g.description,\n" +
+            "    g.created_at,\n" +
             "    g.percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM \n" +
@@ -56,7 +63,9 @@ interface GradeDao {
             "WHERE \n" +
             "   ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )\n" +
             "GROUP BY \n" +
-            "    g.id;")
+            "    g.id\n" +
+            "ORDER BY\n" +
+            "    g.created_at DESC")
     suspend fun getGradesFromSemesterId(semesterId: Int?): List<GradeEntity>
 
     @Query("SELECT \n" +
@@ -64,6 +73,7 @@ interface GradeDao {
             "    g.course_id,\n" +
             "    g.title,\n" +
             "    g.description,\n" +
+            "    g.created_at,\n" +
             "    g.percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM \n" +
@@ -75,7 +85,9 @@ interface GradeDao {
             "WHERE \n" +
             "   ( (:semesterId IS NULL AND semester_id NOT NULL) OR semester_id != :semesterId )\n" +
             "GROUP BY \n" +
-            "    g.id;")
+            "    g.id\n" +
+            "ORDER BY\n" +
+            "    g.created_at DESC")
     suspend fun getGradesFromSemesterLessThanId(semesterId: Int?): List<GradeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -101,6 +113,7 @@ interface GradeDao {
             "    g.course_id,\n" +
             "    g.title,\n" +
             "    g.description,\n" +
+            "    g.created_at,\n" +
             "    g.percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +

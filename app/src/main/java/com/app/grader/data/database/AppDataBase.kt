@@ -3,15 +3,22 @@ package com.app.grader.data.database
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.app.grader.data.database.converters.DateConverter
 import com.app.grader.data.database.entitites.*
 import com.app.grader.data.database.dao.*
 
+@TypeConverters(DateConverter::class)
 @Database(
-    version = 5,
+    version = 6,
     entities = [SemesterEntity::class,CourseEntity::class, GradeEntity::class, SubGradeEntity::class],
-    exportSchema = true
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 5, to = 6, spec = AppDatabase.Migration5To6::class),
+    ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -23,7 +30,37 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getSubGradeDao(): SubGradeDao
 
+    /**
+     * Se agrega la columna created_at a grade para almacenar el tiempo de creación de cada calificación.
+     */
+    class Migration5To6 : AutoMigrationSpec {
+        override fun onPostMigrate(db: SupportSQLiteDatabase) {
+            // Asigna el tiempo actual a los registros que tengan 0 o NULL en created_at
+            val currentTime = System.currentTimeMillis()
+            db.execSQL("UPDATE grade SET created_at = $currentTime WHERE created_at IS NULL OR created_at = 0")
+        }
+    }
+
     companion object {
+        /**
+         * Agrega tabla semester y agregar semester_id  que puede ser null en courses.
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS semester (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        title TEXT NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    " ALTER TABLE course ADD COLUMN semester_id INTEGER"
+                )
+            }
+        }
+
         /**
          * Se cambia las calificaciones base 20 a un porcentaje de esta para usar tipos de calificacion variables
          * Grade: grade -> grade_percentage
@@ -72,25 +109,6 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 db.execSQL("DROP TABLE sub_grade")
                 db.execSQL("ALTER TABLE sub_grade_new RENAME TO sub_grade")
-            }
-        }
-
-        /**
-         * Agrega tabla semester y agregar semester_id  que puede ser null en courses.
-         */
-        val MIGRATION_4_5 = object : Migration(4, 5) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL(
-                    """
-                    CREATE TABLE IF NOT EXISTS semester (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        title TEXT NOT NULL
-                    )
-                    """.trimIndent()
-                )
-                db.execSQL(
-                    " ALTER TABLE course ADD COLUMN semester_id INTEGER"
-                )
             }
         }
     }

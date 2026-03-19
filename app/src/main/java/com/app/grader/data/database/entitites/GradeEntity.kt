@@ -3,6 +3,7 @@ package com.app.grader.data.database.entitites
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(tableName = "grade")
 data class GradeEntity(
@@ -13,4 +14,5 @@ data class GradeEntity(
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "grade_percentage") val gradePercentage: Double,
     @ColumnInfo(name = "percentage") val percentage: Double,
+    @ColumnInfo(name = "created_at", defaultValue = "0") val createdAt: Date = Date()
 )
