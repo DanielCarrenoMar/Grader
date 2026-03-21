@@ -1,6 +1,8 @@
 package com.app.grader.ui.pages.config
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,7 +24,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +62,7 @@ fun ConfigScreen(
     val showDeleteConfirmation = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    val isDebugBuild = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -168,6 +170,10 @@ fun ConfigScreen(
                 icon = R.drawable.trash_outline,
                 text = "Eliminar todos los datos",
             )
+            if (isDebugBuild) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                DebugOptionsComp()
+            }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = "Grader $versionName",
