@@ -82,7 +82,7 @@ fun CourseCard(
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Column (
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier.weight(1f).fillMaxHeight().padding(0.dp,0.dp,8.dp,0.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ){
                 TitleIcon(
