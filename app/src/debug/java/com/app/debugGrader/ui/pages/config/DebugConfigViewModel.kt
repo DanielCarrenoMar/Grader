@@ -1,10 +1,10 @@
-package com.app.grader.ui.pages.config
+package com.app.debugGrader.ui.pages.config
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.DebugDatabaseSeeder
+import com.app.debugGrader.data.database.DebugDatabaseSeeder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,9 +29,3 @@ class DebugConfigViewModel @Inject constructor(
         }
     }
 }
-
-
-
-
-
-

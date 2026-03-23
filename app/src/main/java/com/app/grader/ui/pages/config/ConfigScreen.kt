@@ -44,6 +44,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
@@ -172,7 +173,7 @@ fun ConfigScreen(
             )
             if (isDebugBuild) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                DebugOptionsComp()
+                DebugHelper.DebugOptionsComp()
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(

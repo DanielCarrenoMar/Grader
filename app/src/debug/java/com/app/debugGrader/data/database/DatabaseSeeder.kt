@@ -1,6 +1,7 @@
-package com.app.grader.data.database
+package com.app.debugGrader.data.database
 
 import androidx.room.withTransaction
+import com.app.grader.data.database.AppDatabase
 import com.app.grader.data.database.entitites.CourseEntity
 import com.app.grader.data.database.entitites.GradeEntity
 import com.app.grader.data.database.entitites.SemesterEntity

@@ -1,4 +1,4 @@
-package com.app.grader.ui.pages.config
+package com.app.debugGrader.ui.pages.config
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
