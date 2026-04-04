@@ -1,11 +1,13 @@
 package com.app.grader.ui.pages.course
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -38,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -49,6 +54,7 @@ import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
 import com.app.grader.ui.componets.GradeBottomSheet
 import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.InfoAlertDialogComp
 import com.app.grader.ui.componets.MenuAction
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.card.CardContainer
@@ -71,6 +77,7 @@ fun CourseScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteGradeConfirmation by remember { mutableStateOf(false) }
     var showDeleteSelfConfirmation by remember { mutableStateOf(false) }
+    var showQuickEditInfoDialog by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -95,6 +102,18 @@ fun CourseScreen(
             "¿Realmente desea eliminar ${viewModel.course.value.title}?",
         )
     }
+    if (showQuickEditInfoDialog) {
+        InfoAlertDialogComp(
+            title = "Edición rápida",
+            message = "Mantén pulsada una calificación para entrar en edición rápida.",
+            onDismiss = { showQuickEditInfoDialog = false }
+        )
+    }
+
+    BackHandler(enabled = !showBottomSheet && viewModel.isEditingGrade.value) {
+        viewModel.isEditingGrade.value = false
+    }
+
     HeaderBack(
         title = {
             Text(
@@ -158,6 +177,14 @@ fun CourseScreen(
                                 style = MaterialTheme.typography.labelMedium,
                                 color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
                             )
+                            Spacer(Modifier.weight(1f))
+                            IconButton(onClick = { showQuickEditInfoDialog = true }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.info_outline),
+                                    contentDescription = "Información sobre Edición rápida",
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(15.dp))
                         if (viewModel.isLoading.value) {
@@ -239,22 +266,30 @@ fun CourseScreen(
                 )
             }
         }
-        FloatingMenuComp(
-            listOf(
-                FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
-                    if (viewModel.totalPercentaje.value.getPercentage() < 100.0) {
-                        navigateToEditGrade(viewModel.course.value.semesterId ?: -1 ,courseId, -1)
-                    } else coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
-                    }
-                },
+        if (!viewModel.isEditingGrade.value) {
+            FloatingMenuComp(
+                listOf(
+                    FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
+                        if (viewModel.totalPercentaje.value.getPercentage() < 100.0) {
+                            navigateToEditGrade(viewModel.course.value.semesterId ?: -1, courseId, -1)
+                        } else coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
+                        }
+                    },
+                )
             )
-        )
+        }
     }
 }
 
 @Composable
-fun InfoCourseCard(average: Grade, accumulatePoints: Grade, pendingPoints: Grade, uc: Int) {
+fun InfoCourseCard(
+    average: Grade,
+    accumulatePoints: Grade,
+    pendingPoints: Grade,
+    uc: Int,
+    modifier: Modifier = Modifier,
+) {
     val animatedAccumulatePoints by animateFloatAsState(
         targetValue = accumulatePoints.getGrade().toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),

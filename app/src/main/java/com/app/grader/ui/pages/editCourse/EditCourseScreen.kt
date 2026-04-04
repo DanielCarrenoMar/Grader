@@ -16,11 +16,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
+import com.app.grader.R
+import com.app.grader.ui.componets.EditScreenInputComp
+import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.InfoAlertDialogComp
+import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -38,12 +41,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.app.grader.R
-import com.app.grader.ui.componets.EditScreenInputComp
-import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.theme.Shadow50
-import kotlinx.coroutines.launch
-import java.security.InvalidParameterException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,21 +63,10 @@ fun EditCourseScreen(
     }
 
     if (showPesoInfoDialog) {
-        AlertDialog(
-            onDismissRequest = { showPesoInfoDialog = false },
-            title = { Text("¿Qué significa Peso?", style = MaterialTheme.typography.titleMedium) },
-            text = { Text("Representa la ponderación que tendrá en el cálculo del promedio.", style = MaterialTheme.typography.labelMedium) },
-            confirmButton = {
-                TextButton(
-                    onClick = { showPesoInfoDialog = false },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Shadow50
-                    ),
-                ) {
-                    Text("Entendido")
-                }
-            }
+        InfoAlertDialogComp(
+            title = "¿Qué significa Peso?",
+            message = "Representa la ponderación que tendrá en el cálculo del promedio.",
+            onDismiss = { showPesoInfoDialog = false }
         )
     }
 
