@@ -58,6 +58,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    
+    testOptions {
+        unitTests.all {
+            it.jvmArgs("-XX:+EnableDynamicAgentLoading")
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -80,6 +87,8 @@ dependencies {
 
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
+    implementation(libs.app.review)
+    implementation(libs.app.review.ktx)
 
     implementation(libs.material)
     implementation(libs.androidx.activity)

@@ -1,6 +1,7 @@
 [versions]
 agp = "9.1.0"
 appUpdate = "2.1.0"
+appReview = "2.0.2"
 hiltAndroid = "2.59.2"
 hiltNavigationCompose = "1.3.0"
 kotlin = "2.3.10"
@@ -30,6 +31,8 @@ androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifec
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+app-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "appReview" }
+app-review = { module = "com.google.android.play:review", version.ref = "appReview" }
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
