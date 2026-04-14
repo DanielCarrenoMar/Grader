@@ -3,7 +3,7 @@ package com.app.grader.domain.usecase.review
 import android.app.Activity
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
-import com.app.grader.infrastructure.review.InAppReviewHelper
+import com.app.grader.service.review.InAppReviewHelper
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -13,11 +13,11 @@ import org.junit.Test
 import org.mockito.kotlin.*
 import java.util.concurrent.TimeUnit
 
-class LaunchInAppReviewUseCaseTest {
+class LaunchInAppReviewIfValidUseCaseTest {
 
     private lateinit var appConfig: AppConfig
     private lateinit var inAppReviewHelper: InAppReviewHelper
-    private lateinit var useCase: LaunchInAppReviewUseCase
+    private lateinit var useCase: LaunchInAppReviewIfValidUseCase
     private lateinit var activity: Activity
 
     private val MILLIS_7_DAYS = TimeUnit.DAYS.toMillis(7)
@@ -28,7 +28,7 @@ class LaunchInAppReviewUseCaseTest {
         appConfig = mock()
         inAppReviewHelper = mock()
         activity = mock()
-        useCase = LaunchInAppReviewUseCase(appConfig, inAppReviewHelper)
+        useCase = LaunchInAppReviewIfValidUseCase(appConfig, inAppReviewHelper)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.app.grader.infrastructure.review
+package com.app.grader.service.review
 
 import android.app.Activity
 import com.google.android.play.core.review.ReviewManager

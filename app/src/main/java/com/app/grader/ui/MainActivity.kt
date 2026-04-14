@@ -11,7 +11,7 @@ import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.core.appConfig.TypeTheme
 import com.app.grader.core.navigation.NavigationWrapper
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.usecase.review.LaunchInAppReviewUseCase
+import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
 import com.app.grader.ui.theme.NavigationGuideTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -20,14 +20,14 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     private val appConfig by lazy { AppConfig(this) }
 
-    @Inject lateinit var launchInAppReviewUseCase: LaunchInAppReviewUseCase
+    @Inject lateinit var launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
             LaunchedEffect(Unit) {
-                launchInAppReviewUseCase(this@MainActivity).collect { resource ->
+                launchInAppReviewIfValidUseCase(this@MainActivity).collect { resource ->
                     when (resource) {
                         is Resource.Loading -> {}
                         is Resource.Success -> {

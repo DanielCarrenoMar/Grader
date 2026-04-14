@@ -3,13 +3,13 @@ package com.app.grader.domain.usecase.review
 import android.app.Activity
 import com.app.grader.core.appConfig.AppConfig
 import com.app.grader.domain.model.Resource
-import com.app.grader.infrastructure.review.InAppReviewHelper
+import com.app.grader.service.review.InAppReviewHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LaunchInAppReviewUseCase @Inject constructor(
+class LaunchInAppReviewIfValidUseCase @Inject constructor(
     private val appConfig: AppConfig,
     private val inAppReviewHelper: InAppReviewHelper
 ) {
