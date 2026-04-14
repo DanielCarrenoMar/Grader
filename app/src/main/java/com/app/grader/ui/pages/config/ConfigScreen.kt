@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
@@ -91,7 +93,8 @@ fun ConfigScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(10.dp))
             SelectorCard(
@@ -175,7 +178,23 @@ fun ConfigScreen(
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 DebugHelper.DebugOptionsComp()
             }
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Launch Count: ${viewModel.launchCount.intValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Review Asked Count: ${viewModel.reviewAskedCount.intValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Last Review Asked Time: ${viewModel.lastReviewAskedTimeDays.longValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Review Completed: ${viewModel.reviewCompleted.value}",
+                style = MaterialTheme.typography.bodySmall,
+            )
             Text(
                 text = "Grader $versionName",
                 style = MaterialTheme.typography.bodyMedium,

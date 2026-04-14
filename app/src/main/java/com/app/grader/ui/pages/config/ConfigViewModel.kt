@@ -3,6 +3,8 @@ package com.app.grader.ui.pages.config
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +37,18 @@ class ConfigViewModel  @Inject constructor(
     private val _typeGrade = mutableStateOf(appConfig.getTypeGrade())
     val typeGrade = _typeGrade
 
+    private val _launchCount = mutableIntStateOf(appConfig.getLaunchCount())
+    val launchCount = _launchCount
+
+    private val _reviewAskedCount = mutableIntStateOf(appConfig.getReviewAskedCount())
+    val reviewAskedCount = _reviewAskedCount
+
+    private val _lastReviewAskedTimeDays = mutableLongStateOf((System.currentTimeMillis() - appConfig.getLastReviewAskedTime()) / (1000 * 60 * 60 * 24))
+    val lastReviewAskedTimeDays = _lastReviewAskedTimeDays
+
+    private val _reviewCompleted = mutableStateOf(appConfig.isReviewCompleted())
+    val reviewCompleted = _reviewCompleted
+
     fun restartApp(context: Context) {
         viewModelScope.launch {
             delay(1000L)
@@ -50,6 +64,10 @@ class ConfigViewModel  @Inject constructor(
         _typeTheme.value = appConfig.getTypeTheme()
         _isRoundFinalCourseAverage.value = appConfig.isRoundFinalCourseAverage()
         _typeGrade.value = appConfig.getTypeGrade()
+        _launchCount.intValue = appConfig.getLaunchCount()
+        _reviewAskedCount.intValue = appConfig.getReviewAskedCount()
+        _lastReviewAskedTimeDays.longValue = (System.currentTimeMillis() - appConfig.getLastReviewAskedTime()) / (1000 * 60 * 60 * 24)
+        _reviewCompleted.value = appConfig.isReviewCompleted()
     }
 
     fun setTypeTheme(typeTheme: TypeTheme) {
