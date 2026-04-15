@@ -101,7 +101,12 @@ fun HomeScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
-                InfoSemesterCard(viewModel.totalAverage.value, viewModel.grades.value)
+                InfoSemesterCard(
+                    viewModel.totalAverage.value,
+                    viewModel.grades.value,
+                    viewModel.totalCourses.intValue,
+                    viewModel.totalWeight.intValue
+                )
                 Spacer(modifier = Modifier.height(25.dp))
             }
             if (viewModel.isLoading.value) {

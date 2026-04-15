@@ -24,6 +24,13 @@ open class SemesterViewModel(
 ): ViewModel() {
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage
+
+    private val _totalWeight = mutableIntStateOf(0)
+    val totalWeight = _totalWeight
+
+    private val _totalCourses = mutableIntStateOf(0)
+    val totalCourses = _totalCourses
+
     private val _deleteCourse = mutableStateOf(CourseModel.DEFAULT)
     val deleteCourse = _deleteCourse
 
@@ -84,6 +91,8 @@ open class SemesterViewModel(
                 when (result) {
                     is Resource.Success -> {
                         _courses.value = result.data!!
+                        _totalCourses.intValue = _courses.value.size
+                        _totalWeight.intValue = _courses.value.sumOf { it.uc }
                         _isLoading.value = false
                     }
                     is Resource.Loading -> { _isLoading.value = true }
