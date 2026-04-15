@@ -1,5 +1,6 @@
 package com.app.grader.ui.pages.editGrade
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -20,6 +21,7 @@ import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
+import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.SaveSubGradeUseCase
@@ -40,6 +42,7 @@ class EditGradeViewModel @Inject constructor(
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
     private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeUseCase,
+    private val launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
     private val gradesCache = mutableStateOf<List<GradeModel>>(emptyList())
@@ -359,11 +362,7 @@ class EditGradeViewModel @Inject constructor(
         return result
     }
 
-    fun updateOrCreateGrade(gradeId: Int): Boolean{
-        if (_courseId.intValue == -1) return false
-
-        if (!syncInvalidInputs()) return false // Si algo sale mal retorna error
-
+    private fun saveOrCreateGrade(gradeId: Int){
         viewModelScope.launch {
             if (gradeId == -1) {
                 saveGradeWithSubGrades(
@@ -387,6 +386,18 @@ class EditGradeViewModel @Inject constructor(
                     )
                 )
             }
+        }
+    }
+
+    fun submitGrade(gradeId: Int, activity: Activity): Boolean{
+        if (_courseId.intValue == -1) return false
+
+        if (!syncInvalidInputs()) return false // Si algo sale mal retorna error
+
+        saveOrCreateGrade(gradeId)
+
+        viewModelScope.launch {
+            launchInAppReviewIfValidUseCase(activity).collect{}
         }
         return true
     }

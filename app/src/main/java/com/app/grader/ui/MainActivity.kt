@@ -20,30 +20,10 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     private val appConfig by lazy { AppConfig(this) }
 
-    @Inject lateinit var launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
-            LaunchedEffect(Unit) {
-                launchInAppReviewIfValidUseCase(this@MainActivity).collect { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {}
-                        is Resource.Success -> {
-                            if (resource.data == true) {
-                                Log.d("MainActivity", "Prompting in-app review")
-                            } else {
-                                Log.d("MainActivity", "Not prompting in-app review")
-                            }
-                        }
-                        is Resource.Error -> {
-                            Log.e("MainActivity", "Error checking in-app review: ${resource.message}")
-                        }
-                    }
-                }
-            }
-
             NavigationGuideTheme (
                 isDarkTheme = when (appConfig.getTypeTheme()){
                     TypeTheme.DARK -> true
