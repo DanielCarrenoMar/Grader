@@ -51,8 +51,7 @@ class AppConfigRepository(private val context: Context) {
     fun getLaunchCount(): Int = sharedPreferences.getInt(AppConfig.LAUNCH_COUNT, 0)
     fun setLaunchCount(count: Int) = sharedPreferences.edit { putInt(AppConfig.LAUNCH_COUNT, count) }
 
-    fun getFirstLaunchTime(): Long = sharedPreferences.getLong(AppConfig.FIRST_LAUNCH_TIME, 0L)
-    fun setFirstLaunchTime(timeMills: Long) = sharedPreferences.edit { putLong(AppConfig.FIRST_LAUNCH_TIME, timeMills) }
+    fun getFirstLaunchTime(): Long = sharedPreferences.getLong(AppConfig.FIRST_LAUNCH_TIME, System.currentTimeMillis())
 
     fun getReviewAskedCount(): Int = sharedPreferences.getInt(AppConfig.REVIEW_ASKED_COUNT, 0)
     fun setReviewAskedCount(count: Int) = sharedPreferences.edit { putInt(AppConfig.REVIEW_ASKED_COUNT, count) }
