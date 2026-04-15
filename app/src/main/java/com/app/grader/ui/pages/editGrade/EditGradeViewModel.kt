@@ -389,15 +389,17 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    fun submitGrade(gradeId: Int, activity: Activity): Boolean{
+    fun submitGrade(gradeId: Int, activity: Activity?): Boolean{
         if (_courseId.intValue == -1) return false
 
         if (!syncInvalidInputs()) return false // Si algo sale mal retorna error
 
         saveOrCreateGrade(gradeId)
 
-        viewModelScope.launch {
-            launchInAppReviewIfValidUseCase(activity).collect{}
+        if (activity != null) {
+            viewModelScope.launch {
+                launchInAppReviewIfValidUseCase(activity).collect{}
+            }
         }
         return true
     }

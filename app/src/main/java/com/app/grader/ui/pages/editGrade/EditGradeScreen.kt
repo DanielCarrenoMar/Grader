@@ -1,6 +1,7 @@
 package com.app.grader.ui.pages.editGrade
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -71,7 +72,7 @@ fun EditGradeScreen(
     var expanded by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
