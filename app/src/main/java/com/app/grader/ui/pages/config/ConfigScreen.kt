@@ -45,7 +45,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.domain.types.ThemeType
 import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
@@ -116,21 +116,21 @@ fun ConfigScreen(
             SelectorCard(
                 title = "Tema",
                 items = listOf(
-                    SelectorItem("Usar mi tema del sistema", TypeTheme.SYSTEM_DEFAULT.name),
-                    SelectorItem("Tema Claro", TypeTheme.LIGHT.name),
-                    SelectorItem("Tema Oscuro", TypeTheme.DARK.name),
+                    SelectorItem("Usar mi tema del sistema", ThemeType.SYSTEM_DEFAULT.name),
+                    SelectorItem("Tema Claro", ThemeType.LIGHT.name),
+                    SelectorItem("Tema Oscuro", ThemeType.DARK.name),
                 ),
                 current = viewModel.typeTheme.value.name,
                 onSelect = {
-                    viewModel.setTypeTheme(TypeTheme.valueOf(it))
+                    viewModel.setTypeTheme(ThemeType.valueOf(it))
                     viewModel.restartApp(context)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = when(viewModel.typeTheme.value){
-                    TypeTheme.DARK -> R.drawable.moon_outline
-                    TypeTheme.LIGHT -> R.drawable.sun_outline
-                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
+                    ThemeType.DARK -> R.drawable.moon_outline
+                    ThemeType.LIGHT -> R.drawable.sun_outline
+                    ThemeType.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))

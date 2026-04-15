@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.app.grader.data.appConfig.AppConfigRepository
-import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.domain.types.ThemeType
 import com.app.grader.core.navigation.NavigationWrapper
 import com.app.grader.ui.theme.NavigationGuideTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,9 +21,9 @@ class MainActivity : ComponentActivity() {
         setContent{
             NavigationGuideTheme (
                 isDarkTheme = when (appConfigRepository.getTypeTheme()){
-                    TypeTheme.DARK -> true
-                    TypeTheme.LIGHT -> false
-                    TypeTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+                    ThemeType.DARK -> true
+                    ThemeType.LIGHT -> false
+                    ThemeType.SYSTEM_DEFAULT -> isSystemInDarkTheme()
                 },
             ) {
                 NavigationWrapper()

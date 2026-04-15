@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.domain.types.ThemeType
 
 object AppConfig {
     const val PREFS_NAME = "app_config"
@@ -30,13 +30,13 @@ class AppConfigRepository(private val context: Context) {
         sharedPreferences.edit { putBoolean(AppConfig.ROUND_AVERAGE_ENABLE, enabled) }
     }
 
-    fun getTypeTheme(): TypeTheme {
-        return TypeTheme.valueOf(
-            sharedPreferences.getString(AppConfig.TYPE_THEME, TypeTheme.SYSTEM_DEFAULT.name)!!
+    fun getTypeTheme(): ThemeType {
+        return ThemeType.valueOf(
+            sharedPreferences.getString(AppConfig.TYPE_THEME, ThemeType.SYSTEM_DEFAULT.name)!!
         )
     }
-    fun setTypeTheme(typeTheme: TypeTheme) {
-        sharedPreferences.edit { putString(AppConfig.TYPE_THEME, typeTheme.name) }
+    fun setTypeTheme(themeType: ThemeType) {
+        sharedPreferences.edit { putString(AppConfig.TYPE_THEME, themeType.name) }
     }
 
     fun getTypeGrade(): TypeGrade {

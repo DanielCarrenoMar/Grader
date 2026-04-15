@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.domain.model.Resource
 import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.domain.types.ThemeType
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
@@ -70,9 +70,9 @@ class ConfigViewModel  @Inject constructor(
         _reviewCompleted.value = appConfigRepository.isReviewCompleted()
     }
 
-    fun setTypeTheme(typeTheme: TypeTheme) {
-        _typeTheme.value = typeTheme
-        appConfigRepository.setTypeTheme(typeTheme)
+    fun setTypeTheme(themeType: ThemeType) {
+        _typeTheme.value = themeType
+        appConfigRepository.setTypeTheme(themeType)
     }
     fun setRoundFinalCourseAverage(isRoundFinalCourseAverage: Boolean) {
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
