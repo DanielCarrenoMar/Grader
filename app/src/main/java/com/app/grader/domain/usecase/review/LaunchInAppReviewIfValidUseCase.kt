@@ -1,7 +1,7 @@
 package com.app.grader.domain.usecase.review
 
 import android.app.Activity
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.domain.model.Resource
 import com.app.grader.service.review.InAppReviewHelper
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LaunchInAppReviewIfValidUseCase @Inject constructor(
-    private val appConfig: AppConfig,
+    private val appConfigRepository: AppConfigRepository,
     private val inAppReviewHelper: InAppReviewHelper
 ) {
 
@@ -24,21 +24,21 @@ class LaunchInAppReviewIfValidUseCase @Inject constructor(
     operator fun invoke(activity: Activity): Flow<Resource<Boolean>> = channelFlow {
         try {
             send(Resource.Loading())
-            if (appConfig.isReviewCompleted()) {
+            if (appConfigRepository.isReviewCompleted()) {
                 send(Resource.Success(false))
                 return@channelFlow
             }
 
             val currentTime = System.currentTimeMillis()
             
-            var firstLaunchTime = appConfig.getFirstLaunchTime()
+            var firstLaunchTime = appConfigRepository.getFirstLaunchTime()
             if (firstLaunchTime == 0L) {
                 firstLaunchTime = currentTime
-                appConfig.setFirstLaunchTime(currentTime)
+                appConfigRepository.setFirstLaunchTime(currentTime)
             }
 
-            val launchCount = appConfig.getLaunchCount() + 1
-            appConfig.setLaunchCount(launchCount)
+            val launchCount = appConfigRepository.getLaunchCount() + 1
+            appConfigRepository.setLaunchCount(launchCount)
 
             val timeSinceFirstLaunch = currentTime - firstLaunchTime
             if (timeSinceFirstLaunch < MILLIS_IN_7_DAYS) {
@@ -51,14 +51,14 @@ class LaunchInAppReviewIfValidUseCase @Inject constructor(
                 return@channelFlow
             }
 
-            val askedCount = appConfig.getReviewAskedCount()
+            val askedCount = appConfigRepository.getReviewAskedCount()
             if (askedCount >= MAX_ASK_COUNT) {
-                appConfig.setReviewCompleted(true)
+                appConfigRepository.setReviewCompleted(true)
                 send(Resource.Success(false))
                 return@channelFlow
             }
 
-            val lastAskedTime = appConfig.getLastReviewAskedTime()
+            val lastAskedTime = appConfigRepository.getLastReviewAskedTime()
             val timeSinceLastAsked = currentTime - lastAskedTime
             if (lastAskedTime != 0L && timeSinceLastAsked < MILLIS_IN_1_DAY) {
                 send(Resource.Success(false))
@@ -81,8 +81,8 @@ class LaunchInAppReviewIfValidUseCase @Inject constructor(
     }
 
     private fun markReviewAsked() {
-        val newCount = appConfig.getReviewAskedCount() + 1
-        appConfig.setReviewAskedCount(newCount)
-        appConfig.setLastReviewAskedTime(System.currentTimeMillis())
+        val newCount = appConfigRepository.getReviewAskedCount() + 1
+        appConfigRepository.setReviewAskedCount(newCount)
+        appConfigRepository.setLastReviewAskedTime(System.currentTimeMillis())
     }
 }

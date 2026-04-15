@@ -1,6 +1,6 @@
 package com.app.grader.data.database.repository
 
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
@@ -29,7 +29,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
     private val gradeFactory: GradeFactory,
-    private val appConfig: AppConfig
+    private val appConfigRepository: AppConfigRepository
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Long {
         try {
@@ -192,7 +192,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
                         return@forEach
                     }
 
-                    val grade = if (appConfig.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
+                    val grade = if (appConfigRepository.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
                     else course.average.getGrade()
 
                     totalGrades += grade * course.uc
