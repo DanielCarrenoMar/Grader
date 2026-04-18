@@ -1,5 +1,6 @@
 package com.app.grader.data.database
 
+import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -7,14 +8,18 @@ import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.core.appConfig.toTypeGradeId
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.data.database.converters.DateConverter
 import com.app.grader.data.database.entitites.*
 import com.app.grader.data.database.dao.*
+import com.app.grader.data.database.seedTypeGrade
 
 @TypeConverters(DateConverter::class)
 @Database(
-    version = 6,
-    entities = [SemesterEntity::class,CourseEntity::class, GradeEntity::class, SubGradeEntity::class],
+    version = 7,
+    entities = [SemesterEntity::class, CourseEntity::class, GradeEntity::class, SubGradeEntity::class, TypeGradeEntity::class],
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 5, to = 6, spec = AppDatabase.Migration5To6::class),
@@ -30,6 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getSubGradeDao(): SubGradeDao
 
+    abstract fun getTypeGradeDao(): TypeGradeDao
+
     /**
      * Se agrega la columna created_at a grade para almacenar el tiempo de creación de cada calificación.
      */
@@ -42,6 +49,54 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     companion object {
+
+        /**
+         * Agrega la tabla type_grade y la relación de esta con course.
+         * Se asigna a los cursos existentes el tipo de calificación actual guardado en AppConfig o NUMERIC_20 por defecto.
+         */
+        fun migration6To7(appContext: Context): Migration {
+            return object : Migration(6, 7) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE type_grade (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            base_at INTEGER,
+                            active INTEGER NOT NULL
+                        )
+                        """.trimIndent()
+                    )
+
+                    seedTypeGrade(db)
+
+                    val currentTypeGradeId = runCatching {
+                        AppConfigRepository(appContext.applicationContext).getTypeGrade().toTypeGradeId()
+                    }.getOrDefault(TypeGrade.NUMERIC_20.toTypeGradeId())
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE course_new (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            semester_id INTEGER,
+                            type_grade_id INTEGER NOT NULL,
+                            title TEXT NOT NULL,
+                            uc INTEGER NOT NULL,
+                            FOREIGN KEY(type_grade_id) REFERENCES type_grade(id) ON UPDATE NO ACTION ON DELETE NO ACTION
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL(
+                        """
+                        INSERT INTO course_new (id, semester_id, type_grade_id, title, uc)
+                        SELECT id, semester_id, $currentTypeGradeId, title, uc FROM course
+                        """.trimIndent()
+                    )
+                    db.execSQL("DROP TABLE course")
+                    db.execSQL("ALTER TABLE course_new RENAME TO course")
+                }
+            }
+        }
+
         /**
          * Agrega tabla semester y agregar semester_id  que puede ser null en courses.
          */

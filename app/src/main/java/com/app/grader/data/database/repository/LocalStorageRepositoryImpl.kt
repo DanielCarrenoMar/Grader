@@ -2,13 +2,16 @@ package com.app.grader.data.database.repository
 
 import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.core.appConfig.toTypeGradeId
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.data.database.dao.SemesterDao
+import com.app.grader.data.database.dao.TypeGradeDao
 import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.model.toCourseModel
@@ -16,6 +19,8 @@ import com.app.grader.domain.model.toGradeEntity
 import com.app.grader.domain.model.toGradeModel
 import com.app.grader.domain.model.toSemesterEntity
 import com.app.grader.domain.model.toSemesterModel
+import com.app.grader.domain.model.toTypeGradeEntity
+import com.app.grader.domain.model.toTypeGradeModel
 import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
@@ -28,15 +33,25 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val courseDao: CourseDao,
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
+    private val typeGradeDao: TypeGradeDao,
     private val gradeFactory: GradeFactory,
     private val appConfigRepository: AppConfigRepository
 ) : LocalStorageRepository {
     override suspend fun saveCourse(courseModel: CourseModel): Long {
         try {
-            return courseDao.insertCourse(courseModel.toCourseEntity())
+            return courseDao.insertCourse(
+                courseModel.copy(
+                    typeGradeId = resolveTypeGradeId(courseModel.typeGradeId)
+                ).toCourseEntity()
+            )
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    private fun resolveTypeGradeId(typeGradeId: Int): Int {
+        if (typeGradeId > 0) return typeGradeId
+        return appConfigRepository.getTypeGrade().toTypeGradeId()
     }
 
     override suspend fun updateCourse(courseModel: CourseModel): Boolean {
@@ -47,6 +62,41 @@ class LocalStorageRepositoryImpl @Inject constructor(
                 courseModel.uc
             )
             return result == 1
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel? {
+        try {
+            val typeGradeEntity = typeGradeDao.getTypeGradeFromCourseId(courseId) ?: return null
+            return typeGradeEntity.toTypeGradeModel()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getAllTypeGrades(): List<TypeGradeModel> {
+        try {
+            return typeGradeDao.getAllTypeGrades().map { typeGradeEntity ->
+                typeGradeEntity.toTypeGradeModel()
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long {
+        try {
+            return typeGradeDao.insertTypeGrade(typeGradeModel.toTypeGradeEntity())
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean {
+        try {
+            return typeGradeDao.deleteTypeGradeFromId(typeGradeId) == 1
         } catch (e: Exception) {
             throw e
         }

@@ -4,6 +4,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 
@@ -32,6 +33,11 @@ interface LocalStorageRepository {
      * Actualiza la informacion de una asignatura guiandose por el id
      */
     suspend fun updateCourse(courseModel: CourseModel): Boolean
+
+    suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel?
+    suspend fun getAllTypeGrades(): List<TypeGradeModel>
+    suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long
+    suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean
 
     /**
      * Si existe devuelve un CoruseModel sino devuelve null
