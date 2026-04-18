@@ -83,7 +83,7 @@ object DebugDatabaseSeeder {
                     semesterId =  if (seed.semesterIndex !== null) semesterIds[seed.semesterIndex].toInt() else null,
                     title = seed.title,
                     uc = seed.uc,
-                    typeGradeId = 1 // TODO asignar segun config
+                    typeGradeId = 3
                 )
             )
         }

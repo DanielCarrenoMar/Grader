@@ -37,21 +37,15 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val gradeFactory: GradeFactory,
     private val appConfigRepository: AppConfigRepository
 ) : LocalStorageRepository {
+
     override suspend fun saveCourse(courseModel: CourseModel): Long {
         try {
             return courseDao.insertCourse(
-                courseModel.copy(
-                    typeGradeId = resolveTypeGradeId(courseModel.typeGradeId)
-                ).toCourseEntity()
+                courseModel.toCourseEntity()
             )
         } catch (e: Exception) {
             throw e
         }
-    }
-
-    private fun resolveTypeGradeId(typeGradeId: Int): Int {
-        if (typeGradeId > 0) return typeGradeId
-        return appConfigRepository.getTypeGrade().toTypeGradeId()
     }
 
     override suspend fun updateCourse(courseModel: CourseModel): Boolean {
