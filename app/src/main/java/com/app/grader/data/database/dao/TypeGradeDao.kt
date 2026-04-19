@@ -8,10 +8,6 @@ import com.app.grader.data.database.entitites.TypeGradeEntity
 
 @Dao
 interface TypeGradeDao {
-
-    @Query("SELECT tg.* FROM type_grade tg INNER JOIN course c ON c.type_grade_id = tg.id WHERE c.id = :courseId")
-    suspend fun getTypeGradeFromCourseId(courseId: Int): TypeGradeEntity?
-
     @Query("SELECT * FROM type_grade ORDER BY id ASC")
     suspend fun getAllTypeGrades(): List<TypeGradeEntity>
 

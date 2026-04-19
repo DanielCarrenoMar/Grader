@@ -12,12 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextField
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
@@ -54,8 +59,8 @@ fun EditCourseScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
-    // Estado para mostrar el diálogo informativo de "Peso"
     var showPesoInfoDialog by remember { mutableStateOf(false) }
+    var expandedTypeGrade by remember { mutableStateOf(false) }
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCourseFromId(courseId)
@@ -163,6 +168,43 @@ fun EditCourseScreen(
                 maxLength = 3,
                 maxLines = 1
             )
+            ExposedDropdownMenuBox(
+                expanded = expandedTypeGrade,
+                onExpandedChange = { expandedTypeGrade = !expandedTypeGrade },
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth()
+            ) {
+                val selectedTypeGrade = viewModel.typeGradeList.value.firstOrNull {
+                    it.id == viewModel.selectedTypeGradeId.intValue
+                } ?: viewModel.typeGradeList.value.firstOrNull()
+                TextField(
+                    readOnly = true,
+                    value = selectedTypeGrade?.title ?: "Cargando escalas...",
+                    onValueChange = {},
+                    label = { Text("Escala") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeGrade)
+                    },
+                    modifier = Modifier
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedTypeGrade,
+                    onDismissRequest = { expandedTypeGrade = false }
+                ) {
+                    viewModel.typeGradeList.value.forEach { typeGrade ->
+                        DropdownMenuItem(
+                            text = { Text(typeGrade.title) },
+                            onClick = {
+                                viewModel.setSelectedTypeGradeId(typeGrade.id)
+                                expandedTypeGrade = false
+                            }
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.weight(1f))
         }
     }

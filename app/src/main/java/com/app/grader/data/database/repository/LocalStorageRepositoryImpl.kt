@@ -2,7 +2,6 @@ package com.app.grader.data.database.repository
 
 import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
-import com.app.grader.core.appConfig.toTypeGradeId
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.data.database.dao.SemesterDao
@@ -53,18 +52,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
             val result = courseDao.updateCourseById(
                 courseModel.id,
                 courseModel.title,
-                courseModel.uc
+                courseModel.uc,
+                courseModel.typeGradeId
             )
             return result == 1
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel? {
-        try {
-            val typeGradeEntity = typeGradeDao.getTypeGradeFromCourseId(courseId) ?: return null
-            return typeGradeEntity.toTypeGradeModel()
         } catch (e: Exception) {
             throw e
         }
@@ -126,6 +117,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
         try {
             val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
             return CourseModel(
+                    semesterId = courseEntity.semesterId,
+                    typeGradeId = courseEntity.typeGradeId,
                     title = courseEntity.title,
                     uc = courseEntity.uc,
                     average = getAverageFromCourse(courseEntity.id),

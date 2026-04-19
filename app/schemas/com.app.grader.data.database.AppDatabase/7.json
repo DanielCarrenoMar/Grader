@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "912865ef9110e308ad81cc2819538e16",
+    "identityHash": "72f130a263a6c365d47e4ad3044e9325",
     "entities": [
       {
         "tableName": "semester",
@@ -30,7 +30,7 @@
       },
       {
         "tableName": "course",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `semester_id` INTEGER, `type_grade_id` INTEGER NOT NULL, `title` TEXT NOT NULL, `uc` INTEGER NOT NULL, FOREIGN KEY(`type_grade_id`) REFERENCES `type_grade`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `semester_id` INTEGER, `type_grade_id` INTEGER NOT NULL DEFAULT 1, `title` TEXT NOT NULL, `uc` INTEGER NOT NULL, FOREIGN KEY(`type_grade_id`) REFERENCES `type_grade`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -68,6 +68,17 @@
             "id"
           ]
         },
+        "indices": [
+          {
+            "name": "index_course_type_grade_id",
+            "unique": false,
+            "columnNames": [
+              "type_grade_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_course_type_grade_id` ON `${TABLE_NAME}` (`type_grade_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "type_grade",
@@ -205,7 +216,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '912865ef9110e308ad81cc2819538e16')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '72f130a263a6c365d47e4ad3044e9325')"
     ]
   }
 }

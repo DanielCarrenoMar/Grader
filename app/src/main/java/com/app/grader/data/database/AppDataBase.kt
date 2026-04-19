@@ -93,6 +93,7 @@ abstract class AppDatabase : RoomDatabase() {
                     )
                     db.execSQL("DROP TABLE course")
                     db.execSQL("ALTER TABLE course_new RENAME TO course")
+                    db.execSQL("CREATE INDEX index_course_type_grade_id ON course(type_grade_id)")
                 }
             }
         }

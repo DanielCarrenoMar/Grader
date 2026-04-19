@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.core.appConfig.toTypeGradeId
 import com.app.grader.domain.types.ThemeType
 
 object AppConfig {
@@ -11,6 +12,7 @@ object AppConfig {
     const val ROUND_AVERAGE_ENABLE = "roundAverageEnable"
     const val TYPE_THEME = "typeTheme"
     const val TYPE_GRADE = "typeGrade"
+    const val DEFAULT_TYPE_GRADE_ID = "defaultTypeGradeId"
     const val LAUNCH_COUNT = "launchCount"
     const val FIRST_LAUNCH_TIME = "firstLaunchTime"
     const val REVIEW_ASKED_COUNT = "reviewAskedCount"
@@ -39,11 +41,25 @@ class AppConfigRepository(private val context: Context) {
         sharedPreferences.edit { putString(AppConfig.TYPE_THEME, themeType.name) }
     }
 
+    fun getDefaultTypeGradeId(): Int {
+        return sharedPreferences.getInt(
+            AppConfig.DEFAULT_TYPE_GRADE_ID,
+            3 // id de base 20, de las opciones predefinidas.
+        )
+    }
+
+    fun setDefaultTypeGradeId(id: Int) {
+        sharedPreferences.edit { putInt(AppConfig.DEFAULT_TYPE_GRADE_ID, id) }
+    }
+
+    @Deprecated("Use getDefaultTypeGradeId() for course defaults")
     fun getTypeGrade(): TypeGrade {
         return TypeGrade.valueOf(
             sharedPreferences.getString(AppConfig.TYPE_GRADE, TypeGrade.NUMERIC_20.name)!!
         )
     }
+
+    @Deprecated("Use setDefaultTypeGradeId() for course defaults")
     fun setTypeGrade(typeGrade: TypeGrade) {
         sharedPreferences.edit { putString(AppConfig.TYPE_GRADE, typeGrade.name) }
     }

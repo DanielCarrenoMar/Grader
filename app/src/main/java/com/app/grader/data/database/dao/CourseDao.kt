@@ -39,8 +39,8 @@ interface CourseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCourse(course: CourseEntity): Long
 
-    @Query("UPDATE course SET title = :title, uc = :uc WHERE id = :courseId")
-    suspend fun updateCourseById(courseId: Int, title: String, uc: Int): Int
+    @Query("UPDATE course SET title = :title, uc = :uc, type_grade_id = :typeGradeId WHERE id = :courseId")
+    suspend fun updateCourseById(courseId: Int, title: String, uc: Int, typeGradeId: Int): Int
 
     @Query("DELETE FROM course")
     suspend fun deleteAllCourses(): Int

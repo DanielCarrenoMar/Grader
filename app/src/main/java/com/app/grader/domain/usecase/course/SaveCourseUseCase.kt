@@ -1,6 +1,5 @@
 package com.app.grader.domain.usecase.course
 
-import com.app.grader.core.appConfig.toTypeGradeId
 import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
@@ -39,6 +38,6 @@ class SaveCourseUseCase @Inject constructor(
 
     private fun resolveTypeGradeId(typeGradeId: Int): Int {
         if (typeGradeId > 0) return typeGradeId
-        return appConfigRepository.getTypeGrade().toTypeGradeId()
+        return appConfigRepository.getDefaultTypeGradeId()
     }
 }

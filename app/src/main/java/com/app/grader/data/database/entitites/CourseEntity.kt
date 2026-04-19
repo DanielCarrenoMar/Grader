@@ -15,8 +15,10 @@ import androidx.room.PrimaryKey
             childColumns = ["type_grade_id"],
             onDelete = ForeignKey.NO_ACTION,
             onUpdate = ForeignKey.NO_ACTION,
+            deferred = true
         )
-    ]
+    ],
+    indices = [Index("type_grade_id")]
 )
 data class CourseEntity (
     @PrimaryKey(autoGenerate = true)
