@@ -129,7 +129,7 @@ object DebugDatabaseSeeder {
                         title = gradeTitles[gradeIndex],
                         description = "${gradeDescriptions[gradeIndex]} - ${courseIndex + 1}",
                         gradePercentage = gradePercentage,
-                        percentage = 10.0,
+                        weightingPercentage = 10.0,
                         createdAt = Date(createdAtBase + ((courseIndex * 10L) + gradeIndex) * dayMillis),
                     )
                 )

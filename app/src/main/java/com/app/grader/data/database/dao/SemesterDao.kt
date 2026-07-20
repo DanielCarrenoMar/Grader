@@ -12,7 +12,7 @@ interface SemesterDao {
     @Query("SELECT * FROM semester ORDER BY id DESC")
     suspend fun getAllSemesters(): List<SemesterEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSemester(semester: SemesterEntity): Long
 
     @Query("UPDATE semester SET title = :title  WHERE id = :semesterId")

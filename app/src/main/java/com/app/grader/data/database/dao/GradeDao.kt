@@ -15,7 +15,7 @@ interface GradeDao {
             "    g.title,\n" +
             "    g.description,\n" +
             "    g.created_at,\n" +
-            "    g.percentage,\n" +
+            "    g.weighting_percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +
             "    grade g\n" +
@@ -33,7 +33,7 @@ interface GradeDao {
             "    g.title,\n" +
             "    g.description,\n" +
             "    g.created_at,\n" +
-            "    g.percentage,\n" +
+            "    g.weighting_percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +
             "    grade g\n" +
@@ -52,7 +52,7 @@ interface GradeDao {
             "    g.title,\n" +
             "    g.description,\n" +
             "    g.created_at,\n" +
-            "    g.percentage,\n" +
+            "    g.weighting_percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM \n" +
             "    course c\n" +
@@ -74,7 +74,7 @@ interface GradeDao {
             "    g.title,\n" +
             "    g.description,\n" +
             "    g.created_at,\n" +
-            "    g.percentage,\n" +
+            "    g.weighting_percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM \n" +
             "    course c\n" +
@@ -90,11 +90,11 @@ interface GradeDao {
             "    g.created_at DESC")
     suspend fun getGradesFromSemesterLessThanId(semesterId: Int?): List<GradeEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertGrade(grades: GradeEntity): Long
 
-    @Query("UPDATE grade SET title = :title, description = :description, grade_percentage = :gradePercentage, percentage = :percentage  WHERE id = :gradeId")
-    suspend fun updateGradeById(gradeId: Int, title: String, description: String, gradePercentage: Double, percentage: Double): Int
+    @Query("UPDATE grade SET title = :title, description = :description, grade_percentage = :gradePercentage, weighting_percentage = :weightingPercentage WHERE id = :gradeId")
+    suspend fun updateGradeById(gradeId: Int, title: String, description: String, gradePercentage: Double, weightingPercentage: Double): Int
 
     @Query("DELETE FROM grade WHERE course_id = :courseId")
     suspend fun deleteAllGradesFromCourseId(courseId: Int): Int
@@ -114,7 +114,7 @@ interface GradeDao {
             "    g.title,\n" +
             "    g.description,\n" +
             "    g.created_at,\n" +
-            "    g.percentage,\n" +
+            "    g.weighting_percentage,\n" +
             "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
             "FROM\n" +
             "    grade g\n" +

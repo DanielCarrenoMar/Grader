@@ -10,8 +10,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_3_4
-import com.app.grader.data.database.AppDatabase.Companion.MIGRATION_4_5
+import com.app.grader.data.database.MIGRATION_3_4
+import com.app.grader.data.database.MIGRATION_4_5
+import com.app.grader.data.database.MIGRATION_7_8
+import com.app.grader.data.database.migration6To7
 import com.app.grader.data.database.seedTypeGrade
 
 @Module
@@ -21,7 +23,7 @@ class DataBaseModule {
     @Singleton
     @Provides
     fun provideRoomDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        val migration6To7 = AppDatabase.migration6To7(appContext)
+        val migration6To7 = migration6To7(appContext)
         val seedCallback = object : RoomDatabase.Callback() {
             override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
                 super.onCreate(db)
@@ -32,7 +34,7 @@ class DataBaseModule {
             appContext,
             AppDatabase::class.java, "grader_database"
         ).addCallback(seedCallback)
-            .addMigrations(MIGRATION_3_4, MIGRATION_4_5, migration6To7)
+            .addMigrations(MIGRATION_3_4, MIGRATION_4_5, migration6To7, MIGRATION_7_8)
             .build()
     }
     @Singleton

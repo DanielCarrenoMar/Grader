@@ -1,5 +1,6 @@
 package com.app.grader.domain.model
 
+import com.app.grader.data.database.dao.CalculatedCourse
 import com.app.grader.data.database.entitites.CourseEntity
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
@@ -42,5 +43,19 @@ fun CourseEntity.toCourseModel(
         typeGradeId = this.typeGradeId,
         average = average,
         totalPercentage = totalPercentage
+    )
+}
+
+fun CalculatedCourse.toCourseModel(
+    average: Grade,
+): CourseModel {
+    return CourseModel(
+        id = this.id,
+        title = this.title,
+        uc = this.uc,
+        semesterId = this.semesterId,
+        typeGradeId = this.typeGradeId,
+        average = average,
+        totalPercentage = Percentage(this.totalWeightingPercentage ?: 0.0)
     )
 }
