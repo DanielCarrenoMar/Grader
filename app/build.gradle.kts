@@ -1,30 +1,39 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsKotlinSerialization)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.android.hilt)
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+    }
+}
+
 android {
     namespace = "com.app.grader"
-    compileSdk = 35
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
+    compileSdk = 36
 
     sourceSets {
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest") {
+            assets {
+                directories += "$projectDir/schemas"
+            }
+        }
     }
 
     defaultConfig {
         applicationId = "com.app.grader"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 21
-        versionName = "2.0.1"
+        targetSdk = 36
+        versionCode = 23
+        versionName = "2.1.0-beta-1"
         ndk.debugSymbolLevel = "FULL"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -49,9 +58,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    
+    testOptions {
+        unitTests.all {
+            it.jvmArgs("-XX:+EnableDynamicAgentLoading")
+        }
     }
+
     buildFeatures {
         compose = true
     }
@@ -69,7 +82,13 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.app.update)
+    implementation(libs.app.update.ktx)
+    implementation(libs.app.review)
+    implementation(libs.app.review.ktx)
 
     implementation(libs.material)
     implementation(libs.androidx.activity)

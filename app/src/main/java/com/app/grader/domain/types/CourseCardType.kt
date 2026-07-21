@@ -1,6 +1,5 @@
 package com.app.grader.domain.types
 
-import android.util.Log
 import com.app.grader.domain.model.CourseModel
 
 enum class CourseCardType {

@@ -1,14 +1,16 @@
 package com.app.grader.data.database.repository
 
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.data.database.dao.CourseDao
 import com.app.grader.data.database.dao.GradeDao
 import com.app.grader.data.database.dao.SemesterDao
+import com.app.grader.data.database.dao.TypeGradeDao
 import com.app.grader.data.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
 import com.app.grader.domain.model.toCourseModel
@@ -16,6 +18,8 @@ import com.app.grader.domain.model.toGradeEntity
 import com.app.grader.domain.model.toGradeModel
 import com.app.grader.domain.model.toSemesterEntity
 import com.app.grader.domain.model.toSemesterModel
+import com.app.grader.domain.model.toTypeGradeEntity
+import com.app.grader.domain.model.toTypeGradeModel
 import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
@@ -28,405 +32,284 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val courseDao: CourseDao,
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
+    private val typeGradeDao: TypeGradeDao,
     private val gradeFactory: GradeFactory,
-    private val appConfig: AppConfig
+    private val appConfigRepository: AppConfigRepository
 ) : LocalStorageRepository {
+
     override suspend fun saveCourse(courseModel: CourseModel): Long {
-        try {
-            return courseDao.insertCourse(courseModel.toCourseEntity())
-        } catch (e: Exception) {
-            throw e
-        }
+        return courseDao.insertCourse(
+            courseModel.toCourseEntity()
+        )
     }
 
     override suspend fun updateCourse(courseModel: CourseModel): Boolean {
-        try {
-            val result = courseDao.updateCourseById(
-                courseModel.id,
-                courseModel.title,
-                courseModel.uc
-            )
-            return result == 1
-        } catch (e: Exception) {
-            throw e
+        val result = courseDao.updateCourseById(
+            courseModel.id,
+            courseModel.title,
+            courseModel.uc,
+            courseModel.typeGradeId
+        )
+        return result == 1
+    }
+
+    override suspend fun getAllTypeGrades(): List<TypeGradeModel> {
+        return typeGradeDao.getAllTypeGrades().map { typeGradeEntity ->
+            typeGradeEntity.toTypeGradeModel()
         }
     }
 
+    override suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long {
+        return typeGradeDao.insertTypeGrade(typeGradeModel.toTypeGradeEntity())
+    }
+
+    override suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean {
+        return typeGradeDao.deleteTypeGradeFromId(typeGradeId) == 1
+    }
+
     override suspend fun getAllCourses(): List<CourseModel> {
-        try {
-            return courseDao.getAllCourses().map { courseEntity ->
-                courseEntity.toCourseModel(
-                    getAverageFromCourse(courseEntity.id),
-                    getTotalPercentageFromCourse(courseEntity.id)
-                )
-            }
-        } catch (e: Exception) {
-            throw e
+        return courseDao.getAllCourses().map { row ->
+            row.toCourseModel(
+                average = if (row.average != null) gradeFactory.instGradeFromPercentage(row.average) else gradeFactory.instGrade()
+            )
         }
     }
 
     override suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel> {
-        try {
-            return courseDao.getAllCoursesFromSemesterId(semesterId).map { courseEntity ->
-                courseEntity.toCourseModel(
-                    getAverageFromCourse(courseEntity.id),
-                    getTotalPercentageFromCourse(courseEntity.id)
-                )
-            }
-        } catch (e: Exception) {
-            throw e
+        return courseDao.getAllCoursesFromSemesterId(semesterId).map { row ->
+            row.toCourseModel(
+                average = if (row.average != null) gradeFactory.instGradeFromPercentage(row.average) else gradeFactory.instGrade()
+            )
         }
     }
 
     override suspend fun getCourseById(courseId: Int): CourseModel? {
-        try {
-            val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
-            return CourseModel(
-                    title = courseEntity.title,
-                    uc = courseEntity.uc,
-                    average = getAverageFromCourse(courseEntity.id),
-                    totalPercentage = getTotalPercentageFromCourse(courseEntity.id),
-                    id = courseEntity.id
-                )
-        } catch (e: Exception) {
-            throw e
-        }
+        val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
+        return courseEntity.toCourseModel(
+            if (courseEntity.average != null) gradeFactory.instGradeFromPercentage(courseEntity.average) else gradeFactory.instGrade()
+        )
     }
 
     override suspend fun deleteAllCourses(): Int {
-        try {
-            courseDao.resetIncrementalCourse()
-            return courseDao.deleteAllCourses()
-        } catch (e: Exception) {
-            throw e
-        }
+        subGradeDao.deleteAllSubGrades()
+        gradeDao.deleteAllGrades()
+        courseDao.resetIncrementalCourse()
+        return courseDao.deleteAllCourses()
     }
 
     override suspend fun deleteAllCoursesFromSemester(semesterId: Int?): Int {
-        try {
-            val courses = courseDao.getAllCoursesFromSemesterId(semesterId)
-            courses.forEach { course ->
-                deleteAllGradesFromCourse(course.id)
-            }
-            return courseDao.deleteAllCoursesFromSemesterId(semesterId)
-        } catch (e: Exception) {
-            throw e
+        val courses = courseDao.getAllCoursesFromSemesterId(semesterId)
+        courses.forEach { course ->
+            deleteAllGradesFromCourse(course.id)
         }
+        return courseDao.deleteAllCoursesFromSemesterId(semesterId)
     }
 
     override suspend fun deleteCourseById(courseId: Int): Boolean {
-        try {
-            deleteAllGradesFromCourse(courseId)
-            return courseDao.deleteCourseFromId(courseId) == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        deleteAllGradesFromCourse(courseId)
+        return courseDao.deleteCourseFromId(courseId) == 1
     }
 
     override suspend fun saveSemester(semesterModel: SemesterModel): Long {
-        try {
-            return semesterDao.insertSemester(semesterModel.toSemesterEntity())
-        } catch (e: Exception) {
-            throw e
-        }
+        return semesterDao.insertSemester(semesterModel.toSemesterEntity())
     }
 
     override suspend fun deleteAllSemesters(): Int {
-        try {
-            semesterDao.resetIncrementalSemester()
-            return semesterDao.deleteAllSemesters()
-        } catch (e: Exception) {
-            throw e
-        }
+        // Borrar sub_grades y grades de todos los cursos antes de borrar semestres
+        subGradeDao.deleteAllSubGrades()
+        gradeDao.deleteAllGrades()
+        courseDao.deleteAllCourses()
+        semesterDao.resetIncrementalSemester()
+        return semesterDao.deleteAllSemesters()
     }
 
     override suspend fun deleteSemesterById(semesterId: Int): Boolean {
-        try {
-            deleteAllCoursesFromSemester(semesterId)
-            return semesterDao.deleteSemesterById(semesterId) == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        deleteAllCoursesFromSemester(semesterId)
+        return semesterDao.deleteSemesterById(semesterId) == 1
     }
 
     override suspend fun getAllSemesters(): List<SemesterModel> {
-        try {
-            return semesterDao.getAllSemesters().map { semesterEntity ->
-                semesterEntity.toSemesterModel(
-                    average = getAverageFromSemester(semesterEntity.id),
-                    size = getSizeOfSemesters(semesterEntity.id),
-                    weight = getWeightOfSemester(semesterEntity.id)
-                )
-            }
-        } catch (e: Exception) {
-            throw e
+        return semesterDao.getAllSemesters().map { semesterEntity ->
+            semesterEntity.toSemesterModel(
+                average = getAverageFromSemester(semesterEntity.id),
+                size = getSizeOfSemesters(semesterEntity.id),
+                weight = getWeightOfSemester(semesterEntity.id)
+            )
         }
     }
 
     override suspend fun getSemesterById(semesterId: Int): SemesterModel? {
-        try {
-            val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
-            return semesterEntity.toSemesterModel(
-                average = getAverageFromCourse(semesterId),
-                size = getSizeOfSemesters(semesterId),
-                weight = getWeightOfSemester(semesterId)
-            )
-        } catch (e: Exception) {
-            throw e
-        }
+        val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
+        return semesterEntity.toSemesterModel(
+            average = getAverageFromCourse(semesterId),
+            size = getSizeOfSemesters(semesterId),
+            weight = getWeightOfSemester(semesterId)
+        )
     }
 
     override suspend fun getAverageFromSemester(semesterId: Int?): Grade {
-        try {
-            val courses = getCoursesFromSemester(semesterId)
-            if (courses.isEmpty()) return gradeFactory.instGrade()
+        val courses = getCoursesFromSemester(semesterId)
+        if (courses.isEmpty()) return gradeFactory.instGrade()
 
-            var totalGrades = 0.0
-            var totalUC = 0
+        var totalGrades = 0.0
+        var totalUC = 0
 
-            courses.forEach { course ->
-                if (course.average.isNotBlank()) {
-                    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
-                    val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
-                    if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
-                        return@forEach
-                    }
-
-                    val grade = if (appConfig.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
-                    else course.average.getGrade()
-
-                    totalGrades += grade * course.uc
-                    totalUC += course.uc
+        courses.forEach { course ->
+            if (course.average.isNotBlank()) {
+                val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+                val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
+                if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
+                    return@forEach
                 }
-            }
-            val totalAverageGrade = if (totalUC != 0) gradeFactory.instGrade(totalGrades / totalUC)
-            else gradeFactory.instGrade()
 
-            return totalAverageGrade
-        } catch (e: Exception) {
-            throw e
+                val grade = if (appConfigRepository.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
+                else course.average.getGrade()
+
+                totalGrades += grade * course.uc
+                totalUC += course.uc
+            }
         }
+        return if (totalUC != 0) gradeFactory.instGrade(totalGrades / totalUC)
+        else gradeFactory.instGrade()
     }
 
     override suspend fun getSizeOfSemesters(semesterId: Int?): Int {
-        try {
-            return semesterDao.getCoursesCountById(semesterId)
-        } catch (e: Exception) {
-            throw e
-        }
+        return semesterDao.getCoursesCountById(semesterId)
     }
 
     override suspend fun getWeightOfSemester(semesterId: Int?): Int {
-        try {
-            return semesterDao.getSemesterUCSum(semesterId)
-        } catch (e: Exception) {
-            throw e
-        }
+        return semesterDao.getSemesterUCSum(semesterId)
     }
 
     override suspend fun updateSemester(semesterModel: SemesterModel): Boolean {
-        try {
-            val result = semesterDao.updateSemesterById(
-                semesterModel.id,
-                semesterModel.title
-            )
-            return result == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        val result = semesterDao.updateSemesterById(
+            semesterModel.id,
+            semesterModel.title
+        )
+        return result == 1
     }
 
     override suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int {
-        try {
-            return semesterDao.transferSemesterToSemester(semesterIdSender, semesterIdReceiver)
-        } catch (e: Exception) {
-            throw e
-        }
+        return semesterDao.transferSemesterToSemester(semesterIdSender, semesterIdReceiver)
     }
 
-    override suspend fun getAverageFromCourse(courseId:Int): Grade {
-        try {
-            val averagePercentage = courseDao.getAverageFromCourse(courseId)
-            if (averagePercentage == null) return gradeFactory.instGrade()
-            return gradeFactory.instGradeFromPercentage(averagePercentage)
-        } catch (e: Exception) {
-            throw e
-        }
+    override suspend fun getAverageFromCourse(courseId: Int): Grade {
+        val averagePercentage = courseDao.getAverageFromCourse(courseId)
+        if (averagePercentage == null) return gradeFactory.instGrade()
+        return gradeFactory.instGradeFromPercentage(averagePercentage)
     }
 
     override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {
-        try {
-            val totalPercentage = courseDao.getTotalPercentageFromCourse(courseId)
-            if (totalPercentage == null) return Percentage()
-            return Percentage(totalPercentage)
-        } catch (e: Exception) {
-            throw e
-        }
+        val totalPercentage = courseDao.getTotalPercentageFromCourse(courseId)
+        if (totalPercentage == null) return Percentage()
+        return Percentage(totalPercentage)
     }
 
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
-        try {
-            return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
-                gradeEntity.toGradeModel(gradeFactory)
-            }
-        } catch (e: Exception) {
-            throw e
+        return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
+            gradeEntity.toGradeModel(gradeFactory)
         }
     }
 
     override suspend fun getGradesFromSemester(semesterId: Int?): List<GradeModel> {
-        try {
-            return gradeDao.getGradesFromSemesterId(semesterId).map { gradeEntity ->
-                gradeEntity.toGradeModel(gradeFactory)
-            }
-        } catch (e: Exception) {
-            throw e
+        return gradeDao.getGradesFromSemesterId(semesterId).map { gradeEntity ->
+            gradeEntity.toGradeModel(gradeFactory)
         }
     }
 
     override suspend fun getGradesFromSemesterLessThan(semesterId: Int?): List<GradeModel> {
-        try {
-            return gradeDao.getGradesFromSemesterLessThanId(semesterId).map { gradeEntity ->
-                gradeEntity.toGradeModel(gradeFactory)
-            }
-        } catch (e: Exception) {
-            throw e
+        return gradeDao.getGradesFromSemesterLessThanId(semesterId).map { gradeEntity ->
+            gradeEntity.toGradeModel(gradeFactory)
         }
     }
 
     override suspend fun saveGrade(gradeModel: GradeModel): Long {
-        try {
-            return gradeDao.insertGrade(gradeModel.toGradeEntity())
-        } catch (e: Exception) {
-            throw e
+        val currentSum = gradeDao.getSumPercentageByCourseId(gradeModel.courseId) ?: 0.0
+        if (currentSum + gradeModel.percentage.getPercentage() > 100.0) {
+            throw IllegalArgumentException("La suma de las notas excede el 100%")
         }
+        return gradeDao.insertGrade(gradeModel.toGradeEntity())
     }
 
     override suspend fun deleteAllGradesFromCourse(courseId: Int): Int {
-        try {
-            gradeDao.getGradesFromCourseId(courseId).forEach { grade ->
-                subGradeDao.deleteAllSubGradesFromGradeId(grade.id)
-            }
-            return gradeDao.deleteAllGradesFromCourseId(courseId)
-        } catch (e: Exception) {
-            throw e
+        gradeDao.getGradesFromCourseId(courseId).forEach { grade ->
+            subGradeDao.deleteAllSubGradesFromGradeId(grade.id)
         }
+        return gradeDao.deleteAllGradesFromCourseId(courseId)
     }
 
     override suspend fun deleteAllGrades(): Int {
-        try {
-            gradeDao.resetIncrementalGrade()
-            return gradeDao.deleteAllGrades()
-        } catch (e: Exception) {
-            throw e
-        }
+        gradeDao.resetIncrementalGrade()
+        return gradeDao.deleteAllGrades()
     }
 
     override suspend fun deleteGradeById(gradeId: Int): Boolean {
-        try {
-            subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
-            return gradeDao.deleteGradeFromId(gradeId) == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
+        return gradeDao.deleteGradeFromId(gradeId) == 1
     }
 
     override suspend fun getAllGrades(): List<GradeModel> {
-        try {
-            return gradeDao.getAllGrades().map { gradeEntity ->
-                gradeEntity.toGradeModel(gradeFactory)
-            }
-        } catch (e: Exception) {
-            throw e
+        return gradeDao.getAllGrades().map { gradeEntity ->
+            gradeEntity.toGradeModel(gradeFactory)
         }
     }
 
     override suspend fun getGradeById(gradeId: Int): GradeModel? {
-        try {
-            val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
-            return gradeEntity.toGradeModel(gradeFactory)
-        } catch (e: Exception) {
-            throw e
-        }
+        val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
+        return gradeEntity.toGradeModel(gradeFactory)
     }
 
     override suspend fun updateGrade(gradeModel: GradeModel): Boolean {
-        try {
-            val result = gradeDao.updateGradeById(
-                gradeModel.id,
-                gradeModel.title,
-                gradeModel.description,
-                gradeModel.grade.getGradePercentage(),
-                gradeModel.percentage.getPercentage()
-            )
-            return result == 1
-        } catch (e: Exception) {
-            throw e
+        val currentSum = gradeDao.getSumPercentageByCourseId(gradeModel.courseId) ?: 0.0
+        val thisGradeCurrent = gradeDao.getGradeFromId(gradeModel.id)?.weightingPercentage ?: 0.0
+        val withoutThis = currentSum - thisGradeCurrent
+        if (withoutThis + gradeModel.percentage.getPercentage() > 100.0) {
+            throw IllegalArgumentException("La suma de las notas excede el 100%")
         }
+        val result = gradeDao.updateGradeById(
+            gradeModel.id,
+            gradeModel.title,
+            gradeModel.description,
+            gradeModel.grade.getGradePercentage(),
+            gradeModel.percentage.getPercentage()
+        )
+        return result == 1
     }
 
     override suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel> {
-        try {
-            return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGradeEntity ->
-                subGradeEntity.toSubGradeModel(gradeFactory)
-            }
-        } catch (e: Exception) {
-            throw e
+        return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGradeEntity ->
+            subGradeEntity.toSubGradeModel(gradeFactory)
         }
     }
 
     override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Long {
-        try {
-            return subGradeDao.insertSubGrade(subGradeModel.toSubGradeEntity())
-        } catch (e: Exception) {
-            throw e
-        }
+        return subGradeDao.insertSubGrade(subGradeModel.toSubGradeEntity())
     }
 
     override suspend fun deleteAllSubGrades(): Int {
-        try {
-            subGradeDao.resetIncrementalSubGrade()
-            return subGradeDao.deleteAllSubGrades()
-        } catch (e: Exception) {
-            throw e
-        }
+        subGradeDao.resetIncrementalSubGrade()
+        return subGradeDao.deleteAllSubGrades()
     }
 
     override suspend fun deleteAllSubGradesFromGrade(gradeId: Int): Int {
-        try {
-            return subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
-        } catch (e: Exception) {
-            throw e
-        }
+        return subGradeDao.deleteAllSubGradesFromGradeId(gradeId)
     }
 
     override suspend fun deleteSubGradeById(subGradeId: Int): Boolean {
-        try {
-            return subGradeDao.deleteSubGradeFromId(subGradeId) == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        return subGradeDao.deleteSubGradeFromId(subGradeId) == 1
     }
 
     override suspend fun getSubGradeById(subGradeId: Int): SubGradeModel? {
-        try {
-            val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
-            return subGradeEntity.toSubGradeModel(gradeFactory)
-        } catch (e: Exception) {
-            throw e
-        }
+        val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
+        return subGradeEntity.toSubGradeModel(gradeFactory)
     }
 
     override suspend fun updateSubGrade(subGradeModel: SubGradeModel): Boolean {
-        try {
-            val result = subGradeDao.updateSubGradeById(
-                subGradeModel.id,
-                subGradeModel.title,
-                subGradeModel.grade.getGradePercentage(),
-            )
-            return result == 1
-        } catch (e: Exception) {
-            throw e
-        }
+        val result = subGradeDao.updateSubGradeById(
+            subGradeModel.id,
+            subGradeModel.title,
+            subGradeModel.grade.getGradePercentage(),
+        )
+        return result == 1
     }
 }

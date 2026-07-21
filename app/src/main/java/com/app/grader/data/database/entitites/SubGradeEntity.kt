@@ -2,9 +2,23 @@ package com.app.grader.data.database.entitites
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "sub_grade")
+@Entity(
+    tableName = "sub_grade",
+    foreignKeys = [
+        ForeignKey(
+            entity = GradeEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["grade_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE,
+        )
+    ],
+    indices = [Index("grade_id")]
+)
 data class SubGradeEntity (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,

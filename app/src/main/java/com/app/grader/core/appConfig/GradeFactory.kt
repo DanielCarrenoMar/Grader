@@ -2,13 +2,13 @@ package com.app.grader.core.appConfig
 
 import android.content.Context
 import com.app.grader.domain.types.Grade
-import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.data.appConfig.AppConfigRepository
 
 class GradeFactory (context: Context) {
-    private val appConfig = AppConfig(context)
+    private val appConfigRepository = AppConfigRepository(context)
 
     private fun getMinFromTypeGrade(): Double {
-        val type = appConfig.getTypeGrade()
+        val type = appConfigRepository.getTypeGrade()
         return when (type) {
             TypeGrade.NUMERIC_7_CHI -> 4.0
             TypeGrade.NUMERIC_10_ARG -> 4.0
@@ -20,7 +20,7 @@ class GradeFactory (context: Context) {
     }
 
     private fun getMaxFromTypeGrade(): Int {
-        val type = appConfig.getTypeGrade()
+        val type = appConfigRepository.getTypeGrade()
         return when (type) {
             TypeGrade.NUMERIC_7_CHI -> 7
             TypeGrade.NUMERIC_10_ARG -> 10

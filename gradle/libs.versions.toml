@@ -1,34 +1,40 @@
 [versions]
-agp = "8.13.0"
-hiltAndroid = "2.51.1"
-hiltNavigationCompose = "1.2.0"
-kotlin = "2.1.10"
-coreKtx = "1.16.0"
+agp = "9.1.0"
+appUpdate = "2.1.0"
+appReview = "2.0.2"
+hiltAndroid = "2.59.2"
+hiltNavigationCompose = "1.3.0"
+kotlin = "2.3.10"
+coreKtx = "1.18.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.2"
-activityCompose = "1.10.1"
-composeBom = "2025.07.00"
-roomVersion = "2.7.2"
-material = "1.12.0"
-activity = "1.10.1"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.13.0"
+composeBom = "2026.03.00"
+roomVersion = "2.8.4"
+material = "1.13.0"
+activity = "1.13.0"
 constraintlayout = "2.2.1"
-navigationCompose = "2.9.2"
-kotlinxSerialization = "1.8.0"
-ksp = "2.1.10-1.0.30"
-vico = "2.1.0"
-donut = "2.2.4"
-mockito = "6.0.0"
-junitKtx = "1.3.0"
-roomTestingAndroid = "2.7.2"
+navigationCompose = "2.9.7"
+kotlinxSerialization = "1.10.0"
+ksp = "2.3.5"
+vico = "3.0.3"
+donut = "2.3.1"
+junitVersion = "1.3.0"
+mockito = "6.2.3"
+roomTestingAndroid = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "hiltNavigationCompose" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+app-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "appReview" }
+app-review = { module = "com.google.android.play:review", version.ref = "appReview" }
+app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
+app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -54,12 +60,11 @@ vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref 
 donut-views = { group = "app.futured.donut", name = "donut", version.ref = "donut" }
 donut-compose = { group = "app.futured.donut", name = "donut-compose", version.ref = "donut" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito" }
-androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitVersion" }
 androidx-room-testing-android = { group = "androidx.room", name = "room-testing-android", version.ref = "roomTestingAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrainsKotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

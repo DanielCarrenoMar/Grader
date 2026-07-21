@@ -1,7 +1,7 @@
 package com.app.grader.di
 
 import android.content.Context
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
 import dagger.Module
 import dagger.Provides
@@ -15,8 +15,8 @@ import javax.inject.Singleton
 class AppConfigModule {
     @Provides
     @Singleton
-    fun provideAppConfig(@ApplicationContext context: Context): AppConfig {
-        return AppConfig(context)
+    fun provideAppConfig(@ApplicationContext context: Context): AppConfigRepository {
+        return AppConfigRepository(context)
     }
 
     @Provides

@@ -6,7 +6,11 @@ data class Percentage(
     private var percentage: Double
 ) {
     init {
-        require(percentage in 0.0..100.0) { "Percentage must be between 0 and 100" }
+        percentage = when {
+            percentage < 0.0 -> 0.0
+            percentage > 100.0 -> 100.0
+            else -> percentage
+        }
     }
     constructor() : this(0.0)
     constructor(grade:Percentage) : this(grade.getPercentage())

@@ -1,6 +1,8 @@
 package com.app.grader.ui.pages.config
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,17 +14,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,13 +39,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.TypeTheme
+import com.app.grader.domain.types.ThemeType
+import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
@@ -58,9 +62,10 @@ fun ConfigScreen(
     navigateToRecord: () -> Unit,
     viewModel: ConfigViewModel = hiltViewModel(),
 ) {
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    val isDebugBuild = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -69,10 +74,10 @@ fun ConfigScreen(
         }
     }
 
-    if (showDeleteConfirmation) {
+    if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
             { viewModel.deleteAll() },
-            { showDeleteConfirmation = false },
+            { showDeleteConfirmation.value = false },
             "Esta opción borrara TODOS los datos de la app.",
         )
     }
@@ -88,7 +93,8 @@ fun ConfigScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(10.dp))
             SelectorCard(
@@ -110,21 +116,21 @@ fun ConfigScreen(
             SelectorCard(
                 title = "Tema",
                 items = listOf(
-                    SelectorItem("Usar mi tema del sistema", TypeTheme.SYSTEM_DEFAULT.name),
-                    SelectorItem("Tema Claro", TypeTheme.LIGHT.name),
-                    SelectorItem("Tema Oscuro", TypeTheme.DARK.name),
+                    SelectorItem("Usar mi tema del sistema", ThemeType.SYSTEM_DEFAULT.name),
+                    SelectorItem("Tema Claro", ThemeType.LIGHT.name),
+                    SelectorItem("Tema Oscuro", ThemeType.DARK.name),
                 ),
                 current = viewModel.typeTheme.value.name,
                 onSelect = {
-                    viewModel.setTypeTheme(TypeTheme.valueOf(it))
+                    viewModel.setTypeTheme(ThemeType.valueOf(it))
                     viewModel.restartApp(context)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = when(viewModel.typeTheme.value){
-                    TypeTheme.DARK -> R.drawable.moon_outline
-                    TypeTheme.LIGHT -> R.drawable.sun_outline
-                    TypeTheme.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
+                    ThemeType.DARK -> R.drawable.moon_outline
+                    ThemeType.LIGHT -> R.drawable.sun_outline
+                    ThemeType.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
@@ -163,12 +169,32 @@ fun ConfigScreen(
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
-                onClick = { showDeleteConfirmation = true },
+                onClick = { showDeleteConfirmation.value = true },
                 contentColor = Error500,
                 icon = R.drawable.trash_outline,
                 text = "Eliminar todos los datos",
             )
-            Spacer(modifier = Modifier.weight(1f))
+            if (isDebugBuild) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                DebugHelper.DebugOptionsComp()
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Launch Count: ${viewModel.launchCount.intValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Review Asked Count: ${viewModel.reviewAskedCount.intValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Last Review Asked Time: ${viewModel.lastReviewAskedTimeDays.longValue}",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = "Review Completed: ${viewModel.reviewCompleted.value}",
+                style = MaterialTheme.typography.bodySmall,
+            )
             Text(
                 text = "Grader $versionName",
                 style = MaterialTheme.typography.bodyMedium,
@@ -230,7 +256,7 @@ fun SelectorCard(
                     onValueChange = {},
                     label = { Text(title) },
                     modifier = Modifier
-                        .menuAnchor(MenuAnchorType.PrimaryEditable)
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
                         .fillMaxWidth(),
                 )
                 ExposedDropdownMenu(

@@ -2,12 +2,9 @@ package com.app.grader.ui.componets.card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,7 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
-import com.app.grader.core.appConfig.AppConfig
+import com.app.grader.data.appConfig.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.types.CourseCardType
 import com.app.grader.ui.componets.TitleIcon
@@ -50,7 +47,7 @@ fun CourseCard(
     type: CourseCardType = CourseCardType.Normal,
 ) {
     val context = LocalContext.current
-    val appConfig = AppConfig(context)
+    val appConfigRepository = AppConfigRepository(context)
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
     val iconResId: Int = when (type) {
@@ -82,7 +79,7 @@ fun CourseCard(
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             Column (
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier.weight(1f).fillMaxHeight().padding(0.dp,0.dp,8.dp,0.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ){
                 TitleIcon(
@@ -127,7 +124,7 @@ fun CourseCard(
                     modifier = Modifier.fillMaxHeight()
                 ){
                     CircleCourse(
-                        grade = if (appConfig.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
+                        grade = if (appConfigRepository.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
                         radius = 33.dp
                     )
                 }

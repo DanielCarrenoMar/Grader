@@ -12,7 +12,7 @@ interface SubGradeDao {
     @Query("SELECT * FROM sub_grade WHERE grade_id = :gradeId")
     suspend fun getSubGradesFromGradeId(gradeId: Int): List<SubGradeEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSubGrade(subGrade: SubGradeEntity): Long
 
     @Query("UPDATE sub_grade SET title = :title, grade_percentage = :gradePercentage  WHERE id = :subGradeId")

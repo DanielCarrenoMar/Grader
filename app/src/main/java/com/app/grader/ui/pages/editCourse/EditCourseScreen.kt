@@ -12,15 +12,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import com.app.grader.R
+import com.app.grader.ui.componets.EditScreenInputComp
+import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.InfoAlertDialogComp
+import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -34,16 +42,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.app.grader.R
-import com.app.grader.ui.componets.EditScreenInputComp
-import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.theme.Shadow50
-import kotlinx.coroutines.launch
-import java.security.InvalidParameterException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,8 +59,8 @@ fun EditCourseScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
-    // Estado para mostrar el diálogo informativo de "Peso"
     var showPesoInfoDialog by remember { mutableStateOf(false) }
+    var expandedTypeGrade by remember { mutableStateOf(false) }
     LaunchedEffect(viewModel) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.getCourseFromId(courseId)
@@ -66,21 +68,10 @@ fun EditCourseScreen(
     }
 
     if (showPesoInfoDialog) {
-        AlertDialog(
-            onDismissRequest = { showPesoInfoDialog = false },
-            title = { Text("¿Qué significa Peso?", style = MaterialTheme.typography.titleMedium) },
-            text = { Text("Representa la ponderación que tendrá en el cálculo del promedio.", style = MaterialTheme.typography.labelMedium) },
-            confirmButton = {
-                TextButton(
-                    onClick = { showPesoInfoDialog = false },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Shadow50
-                    ),
-                ) {
-                    Text("Entendido")
-                }
-            }
+        InfoAlertDialogComp(
+            title = "¿Qué significa Peso?",
+            message = "Representa la ponderación que tendrá en el cálculo del promedio.",
+            onDismiss = { showPesoInfoDialog = false }
         )
     }
 
@@ -177,6 +168,43 @@ fun EditCourseScreen(
                 maxLength = 3,
                 maxLines = 1
             )
+            /*ExposedDropdownMenuBox(
+                expanded = expandedTypeGrade,
+                onExpandedChange = { expandedTypeGrade = !expandedTypeGrade },
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth()
+            ) {
+                val selectedTypeGrade = viewModel.typeGradeList.value.firstOrNull {
+                    it.id == viewModel.selectedTypeGradeId.intValue
+                } ?: viewModel.typeGradeList.value.firstOrNull()
+                TextField(
+                    readOnly = true,
+                    value = selectedTypeGrade?.title ?: "Cargando escalas...",
+                    onValueChange = {},
+                    label = { Text("Escala") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeGrade)
+                    },
+                    modifier = Modifier
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedTypeGrade,
+                    onDismissRequest = { expandedTypeGrade = false }
+                ) {
+                    viewModel.typeGradeList.value.forEach { typeGrade ->
+                        DropdownMenuItem(
+                            text = { Text(typeGrade.title) },
+                            onClick = {
+                                viewModel.setSelectedTypeGradeId(typeGrade.id)
+                                expandedTypeGrade = false
+                            }
+                        )
+                    }
+                }
+            }*/
             Spacer(modifier = Modifier.weight(1f))
         }
     }
