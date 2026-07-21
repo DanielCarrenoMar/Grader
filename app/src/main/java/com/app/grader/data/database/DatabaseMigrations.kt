@@ -149,7 +149,6 @@ fun migration6To7(appContext: Context): Migration {
  *   añade CHECK weighting_percentage BETWEEN 0 AND 100,
  *   corrige defaultValue de created_at a timestamp actual.
  * - SubGradeEntity: agrega FK grade_id → grade(id) CASCADE, índice grade_id,
- *   añade CHECK grade_percentage BETWEEN 0 AND 100.
  * - CourseEntity: agrega FK semester_id → semester(id) CASCADE, índice semester_id.
  */
 val MIGRATION_7_8 = object : Migration(7, 8) {
