@@ -224,6 +224,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveGrade(gradeModel: GradeModel): Long {
+        val currentSum = gradeDao.getSumPercentageByCourseId(gradeModel.courseId) ?: 0.0
+        if (currentSum + gradeModel.percentage.getPercentage() > 100.0) {
+            throw IllegalArgumentException("La suma de las notas excede el 100%")
+        }
         return gradeDao.insertGrade(gradeModel.toGradeEntity())
     }
 
@@ -256,6 +260,12 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateGrade(gradeModel: GradeModel): Boolean {
+        val currentSum = gradeDao.getSumPercentageByCourseId(gradeModel.courseId) ?: 0.0
+        val thisGradeCurrent = gradeDao.getGradeFromId(gradeModel.id)?.weightingPercentage ?: 0.0
+        val withoutThis = currentSum - thisGradeCurrent
+        if (withoutThis + gradeModel.percentage.getPercentage() > 100.0) {
+            throw IllegalArgumentException("La suma de las notas excede el 100%")
+        }
         val result = gradeDao.updateGradeById(
             gradeModel.id,
             gradeModel.title,

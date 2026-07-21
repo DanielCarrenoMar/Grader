@@ -124,4 +124,26 @@ interface GradeDao {
             "GROUP BY\n" +
             "    g.id;\n")
     suspend fun getGradeFromId(gradeId: Int): GradeEntity?
+
+    @Query("SELECT COALESCE(SUM(weighting_percentage), 0.0) FROM grade WHERE course_id = :courseId")
+    suspend fun getSumPercentageByCourseId(courseId: Int): Double?
+
+    @Query("SELECT\n" +
+            "    g.id,\n" +
+            "    g.course_id,\n" +
+            "    g.title,\n" +
+            "    g.description,\n" +
+            "    g.created_at,\n" +
+            "    g.weighting_percentage,\n" +
+            "    COALESCE(AVG(sg.grade_percentage), g.grade_percentage) AS grade_percentage\n" +
+            "FROM\n" +
+            "    grade g\n" +
+            "LEFT JOIN\n" +
+            "    sub_grade sg ON sg.grade_id = g.id\n" +
+            "WHERE g.course_id = :courseId\n" +
+            "GROUP BY\n" +
+            "    g.id\n" +
+            "ORDER BY g.created_at DESC, g.id DESC\n" +
+            "LIMIT 1")
+    suspend fun getLastGradeFromCourseId(courseId: Int): GradeEntity?
 }

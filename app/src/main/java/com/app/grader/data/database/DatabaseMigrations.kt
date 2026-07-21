@@ -146,7 +146,6 @@ fun migration6To7(appContext: Context): Migration {
  * Migración 7 → 8:
  * - GradeEntity: agrega FK course_id → course(id) CASCADE, índice course_id,
  *   renombra columna `percentage` → `weighting_percentage`,
- *   añade CHECK grade_percentage BETWEEN 0 AND 100,
  *   añade CHECK weighting_percentage BETWEEN 0 AND 100,
  *   corrige defaultValue de created_at a timestamp actual.
  * - SubGradeEntity: agrega FK grade_id → grade(id) CASCADE, índice grade_id,
@@ -166,8 +165,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
                     course_id INTEGER NOT NULL,
                     title TEXT NOT NULL,
                     description TEXT NOT NULL,
-                    grade_percentage REAL NOT NULL
-                        CHECK(grade_percentage >= 0 AND grade_percentage <= 100),
+                    grade_percentage REAL NOT NULL,
                     weighting_percentage REAL NOT NULL
                         CHECK(weighting_percentage >= 0 AND weighting_percentage <= 100),
                     created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')*1000),
@@ -203,8 +201,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     grade_id INTEGER NOT NULL,
                     title TEXT NOT NULL,
-                    grade_percentage REAL NOT NULL
-                        CHECK(grade_percentage >= 0 AND grade_percentage <= 100),
+                    grade_percentage REAL NOT NULL,
                     FOREIGN KEY(grade_id) REFERENCES grade(id)
                         ON UPDATE CASCADE ON DELETE CASCADE
                 )
@@ -250,6 +247,88 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
             db.execSQL("ALTER TABLE course_new RENAME TO course")
             db.execSQL("CREATE INDEX index_course_type_grade_id ON course(type_grade_id)")
             db.execSQL("CREATE INDEX index_course_semester_id ON course(semester_id)")
+
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+}
+
+/**
+ * Migración 8 → 9:
+ * Repara cursos cuya suma de `weighting_percentage` excede 100.
+ *
+ * Causado por un error de validacion que permitia crear notas que sumadas a otras notas superaban 100.
+ *
+ * Sin cambios de schema — es una migración de datos.
+ */
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
+        try {
+            // Cursos candidatos: todos los que tengan al menos una nota. El
+            // filtro HAVING lo aplicamos en cada iteración interna porque un
+            // curso puede dejar de estar pasado tras ajustar/borrar una nota.
+            db.query(
+                "SELECT course_id " +
+                        "FROM grade " +
+                        "GROUP BY course_id"
+            ).use { candidates ->
+                while (candidates.moveToNext()) {
+                    val courseId = candidates.getInt(0)
+
+                    // Rebalancea iterativamente: tras cada UPDATE la suma llega
+                    // exactamente a 100 (break); tras cada DELETE puede quedar
+                    // residuo, así que se re-evalúa.
+                    while (true) {
+                        val total: Double = db.query(
+                            "SELECT COALESCE(SUM(weighting_percentage), 0.0) " +
+                                    "FROM grade WHERE course_id = ?",
+                            arrayOf<Any?>(courseId)
+                        ).use { c -> if (c.moveToFirst()) c.getDouble(0) else 0.0 }
+
+                        val surplus = total - 100.0
+                        if (surplus <= 0.0) break
+
+                        db.query(
+                            "SELECT id, weighting_percentage " +
+                                    "FROM grade " +
+                                    "WHERE course_id = ? " +
+                                    "ORDER BY created_at DESC, id DESC " +
+                                    "LIMIT 1",
+                            arrayOf<Any?>(courseId)
+                        ).use { last ->
+                            if (!last.moveToFirst()) break
+                            val lastId = last.getInt(0)
+                            val lastPct = last.getDouble(1)
+                            val newPct = lastPct - surplus
+
+                            if (newPct > 0.0) {
+                                // Ajuste exacto: tras esto, suma == 100.
+                                db.execSQL(
+                                    "UPDATE grade SET weighting_percentage = ? WHERE id = ?",
+                                    arrayOf<Any?>(newPct, lastId)
+                                )
+                                break
+                            } else {
+                                // La nota más reciente no alcanza a cubrir el
+                                // excedente. Se elimina (con sus sub_grades)
+                                // y se vuelve a evaluar el curso en la
+                                // siguiente iteración del while.
+                                db.execSQL(
+                                    "DELETE FROM sub_grade WHERE grade_id = ?",
+                                    arrayOf<Any?>(lastId)
+                                )
+                                db.execSQL(
+                                    "DELETE FROM grade WHERE id = ?",
+                                    arrayOf<Any?>(lastId)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
 
             db.setTransactionSuccessful()
         } finally {
