@@ -156,7 +156,6 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
         db.beginTransaction()
         try {
             // ── grade ─────────────────────────────────────────────────────────────
-            // Recrear con FK, CHECK constraints y columna renombrada
             db.execSQL(
                 """
                 CREATE TABLE grade_new (
@@ -177,9 +176,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
                 """
                 INSERT INTO grade_new (id, course_id, title, description, grade_percentage, weighting_percentage, created_at)
                 SELECT id, course_id, title, description,
-                       CASE WHEN grade_percentage < 0 THEN 0
-                            WHEN grade_percentage > 100 THEN 100
-                            ELSE grade_percentage END,
+                       grade_percentage,
                        CASE WHEN percentage < 0 THEN 0
                             WHEN percentage > 100 THEN 100
                             ELSE percentage END,
@@ -209,10 +206,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
             db.execSQL(
                 """
                 INSERT INTO sub_grade_new (id, grade_id, title, grade_percentage)
-                SELECT id, grade_id, title,
-                       CASE WHEN grade_percentage < 0 THEN 0
-                            WHEN grade_percentage > 100 THEN 100
-                            ELSE grade_percentage END
+                SELECT id, grade_id, title, grade_percentage
                 FROM sub_grade
                 """.trimIndent()
             )
