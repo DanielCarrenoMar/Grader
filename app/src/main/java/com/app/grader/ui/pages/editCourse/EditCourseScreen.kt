@@ -168,7 +168,7 @@ fun EditCourseScreen(
                 maxLength = 3,
                 maxLines = 1
             )
-            ExposedDropdownMenuBox(
+            /*ExposedDropdownMenuBox(
                 expanded = expandedTypeGrade,
                 onExpandedChange = { expandedTypeGrade = !expandedTypeGrade },
                 modifier = Modifier
@@ -204,7 +204,7 @@ fun EditCourseScreen(
                         )
                     }
                 }
-            }
+            }*/
             Spacer(modifier = Modifier.weight(1f))
         }
     }
