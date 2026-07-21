@@ -168,6 +168,40 @@ class RoomMigrationTest {
 
     @Test
     @Throws(IOException::class)
+    fun migrate7To9_keepsBlankGradePercentage() {
+        val dbName = "migration-test-blank"
+
+        // Crear DB a v7 con una nota vacia (grade_percentage = -1) y una nota normal.
+        var db = helper.createDatabase(dbName, 7).apply {
+            execSQL("INSERT INTO type_grade (id, base_at, active) VALUES (1, 20, 1)")
+            execSQL("INSERT INTO course (id, semester_id, type_grade_id, title, uc) VALUES (1, NULL, 1, 'Math', 1)")
+            execSQL(
+                "INSERT INTO grade (id, course_id, title, description, grade_percentage, percentage, created_at) " +
+                        "VALUES (1, 1, 'Empty', 'blank', -1.0, 0.0, 1000)"
+            )
+            execSQL(
+                "INSERT INTO grade (id, course_id, title, description, grade_percentage, percentage, created_at) " +
+                        "VALUES (2, 1, 'Full', 'full', 16.0, 100.0, 2000)"
+            )
+            close()
+        }
+
+        db = helper.runMigrationsAndValidate(dbName, 9, true, MIGRATION_7_8, MIGRATION_8_9)
+
+        // La nota vacia debe conservar grade_percentage = -1.
+        db.query("SELECT grade_percentage FROM grade WHERE title = 'Empty'").use { c ->
+            require(c.moveToFirst()) { "expected blank grade row" }
+            assert(c.getDouble(0) == -1.0) { "blank grade should keep -1, got ${c.getDouble(0)}" }
+        }
+        // La nota normal debe conservar su valor.
+        db.query("SELECT grade_percentage FROM grade WHERE title = 'Full'").use { c ->
+            require(c.moveToFirst()) { "expected full grade row" }
+            assert(abs(c.getDouble(0) - 16.0) < 1e-9) { "full grade should keep 16, got ${c.getDouble(0)}" }
+        }
+    }
+
+    @Test
+    @Throws(IOException::class)
     fun migrate8To9_deletesNewestWhenSurplusExceedsIt() {
         val dbName = "migration-test-repair-delete"
 
