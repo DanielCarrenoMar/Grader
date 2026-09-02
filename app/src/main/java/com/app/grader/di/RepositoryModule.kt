@@ -2,6 +2,8 @@ package com.app.grader.di
 
 import com.app.grader.infrastructure.database.repository.LocalStorageRepositoryImpl
 import com.app.grader.domain.repository.LocalStorageRepository
+import com.app.grader.domain.repository.DistributionPlatformRepository
+import com.app.grader.infrastructure.playStore.PlayStoreDistributionRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ abstract class RepositoryModule {
     abstract fun bindLocalStorageRepository(
         localStorageRepositoryImpl: LocalStorageRepositoryImpl
     ): LocalStorageRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindDistributionPlatformRepository(
+        playStoreDistributionRepositoryImp: PlayStoreDistributionRepositoryImp
+    ): DistributionPlatformRepository
 }
