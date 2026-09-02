@@ -51,14 +51,14 @@ class AppConfigRepository(private val context: Context) {
         sharedPreferences.edit { putInt(AppConfig.DEFAULT_TYPE_GRADE_ID, id) }
     }
 
-    @Deprecated("Use getDefaultTypeGradeId() for course defaults")
+    @Deprecated("Use getDefaultTypeGradeId() for course defaults. Deprecated in version 2.0.2")
     fun getTypeGrade(): TypeGrade {
         return TypeGrade.valueOf(
             sharedPreferences.getString(AppConfig.TYPE_GRADE, TypeGrade.NUMERIC_20.name)!!
         )
     }
 
-    @Deprecated("Use setDefaultTypeGradeId() for course defaults")
+    @Deprecated("Use setDefaultTypeGradeId() for course defaults. Deprecated in version 2.0.2")
     fun setTypeGrade(typeGrade: TypeGrade) {
         sharedPreferences.edit { putString(AppConfig.TYPE_GRADE, typeGrade.name) }
     }
