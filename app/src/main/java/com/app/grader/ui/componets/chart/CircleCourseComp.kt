@@ -40,7 +40,7 @@ fun CircleCourse(
     val sections = if (grade.isNotBlank()) {
         listOf(
             DonutSection(
-                amount = grade.getGrade().toFloat(),
+                amount = (grade.getGrade() ?: 0.0).toFloat(),
                 color = colorOnBase
             )
         )

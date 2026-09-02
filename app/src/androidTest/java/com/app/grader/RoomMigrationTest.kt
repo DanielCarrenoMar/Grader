@@ -9,6 +9,7 @@ import com.app.grader.infrastructure.database.MIGRATION_3_4
 import com.app.grader.infrastructure.database.MIGRATION_4_5
 import com.app.grader.infrastructure.database.MIGRATION_7_8
 import com.app.grader.infrastructure.database.MIGRATION_8_9
+import com.app.grader.infrastructure.database.MIGRATION_9_10
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -246,5 +247,67 @@ class RoomMigrationTest {
             require(c.moveToFirst())
             assert(c.getInt(0) == 0) { "sub_grade of deleted grade must be gone" }
         }
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate9To10_convertsBlankSentinelToNull() {
+        val dbName = "migration-test-9to10"
+
+        // Crear DB a v9 con una nota vacia (grade_percentage = -1.0), una nota
+        // normal y una sub_grade vacia (-1.0).
+        var db = helper.createDatabase(dbName, 9).apply {
+            execSQL("INSERT INTO type_grade (id, base_at, active) VALUES (1, 20, 1)")
+            execSQL("INSERT INTO course (id, semester_id, type_grade_id, title, uc) VALUES (1, NULL, 1, 'Math', 1)")
+            execSQL(
+                "INSERT INTO grade (id, course_id, title, description, grade_percentage, weighting_percentage, created_at) " +
+                        "VALUES (1, 1, 'Empty', 'blank', -1.0, 0.0, 1000)"
+            )
+            execSQL(
+                "INSERT INTO grade (id, course_id, title, description, grade_percentage, weighting_percentage, created_at) " +
+                        "VALUES (2, 1, 'Full', 'full', 16.0, 100.0, 2000)"
+            )
+            execSQL(
+                "INSERT INTO sub_grade (id, grade_id, title, grade_percentage) VALUES (1, 1, 'sub-blank', -1.0)"
+            )
+            close()
+        }
+
+        db = helper.runMigrationsAndValidate(dbName, 10, true, MIGRATION_9_10)
+
+        // grade_percentage debe ser NULLABLE en ambas tablas.
+        db.query("PRAGMA table_info(grade)").use { c ->
+            var nullable = false
+            while (c.moveToNext()) {
+                if (c.getString(1) == "grade_percentage" && c.getInt(3) == 0) nullable = true
+            }
+            assert(nullable) { "grade.grade_percentage must be nullable" }
+        }
+        db.query("PRAGMA table_info(sub_grade)").use { c ->
+            var nullable = false
+            while (c.moveToNext()) {
+                if (c.getString(1) == "grade_percentage" && c.getInt(3) == 0) nullable = true
+            }
+            assert(nullable) { "sub_grade.grade_percentage must be nullable" }
+        }
+
+        // La nota vacia debe convertirse de -1.0 a NULL.
+        db.query("SELECT grade_percentage FROM grade WHERE title = 'Empty'").use { c ->
+            require(c.moveToFirst()) { "expected blank grade row" }
+            assert(c.isNull(0)) { "blank grade should be NULL, got ${c.getDouble(0)}" }
+        }
+        // La nota normal debe conservar su valor.
+        db.query("SELECT grade_percentage FROM grade WHERE title = 'Full'").use { c ->
+            require(c.moveToFirst()) { "expected full grade row" }
+            assert(abs(c.getDouble(0) - 16.0) < 1e-9) { "full grade should keep 16, got ${c.getDouble(0)}" }
+        }
+        // La sub_grade vacia tambien debe convertirse a NULL.
+        db.query("SELECT grade_percentage FROM sub_grade WHERE id = 1").use { c ->
+            require(c.moveToFirst()) { "expected sub_grade row" }
+            assert(c.isNull(0)) { "blank sub_grade should be NULL, got ${c.getDouble(0)}" }
+        }
+
+        dumpQuery(db, "SELECT id, title, grade_percentage FROM grade ORDER BY id")
+        dumpQuery(db, "SELECT id, title, grade_percentage FROM sub_grade ORDER BY id")
     }
 }

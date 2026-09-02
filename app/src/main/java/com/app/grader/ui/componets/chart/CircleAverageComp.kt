@@ -34,7 +34,7 @@ fun CircleAverage(
     val density = LocalDensity.current
 
     val animatedAverage by animateFloatAsState(
-        targetValue = average.getGrade().toFloat(),
+        targetValue = (average.getGrade() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "averageAnimation"
     )

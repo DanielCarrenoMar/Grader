@@ -134,10 +134,82 @@ fun migration6To7(appContext: Context): Migration {
                 db.execSQL("DROP TABLE course")
                 db.execSQL("ALTER TABLE course_new RENAME TO course")
                 db.execSQL("CREATE INDEX index_course_type_grade_id ON course(type_grade_id)")
-                db.setTransactionSuccessful()
-            } finally {
-                db.endTransaction()
-            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+}
+}
+
+/**
+ * Migración 9 → 10:
+ * Cambia la representación de "nota vacía" de -1.0 a NULL en `grade_percentage`
+ * de las tablas `grade` y `sub_grade`, haciendo la columna NULLABLE y
+ * convirtiendo -1.0 → NULL.
+ */
+val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.beginTransaction()
+        try {
+            // ── grade ─────────────────────────────────────────────────────────────
+            db.execSQL(
+                """
+                CREATE TABLE grade_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    course_id INTEGER NOT NULL,
+                    title TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    grade_percentage REAL,
+                    weighting_percentage REAL NOT NULL
+                        CHECK(weighting_percentage >= 0 AND weighting_percentage <= 100),
+                    created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')*1000),
+                    FOREIGN KEY(course_id) REFERENCES course(id)
+                        ON UPDATE CASCADE ON DELETE CASCADE
+                )
+                """.trimIndent()
+            )
+            db.execSQL(
+                """
+                INSERT INTO grade_new (id, course_id, title, description, grade_percentage, weighting_percentage, created_at)
+                SELECT id, course_id, title, description,
+                       NULLIF(grade_percentage, -1.0),
+                       weighting_percentage,
+                       created_at
+                FROM grade
+                """.trimIndent()
+            )
+            db.execSQL("DROP TABLE grade")
+            db.execSQL("ALTER TABLE grade_new RENAME TO grade")
+            db.execSQL("CREATE INDEX index_grade_course_id ON grade(course_id)")
+
+            // ── sub_grade ─────────────────────────────────────────────────────────
+            db.execSQL(
+                """
+                CREATE TABLE sub_grade_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    grade_id INTEGER NOT NULL,
+                    title TEXT NOT NULL,
+                    grade_percentage REAL,
+                    FOREIGN KEY(grade_id) REFERENCES grade(id)
+                        ON UPDATE CASCADE ON DELETE CASCADE
+                )
+                """.trimIndent()
+            )
+            db.execSQL(
+                """
+                INSERT INTO sub_grade_new (id, grade_id, title, grade_percentage)
+                SELECT id, grade_id, title, NULLIF(grade_percentage, -1.0)
+                FROM sub_grade
+                """.trimIndent()
+            )
+            db.execSQL("DROP TABLE sub_grade")
+            db.execSQL("ALTER TABLE sub_grade_new RENAME TO sub_grade")
+            db.execSQL("CREATE INDEX index_sub_grade_grade_id ON sub_grade(grade_id)")
+
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
         }
     }
 }

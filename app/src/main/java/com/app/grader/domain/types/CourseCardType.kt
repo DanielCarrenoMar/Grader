@@ -10,7 +10,7 @@ enum class CourseCardType {
 }
 
 fun cardTypeFromCourse(course: CourseModel): CourseCardType {
-    val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+    val accumulatedPoints = (course.average.getGrade() ?: 0.0) * (course.totalPercentage.getPercentage() / 100.0)
     val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
 
     return if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {

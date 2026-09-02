@@ -139,7 +139,7 @@ class RecordViewModel @Inject constructor(
                         var sumCoursesLength = 0
                         _semesters.value.forEach { semester ->
                             if (semester.average.isBlank()) return@forEach
-                            sumAverage += semester.average.getGrade() * semester.weight
+                            sumAverage += (semester.average.getGrade() ?: 0.0) * semester.weight
                             sumSemesterWeight += semester.weight
                             sumCoursesLength += semester.size
                         }

@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -241,7 +239,7 @@ fun CourseScreen(
                                             val numberValue = newValue.toDoubleOrNull()
                                             if (numberValue == null) return@GradeCardComp
                                             if (!grade.grade.check(numberValue)) return@GradeCardComp
-                                            grade.grade.setGrade(numberValue)
+                                            grade.grade.setValue(numberValue)
                                             viewModel.updateGrade(grade)
                                         },
                                     )
@@ -291,13 +289,13 @@ fun InfoCourseCard(
     modifier: Modifier = Modifier,
 ) {
     val animatedAccumulatePoints by animateFloatAsState(
-        targetValue = accumulatePoints.getGrade().toFloat(),
+        targetValue = (accumulatePoints.getGrade() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "accumulatePointsAnimation"
     )
 
     val animatedPendingPoints by animateFloatAsState(
-        targetValue = pendingPoints.getGrade().toFloat(),
+        targetValue = (pendingPoints.getGrade() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "pendingPointsAnimation"
     )
@@ -316,7 +314,7 @@ fun InfoCourseCard(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CircleAverage(average, accumulatePoints.getGrade(), pendingPoints.getGrade())
+                CircleAverage(average, accumulatePoints.getGrade() ?: 0.0, pendingPoints.getGrade() ?: 0.0)
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 0.dp)

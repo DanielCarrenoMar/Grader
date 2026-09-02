@@ -94,7 +94,7 @@ interface GradeDao {
     suspend fun insertGrade(grades: GradeEntity): Long
 
     @Query("UPDATE grade SET title = :title, description = :description, grade_percentage = :gradePercentage, weighting_percentage = :weightingPercentage WHERE id = :gradeId")
-    suspend fun updateGradeById(gradeId: Int, title: String, description: String, gradePercentage: Double, weightingPercentage: Double): Int
+    suspend fun updateGradeById(gradeId: Int, title: String, description: String, gradePercentage: Double?, weightingPercentage: Double): Int
 
     @Query("DELETE FROM grade WHERE course_id = :courseId")
     suspend fun deleteAllGradesFromCourseId(courseId: Int): Int

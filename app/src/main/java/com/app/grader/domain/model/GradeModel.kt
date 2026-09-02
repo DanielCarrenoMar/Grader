@@ -19,7 +19,7 @@ data class GradeModel(
             courseId = -1,
             title = "",
             description = "",
-            grade = Grade(-1,0.0,0),
+            grade = Grade(null, 0.0, 0),
             percentage = Percentage(),
         )
     }

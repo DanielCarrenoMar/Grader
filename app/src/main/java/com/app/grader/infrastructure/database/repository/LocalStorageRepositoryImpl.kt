@@ -156,14 +156,14 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
         courses.forEach { course ->
             if (course.average.isNotBlank()) {
-                val accumulatedPoints = course.average.getGrade() * (course.totalPercentage.getPercentage() / 100.0)
+                val accumulatedPoints = (course.average.getGrade() ?: 0.0) * (course.totalPercentage.getPercentage() / 100.0)
                 val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
                 if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
                     return@forEach
                 }
 
-                val grade = if (appConfigRepository.isRoundFinalCourseAverage()) course.average.getRoundedGrade()
-                else course.average.getGrade()
+                val grade = if (appConfigRepository.isRoundFinalCourseAverage()) course.average.getRoundedGrade() ?: 0.0
+                else course.average.getGrade() ?: 0.0
 
                 totalGrades += grade * course.uc
                 totalUC += course.uc

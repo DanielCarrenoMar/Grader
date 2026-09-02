@@ -11,7 +11,7 @@ data class CourseModel(
     val typeGradeId: Int = 0,
     val title: String,
     val uc: Int,
-    val average: Grade = Grade(-1, 0.0, 0),
+    val average: Grade = Grade(null, 0.0, 0),
     val totalPercentage: Percentage = Percentage(),
     val id: Int = -1,
 ){

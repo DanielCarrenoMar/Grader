@@ -37,19 +37,20 @@ class GradeFactory (private val appConfigRepository: SharedPreferencesAppConfigR
     fun instGrade(): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        return Grade(-1.0, min, max)
+        return Grade(null, min, max)
     }
 
-    fun instGradeFromPercentage(gradePercentage: Double): Grade {
+    fun instGradeFromPercentage(gradePercentage: Double?): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        if (Grade.isBlankValue(gradePercentage) ) return Grade(min, max)
+        if (gradePercentage == null) return Grade(min, max)
         return Grade(gradePercentage * max / 100, min, max)
     }
 
     fun convertToActualType(grade: Grade): Grade {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        return Grade(grade.getGradePercentage()  * max / 100, min, max)
+        val percentage = grade.getGradePercentage() ?: return Grade(min, max)
+        return Grade(percentage * max / 100, min, max)
     }
 }

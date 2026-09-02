@@ -12,7 +12,7 @@ import com.app.grader.infrastructure.database.dao.*
 
 @TypeConverters(DateConverter::class)
 @Database(
-    version = 9,
+    version = 10,
     entities = [SemesterEntity::class, CourseEntity::class, GradeEntity::class, SubGradeEntity::class, TypeGradeEntity::class],
     exportSchema = true,
     autoMigrations = [

@@ -83,7 +83,7 @@ class EditGradeViewModel @Inject constructor(
         _showGrade.value = grade
         val value = grade.toDoubleOrNull()
 
-        if (grade.isNotBlank() && value != null && _grade.value.check(value) ) _grade.value.setGrade(value)
+        if (grade.isNotBlank() && value != null && _grade.value.check(value) ) _grade.value.setValue(value)
         else _grade.value.setBlank()
     }
 
@@ -150,7 +150,7 @@ class EditGradeViewModel @Inject constructor(
 
     fun calGradeFromSubGrades() {
         if (_subGrades.isEmpty()) return
-        _grade.value.setGrade( _subGrades.averageGrade())
+        _grade.value.setValue( _subGrades.averageGrade())
         _showGrade.value = _grade.value.toString()
     }
 
@@ -158,7 +158,7 @@ class EditGradeViewModel @Inject constructor(
         _showSubGrades[index] = subGrade
         val value = subGrade.toDoubleOrNull()
 
-        if (subGrade.isNotBlank() && value != null && _grade.value.check(value) ) _subGrades[index].setGrade(value)
+        if (subGrade.isNotBlank() && value != null && _grade.value.check(value) ) _subGrades[index].setValue(value)
         else _subGrades[index].setBlank()
         calGradeFromSubGrades()
     }
@@ -263,7 +263,7 @@ class EditGradeViewModel @Inject constructor(
                         _description.value = grade.description
                         _showDescription.value = grade.description
 
-                        _grade.value.setGrade(grade.grade)
+                        _grade.value.setValue(grade.grade)
                         _showGrade.value = grade.grade.toString()
 
                         _percentage.value.setPercentage(grade.percentage)
@@ -331,7 +331,7 @@ class EditGradeViewModel @Inject constructor(
         }
         else if (!_grade.value.check(showGradeValue) ) {
             _showGrade.value = _grade.value.toString()
-            _grade.value.setGrade(_showGrade.value.toDoubleOrNull() ?: 0.0)
+            _grade.value.setValue(_showGrade.value.toDoubleOrNull() ?: 0.0)
             result = false
         }
 

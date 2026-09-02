@@ -16,7 +16,7 @@ interface SubGradeDao {
     suspend fun insertSubGrade(subGrade: SubGradeEntity): Long
 
     @Query("UPDATE sub_grade SET title = :title, grade_percentage = :gradePercentage  WHERE id = :subGradeId")
-    suspend fun updateSubGradeById(subGradeId: Int, title: String, gradePercentage: Double): Int
+    suspend fun updateSubGradeById(subGradeId: Int, title: String, gradePercentage: Double?): Int
 
     @Query("DELETE FROM sub_grade WHERE grade_id = :gradeId")
     suspend fun deleteAllSubGradesFromGradeId(gradeId: Int): Int
