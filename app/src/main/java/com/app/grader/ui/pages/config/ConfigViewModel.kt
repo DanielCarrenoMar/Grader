@@ -8,14 +8,15 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.model.Resource
-import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
+import com.app.grader.domain.usecase.typeGrade.GetAllTypeGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllCoursesUseCase: DeleteAllCoursesUseCase,
     private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
     private val deleteAllSemestersUseCase: DeleteAllSemestersUseCase,
+    private val getAllTypeGradeUseCase: GetAllTypeGradeUseCase,
     private val appConfigRepository: AppConfigRepository
 ): ViewModel() {
     private val _typeTheme = mutableStateOf(appConfigRepository.getTypeTheme())
@@ -34,8 +36,11 @@ class ConfigViewModel  @Inject constructor(
     private val _isRoundFinalCourseAverage = mutableStateOf(appConfigRepository.isRoundFinalCourseAverage())
     val isRoundFinalCourseAverage = _isRoundFinalCourseAverage
 
-    private val _typeGrade = mutableStateOf(appConfigRepository.getTypeGrade())
-    val typeGrade = _typeGrade
+    private val _typeGradeList = mutableStateOf<List<TypeGradeModel>>(emptyList())
+    val typeGradeList = _typeGradeList
+
+    private val _selectedTypeGradeId = mutableIntStateOf(appConfigRepository.getDefaultTypeGradeId())
+    val selectedTypeGradeId = _selectedTypeGradeId
 
     private val _launchCount = mutableIntStateOf(appConfigRepository.getLaunchCount())
     val launchCount = _launchCount
@@ -48,6 +53,26 @@ class ConfigViewModel  @Inject constructor(
 
     private val _reviewCompleted = mutableStateOf(appConfigRepository.isReviewCompleted())
     val reviewCompleted = _reviewCompleted
+
+    init {
+        loadTypeGrades()
+    }
+
+    private fun loadTypeGrades() {
+        viewModelScope.launch {
+            getAllTypeGradeUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _typeGradeList.value = result.data ?: emptyList()
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("ConfigViewModel", "Error loadTypeGrades: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun restartApp(context: Context) {
         viewModelScope.launch {
@@ -63,7 +88,7 @@ class ConfigViewModel  @Inject constructor(
     fun updateConfiguration() {
         _typeTheme.value = appConfigRepository.getTypeTheme()
         _isRoundFinalCourseAverage.value = appConfigRepository.isRoundFinalCourseAverage()
-        _typeGrade.value = appConfigRepository.getTypeGrade()
+        _selectedTypeGradeId.intValue = appConfigRepository.getDefaultTypeGradeId()
         _launchCount.intValue = appConfigRepository.getLaunchCount()
         _reviewAskedCount.intValue = appConfigRepository.getReviewAskedCount()
         _lastReviewAskedTimeDays.longValue = (System.currentTimeMillis() - appConfigRepository.getLastReviewAskedTime()) / (1000 * 60 * 60 * 24)
@@ -78,9 +103,9 @@ class ConfigViewModel  @Inject constructor(
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
         appConfigRepository.setRoundFinalCourseAverage(isRoundFinalCourseAverage)
     }
-    fun setTypeGrade(typeGrade: TypeGrade) {
-        _typeGrade.value = typeGrade
-        appConfigRepository.setTypeGrade(typeGrade)
+    fun setSelectedTypeGradeId(typeGradeId: Int) {
+        _selectedTypeGradeId.intValue = typeGradeId
+        appConfigRepository.setDefaultTypeGradeId(typeGradeId)
     }
     fun deleteAll(){
         viewModelScope.launch {
@@ -130,4 +155,4 @@ class ConfigViewModel  @Inject constructor(
             }
         }
     }
-}
+}

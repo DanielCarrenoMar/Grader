@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
@@ -27,6 +28,7 @@ class RecordSemesterViewModel @Inject constructor(
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     gradeFactory: GradeFactory,
+    appConfigRepository: AppConfigRepository,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
@@ -36,7 +38,8 @@ class RecordSemesterViewModel @Inject constructor(
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase,
-    gradeFactory
+    gradeFactory,
+    appConfigRepository
 ) {
     private val _semester = mutableStateOf(SemesterModel.DEFAULT)
     val semester = _semester

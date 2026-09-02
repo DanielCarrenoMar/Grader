@@ -9,6 +9,7 @@ import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
@@ -21,6 +22,7 @@ open class SemesterViewModel(
     protected val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     protected val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     protected val gradeFactory: GradeFactory,
+    val appConfigRepository: AppConfigRepository,
 ): ViewModel() {
     private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
     val totalAverage = _totalAverage

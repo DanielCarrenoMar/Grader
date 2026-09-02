@@ -115,6 +115,7 @@ fun TransferSemesterScreen(
                 val courseCardType = cardTypeFromCourse(course)
                 CourseCard(
                     course,
+                    appConfigRepository = viewModel.appConfigRepository,
                     type = courseCardType
                 )
             }

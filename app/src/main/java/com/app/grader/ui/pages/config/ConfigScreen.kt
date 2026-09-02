@@ -44,7 +44,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
@@ -99,16 +98,9 @@ fun ConfigScreen(
             Spacer(Modifier.height(10.dp))
             SelectorCard(
                 title = "Tipo de calificación",
-                items = listOf(
-                    SelectorItem("0-7", TypeGrade.NUMERIC_7_CHI.name),
-                    SelectorItem("0-10 (Argentina)", TypeGrade.NUMERIC_10_ARG.name),
-                    SelectorItem("0-10 (España)", TypeGrade.NUMERIC_10_ESP.name),
-                    SelectorItem("0-10 (México)", TypeGrade.NUMERIC_10_MEX.name),
-                    SelectorItem("0-20", TypeGrade.NUMERIC_20.name),
-                    SelectorItem("0-100", TypeGrade.NUMERIC_100.name),
-                ),
-                current = viewModel.typeGrade.value.name,
-                onSelect = { viewModel.setTypeGrade(TypeGrade.valueOf(it)) },
+                items = viewModel.typeGradeList.value.map { SelectorItem(it.title, it.id.toString()) },
+                current = viewModel.selectedTypeGradeId.intValue.toString(),
+                onSelect = { viewModel.setSelectedTypeGradeId(it.toInt()) },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.rectangle_list_outline,

@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.types.CourseCardType
 import com.app.grader.ui.componets.TitleIcon
@@ -40,14 +39,13 @@ import com.app.grader.ui.componets.chart.CircleCourse
 @Composable
 fun CourseCard(
     course: CourseModel,
+    appConfigRepository: AppConfigRepository,
     modifier: Modifier = Modifier,
     onClick: (()-> Unit)? = null,
     onDelete: (()-> Unit)? = null,
     onEdit: (()-> Unit)? = null,
     type: CourseCardType = CourseCardType.Normal,
 ) {
-    val context = LocalContext.current
-    val appConfigRepository = AppConfigRepository(context)
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
     val iconResId: Int = when (type) {

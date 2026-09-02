@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.SaveSemesterUseCase
@@ -23,6 +24,7 @@ class TransferSemesterViewModel @Inject constructor(
     updateSemesterUseCase: UpdateSemesterUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
+    val appConfigRepository: AppConfigRepository,
 ) : EditSemesterViewModel(
     getSemesterByIdUseCase,
     saveSemesterUseCase,

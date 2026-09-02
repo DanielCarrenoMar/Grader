@@ -1,12 +1,10 @@
 package com.app.grader.di
 
-import android.content.Context
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -15,13 +13,7 @@ import javax.inject.Singleton
 class AppConfigModule {
     @Provides
     @Singleton
-    fun provideAppConfig(@ApplicationContext context: Context): AppConfigRepository {
-        return AppConfigRepository(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGradeFactory(@ApplicationContext context: Context): GradeFactory {
-        return GradeFactory(context)
+    fun provideGradeFactory(appConfigRepository: SharedPreferencesAppConfigRepository): GradeFactory {
+        return GradeFactory(appConfigRepository)
     }
 }

@@ -1,6 +1,7 @@
 package com.app.grader.ui.pages.home
 
 import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
@@ -16,12 +17,14 @@ class HomeViewModel  @Inject constructor(
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     gradeFactory: GradeFactory,
+    appConfigRepository: AppConfigRepository,
 ): SemesterViewModel(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase,
-    gradeFactory
+    gradeFactory,
+    appConfigRepository
 ) {
 
-}
+}

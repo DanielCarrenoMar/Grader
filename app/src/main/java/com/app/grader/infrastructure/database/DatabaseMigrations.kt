@@ -5,7 +5,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.core.appConfig.toTypeGradeId
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 
 /**
  * Agrega tabla semester y la columna semester_id (nullable) en courses.
@@ -110,7 +110,7 @@ fun migration6To7(appContext: Context): Migration {
                 seedTypeGrade(db)
 
                 val currentTypeGradeId = runCatching {
-                    AppConfigRepository(appContext.applicationContext).getTypeGrade().toTypeGradeId()
+                    SharedPreferencesAppConfigRepository(appContext.applicationContext).getTypeGrade().toTypeGradeId()
                 }.getOrDefault(TypeGrade.NUMERIC_20.toTypeGradeId())
 
                 db.execSQL(

@@ -1,7 +1,7 @@
 package com.app.grader.domain.usecase.review
 
 import android.app.Activity
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.policy.InAppReviewPolicy
 import com.app.grader.domain.repository.DistributionPlatformRepository

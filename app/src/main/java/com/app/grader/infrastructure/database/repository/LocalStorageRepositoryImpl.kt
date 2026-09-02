@@ -1,6 +1,6 @@
 package com.app.grader.infrastructure.database.repository
 
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.infrastructure.database.dao.CourseDao
 import com.app.grader.infrastructure.database.dao.GradeDao

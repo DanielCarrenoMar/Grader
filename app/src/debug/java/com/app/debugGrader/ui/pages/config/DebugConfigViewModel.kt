@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.infrastructure.database.AppDatabase
 import com.app.debugGrader.data.database.DebugDatabaseSeeder
-import com.app.grader.service.review.InAppReviewHelper
+import com.app.grader.infrastructure.playStore.PlayStoreDistributionRepositoryImp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DebugConfigViewModel @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val inAppReviewHelper: InAppReviewHelper,
+    private val playStoreDistributionRepositoryImp: PlayStoreDistributionRepositoryImp
 ) : ViewModel() {
 
     fun loadDebugData() {
@@ -32,6 +32,10 @@ class DebugConfigViewModel @Inject constructor(
     }
 
     fun launchReviewFlow(activity: android.app.Activity, onComplete: () -> Unit, onError: () -> Unit) {
-        inAppReviewHelper.launchReviewFlow(activity, onComplete, onError)
+        viewModelScope.launch {
+            playStoreDistributionRepositoryImp.requestReview(activity)
+                .onSuccess { onComplete() }
+                .onFailure { onError() }
+        }
     }
 }

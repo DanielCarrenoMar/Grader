@@ -199,6 +199,7 @@ fun RecordSemesterScreen(
                         val courseCardType = cardTypeFromCourse(course)
                         CourseCard(
                             course,
+                            appConfigRepository = viewModel.appConfigRepository,
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =  { navigateToEditCourse(-1, course.id) },
                             onDelete = {

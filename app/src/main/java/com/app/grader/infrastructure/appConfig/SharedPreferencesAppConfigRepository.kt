@@ -1,10 +1,13 @@
-package com.app.grader.infrastructure.appConfig
+﻿package com.app.grader.infrastructure.appConfig
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.ThemeType
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 object AppConfig {
     const val PREFS_NAME = "app_config"
@@ -19,35 +22,37 @@ object AppConfig {
     const val REVIEW_COMPLETED = "reviewCompleted"
 }
 
-class AppConfigRepository(private val context: Context) {
+class SharedPreferencesAppConfigRepository @Inject constructor(
+    @ApplicationContext private val context: Context
+) : AppConfigRepository {
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences(AppConfig.PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-    fun isRoundFinalCourseAverage(): Boolean {
+    override fun isRoundFinalCourseAverage(): Boolean {
         return sharedPreferences.getBoolean(AppConfig.ROUND_AVERAGE_ENABLE, false)
     }
-    fun setRoundFinalCourseAverage(enabled: Boolean) {
+    override fun setRoundFinalCourseAverage(enabled: Boolean) {
         sharedPreferences.edit { putBoolean(AppConfig.ROUND_AVERAGE_ENABLE, enabled) }
     }
 
-    fun getTypeTheme(): ThemeType {
+    override fun getTypeTheme(): ThemeType {
         return ThemeType.valueOf(
             sharedPreferences.getString(AppConfig.TYPE_THEME, ThemeType.SYSTEM_DEFAULT.name)!!
         )
     }
-    fun setTypeTheme(themeType: ThemeType) {
+    override fun setTypeTheme(themeType: ThemeType) {
         sharedPreferences.edit { putString(AppConfig.TYPE_THEME, themeType.name) }
     }
 
-    fun getDefaultTypeGradeId(): Int {
+    override fun getDefaultTypeGradeId(): Int {
         return sharedPreferences.getInt(
             AppConfig.DEFAULT_TYPE_GRADE_ID,
             3 // id de base 20, de las opciones predefinidas.
         )
     }
 
-    fun setDefaultTypeGradeId(id: Int) {
+    override fun setDefaultTypeGradeId(id: Int) {
         sharedPreferences.edit { putInt(AppConfig.DEFAULT_TYPE_GRADE_ID, id) }
     }
 
@@ -63,17 +68,25 @@ class AppConfigRepository(private val context: Context) {
         sharedPreferences.edit { putString(AppConfig.TYPE_GRADE, typeGrade.name) }
     }
 
-    fun getLaunchCount(): Int = sharedPreferences.getInt(AppConfig.LAUNCH_COUNT, 0)
-    fun setLaunchCount(count: Int) = sharedPreferences.edit { putInt(AppConfig.LAUNCH_COUNT, count) }
+    override fun getLaunchCount(): Int = sharedPreferences.getInt(AppConfig.LAUNCH_COUNT, 0)
+    override fun setLaunchCount(count: Int) {
+        sharedPreferences.edit { putInt(AppConfig.LAUNCH_COUNT, count) }
+    }
 
-    fun getFirstLaunchTime(): Long = sharedPreferences.getLong(AppConfig.FIRST_LAUNCH_TIME, System.currentTimeMillis())
+    override fun getFirstLaunchTime(): Long = sharedPreferences.getLong(AppConfig.FIRST_LAUNCH_TIME, System.currentTimeMillis())
 
-    fun getReviewAskedCount(): Int = sharedPreferences.getInt(AppConfig.REVIEW_ASKED_COUNT, 0)
-    fun setReviewAskedCount(count: Int) = sharedPreferences.edit { putInt(AppConfig.REVIEW_ASKED_COUNT, count) }
+    override fun getReviewAskedCount(): Int = sharedPreferences.getInt(AppConfig.REVIEW_ASKED_COUNT, 0)
+    override fun setReviewAskedCount(count: Int) {
+        sharedPreferences.edit { putInt(AppConfig.REVIEW_ASKED_COUNT, count) }
+    }
 
-    fun getLastReviewAskedTime(): Long = sharedPreferences.getLong(AppConfig.LAST_REVIEW_ASKED_TIME, 0L)
-    fun setLastReviewAskedTime(timeMills: Long) = sharedPreferences.edit { putLong(AppConfig.LAST_REVIEW_ASKED_TIME, timeMills) }
+    override fun getLastReviewAskedTime(): Long = sharedPreferences.getLong(AppConfig.LAST_REVIEW_ASKED_TIME, 0L)
+    override fun setLastReviewAskedTime(timeMills: Long) {
+        sharedPreferences.edit { putLong(AppConfig.LAST_REVIEW_ASKED_TIME, timeMills) }
+    }
 
-    fun isReviewCompleted(): Boolean = sharedPreferences.getBoolean(AppConfig.REVIEW_COMPLETED, false)
-    fun setReviewCompleted(completed: Boolean) = sharedPreferences.edit { putBoolean(AppConfig.REVIEW_COMPLETED, completed) }
+    override fun isReviewCompleted(): Boolean = sharedPreferences.getBoolean(AppConfig.REVIEW_COMPLETED, false)
+    override fun setReviewCompleted(completed: Boolean) {
+        sharedPreferences.edit { putBoolean(AppConfig.REVIEW_COMPLETED, completed) }
+    }
 }

@@ -5,15 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.core.navigation.NavigationWrapper
 import com.app.grader.ui.theme.NavigationGuideTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val appConfigRepository by lazy { AppConfigRepository(this) }
+    @Inject
+    lateinit var appConfigRepository: AppConfigRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

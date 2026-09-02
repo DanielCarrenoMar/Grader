@@ -1,5 +1,7 @@
 package com.app.grader.di
 
+import com.app.grader.domain.repository.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 import com.app.grader.infrastructure.database.repository.LocalStorageRepositoryImpl
 import com.app.grader.domain.repository.LocalStorageRepository
 import com.app.grader.domain.repository.DistributionPlatformRepository
@@ -24,4 +26,10 @@ abstract class RepositoryModule {
     abstract fun bindDistributionPlatformRepository(
         playStoreDistributionRepositoryImp: PlayStoreDistributionRepositoryImp
     ): DistributionPlatformRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindAppConfigRepository(
+        sharedPreferencesAppConfigRepository: SharedPreferencesAppConfigRepository
+    ): AppConfigRepository
 }

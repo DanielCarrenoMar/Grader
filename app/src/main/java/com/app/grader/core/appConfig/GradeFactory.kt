@@ -1,11 +1,9 @@
 package com.app.grader.core.appConfig
 
-import android.content.Context
 import com.app.grader.domain.types.Grade
-import com.app.grader.infrastructure.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 
-class GradeFactory (context: Context) {
-    private val appConfigRepository = AppConfigRepository(context)
+class GradeFactory (private val appConfigRepository: SharedPreferencesAppConfigRepository) {
 
     private fun getMinFromTypeGrade(): Double {
         val type = appConfigRepository.getTypeGrade()
