@@ -1,7 +1,7 @@
 package com.app.grader.domain.model
 
 import com.app.grader.core.appConfig.GradeFactory
-import com.app.grader.data.database.entitites.SubGradeEntity
+import com.app.grader.infrastructure.database.entitites.SubGradeEntity
 import com.app.grader.domain.types.Grade
 
 

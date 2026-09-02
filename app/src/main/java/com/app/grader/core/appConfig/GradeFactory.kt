@@ -2,7 +2,7 @@ package com.app.grader.core.appConfig
 
 import android.content.Context
 import com.app.grader.domain.types.Grade
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 
 class GradeFactory (context: Context) {
     private val appConfigRepository = AppConfigRepository(context)

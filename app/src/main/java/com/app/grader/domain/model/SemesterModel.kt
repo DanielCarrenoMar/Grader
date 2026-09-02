@@ -1,6 +1,6 @@
 package com.app.grader.domain.model
 
-import com.app.grader.data.database.entitites.SemesterEntity
+import com.app.grader.infrastructure.database.entitites.SemesterEntity
 import com.app.grader.domain.types.Grade
 
 data class SemesterModel (

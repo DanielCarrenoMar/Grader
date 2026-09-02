@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.room.testing.MigrationTestHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.MIGRATION_3_4
-import com.app.grader.data.database.MIGRATION_4_5
-import com.app.grader.data.database.MIGRATION_7_8
-import com.app.grader.data.database.MIGRATION_8_9
+import com.app.grader.infrastructure.database.AppDatabase
+import com.app.grader.infrastructure.database.MIGRATION_3_4
+import com.app.grader.infrastructure.database.MIGRATION_4_5
+import com.app.grader.infrastructure.database.MIGRATION_7_8
+import com.app.grader.infrastructure.database.MIGRATION_8_9
 
 import org.junit.Test
 import org.junit.runner.RunWith

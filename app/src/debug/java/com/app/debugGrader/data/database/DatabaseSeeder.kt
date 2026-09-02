@@ -1,11 +1,11 @@
 package com.app.debugGrader.data.database
 
 import androidx.room.withTransaction
-import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.entitites.CourseEntity
-import com.app.grader.data.database.entitites.GradeEntity
-import com.app.grader.data.database.entitites.SemesterEntity
-import com.app.grader.data.database.entitites.SubGradeEntity
+import com.app.grader.infrastructure.database.AppDatabase
+import com.app.grader.infrastructure.database.entitites.CourseEntity
+import com.app.grader.infrastructure.database.entitites.GradeEntity
+import com.app.grader.infrastructure.database.entitites.SemesterEntity
+import com.app.grader.infrastructure.database.entitites.SubGradeEntity
 import java.util.Date
 
 data class DebugDatabaseSeedIds(

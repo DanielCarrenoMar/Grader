@@ -1,11 +1,11 @@
-package com.app.grader.data.database
+package com.app.grader.infrastructure.database
 
 import android.content.Context
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.core.appConfig.toTypeGradeId
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 
 /**
  * Agrega tabla semester y la columna semester_id (nullable) en courses.

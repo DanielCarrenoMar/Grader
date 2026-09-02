@@ -1,6 +1,6 @@
 package com.app.grader.di
 
-import com.app.grader.data.database.repository.LocalStorageRepositoryImpl
+import com.app.grader.infrastructure.database.repository.LocalStorageRepositoryImpl
 import com.app.grader.domain.repository.LocalStorageRepository
 import dagger.Binds
 import dagger.Module

@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.types.CourseCardType
 import com.app.grader.ui.componets.TitleIcon

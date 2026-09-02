@@ -1,10 +1,9 @@
-package com.app.grader.data.appConfig
+package com.app.grader.infrastructure.appConfig
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.toTypeGradeId
 import com.app.grader.domain.types.ThemeType
 
 object AppConfig {

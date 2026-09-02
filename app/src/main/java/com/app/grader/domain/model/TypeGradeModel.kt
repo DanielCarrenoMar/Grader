@@ -1,6 +1,6 @@
 package com.app.grader.domain.model
 
-import com.app.grader.data.database.entitites.TypeGradeEntity
+import com.app.grader.infrastructure.database.entitites.TypeGradeEntity
 
 data class TypeGradeModel(
     val id: Int = 0,

@@ -1,4 +1,4 @@
-package com.app.grader.data.database
+package com.app.grader.infrastructure.database
 
 import androidx.sqlite.db.SupportSQLiteDatabase
 

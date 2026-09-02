@@ -1,4 +1,4 @@
-package com.app.grader.data.database.converters
+package com.app.grader.infrastructure.database.converters
 
 import androidx.room.TypeConverter
 import java.util.Date

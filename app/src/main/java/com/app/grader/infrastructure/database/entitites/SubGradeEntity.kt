@@ -1,4 +1,4 @@
-package com.app.grader.data.database.entitites
+package com.app.grader.infrastructure.database.entitites
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,7 +1,7 @@
 package com.app.grader.di
 
 import android.content.Context
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.core.appConfig.GradeFactory
 import dagger.Module
 import dagger.Provides

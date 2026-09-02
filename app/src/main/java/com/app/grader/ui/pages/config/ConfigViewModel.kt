@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.domain.model.Resource
 import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.domain.types.ThemeType

@@ -1,10 +1,10 @@
-package com.app.grader.data.database.dao
+package com.app.grader.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.app.grader.data.database.entitites.SubGradeEntity
+import com.app.grader.infrastructure.database.entitites.SubGradeEntity
 
 @Dao
 interface SubGradeDao {

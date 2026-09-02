@@ -3,7 +3,7 @@ package com.app.debugGrader.ui.pages.config
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.data.database.AppDatabase
+import com.app.grader.infrastructure.database.AppDatabase
 import com.app.debugGrader.data.database.DebugDatabaseSeeder
 import com.app.grader.service.review.InAppReviewHelper
 import dagger.hilt.android.lifecycle.HiltViewModel

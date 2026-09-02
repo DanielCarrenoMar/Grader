@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.core.navigation.NavigationWrapper
 import com.app.grader.ui.theme.NavigationGuideTheme

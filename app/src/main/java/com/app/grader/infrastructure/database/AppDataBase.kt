@@ -1,4 +1,4 @@
-package com.app.grader.data.database
+package com.app.grader.infrastructure.database
 
 import androidx.room.AutoMigration
 import androidx.room.Database
@@ -6,9 +6,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.app.grader.data.database.converters.DateConverter
-import com.app.grader.data.database.entitites.*
-import com.app.grader.data.database.dao.*
+import com.app.grader.infrastructure.database.converters.DateConverter
+import com.app.grader.infrastructure.database.entitites.*
+import com.app.grader.infrastructure.database.dao.*
 
 @TypeConverters(DateConverter::class)
 @Database(

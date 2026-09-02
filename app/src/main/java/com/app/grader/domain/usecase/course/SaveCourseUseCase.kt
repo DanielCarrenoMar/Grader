@@ -1,6 +1,6 @@
 package com.app.grader.domain.usecase.course
 
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.infrastructure.appConfig.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.repository.LocalStorageRepository
