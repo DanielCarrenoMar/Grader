@@ -13,6 +13,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.domain.usecase.course.DeleteAllCoursesUseCase
+import com.app.grader.domain.usecase.course.UpdateTypeGradeForAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
@@ -29,7 +30,8 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
     private val deleteAllSemestersUseCase: DeleteAllSemestersUseCase,
     private val getAllTypeGradeUseCase: GetAllTypeGradeUseCase,
-    private val appConfigRepository: AppConfigRepository
+    private val appConfigRepository: AppConfigRepository,
+    private val updateTypeGradeForAllCoursesUseCase: UpdateTypeGradeForAllCoursesUseCase
 ): ViewModel() {
     private val _typeTheme = mutableStateOf(appConfigRepository.getTypeTheme())
     val typeTheme = _typeTheme
@@ -106,6 +108,17 @@ class ConfigViewModel  @Inject constructor(
     fun setSelectedTypeGradeId(typeGradeId: Int) {
         _selectedTypeGradeId.intValue = typeGradeId
         appConfigRepository.setDefaultTypeGradeId(typeGradeId)
+        viewModelScope.launch {
+            updateTypeGradeForAllCoursesUseCase(typeGradeId).collect { result ->
+                when (result) {
+                    is Resource.Success -> {}
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("ConfigViewModel", "Error updateTypeGradeForAllCoursesUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
     }
     fun deleteAll(){
         viewModelScope.launch {
@@ -155,4 +168,4 @@ class ConfigViewModel  @Inject constructor(
             }
         }
     }
-}
+}

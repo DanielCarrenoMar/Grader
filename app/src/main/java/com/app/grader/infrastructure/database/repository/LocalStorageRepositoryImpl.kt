@@ -53,6 +53,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
         return result == 1
     }
 
+    override suspend fun updateTypeGradeForAllCourses(typeGradeId: Int): Int {
+        return courseDao.updateTypeGradeForAllCourses(typeGradeId)
+    }
+
     override suspend fun getAllTypeGrades(): List<TypeGradeModel> {
         return typeGradeDao.getAllTypeGrades().map { typeGradeEntity ->
             typeGradeEntity.toTypeGradeModel()
@@ -145,7 +149,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
         val gradeType = typeGradeDao.getTypeGradeById(gradeTypeId) ?: throw IllegalStateException("Default type grade not found")
 
-        var averagePercentage = if (appConfigRepository.isRoundFinalCourseAverage()) {
+        val averagePercentage = if (appConfigRepository.isRoundFinalCourseAverage()) {
             semesterDao.getAverageRoundFromSemester(semesterId)
         } else {
             semesterDao.getAverageFromSemester(semesterId)

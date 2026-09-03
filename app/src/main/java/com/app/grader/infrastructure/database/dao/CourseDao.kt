@@ -154,6 +154,9 @@ interface CourseDao {
     @Query("UPDATE course SET title = :title, uc = :uc, type_grade_id = :typeGradeId WHERE id = :courseId")
     suspend fun updateCourseById(courseId: Int, title: String, uc: Int, typeGradeId: Int): Int
 
+    @Query("UPDATE course SET type_grade_id = :typeGradeId")
+    suspend fun updateTypeGradeForAllCourses(typeGradeId: Int): Int
+
     @Query("DELETE FROM course")
     suspend fun deleteAllCourses(): Int
 
