@@ -12,7 +12,7 @@ class GradeDetailModel private constructor(
     percentage: Percentage,
     id: Int = -1,
     val subgrades: List<SubGradeModel> = emptyList(),
-): GradeModel(courseId, title, description, gradeValue, percentage, id) {
+): GradeModel(courseId, title, description, gradeValue, percentage, false, id) {
     companion object {
         fun create(
             courseId: Int,

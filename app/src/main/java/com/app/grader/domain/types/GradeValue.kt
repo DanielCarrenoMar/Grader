@@ -6,19 +6,19 @@ import kotlin.math.roundToInt
 data class GradeValue(
     private var value: Double?,
     private var minToPass: Double,
-    private var max: Int,
-    private var isDirectPercentage: Boolean
+    private var max: Int
 ) {
     init {
         require(value == null || value!! in 0.0..max.toDouble()) { "Grade must be between 0 and $max or null. Not $value" }
         require(minToPass >= 0) { "Min must be greater than 0. Not $minToPass" }
         require(max >= 0) { "Max must be greater than 0. Not $max" }
     }
+    constructor(value: Double?, min: Double?, max: Int) : this(value, min ?: max.toDouble(), max)
+    constructor() : this(null, 0.0, 0)
 
-    constructor(min: Double, max: Int) : this(null, min, max, false)
-    constructor(gradeValue: GradeValue) : this(gradeValue.getGrade(), gradeValue.getMinToPass(), gradeValue.getMax(), gradeValue.isDirectPercentage())
-    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max, false)
-    constructor(grade: Double?, min: Double, max: Int) : this(grade, min, max, false)
+    constructor(min: Double, max: Int) : this(null, min, max)
+    constructor(gradeValue: GradeValue) : this(gradeValue.getValue(), gradeValue.getMinToPass(), gradeValue.getMax())
+    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max)
 
     fun setValue(value: Double) {
         if (value < 0.0 || value > max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
@@ -34,10 +34,10 @@ data class GradeValue(
     }
 
     fun setValue(value: GradeValue) {
-        this.value = value.getGrade()
+        this.value = value.getValue()
     }
 
-    fun getGrade(): Double? {
+    fun getValue(): Double? {
         return value
     }
 
@@ -49,12 +49,9 @@ data class GradeValue(
         return max
     }
 
-    fun isDirectPercentage(): Boolean {
-        return isDirectPercentage
-    }
 
     fun getRounded(): GradeValue {
-        return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max, isDirectPercentage)
+        return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max)
     }
 
     fun getRoundedGrade(): Double? {
@@ -106,6 +103,11 @@ data class GradeValue(
     }
 
     companion object {
+        fun createFromGradePercentage(gradePercentage: Double?, minToPass: Double?, max: Int): GradeValue {
+            if (gradePercentage == null) return GradeValue(null, minToPass, max)
+            val gradeValue = (gradePercentage / 100.0) * max
+            return GradeValue(gradeValue, minToPass, max)
+        }
         fun formatText(grade: Double): String {
             return if (grade % 1.0 == 0.0) {
                 grade.toLong().toString()
@@ -126,6 +128,6 @@ fun Iterable<GradeValue>.averageGrade(): Double? {
     if (this.none()) return null
     val filters = this.filter { !it.isBlank() }
     if (filters.isEmpty()) return null
-    val sum = filters.sumOf { it.getGrade()!! } / filters.count()
-    return GradeValue(sum, this.first().getMinToPass(), this.first().getMax(), this.first().isDirectPercentage()).getGrade()
+    val sum = filters.sumOf { it.getValue()!! } / filters.count()
+    return GradeValue(sum, this.first().getMinToPass(), this.first().getMax()).getValue()
 }

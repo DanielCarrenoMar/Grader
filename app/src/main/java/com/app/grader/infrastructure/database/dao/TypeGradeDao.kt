@@ -11,6 +11,9 @@ interface TypeGradeDao {
     @Query("SELECT * FROM type_grade ORDER BY id ASC")
     suspend fun getAllTypeGrades(): List<TypeGradeEntity>
 
+    @Query("SELECT * FROM type_grade WHERE id = :typeGradeId")
+    suspend fun getTypeGradeById(typeGradeId: Int): TypeGradeEntity?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTypeGrade(typeGrade: TypeGradeEntity): Long
 

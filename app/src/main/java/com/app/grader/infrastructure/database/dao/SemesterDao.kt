@@ -36,6 +36,34 @@ interface SemesterDao {
     @Query("SELECT SUM(uc) FROM course WHERE ( (:semesterId IS NULL AND semester_id IS NULL) OR semester_id = :semesterId )")
     suspend fun getSemesterUCSum(semesterId: Int?): Int
 
+    @Query(
+        "SELECT " +
+            "SUM(course_average * uc) / SUM(uc) " +
+            "FROM (" +
+                "SELECT c.id AS course_id, c.uc AS uc, " +
+                "SUM((COALESCE(g.grade_percentage, 0) * g.weighting_percentage) / 100.0) AS course_average " +
+                "FROM course c " +
+                "INNER JOIN grade g ON c.id = g.course_id " +
+                "WHERE ( (:semesterId IS NULL AND c.semester_id IS NULL) OR c.semester_id = :semesterId ) " +
+                "GROUP BY c.id, c.uc" +
+            ")"
+    )
+    suspend fun getAverageFromSemester(semesterId: Int?): Double?
+
+    @Query(
+        "SELECT " +
+            "SUM(ROUND(course_average) * uc) / SUM(uc) " +
+            "FROM (" +
+                "SELECT c.id AS course_id, c.uc AS uc, " +
+                "SUM((COALESCE(g.grade_percentage, 0) * g.weighting_percentage) / 100.0) AS course_average " +
+                "FROM course c " +
+                "INNER JOIN grade g ON c.id = g.course_id " +
+                "WHERE ( (:semesterId IS NULL AND c.semester_id IS NULL) OR c.semester_id = :semesterId ) " +
+                "GROUP BY c.id, c.uc" +
+            ")"
+    )
+    suspend fun getAverageRoundFromSemester(semesterId: Int?): Double?
+
     @Query("UPDATE course SET semester_id = :semesterIdReceiver WHERE ( (:semesterIdSender IS NULL AND semester_id IS NULL) OR semester_id = :semesterIdSender )")
     suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int
 }

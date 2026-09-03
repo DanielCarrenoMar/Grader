@@ -231,7 +231,7 @@ fun InfoRecordCard(average: GradeValue, grades: List<GradeModel>, totalWeight: I
                 ) {
                     if (grades.isNotEmpty()) {
                         LineChartAverage(
-                            gradeSeries = grades.map { it.gradeValue.getGrade() ?: 0.0 },
+                            gradeSeries = grades.map { it.gradeValue.getValue() ?: 0.0 },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .alpha(0.7f)

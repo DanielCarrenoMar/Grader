@@ -58,7 +58,7 @@ fun InfoSemesterCard(
                         contentAlignment = Alignment.Center
                     ) {
                         val gradeSeries =
-                            grades.filter { it.gradeValue.isNotBlank() }.map { it.gradeValue.getGrade() ?: 0.0 }
+                            grades.filter { it.gradeValue.isNotBlank() }.map { it.gradeValue.getValue() ?: 0.0 }
                                 .reversed()
 
                         if (gradeSeries.isNotEmpty()) LineChartAverage(

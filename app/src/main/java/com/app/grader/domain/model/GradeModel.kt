@@ -13,6 +13,7 @@ open class GradeModel(
     val description: String,
     val gradeValue: GradeValue,
     val percentage: Percentage,
+    val isDirectPercentage: Boolean,
     val id: Int = -1,
 ){
     open fun validate() {
@@ -26,8 +27,9 @@ open class GradeModel(
             courseId = -1,
             title = "",
             description = "",
-            gradeValue = GradeValue(null, 0.0, 0, false),
-            percentage = Percentage()
+            gradeValue = GradeValue(null, 0.0, 0),
+            percentage = Percentage(),
+            isDirectPercentage = false,
         )
     }
 }
@@ -42,24 +44,14 @@ fun GradeModel.toGradeEntity(): GradeEntity {
     )
 }
 
-fun GradeEntity.toGradeModel(gradeFactory: GradeFactory): GradeModel {
-    return GradeModel(
-        id = this.id,
-        courseId = this.courseId,
-        title = this.title,
-        description = this.description,
-        gradeValue = gradeFactory.instGradeFromPercentage(this.gradePercentage),
-        percentage = Percentage(this.weightingPercentage),
-    )
-}
-
 fun CalculatedGrade.toGradeModel(): GradeModel {
     return GradeModel(
         id = this.id,
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        gradeValue = GradeValue(this.gradeValue, this.minToPass ?: this.max.toDouble(), this.max, this.isDirectPercentage),
+        gradeValue = GradeValue(this.gradeValue, this.minToPass ?: this.max.toDouble(), this.max),
         percentage = Percentage(this.weightingPercentage),
+        isDirectPercentage = this.isDirectPercentage
     )
 }

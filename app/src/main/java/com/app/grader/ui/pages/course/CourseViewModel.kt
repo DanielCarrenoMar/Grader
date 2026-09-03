@@ -121,7 +121,7 @@ class CourseViewModel  @Inject constructor(
                             totalPercentage += grade.percentage.getPercentage()
                             if (grade.gradeValue.isNotBlank()) {
                                 totalEvaluledPercentage += grade.percentage.getPercentage()
-                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * (grade.gradeValue.getGrade() ?: 0.0)
+                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * (grade.gradeValue.getValue() ?: 0.0)
                             }
                         }
                         _totalPercentaje.value = Percentage(totalPercentage)

@@ -11,7 +11,7 @@ data class CourseModel(
     val typeGradeId: Int = 0,
     val title: String,
     val uc: Int,
-    val average: GradeValue = GradeValue(null, 0.0, 0),
+    val average: GradeValue = GradeValue(),
     val totalPercentage: Percentage = Percentage(),
     val id: Int = -1,
 ){
@@ -31,31 +31,14 @@ fun CourseModel.toCourseEntity():CourseEntity{
         typeGradeId = this.typeGradeId,
     )
 }
-fun CourseEntity.toCourseModel(
-    average: GradeValue,
-    totalPercentage: Percentage,
-):CourseModel{
+fun CalculatedCourse.toCourseModel(): CourseModel {
     return CourseModel(
         id = this.id,
         title = this.title,
         uc = this.uc,
         semesterId = this.semesterId,
         typeGradeId = this.typeGradeId,
-        average = average,
-        totalPercentage = totalPercentage
-    )
-}
-
-fun CalculatedCourse.toCourseModel(
-    average: GradeValue,
-): CourseModel {
-    return CourseModel(
-        id = this.id,
-        title = this.title,
-        uc = this.uc,
-        semesterId = this.semesterId,
-        typeGradeId = this.typeGradeId,
-        average = average,
+        average = GradeValue(this.average, this.minToPass ?: this.max.toDouble(), this.max),
         totalPercentage = Percentage(this.totalWeightingPercentage ?: 0.0)
     )
 }

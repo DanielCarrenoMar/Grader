@@ -69,25 +69,19 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAllCourses(): List<CourseModel> {
         return courseDao.getAllCourses().map { row ->
-            row.toCourseModel(
-                average = if (row.average != null) gradeFactory.instGradeFromPercentage(row.average) else gradeFactory.instGrade()
-            )
+            row.toCourseModel()
         }
     }
 
     override suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel> {
         return courseDao.getAllCoursesFromSemesterId(semesterId).map { row ->
-            row.toCourseModel(
-                average = if (row.average != null) gradeFactory.instGradeFromPercentage(row.average) else gradeFactory.instGrade()
-            )
+            row.toCourseModel()
         }
     }
 
     override suspend fun getCourseById(courseId: Int): CourseModel? {
         val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
-        return courseEntity.toCourseModel(
-            if (courseEntity.average != null) gradeFactory.instGradeFromPercentage(courseEntity.average) else gradeFactory.instGrade()
-        )
+        return courseEntity.toCourseModel()
     }
 
     override suspend fun deleteAllCourses(): Int {
@@ -148,29 +142,22 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAverageFromSemester(semesterId: Int?): GradeValue {
-        val courses = getCoursesFromSemester(semesterId)
-        if (courses.isEmpty()) return gradeFactory.instGrade()
+        val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
+        val gradeType = typeGradeDao.getTypeGradeById(gradeTypeId) ?: throw IllegalStateException("Default type grade not found")
 
-        var totalGrades = 0.0
-        var totalUC = 0
-
-        courses.forEach { course ->
-            if (course.average.isNotBlank()) {
-                val accumulatedPoints = (course.average.getGrade() ?: 0.0) * (course.totalPercentage.getPercentage() / 100.0)
-                val pendingPoints = (100.0 - course.totalPercentage.getPercentage()) / 100.0 * course.average.getMax()
-                if (course.average.isFailValue(pendingPoints + accumulatedPoints)) {
-                    return@forEach
-                }
-
-                val grade = if (appConfigRepository.isRoundFinalCourseAverage()) course.average.getRoundedGrade() ?: 0.0
-                else course.average.getGrade() ?: 0.0
-
-                totalGrades += grade * course.uc
-                totalUC += course.uc
-            }
+        var averagePercentage = if (appConfigRepository.isRoundFinalCourseAverage()) {
+            semesterDao.getAverageRoundFromSemester(semesterId)
+        } else {
+            semesterDao.getAverageFromSemester(semesterId)
         }
-        return if (totalUC != 0) gradeFactory.instGrade(totalGrades / totalUC)
-        else gradeFactory.instGrade()
+
+        if (averagePercentage == null) return GradeValue(
+            null,
+            gradeType.minToPass,
+            gradeType.max
+        )
+
+        return GradeValue.createFromGradePercentage(averagePercentage, gradeType.minToPass, gradeType.max)
     }
 
     override suspend fun getSizeOfSemesters(semesterId: Int?): Int {
@@ -195,8 +182,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId: Int): GradeValue {
         val averagePercentage = courseDao.getAverageFromCourse(courseId)
-        if (averagePercentage == null) return gradeFactory.instGrade()
-        return gradeFactory.instGradeFromPercentage(averagePercentage)
+        return GradeValue(averagePercentage.average, averagePercentage.minToPass, averagePercentage.max)
     }
 
     override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {

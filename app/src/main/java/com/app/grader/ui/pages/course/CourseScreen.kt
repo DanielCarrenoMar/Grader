@@ -289,13 +289,13 @@ fun InfoCourseCard(
     modifier: Modifier = Modifier,
 ) {
     val animatedAccumulatePoints by animateFloatAsState(
-        targetValue = (accumulatePoints.getGrade() ?: 0.0).toFloat(),
+        targetValue = (accumulatePoints.getValue() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "accumulatePointsAnimation"
     )
 
     val animatedPendingPoints by animateFloatAsState(
-        targetValue = (pendingPoints.getGrade() ?: 0.0).toFloat(),
+        targetValue = (pendingPoints.getValue() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "pendingPointsAnimation"
     )
@@ -314,7 +314,7 @@ fun InfoCourseCard(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CircleAverage(average, accumulatePoints.getGrade() ?: 0.0, pendingPoints.getGrade() ?: 0.0)
+                CircleAverage(average, accumulatePoints.getValue() ?: 0.0, pendingPoints.getValue() ?: 0.0)
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 0.dp)
