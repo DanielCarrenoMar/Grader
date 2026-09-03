@@ -2,7 +2,7 @@ package com.app.grader.core.lib
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.theme.Error500
 import com.app.grader.ui.theme.Neutral100
 import com.app.grader.ui.theme.SuccessLight
@@ -29,8 +29,8 @@ fun interpolatedColor(fraction: Float, start: Color, end: Color): Color {
     return lerp(start, end, fraction.coerceIn(0f, 1f))
 }
 
-fun getColorForGrade(grade: Grade): Color {
-    if (grade.isBlank()) return Neutral100
+fun getColorForGrade(gradeValue: GradeValue): Color {
+    if (gradeValue.isBlank()) return Neutral100
 
     return  interpolateColors(
         listOf(
@@ -39,6 +39,6 @@ fun getColorForGrade(grade: Grade): Color {
             interpolatedColor(0.20f, SuccessLight, Warning),
             SuccessLight
         ),
-        grade.getGradeRating()
+        gradeValue.getGradeRating()
     )
 }

@@ -5,7 +5,7 @@ import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.TypeGradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 
 interface LocalStorageRepository {
@@ -14,13 +14,13 @@ interface LocalStorageRepository {
     suspend fun deleteSemesterById(semesterId: Int): Boolean
     suspend fun getAllSemesters(): List<SemesterModel>
     suspend fun getSemesterById(semesterId: Int): SemesterModel?
-    suspend fun getAverageFromSemester(semesterId: Int?): Grade
+    suspend fun getAverageFromSemester(semesterId: Int?): GradeValue
     suspend fun getSizeOfSemesters(semesterId: Int?): Int
     suspend fun getWeightOfSemester(semesterId: Int?): Int
     suspend fun updateSemester(semesterModel: SemesterModel): Boolean
     suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int
 
-    suspend fun getAverageFromCourse(courseId:Int) : Grade
+    suspend fun getAverageFromCourse(courseId:Int) : GradeValue
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int

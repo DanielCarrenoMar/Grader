@@ -1,6 +1,6 @@
 package com.app.grader.core.appConfig
 
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 
 class GradeFactory (private val appConfigRepository: SharedPreferencesAppConfigRepository) {
@@ -29,28 +29,28 @@ class GradeFactory (private val appConfigRepository: SharedPreferencesAppConfigR
         }
     }
 
-    fun instGrade(value: Double): Grade {
+    fun instGrade(value: Double): GradeValue {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        return Grade(value, min, max)
+        return GradeValue(value, min, max)
     }
-    fun instGrade(): Grade {
+    fun instGrade(): GradeValue {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        return Grade(null, min, max)
-    }
-
-    fun instGradeFromPercentage(gradePercentage: Double?): Grade {
-        val min = getMinFromTypeGrade()
-        val max = getMaxFromTypeGrade()
-        if (gradePercentage == null) return Grade(min, max)
-        return Grade(gradePercentage * max / 100, min, max)
+        return GradeValue(null, min, max)
     }
 
-    fun convertToActualType(grade: Grade): Grade {
+    fun instGradeFromPercentage(gradePercentage: Double?): GradeValue {
         val min = getMinFromTypeGrade()
         val max = getMaxFromTypeGrade()
-        val percentage = grade.getGradePercentage() ?: return Grade(min, max)
-        return Grade(percentage * max / 100, min, max)
+        if (gradePercentage == null) return GradeValue(min, max)
+        return GradeValue(gradePercentage * max / 100, min, max)
+    }
+
+    fun convertToActualType(gradeValue: GradeValue): GradeValue {
+        val min = getMinFromTypeGrade()
+        val max = getMaxFromTypeGrade()
+        val percentage = gradeValue.getGradePercentage() ?: return GradeValue(min, max)
+        return GradeValue(percentage * max / 100, min, max)
     }
 }

@@ -36,7 +36,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
@@ -197,7 +197,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, coursesLength: Int) {
+fun InfoRecordCard(average: GradeValue, grades: List<GradeModel>, totalWeight: Int, coursesLength: Int) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier
@@ -231,7 +231,7 @@ fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, c
                 ) {
                     if (grades.isNotEmpty()) {
                         LineChartAverage(
-                            gradeSeries = grades.map { it.grade.getGrade() ?: 0.0 },
+                            gradeSeries = grades.map { it.gradeValue.getGrade() ?: 0.0 },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .alpha(0.7f)

@@ -23,7 +23,7 @@ import com.app.grader.domain.model.toTypeGradeModel
 import com.app.grader.domain.model.toSubGradeEntity
 import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import javax.inject.Inject
 
@@ -147,7 +147,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getAverageFromSemester(semesterId: Int?): Grade {
+    override suspend fun getAverageFromSemester(semesterId: Int?): GradeValue {
         val courses = getCoursesFromSemester(semesterId)
         if (courses.isEmpty()) return gradeFactory.instGrade()
 
@@ -193,7 +193,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         return semesterDao.transferSemesterToSemester(semesterIdSender, semesterIdReceiver)
     }
 
-    override suspend fun getAverageFromCourse(courseId: Int): Grade {
+    override suspend fun getAverageFromCourse(courseId: Int): GradeValue {
         val averagePercentage = courseDao.getAverageFromCourse(courseId)
         if (averagePercentage == null) return gradeFactory.instGrade()
         return gradeFactory.instGradeFromPercentage(averagePercentage)
@@ -260,7 +260,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             gradeModel.id,
             gradeModel.title,
             gradeModel.description,
-            gradeModel.grade.getGradePercentage(),
+            gradeModel.gradeValue.getGradePercentage(),
             gradeModel.percentage.getPercentage()
         )
         return result == 1
@@ -298,7 +298,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         val result = subGradeDao.updateSubGradeById(
             subGradeModel.id,
             subGradeModel.title,
-            subGradeModel.grade.getGradePercentage(),
+            subGradeModel.gradeValue.getGradePercentage(),
         )
         return result == 1
     }

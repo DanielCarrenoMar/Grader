@@ -122,7 +122,7 @@ fun CourseCard(
                     modifier = Modifier.fillMaxHeight()
                 ){
                     CircleCourse(
-                        grade = if (appConfigRepository.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
+                        gradeValue = if (appConfigRepository.isRoundFinalCourseAverage() && type == CourseCardType.Finish) course.average.getRounded() else course.average,
                         radius = 33.dp
                     )
                 }

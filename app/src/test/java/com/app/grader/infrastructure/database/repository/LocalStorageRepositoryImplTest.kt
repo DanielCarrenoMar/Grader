@@ -9,7 +9,7 @@ import com.app.grader.infrastructure.database.dao.TypeGradeDao
 import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.repository.AppConfigRepository
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -55,7 +55,7 @@ class LocalStorageRepositoryImplTest {
             courseId = courseId,
             title = "Quiz",
             description = "",
-            grade = Grade(15.0, 9.5, 20),
+            gradeValue = GradeValue(15.0, 9.5, 20),
             percentage = Percentage(percentage),
             id = id,
         )

@@ -14,21 +14,21 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.core.lib.getColorForGrade
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 
 @Composable
 fun CircleGrade(
     modifier: Modifier = Modifier,
-    grade: Grade,
+    gradeValue: GradeValue,
     fontSize: TextUnit = 16.sp,
     radius : Dp = 40.dp
 ) {
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 
-    val colorOnBase = getColorForGrade(grade)
+    val colorOnBase = getColorForGrade(gradeValue)
     val textGrade = when{
-        grade.isBlank() -> "--"
-        else -> grade.toString()
+        gradeValue.isBlank() -> "--"
+        else -> gradeValue.toString()
     }
 
     Box(

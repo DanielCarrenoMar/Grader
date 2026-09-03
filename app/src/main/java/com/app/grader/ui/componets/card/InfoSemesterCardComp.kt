@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.LineChartAverage
 
 @Composable
 fun InfoSemesterCard(
-    average: Grade,
+    average: GradeValue,
     grades: List<GradeModel>,
     coursesLength: Int,
     totalWeight: Int
@@ -58,7 +58,7 @@ fun InfoSemesterCard(
                         contentAlignment = Alignment.Center
                     ) {
                         val gradeSeries =
-                            grades.filter { it.grade.isNotBlank() }.map { it.grade.getGrade() ?: 0.0 }
+                            grades.filter { it.gradeValue.isNotBlank() }.map { it.gradeValue.getGrade() ?: 0.0 }
                                 .reversed()
 
                         if (gradeSeries.isNotEmpty()) LineChartAverage(

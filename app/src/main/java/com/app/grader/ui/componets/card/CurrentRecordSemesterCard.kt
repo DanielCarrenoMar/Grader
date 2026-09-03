@@ -1,19 +1,14 @@
 package com.app.grader.ui.componets.card
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -35,9 +30,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.app.grader.R
 import com.app.grader.domain.model.SemesterModel
-import com.app.grader.ui.componets.TitleIcon
 import com.app.grader.ui.componets.chart.CircleCourse
-import com.app.grader.ui.theme.IconSmall
 
 @Composable
 fun CurrentRecordSemesterCard(
@@ -107,7 +100,7 @@ fun CurrentRecordSemesterCard(
                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp).fillMaxWidth(),
             ) {
                 CircleCourse(
-                    grade = semester.average,
+                    gradeValue = semester.average,
                     radius = 42.dp,
                     strokeWith = 6.dp
                 )

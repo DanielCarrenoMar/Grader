@@ -9,7 +9,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeDetailModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
@@ -58,7 +58,7 @@ class EditGradeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(EditGradeUiState())
     val uiState: StateFlow<EditGradeUiState> = _uiState.asStateFlow()
 
-    private val _subGrades = mutableListOf<Grade>()
+    private val _subGrades = mutableListOf<GradeValue>()
     private var percentageJob: Job? = null
 
     val defaultPercentage: Percentage get() = Percentage(_uiState.value.defaultPercentage)
@@ -120,7 +120,7 @@ class EditGradeViewModel @Inject constructor(
     fun calGradeFromSubGrades() {
         if (_subGrades.isEmpty()) return
         val avg = _subGrades.averageGrade()
-        _uiState.update { it.copy(gradeValue = avg?.let { g -> Grade.formatText(g) } ?: "") }
+        _uiState.update { it.copy(gradeValue = avg?.let { g -> GradeValue.formatText(g) } ?: "") }
     }
 
     fun setSubGrade(index: Int, subGrade: String) {
@@ -141,7 +141,7 @@ class EditGradeViewModel @Inject constructor(
                 val g = gradeFactory.instGrade()
                 g.setValue(currentGrade)
                 _subGrades.add(g)
-                _uiState.update { it.copy(subGrades = it.subGrades + Grade.formatText(currentGrade)) }
+                _uiState.update { it.copy(subGrades = it.subGrades + GradeValue.formatText(currentGrade)) }
             } else {
                 _subGrades.add(gradeFactory.instGrade())
                 _uiState.update { it.copy(subGrades = it.subGrades + "") }
@@ -170,8 +170,8 @@ class EditGradeViewModel @Inject constructor(
                         val subGrades: List<SubGradeModel> = result.data!!
                         val updated = _uiState.value.subGrades.toMutableList()
                         subGrades.forEach {
-                            _subGrades.add(Grade(it.grade))
-                            updated.add(it.grade.toString())
+                            _subGrades.add(GradeValue(it.gradeValue))
+                            updated.add(it.gradeValue.toString())
                         }
                         _uiState.update { it.copy(subGrades = updated) }
                     }
@@ -195,7 +195,7 @@ class EditGradeViewModel @Inject constructor(
                             it.copy(
                                 title = grade.title,
                                 description = grade.description,
-                                gradeValue = grade.grade.toString(),
+                                gradeValue = grade.gradeValue.toString(),
                                 percentage = grade.percentage.toString(),
                             )
                         }
@@ -228,7 +228,7 @@ class EditGradeViewModel @Inject constructor(
             percentage = percentage,
             id = gradeId,
             subgrades = _subGrades.mapIndexed { index, g ->
-                SubGradeModel(gradeId = gradeId, title = "SubGrade $index", grade = g)
+                SubGradeModel(gradeId = gradeId, title = "SubGrade $index", gradeValue = g)
             }
         )
 

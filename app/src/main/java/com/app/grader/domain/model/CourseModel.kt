@@ -2,7 +2,7 @@ package com.app.grader.domain.model
 
 import com.app.grader.infrastructure.database.dao.CalculatedCourse
 import com.app.grader.infrastructure.database.entitites.CourseEntity
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 
 
@@ -11,7 +11,7 @@ data class CourseModel(
     val typeGradeId: Int = 0,
     val title: String,
     val uc: Int,
-    val average: Grade = Grade(null, 0.0, 0),
+    val average: GradeValue = GradeValue(null, 0.0, 0),
     val totalPercentage: Percentage = Percentage(),
     val id: Int = -1,
 ){
@@ -32,7 +32,7 @@ fun CourseModel.toCourseEntity():CourseEntity{
     )
 }
 fun CourseEntity.toCourseModel(
-    average: Grade,
+    average: GradeValue,
     totalPercentage: Percentage,
 ):CourseModel{
     return CourseModel(
@@ -47,7 +47,7 @@ fun CourseEntity.toCourseModel(
 }
 
 fun CalculatedCourse.toCourseModel(
-    average: Grade,
+    average: GradeValue,
 ): CourseModel {
     return CourseModel(
         id = this.id,

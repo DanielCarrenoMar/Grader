@@ -1,18 +1,18 @@
 package com.app.grader.domain.model
 
 import com.app.grader.core.appConfig.GradeFactory
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 
 class GradeDetailModel private constructor(
     courseId: Int,
     title: String,
     description: String,
-    grade: Grade,
+    gradeValue: GradeValue,
     percentage: Percentage,
     id: Int = -1,
     val subgrades: List<SubGradeModel> = emptyList(),
-): GradeModel(courseId, title, description, grade, percentage, id) {
+): GradeModel(courseId, title, description, gradeValue, percentage, id) {
     companion object {
         fun create(
             courseId: Int,
@@ -61,7 +61,7 @@ class GradeDetailModel private constructor(
             courseId = -1,
             title = "",
             description = "",
-            grade = Grade(null, 0.0, 0),
+            gradeValue = GradeValue(null, 0.0, 0),
             percentage = Percentage(),
             subgrades = emptyList(),
         )

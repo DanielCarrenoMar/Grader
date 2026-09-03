@@ -18,12 +18,12 @@ import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
 import com.app.grader.core.lib.getColorForGrade
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 
 @Composable
 fun CircleCourse(
     modifier: Modifier = Modifier,
-    grade: Grade,
+    gradeValue: GradeValue,
     strokeWith: Dp = 5.dp,
     radius : Dp = 40.dp
 ) {
@@ -32,15 +32,15 @@ fun CircleCourse(
     if (strokeWith > radius) throw IllegalArgumentException("Stroke width must be less than radius")
 
     val density = LocalDensity.current
-    val colorOnBase = getColorForGrade(grade)
+    val colorOnBase = getColorForGrade(gradeValue)
     val textGrade = when{
-        grade.isBlank() -> "--"
-        else -> grade.toString()
+        gradeValue.isBlank() -> "--"
+        else -> gradeValue.toString()
     }
-    val sections = if (grade.isNotBlank()) {
+    val sections = if (gradeValue.isNotBlank()) {
         listOf(
             DonutSection(
-                amount = (grade.getGrade() ?: 0.0).toFloat(),
+                amount = (gradeValue.getGrade() ?: 0.0).toFloat(),
                 color = colorOnBase
             )
         )
@@ -61,7 +61,7 @@ fun CircleCourse(
             modifier = Modifier
                 .size(radius * 2),
             model = DonutModel(
-                cap = grade.getMax().toFloat(),
+                cap = gradeValue.getMax().toFloat(),
                 masterProgress = 1f,
                 gapWidthDegrees = 0f,
                 gapAngleDegrees = 270f,

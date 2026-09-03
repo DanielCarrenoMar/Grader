@@ -3,7 +3,7 @@ package com.app.grader.domain.types
 import java.util.Locale
 import kotlin.math.roundToInt
 
-data class Grade(
+data class GradeValue(
     private var value: Double?,
     private var minToPass: Double,
     private var max: Int,
@@ -15,7 +15,7 @@ data class Grade(
     }
 
     constructor(min: Double, max: Int) : this(null, min, max)
-    constructor(grade: Grade) : this(grade.getGrade(), grade.getMinToPass(), grade.getMax())
+    constructor(gradeValue: GradeValue) : this(gradeValue.getGrade(), gradeValue.getMinToPass(), gradeValue.getMax())
     constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max)
 
     fun setValue(value: Double) {
@@ -31,7 +31,7 @@ data class Grade(
         setValue(value.toDouble())
     }
 
-    fun setValue(value: Grade) {
+    fun setValue(value: GradeValue) {
         this.value = value.getGrade()
     }
 
@@ -47,8 +47,8 @@ data class Grade(
         return max
     }
 
-    fun getRounded(): Grade {
-        return Grade(value?.roundToInt()?.toDouble(), minToPass, max)
+    fun getRounded(): GradeValue {
+        return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max)
     }
 
     fun getRoundedGrade(): Double? {
@@ -116,10 +116,10 @@ data class Grade(
     }
 }
 
-fun Iterable<Grade>.averageGrade(): Double? {
+fun Iterable<GradeValue>.averageGrade(): Double? {
     if (this.none()) return null
     val filters = this.filter { !it.isBlank() }
     if (filters.isEmpty()) return null
     val sum = filters.sumOf { it.getGrade()!! } / filters.count()
-    return Grade(sum, this.first().getMinToPass(), this.first().getMax()).getGrade()
+    return GradeValue(sum, this.first().getMinToPass(), this.first().getMax()).getGrade()
 }

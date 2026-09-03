@@ -8,7 +8,7 @@ import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetAverageFromCourseUseCase
@@ -34,9 +34,9 @@ class CourseViewModel  @Inject constructor(
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableStateOf(Grade(0.0,0.0,0))
+    private val _accumulatePoints = mutableStateOf(GradeValue(0.0,0.0,0))
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableStateOf(Grade(0.0,0.0,0))
+    private val _pedingPoints = mutableStateOf(GradeValue(0.0,0.0,0))
     val pedingPoints = _pedingPoints
     private val _totalPercentaje = mutableStateOf(Percentage(0.0))
     val totalPercentaje = _totalPercentaje
@@ -119,9 +119,9 @@ class CourseViewModel  @Inject constructor(
                         var totalEvaluledPercentage = 0.0
                         grades.forEach { grade ->
                             totalPercentage += grade.percentage.getPercentage()
-                            if (grade.grade.isNotBlank()) {
+                            if (grade.gradeValue.isNotBlank()) {
                                 totalEvaluledPercentage += grade.percentage.getPercentage()
-                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * (grade.grade.getGrade() ?: 0.0)
+                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * (grade.gradeValue.getGrade() ?: 0.0)
                             }
                         }
                         _totalPercentaje.value = Percentage(totalPercentage)

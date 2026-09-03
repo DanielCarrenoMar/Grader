@@ -46,7 +46,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
@@ -232,14 +232,14 @@ fun CourseScreen(
                                         isEditing = viewModel.isEditingGrade.value,
                                         onInputValueChange = { newValue ->
                                             if (newValue.isBlank()) {
-                                                grade.grade.setBlank()
+                                                grade.gradeValue.setBlank()
                                                 viewModel.updateGrade(grade)
                                                 return@GradeCardComp
                                             }
                                             val numberValue = newValue.toDoubleOrNull()
                                             if (numberValue == null) return@GradeCardComp
-                                            if (!grade.grade.check(numberValue)) return@GradeCardComp
-                                            grade.grade.setValue(numberValue)
+                                            if (!grade.gradeValue.check(numberValue)) return@GradeCardComp
+                                            grade.gradeValue.setValue(numberValue)
                                             viewModel.updateGrade(grade)
                                         },
                                     )
@@ -282,9 +282,9 @@ fun CourseScreen(
 
 @Composable
 fun InfoCourseCard(
-    average: Grade,
-    accumulatePoints: Grade,
-    pendingPoints: Grade,
+    average: GradeValue,
+    accumulatePoints: GradeValue,
+    pendingPoints: GradeValue,
     uc: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -330,7 +330,7 @@ fun InfoCourseCard(
                         ) {
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = Grade.formatText(animatedAccumulatePoints),
+                                    text = GradeValue.formatText(animatedAccumulatePoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
@@ -345,7 +345,7 @@ fun InfoCourseCard(
                             Spacer(Modifier.height(3.dp))
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = Grade.formatText(animatedPendingPoints),
+                                    text = GradeValue.formatText(animatedPendingPoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.secondary

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.chart.CircleGrade
 import com.app.grader.ui.theme.Error500
@@ -41,7 +41,7 @@ fun GradeBottomSheet(
     deleteOnClick: () -> Unit
 ) {
     val accumulatePoints =
-        if (showGrade.grade.isBlank()) showGrade.grade.copy() else showGrade.grade.copy( value = (showGrade.grade.getGrade() ?: 0.0) * (showGrade.percentage.getPercentage() / 100))
+        if (showGrade.gradeValue.isBlank()) showGrade.gradeValue.copy() else showGrade.gradeValue.copy( value = (showGrade.gradeValue.getGrade() ?: 0.0) * (showGrade.percentage.getPercentage() / 100))
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -58,7 +58,7 @@ fun GradeBottomSheet(
                     modifier = Modifier.padding(bottom = 15.dp)
                 ) {
                     CircleGrade(
-                        grade = showGrade.grade,
+                        gradeValue = showGrade.gradeValue,
                         radius = 25.dp,
                         fontSize = 18.sp
                     )
@@ -89,7 +89,7 @@ fun GradeBottomSheet(
                         Spacer(Modifier.weight(1f))
                         Row(verticalAlignment = Alignment.Bottom) {
                             Text(
-                                text = Grade.formatText(accumulatePoints.getGrade() ?: 0.0),
+                                text = GradeValue.formatText(accumulatePoints.getGrade() ?: 0.0),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.tertiary,
