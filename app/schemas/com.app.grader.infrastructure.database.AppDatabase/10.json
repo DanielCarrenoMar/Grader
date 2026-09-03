@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "7be96cf21c7ccf9824cb2a2a13904989",
+    "identityHash": "2962546a2a73169e377211bd36a6fe10",
     "entities": [
       {
         "tableName": "semester",
@@ -252,7 +252,7 @@
       },
       {
         "tableName": "type_grade",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `base_at` INTEGER, `active` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `max` INTEGER NOT NULL, `min_to_pass` REAL, `is_from_system` INTEGER NOT NULL, `is_direct_percentage` INTEGER NOT NULL, `active` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -261,9 +261,33 @@
             "notNull": true
           },
           {
-            "fieldPath": "baseAt",
-            "columnName": "base_at",
-            "affinity": "INTEGER"
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "max",
+            "columnName": "max",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minToPass",
+            "columnName": "min_to_pass",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "isFromSystem",
+            "columnName": "is_from_system",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDirectPercentage",
+            "columnName": "is_direct_percentage",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "active",
@@ -282,7 +306,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7be96cf21c7ccf9824cb2a2a13904989')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2962546a2a73169e377211bd36a6fe10')"
     ]
   }
 }

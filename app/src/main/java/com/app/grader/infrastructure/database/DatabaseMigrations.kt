@@ -107,7 +107,9 @@ fun migration6To7(appContext: Context): Migration {
                     """.trimIndent()
                 )
 
-                seedTypeGrade(db)
+                // Nota: la tabla type_grade se recrea y resiembra por completo en
+                // MIGRATION_9_10 con el nuevo esquema. Aquí NO se llama a seedTypeGrade
+                // para no insertar columnas que aún no existen en este esquema antiguo.
 
                 val currentTypeGradeId = runCatching {
                     SharedPreferencesAppConfigRepository(appContext.applicationContext).getTypeGrade().toTypeGradeId()
@@ -206,6 +208,30 @@ val MIGRATION_9_10 = object : Migration(9, 10) {
             db.execSQL("DROP TABLE sub_grade")
             db.execSQL("ALTER TABLE sub_grade_new RENAME TO sub_grade")
             db.execSQL("CREATE INDEX index_sub_grade_grade_id ON sub_grade(grade_id)")
+
+            // ── type_grade ──────────────────────────────────────────────────────
+            // Se reemplaza el esquema antiguo (base_at, active) por el nuevo
+            // (title, max, min_to_pass, is_from_system, is_direct_percentage, active).
+            // Se borran los datos y se recrean con los mismos ids 1..5, más las nuevas
+            // variantes Base 10 ESP (id 6) y Base 10 MEX (id 7) para distinguir los
+            // distintos minToPass sobre la misma escala 0-10.
+            // Los cursos existentes referencian type_grade(id); al conservar los ids
+            // 1..5 las referencias de course.type_grade_id siguen siendo válidas.
+            db.execSQL("DROP TABLE type_grade")
+            db.execSQL(
+                """
+                CREATE TABLE type_grade (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    title TEXT NOT NULL,
+                    max INTEGER NOT NULL,
+                    min_to_pass REAL,
+                    is_from_system INTEGER NOT NULL DEFAULT 0,
+                    is_direct_percentage INTEGER NOT NULL DEFAULT 0,
+                    active INTEGER NOT NULL DEFAULT 1
+                )
+                """.trimIndent()
+            )
+            seedTypeGrade(db)
 
             db.setTransactionSuccessful()
         } finally {

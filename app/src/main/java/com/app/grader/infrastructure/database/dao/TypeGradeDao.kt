@@ -14,8 +14,20 @@ interface TypeGradeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTypeGrade(typeGrade: TypeGradeEntity): Long
 
-    @Query("UPDATE type_grade SET base_at = :baseAt, active = :active WHERE id = :typeGradeId")
-    suspend fun updateTypeGradeById(typeGradeId: Int, baseAt: Int?, active: Boolean): Int
+    @Query(
+        "UPDATE type_grade SET title = :title, max = :max, min_to_pass = :minToPass, " +
+            "is_from_system = :isFromSystem, is_direct_percentage = :isDirectPercentage, active = :active " +
+            "WHERE id = :typeGradeId"
+    )
+    suspend fun updateTypeGradeById(
+        typeGradeId: Int,
+        title: String,
+        max: Int,
+        minToPass: Double?,
+        isFromSystem: Boolean,
+        isDirectPercentage: Boolean,
+        active: Boolean
+    ): Int
 
     @Query("DELETE FROM type_grade WHERE id = :typeGradeId")
     suspend fun deleteTypeGradeFromId(typeGradeId: Int): Int
