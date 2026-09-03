@@ -51,9 +51,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.grader.R
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
@@ -74,16 +72,15 @@ fun EditGradeScreen(
     val coroutineScope = rememberCoroutineScope()
     val activity = LocalActivity.current
 
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-            viewModel.resetCacheGrade()
-            viewModel.courseId.intValue = courseId
-            viewModel.loadGradeFromId(gradeId)
-            viewModel.loadSubGradesFromGrade(gradeId)
-            viewModel.loadCourseOptionsFromSemester(semesterId, courseId)
-            if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
-        }
+        viewModel.resetCacheGrade()
+        viewModel.setCourseId(courseId)
+        viewModel.loadGradeFromId(gradeId)
+        viewModel.loadSubGradesFromGrade(gradeId)
+        viewModel.loadCourseOptionsFromSemester(semesterId, courseId)
+        if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
     }
 
     HeaderBack(
@@ -128,14 +125,14 @@ fun EditGradeScreen(
             item {
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
-                    enabled = viewModel.showSubGrades.isEmpty(),
-                    placeHolderText = "Agregar calificación 0-${viewModel.grade.value.getMax()}",
-                    value = viewModel.showGrade.value,
+                    enabled = uiState.showSubGrades.isEmpty(),
+                    placeHolderText = "Agregar calificación 0-${viewModel.grade.getMax()}",
+                    value = uiState.showGrade,
                     onValueChange = {
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = if (viewModel.showSubGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                    leadingIconId = if (uiState.showSubGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
                     maxLength = 5,
                     suffix = {
                         IconButton(
@@ -153,14 +150,14 @@ fun EditGradeScreen(
                     maxLines = 1
                 )
             }
-            itemsIndexed (viewModel.showSubGrades) { index, subgrade ->
+            itemsIndexed (uiState.showSubGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(Unit) {
                     itemHeight = 65.dp
-                    if (index == viewModel.showSubGrades.size - 1) {
+                    if (index == uiState.showSubGrades.size - 1) {
                         focusRequester.requestFocus()
                     }
                 }
@@ -220,7 +217,7 @@ fun EditGradeScreen(
                                 .size(IconLarge),
                         )
                         Text(
-                            text = viewModel.showCourse.value.title,
+                            text = uiState.showCourse.title,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 20.dp),
@@ -231,10 +228,10 @@ fun EditGradeScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
-                        viewModel.courses.value.forEach { option ->
+                        uiState.courses.forEach { option ->
                             DropdownMenuItem(
                                 onClick = {
-                                    viewModel.showCourse.value = option
+                                    viewModel.setShowCourse(option)
                                     viewModel.setCourseId(option.id)
                                     expanded = false
                                 },
@@ -247,9 +244,9 @@ fun EditGradeScreen(
                 }
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 EditScreenInputComp(
-                    placeHolderText = viewModel.defaultPercentage.value.toString()
+                    placeHolderText = viewModel.defaultPercentage.toString()
                         .removeSuffix(".0"),
-                    value = viewModel.showPercentage.value,
+                    value = uiState.showPercentage,
                     onValueChange = { viewModel.setPercentage(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     leadingIconId = R.drawable.weight_outline,
@@ -267,10 +264,9 @@ fun EditGradeScreen(
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 EditScreenInputComp(
                     placeHolderText = "Agregar título (Opcional)",
-                    value = viewModel.showTitle.value,
+                    value = uiState.title,
                     onValueChange = {
-                        viewModel.showTitle.value = it
-                        viewModel.title.value = it
+                        viewModel.setTitle(it)
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences
@@ -281,10 +277,9 @@ fun EditGradeScreen(
                 )
                 EditScreenInputComp(
                     placeHolderText = "Agregar descripcción (Opcional)",
-                    value = viewModel.showDescription.value,
+                    value = uiState.description,
                     onValueChange = {
-                        viewModel.showDescription.value = it
-                        viewModel.description.value = it
+                        viewModel.setDescription(it)
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences
