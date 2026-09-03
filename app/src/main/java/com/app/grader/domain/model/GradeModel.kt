@@ -14,6 +14,12 @@ data class GradeModel(
     val percentage: Percentage,
     val id: Int = -1,
 ){
+    fun validate() {
+        if (percentage.getPercentage() <= 0.0) {
+            throw IllegalArgumentException("El porcentaje de la nota no puede ser 0%")
+        }
+    }
+
     companion object {
         val DEFAULT = GradeModel(
             courseId = -1,
