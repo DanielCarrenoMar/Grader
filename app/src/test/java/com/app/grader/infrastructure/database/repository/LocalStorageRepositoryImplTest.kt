@@ -1,12 +1,12 @@
 package com.app.grader.infrastructure.database.repository
 
 import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.dao.CourseDao
 import com.app.grader.infrastructure.database.dao.GradeDao
 import com.app.grader.infrastructure.database.dao.SemesterDao
 import com.app.grader.infrastructure.database.dao.SubGradeDao
 import com.app.grader.infrastructure.database.dao.TypeGradeDao
-import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.GradeValue
@@ -55,19 +55,22 @@ class LocalStorageRepositoryImplTest {
             courseId = courseId,
             title = "Quiz",
             description = "",
-            gradeValue = GradeValue(15.0, 9.5, 20),
+            gradeValue = GradeValue(15.0, 9.5, 20, false),
             percentage = Percentage(percentage),
             id = id,
         )
 
-    private fun currentGradeEntity(weightingPercentage: Double): GradeEntity =
-        GradeEntity(
+    private fun currentGradeEntity(weightingPercentage: Double): CalculatedGrade =
+        CalculatedGrade(
             id = 7,
             courseId = 1,
             title = "Midterm",
             description = "",
-            gradePercentage = 15.0,
+            gradeValue = 15.0,
             weightingPercentage = weightingPercentage,
+            max = 20,
+            minToPass = 9.5,
+            isDirectPercentage = false
         )
 
     @Test

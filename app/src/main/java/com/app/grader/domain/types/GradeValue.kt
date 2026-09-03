@@ -7,6 +7,7 @@ data class GradeValue(
     private var value: Double?,
     private var minToPass: Double,
     private var max: Int,
+    private var isDirectPercentage: Boolean
 ) {
     init {
         require(value == null || value!! in 0.0..max.toDouble()) { "Grade must be between 0 and $max or null. Not $value" }
@@ -14,9 +15,10 @@ data class GradeValue(
         require(max >= 0) { "Max must be greater than 0. Not $max" }
     }
 
-    constructor(min: Double, max: Int) : this(null, min, max)
-    constructor(gradeValue: GradeValue) : this(gradeValue.getGrade(), gradeValue.getMinToPass(), gradeValue.getMax())
-    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max)
+    constructor(min: Double, max: Int) : this(null, min, max, false)
+    constructor(gradeValue: GradeValue) : this(gradeValue.getGrade(), gradeValue.getMinToPass(), gradeValue.getMax(), gradeValue.isDirectPercentage())
+    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max, false)
+    constructor(grade: Double?, min: Double, max: Int) : this(grade, min, max, false)
 
     fun setValue(value: Double) {
         if (value < 0.0 || value > max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
@@ -47,8 +49,12 @@ data class GradeValue(
         return max
     }
 
+    fun isDirectPercentage(): Boolean {
+        return isDirectPercentage
+    }
+
     fun getRounded(): GradeValue {
-        return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max)
+        return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max, isDirectPercentage)
     }
 
     fun getRoundedGrade(): Double? {
@@ -121,5 +127,5 @@ fun Iterable<GradeValue>.averageGrade(): Double? {
     val filters = this.filter { !it.isBlank() }
     if (filters.isEmpty()) return null
     val sum = filters.sumOf { it.getGrade()!! } / filters.count()
-    return GradeValue(sum, this.first().getMinToPass(), this.first().getMax()).getGrade()
+    return GradeValue(sum, this.first().getMinToPass(), this.first().getMax(), this.first().isDirectPercentage()).getGrade()
 }

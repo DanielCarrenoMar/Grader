@@ -207,19 +207,19 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
         return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
-            gradeEntity.toGradeModel(gradeFactory)
+            gradeEntity.toGradeModel()
         }
     }
 
     override suspend fun getGradesFromSemester(semesterId: Int?): List<GradeModel> {
         return gradeDao.getGradesFromSemesterId(semesterId).map { gradeEntity ->
-            gradeEntity.toGradeModel(gradeFactory)
+            gradeEntity.toGradeModel()
         }
     }
 
     override suspend fun getGradesFromSemesterLessThan(semesterId: Int?): List<GradeModel> {
         return gradeDao.getGradesFromSemesterLessThanId(semesterId).map { gradeEntity ->
-            gradeEntity.toGradeModel(gradeFactory)
+            gradeEntity.toGradeModel()
         }
     }
 
@@ -246,13 +246,13 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAllGrades(): List<GradeModel> {
         return gradeDao.getAllGrades().map { gradeEntity ->
-            gradeEntity.toGradeModel(gradeFactory)
+            gradeEntity.toGradeModel()
         }
     }
 
     override suspend fun getGradeById(gradeId: Int): GradeModel? {
         val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
-        return gradeEntity.toGradeModel(gradeFactory)
+        return gradeEntity.toGradeModel()
     }
 
     override suspend fun updateGrade(gradeModel: GradeModel): Boolean {
