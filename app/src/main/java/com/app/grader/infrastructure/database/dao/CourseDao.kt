@@ -118,7 +118,7 @@ interface CourseDao {
             ")")
     suspend fun getAverageFromCourse(courseId: Int): Double?
 
-    @Query("SELECT SUM(weighting_percentage) FROM grade WHERE course_id = :courseId AND grade_percentage IS NOT NULL")
+    @Query("SELECT SUM(weighting_percentage) FROM grade WHERE course_id = :courseId")
     suspend fun getTotalPercentageFromCourse(courseId: Int): Double?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

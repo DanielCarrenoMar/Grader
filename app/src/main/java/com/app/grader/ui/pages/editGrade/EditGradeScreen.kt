@@ -44,7 +44,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -75,7 +74,6 @@ fun EditGradeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
-        viewModel.resetCacheGrade()
         viewModel.setCourseId(courseId)
         viewModel.loadGradeFromId(gradeId)
         viewModel.loadSubGradesFromGrade(gradeId)
@@ -99,11 +97,10 @@ fun EditGradeScreen(
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
-                        if (viewModel.submitGrade(gradeId, activity)) navigateBack()
-                        else {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Campos inválidos")
-                            }
+                        coroutineScope.launch {
+                            val error = viewModel.submitGrade(gradeId, activity)
+                            if (error == null) navigateBack()
+                            else snackbarHostState.showSnackbar(error)
                         }
                     }) {
                     Text(text = if (gradeId == -1) "Crear" else "Guardar")
@@ -125,14 +122,14 @@ fun EditGradeScreen(
             item {
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
-                    enabled = uiState.showSubGrades.isEmpty(),
-                    placeHolderText = "Agregar calificación 0-${viewModel.grade.getMax()}",
-                    value = uiState.showGrade,
+                    enabled = uiState.subGrades.isEmpty(),
+                    placeHolderText = "Agregar calificación 0-${viewModel.gradeMax}",
+                    value = uiState.gradeValue,
                     onValueChange = {
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = if (uiState.showSubGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                    leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
                     maxLength = 5,
                     suffix = {
                         IconButton(
@@ -150,14 +147,14 @@ fun EditGradeScreen(
                     maxLines = 1
                 )
             }
-            itemsIndexed (uiState.showSubGrades) { index, subgrade ->
+            itemsIndexed (uiState.subGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(Unit) {
                     itemHeight = 65.dp
-                    if (index == uiState.showSubGrades.size - 1) {
+                    if (index == uiState.subGrades.size - 1) {
                         focusRequester.requestFocus()
                     }
                 }
@@ -217,7 +214,7 @@ fun EditGradeScreen(
                                 .size(IconLarge),
                         )
                         Text(
-                            text = uiState.showCourse.title,
+                            text = uiState.course.title,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 20.dp),
@@ -231,7 +228,7 @@ fun EditGradeScreen(
                         uiState.courses.forEach { option ->
                             DropdownMenuItem(
                                 onClick = {
-                                    viewModel.setShowCourse(option)
+                                    viewModel.setCourse(option)
                                     viewModel.setCourseId(option.id)
                                     expanded = false
                                 },
@@ -246,7 +243,7 @@ fun EditGradeScreen(
                 EditScreenInputComp(
                     placeHolderText = viewModel.defaultPercentage.toString()
                         .removeSuffix(".0"),
-                    value = uiState.showPercentage,
+                    value = uiState.percentage,
                     onValueChange = { viewModel.setPercentage(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     leadingIconId = R.drawable.weight_outline,

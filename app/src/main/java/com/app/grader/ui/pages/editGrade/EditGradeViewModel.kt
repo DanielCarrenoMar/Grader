@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.GradeDetailModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
@@ -13,9 +14,9 @@ import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
+import com.app.grader.domain.usecase.course.GetCourseTotalGradesRemainingPercentageUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
-import com.app.grader.domain.usecase.grade.GetGradesFromCourseUseCase
 import com.app.grader.domain.usecase.grade.SaveGradeUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
 import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
@@ -23,9 +24,11 @@ import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.SaveSubGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,159 +37,132 @@ import kotlin.text.toDoubleOrNull
 data class EditGradeUiState(
     val title: String = "Sin Título",
     val description: String = "Sin descripción",
-    val showGrade: String = "",
-    val showPercentage: String = "",
+    val gradeValue: String = "",
+    val percentage: String = "",
+    val defaultPercentage: Double = 100.0,
     val courseId: Int = -1,
-    val showCourse: CourseModel = CourseModel.DEFAULT,
+    val course: CourseModel = CourseModel.DEFAULT,
     val courses: List<CourseModel> = emptyList(),
-    val showSubGrades: List<String> = emptyList(),
+    val subGrades: List<String> = emptyList(),
 )
 
 @HiltViewModel
 class EditGradeViewModel @Inject constructor(
     private val getGradeByIdUseCase: GetGradeByIdUseCase,
-    private val getGradesFromCourseUseCase: GetGradesFromCourseUseCase,
     private val saveGradeUseCase: SaveGradeUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
     private val getCourseByIdUseCase: GetCourseByIdUseCase,
+    private val getCourseTotalGradesRemainingPercentageUseCase: GetCourseTotalGradesRemainingPercentageUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val saveSubGradeUseCase: SaveSubGradeUseCase,
     private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeUseCase,
     private val launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
-
-    // --- Unified UI State ---
     private val _uiState = MutableStateFlow(EditGradeUiState())
     val uiState: StateFlow<EditGradeUiState> = _uiState.asStateFlow()
 
-    // --- Domain objects for calculations (private, mutable) ---
-    private val gradesCache = mutableListOf<GradeModel>()
-    private val _grade = gradeFactory.instGrade()
-    private val _percentage = Percentage(100.0)
-    private val _defaultPercentage = Percentage(100.0)
-    private val _savedPercentage = Percentage(0.0)
     private val _subGrades = mutableListOf<Grade>()
+    private var percentageJob: Job? = null
 
-    // Public read-only accessors for domain objects read by the UI
-    val grade: Grade get() = _grade
-    val defaultPercentage: Percentage get() = _defaultPercentage
-
-    // --- Setters ---
+    val defaultPercentage: Percentage get() = Percentage(_uiState.value.defaultPercentage)
+    val gradeMax: Int get() = gradeFactory.instGrade().getMax()
 
     fun setGrade(grade: String) {
-        val value = grade.toDoubleOrNull()
-        if (grade.isNotBlank() && value != null && _grade.check(value)) _grade.setValue(value)
-        else _grade.setBlank()
-        _uiState.update { it.copy(showGrade = grade) }
+        _uiState.update { it.copy(gradeValue = grade) }
     }
-
     fun setPercentage(percentage: String) {
         val value = percentage.toDoubleOrNull()
         if (!percentage.isBlank() && value != null && Percentage.check(value)) {
-            _percentage.setPercentage(value)
-            _uiState.update { it.copy(showPercentage = percentage) }
+            _uiState.update { it.copy(percentage = percentage) }
         } else {
             actDefaultPercentage()
         }
     }
-
     fun setCourseId(courseId: Int) {
         if (_uiState.value.courseId == courseId) return
         _uiState.update { it.copy(courseId = courseId) }
-        actDefaultPercentage()
+        actDefaultPercentage(courseId)
     }
-
     fun setTitle(title: String) {
         _uiState.update { it.copy(title = title) }
     }
-
     fun setDescription(description: String) {
         _uiState.update { it.copy(description = description) }
     }
-
-    fun setShowCourse(course: CourseModel) {
-        _uiState.update { it.copy(showCourse = course) }
+    fun setCourse(course: CourseModel) {
+        _uiState.update { it.copy(course = course) }
     }
-
-    // --- Percentage calculation ---
 
     fun actDefaultPercentage(courseId: Int = _uiState.value.courseId) {
         if (courseId == -1) return
-        if (gradesCache.isNotEmpty()) {
-            calDefaultPercentage(gradesCache)
-        }
 
-        viewModelScope.launch {
-            getGradesFromCourseUseCase(courseId).collect { result ->
+        percentageJob?.cancel()
+        percentageJob = viewModelScope.launch {
+            getCourseTotalGradesRemainingPercentageUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val grades = result.data!!
-                        gradesCache.clear()
-                        gradesCache.addAll(grades)
-                        calDefaultPercentage(grades)
+                        val remaining = result.data?.getPercentage() ?: 100.0
+                        _uiState.update {
+                            it.copy(
+                                defaultPercentage = remaining,
+                                percentage = ""
+                            )
+                        }
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
-                        Log.e(
-                            "EditGradeViewModel",
-                            "Error getGradesFromCourseUserCase: ${result.message}"
-                        )
+                        Log.e("EditGradeViewModel", "Error getCourseTotalGradesPercentageUseCase: ${result.message}")
                     }
                 }
             }
         }
     }
 
-    private fun calDefaultPercentage(grades: List<GradeModel>) {
-        var totalPercentage = 0.0
-        grades.forEach { grade ->
-            totalPercentage += grade.percentage.getPercentage()
-        }
-        _defaultPercentage.setPercentage(100.0 - totalPercentage + _savedPercentage.getPercentage())
-        _uiState.update { it.copy(showPercentage = "") }
-    }
-
-    fun resetCacheGrade() {
-        gradesCache.clear()
-    }
-
     // --- SubGrades ---
 
     fun calGradeFromSubGrades() {
         if (_subGrades.isEmpty()) return
-        _grade.setValue(_subGrades.averageGrade())
-        _uiState.update { it.copy(showGrade = _grade.toString()) }
+        val avg = _subGrades.averageGrade()
+        _uiState.update { it.copy(gradeValue = avg?.let { g -> Grade.formatText(g) } ?: "") }
     }
 
     fun setSubGrade(index: Int, subGrade: String) {
-        val updated = _uiState.value.showSubGrades.toMutableList()
+        val updated = _uiState.value.subGrades.toMutableList()
         updated[index] = subGrade
-        _uiState.update { it.copy(showSubGrades = updated) }
+        _uiState.update { it.copy(subGrades = updated) }
 
         val value = subGrade.toDoubleOrNull()
-        if (subGrade.isNotBlank() && value != null && _grade.check(value)) _subGrades[index].setValue(value)
+        if (subGrade.isNotBlank() && value != null) _subGrades[index].setValue(value)
         else _subGrades[index].setBlank()
         calGradeFromSubGrades()
     }
 
     fun addSubGrade() {
         if (_subGrades.isEmpty()) {
-            _subGrades.add(Grade(_grade))
-            _uiState.update { it.copy(showSubGrades = it.showSubGrades + _grade.toString()) }
+            val currentGrade = _uiState.value.gradeValue.toDoubleOrNull()
+            if (currentGrade != null) {
+                val g = gradeFactory.instGrade()
+                g.setValue(currentGrade)
+                _subGrades.add(g)
+                _uiState.update { it.copy(subGrades = it.subGrades + Grade.formatText(currentGrade)) }
+            } else {
+                _subGrades.add(gradeFactory.instGrade())
+                _uiState.update { it.copy(subGrades = it.subGrades + "") }
+            }
         } else {
             _subGrades.add(gradeFactory.instGrade())
-            _uiState.update { it.copy(showSubGrades = it.showSubGrades + "") }
+            _uiState.update { it.copy(subGrades = it.subGrades + "") }
         }
         calGradeFromSubGrades()
     }
 
     fun removeSubGrade(index: Int) {
         _subGrades.removeAt(index)
-        val updated = _uiState.value.showSubGrades.toMutableList()
+        val updated = _uiState.value.subGrades.toMutableList()
         updated.removeAt(index)
-        _uiState.update { it.copy(showSubGrades = updated) }
+        _uiState.update { it.copy(subGrades = updated) }
         calGradeFromSubGrades()
     }
 
@@ -197,12 +173,12 @@ class EditGradeViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         val subGrades: List<SubGradeModel> = result.data!!
-                        val updated = _uiState.value.showSubGrades.toMutableList()
+                        val updated = _uiState.value.subGrades.toMutableList()
                         subGrades.forEach {
                             _subGrades.add(Grade(it.grade))
                             updated.add(it.grade.toString())
                         }
-                        _uiState.update { it.copy(showSubGrades = updated) }
+                        _uiState.update { it.copy(subGrades = updated) }
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
@@ -215,47 +191,47 @@ class EditGradeViewModel @Inject constructor(
 
     // --- Save/Update ---
 
-    private fun saveSubGrades(gradeId: Int) {
-        if (gradeId == -1) return
+    private suspend fun saveSubGrades(gradeId: Int): String? {
+        if (gradeId == -1) return null
         _subGrades.forEachIndexed { index, grade ->
-            saveSubGrade(SubGradeModel(
+            val error = saveSubGrade(SubGradeModel(
                 title = "SubGrade $index",
                 grade = grade,
                 gradeId = gradeId
             ))
+            if (error != null) return error
+        }
+        return null
+    }
+
+    private suspend fun saveSubGrade(subGrade: SubGradeModel): String? {
+        val result = saveSubGradeUseCase(subGrade).first { it !is Resource.Loading }
+        return when (result) {
+            is Resource.Success -> {
+                Log.i("EditGradeViewModel", "saveSubGrade id: ${result.data}")
+                null
+            }
+            is Resource.Error -> {
+                Log.e("EditGradeViewModel", "Error saving subGrade: ${result.message}")
+                result.message ?: "Error al guardar sub-calificación"
+            }
+            else -> null
         }
     }
 
-    private fun saveSubGrade(subGrade: SubGradeModel) {
-        viewModelScope.launch {
-            saveSubGradeUseCase(subGrade).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        Log.i("EditGradeViewModel", "saveSubGrade id: ${result.data}")
-                    }
-                    is Resource.Loading -> { }
-                    is Resource.Error -> {
-                        Log.e("EditGradeViewModel", "Error saving subGrade: ${result.message}")
-                    }
-                }
+    private suspend fun deleteSubGradesFromGrade(gradeId: Int): String? {
+        if (gradeId == -1) return null
+        val result = deleteAllSubGradesFromGradeUseCase(gradeId).first { it !is Resource.Loading }
+        return when (result) {
+            is Resource.Success -> {
+                Log.i("EditGradeViewModel", "deleteSubGradesFromGrade id: $gradeId amount: ${result.data}")
+                null
             }
-        }
-    }
-
-    private fun deleteSubGradesFromGrade(gradeId: Int) {
-        if (gradeId == -1) return
-        viewModelScope.launch {
-            deleteAllSubGradesFromGradeUseCase(gradeId).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        Log.i("EditGradeViewModel", "deleteSubGradesFromGrade id: $gradeId amount: ${result.data}")
-                    }
-                    is Resource.Loading -> { }
-                    is Resource.Error -> {
-                        Log.e("EditGradeViewModel", "Error deleting subGrades: ${result.message}")
-                    }
-                }
+            is Resource.Error -> {
+                Log.e("EditGradeViewModel", "Error deleting subGrades: ${result.message}")
+                result.message ?: "Error al eliminar sub-calificaciones"
             }
+            else -> null
         }
     }
 
@@ -266,15 +242,12 @@ class EditGradeViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         val grade = result.data!!
-                        _grade.setValue(grade.grade)
-                        _percentage.setPercentage(grade.percentage)
-                        _savedPercentage.setPercentage(grade.percentage)
                         _uiState.update {
                             it.copy(
                                 title = grade.title,
                                 description = grade.description,
-                                showGrade = grade.grade.toString(),
-                                showPercentage = grade.percentage.toString(),
+                                gradeValue = grade.grade.toString(),
+                                percentage = grade.percentage.toString(),
                             )
                         }
                     }
@@ -287,122 +260,89 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    private fun saveGradeWithSubGrades(gradeModel: GradeModel) {
-        viewModelScope.launch {
-            saveGradeUseCase(gradeModel = gradeModel).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        if (result.data != null) saveSubGrades(result.data.toInt())
-                        Log.i("EditGradeViewModel", "saveGrade id: ${result.data}")
-                    }
-                    is Resource.Loading -> { }
-                    is Resource.Error -> {
-                        Log.e("EditGradeViewModel", "Error saving grade: ${result.message}")
-                    }
+    private suspend fun saveGradeWithSubGrades(gradeModel: GradeModel): String? {
+        val result = saveGradeUseCase(gradeModel = gradeModel).first { it !is Resource.Loading }
+        return when (result) {
+            is Resource.Success -> {
+                if (result.data != null) {
+                    val error = saveSubGrades(result.data.toInt())
+                    if (error != null) return error
                 }
+                Log.i("EditGradeViewModel", "saveGrade id: ${result.data}")
+                null
             }
+            is Resource.Error -> {
+                Log.e("EditGradeViewModel", "Error saving grade: ${result.message}")
+                result.message ?: "Error al guardar calificación"
+            }
+            else -> null
         }
     }
 
-    private fun updateGradeWithSubGrades(gradeModel: GradeModel) {
-        viewModelScope.launch {
-            updateGradeUseCase(gradeModel = gradeModel).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        deleteSubGradesFromGrade(gradeModel.id)
-                        saveSubGrades(gradeModel.id)
-                        Log.i("EditGradeViewModel", "updateGrade id: ${gradeModel.id}")
-                    }
-                    is Resource.Loading -> { }
-                    is Resource.Error -> {
-                        Log.e("EditGradeViewModel", "Error saving course: ${result.message}")
-                    }
-                }
+    private suspend fun updateGradeWithSubGrades(gradeModel: GradeModel): String? {
+        val result = updateGradeUseCase(gradeModel = gradeModel).first { it !is Resource.Loading }
+        return when (result) {
+            is Resource.Success -> {
+                val error = deleteSubGradesFromGrade(gradeModel.id)
+                if (error != null) return error
+                val saveError = saveSubGrades(gradeModel.id)
+                if (saveError != null) return saveError
+                Log.i("EditGradeViewModel", "updateGrade id: ${gradeModel.id}")
+                null
             }
+            is Resource.Error -> {
+                Log.e("EditGradeViewModel", "Error saving grade: ${result.message}")
+                result.message ?: "Error al actualizar calificación"
+            }
+            else -> null
         }
     }
 
-    fun syncInvalidInputs(): Boolean {
-        var result = true
+    suspend fun submitGrade(gradeId: Int, activity: Activity?): String? {
         val state = _uiState.value
+        if (state.courseId == -1) return "Selecciona una asignatura"
+        var result: Result<GradeDetailModel>
 
-        val showGradeValue = state.showGrade.toDoubleOrNull()
-        var correctedShowGrade = state.showGrade
-        if (state.showGrade.isBlank() || showGradeValue == null) {
-            _grade.setBlank()
-        } else if (!_grade.check(showGradeValue)) {
-            correctedShowGrade = _grade.toString()
-            _grade.setValue(correctedShowGrade.toDoubleOrNull() ?: 0.0)
-            result = false
-        }
+        val gradeValue = state.gradeValue.toDoubleOrNull()
 
-        val showPercentageValue = state.showPercentage.toDoubleOrNull()
-        if (state.showPercentage.isBlank() || showPercentageValue == null) {
-            _percentage.setPercentage(_defaultPercentage)
-        } else if (_percentage.getPercentage() == 0.0 ||
-            !Percentage.check(showPercentageValue) ||
-            showPercentageValue > _defaultPercentage.getPercentage()
-        ) {
-            _percentage.setPercentage(_defaultPercentage)
-            result = false
-        }
+        val percentageValue = state.percentage.toDoubleOrNull() ?: state.defaultPercentage
+        val percentage = Percentage(percentageValue)
 
-        val correctedTitle = if (state.title.isBlank()) "Sin Titulo" else state.title
-        val correctedDescription = if (state.description.isBlank()) "Sin descripción" else state.description
-
-        _uiState.update {
-            it.copy(
-                title = correctedTitle,
-                description = correctedDescription,
-                showGrade = correctedShowGrade,
-            )
-        }
-
-        return result
-    }
-
-    private fun saveOrCreateGrade(gradeId: Int) {
-        viewModelScope.launch {
-            val state = _uiState.value
-            if (gradeId == -1) {
-                saveGradeWithSubGrades(
-                    GradeModel(
-                        courseId = state.courseId,
-                        title = state.title,
-                        description = state.description,
-                        grade = _grade,
-                        percentage = _percentage,
-                    )
-                )
-            } else {
-                updateGradeWithSubGrades(
-                    GradeModel(
-                        courseId = state.courseId,
-                        title = state.title,
-                        description = state.description,
-                        grade = _grade,
-                        percentage = _percentage,
-                        id = gradeId,
-                    )
-                )
+        result = GradeDetailModel.create(
+            courseId = state.courseId,
+            title = state.title,
+            description = state.description,
+            gradeValue = gradeValue,
+            gradeFactory = gradeFactory,
+            percentage = percentage,
+            id = gradeId,
+            subgrades = _subGrades.mapIndexed { index, g ->
+                SubGradeModel(gradeId = gradeId, title = "SubGrade $index", grade = g)
             }
+        )
+
+        if (result.isFailure) {
+            return result.exceptionOrNull()?.message ?: "Error de validación"
         }
-    }
 
-    fun submitGrade(gradeId: Int, activity: Activity?): Boolean {
-        if (_uiState.value.courseId == -1) return false
+        val gradeDetail = result.getOrNull()!!
 
-        if (!syncInvalidInputs()) return false
-
-        saveOrCreateGrade(gradeId)
+        val saveError = if (gradeId == -1) {
+            saveGradeWithSubGrades(gradeDetail)
+        } else {
+            updateGradeWithSubGrades(gradeDetail)
+        }
+        if (saveError != null) return saveError
 
         if (activity != null) {
             viewModelScope.launch {
                 launchInAppReviewIfValidUseCase(activity).collect {}
             }
         }
-        return true
+        return null
     }
+
+    // --- Course loading ---
 
     private fun getCourseFromId(courseId: Int) {
         if (courseId == -1) return
@@ -410,7 +350,7 @@ class EditGradeViewModel @Inject constructor(
             getCourseByIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        _uiState.update { it.copy(showCourse = result.data!!) }
+                        _uiState.update { it.copy(course = result.data!!) }
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
@@ -427,16 +367,25 @@ class EditGradeViewModel @Inject constructor(
             getCoursesFromSemesterUseCase(semesterIdOrNull).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val courses = result.data!!
-                        _uiState.update { it.copy(courses = courses) }
+                        val courses = result.data.orEmpty()
 
                         if (courses.isNotEmpty()) {
                             if (courseId == -1) {
-                                _uiState.update { it.copy(showCourse = courses[0]) }
-                                setCourseId(courses[0].id)
+                                val firstCourse = courses[0]
+                                _uiState.update {
+                                    it.copy(
+                                        courses = courses,
+                                        course = firstCourse,
+                                        courseId = firstCourse.id
+                                    )
+                                }
+                                actDefaultPercentage(firstCourse.id)
                             } else {
+                                _uiState.update { it.copy(courses = courses) }
                                 getCourseFromId(courseId)
                             }
+                        } else {
+                            _uiState.update { it.copy(courses = courses) }
                         }
                     }
                     is Resource.Loading -> { }

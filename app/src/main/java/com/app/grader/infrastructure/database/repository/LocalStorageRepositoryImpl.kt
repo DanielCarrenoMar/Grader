@@ -200,8 +200,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {
-        val totalPercentage = courseDao.getTotalPercentageFromCourse(courseId)
-        if (totalPercentage == null) return Percentage()
+        val totalPercentage =
+            courseDao.getTotalPercentageFromCourse(courseId) ?: return Percentage()
         return Percentage(totalPercentage)
     }
 

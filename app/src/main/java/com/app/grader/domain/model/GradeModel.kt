@@ -6,7 +6,7 @@ import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 
 
-data class GradeModel(
+open class GradeModel(
     val courseId: Int,
     val title: String,
     val description: String,
@@ -14,7 +14,7 @@ data class GradeModel(
     val percentage: Percentage,
     val id: Int = -1,
 ){
-    fun validate() {
+    open fun validate() {
         if (percentage.getPercentage() <= 0.0) {
             throw IllegalArgumentException("El porcentaje de la nota no puede ser 0%")
         }
