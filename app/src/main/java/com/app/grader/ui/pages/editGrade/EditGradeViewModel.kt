@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeDetailModel
-import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.types.Grade
@@ -17,12 +16,10 @@ import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseTotalGradesRemainingPercentageUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
-import com.app.grader.domain.usecase.grade.SaveGradeUseCase
-import com.app.grader.domain.usecase.grade.UpdateGradeUseCase
+import com.app.grader.domain.usecase.grade.SaveGradeDetailUseCase
+import com.app.grader.domain.usecase.grade.UpdateGradeDetailUseCase
 import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
-import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesFromGradeUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
-import com.app.grader.domain.usecase.subGrade.SaveSubGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,14 +46,12 @@ data class EditGradeUiState(
 @HiltViewModel
 class EditGradeViewModel @Inject constructor(
     private val getGradeByIdUseCase: GetGradeByIdUseCase,
-    private val saveGradeUseCase: SaveGradeUseCase,
-    private val updateGradeUseCase: UpdateGradeUseCase,
+    private val saveGradeDetailUseCase: SaveGradeDetailUseCase,
+    private val updateGradeDetailUseCase: UpdateGradeDetailUseCase,
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
     private val getCourseByIdUseCase: GetCourseByIdUseCase,
     private val getCourseTotalGradesRemainingPercentageUseCase: GetCourseTotalGradesRemainingPercentageUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
-    private val saveSubGradeUseCase: SaveSubGradeUseCase,
-    private val deleteAllSubGradesFromGradeUseCase: DeleteAllSubGradesFromGradeUseCase,
     private val launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
@@ -189,52 +184,6 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    // --- Save/Update ---
-
-    private suspend fun saveSubGrades(gradeId: Int): String? {
-        if (gradeId == -1) return null
-        _subGrades.forEachIndexed { index, grade ->
-            val error = saveSubGrade(SubGradeModel(
-                title = "SubGrade $index",
-                grade = grade,
-                gradeId = gradeId
-            ))
-            if (error != null) return error
-        }
-        return null
-    }
-
-    private suspend fun saveSubGrade(subGrade: SubGradeModel): String? {
-        val result = saveSubGradeUseCase(subGrade).first { it !is Resource.Loading }
-        return when (result) {
-            is Resource.Success -> {
-                Log.i("EditGradeViewModel", "saveSubGrade id: ${result.data}")
-                null
-            }
-            is Resource.Error -> {
-                Log.e("EditGradeViewModel", "Error saving subGrade: ${result.message}")
-                result.message ?: "Error al guardar sub-calificación"
-            }
-            else -> null
-        }
-    }
-
-    private suspend fun deleteSubGradesFromGrade(gradeId: Int): String? {
-        if (gradeId == -1) return null
-        val result = deleteAllSubGradesFromGradeUseCase(gradeId).first { it !is Resource.Loading }
-        return when (result) {
-            is Resource.Success -> {
-                Log.i("EditGradeViewModel", "deleteSubGradesFromGrade id: $gradeId amount: ${result.data}")
-                null
-            }
-            is Resource.Error -> {
-                Log.e("EditGradeViewModel", "Error deleting subGrades: ${result.message}")
-                result.message ?: "Error al eliminar sub-calificaciones"
-            }
-            else -> null
-        }
-    }
-
     fun loadGradeFromId(gradeId: Int) {
         if (gradeId == -1) return
         viewModelScope.launch {
@@ -257,44 +206,6 @@ class EditGradeViewModel @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    private suspend fun saveGradeWithSubGrades(gradeModel: GradeModel): String? {
-        val result = saveGradeUseCase(gradeModel = gradeModel).first { it !is Resource.Loading }
-        return when (result) {
-            is Resource.Success -> {
-                if (result.data != null) {
-                    val error = saveSubGrades(result.data.toInt())
-                    if (error != null) return error
-                }
-                Log.i("EditGradeViewModel", "saveGrade id: ${result.data}")
-                null
-            }
-            is Resource.Error -> {
-                Log.e("EditGradeViewModel", "Error saving grade: ${result.message}")
-                result.message ?: "Error al guardar calificación"
-            }
-            else -> null
-        }
-    }
-
-    private suspend fun updateGradeWithSubGrades(gradeModel: GradeModel): String? {
-        val result = updateGradeUseCase(gradeModel = gradeModel).first { it !is Resource.Loading }
-        return when (result) {
-            is Resource.Success -> {
-                val error = deleteSubGradesFromGrade(gradeModel.id)
-                if (error != null) return error
-                val saveError = saveSubGrades(gradeModel.id)
-                if (saveError != null) return saveError
-                Log.i("EditGradeViewModel", "updateGrade id: ${gradeModel.id}")
-                null
-            }
-            is Resource.Error -> {
-                Log.e("EditGradeViewModel", "Error saving grade: ${result.message}")
-                result.message ?: "Error al actualizar calificación"
-            }
-            else -> null
         }
     }
 
@@ -327,11 +238,12 @@ class EditGradeViewModel @Inject constructor(
 
         val gradeDetail = result.getOrNull()!!
 
-        val saveError = if (gradeId == -1) {
-            saveGradeWithSubGrades(gradeDetail)
+        val saveResult = if (gradeId == -1) {
+            saveGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
         } else {
-            updateGradeWithSubGrades(gradeDetail)
+            updateGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
         }
+        val saveError = (saveResult as? Resource.Error)?.message
         if (saveError != null) return saveError
 
         if (activity != null) {
