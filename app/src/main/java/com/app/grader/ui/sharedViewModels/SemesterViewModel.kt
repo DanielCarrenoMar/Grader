@@ -20,6 +20,7 @@ open class SemesterViewModel(
     protected val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     protected val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     protected val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
+    val appConfigRepository: com.app.grader.domain.repository.AppConfigRepository
 ): ViewModel() {
     private val _totalAverage = mutableStateOf(GradeValue())
     val totalAverage = _totalAverage

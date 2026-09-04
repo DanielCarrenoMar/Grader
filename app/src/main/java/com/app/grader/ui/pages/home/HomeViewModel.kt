@@ -16,15 +16,12 @@ class HomeViewModel  @Inject constructor(
     deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
-    gradeFactory: GradeFactory,
     appConfigRepository: AppConfigRepository,
 ): SemesterViewModel(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase,
-    gradeFactory,
     appConfigRepository
 ) {
-
-}
+}

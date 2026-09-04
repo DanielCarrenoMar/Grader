@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetAverageFromCourseUseCase
+import com.app.grader.domain.usecase.course.GetCourseStatisticsUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeByIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
@@ -28,15 +27,15 @@ class CourseViewModel  @Inject constructor(
     private val getGradeByIdUseCase: GetGradeByIdUseCase,
     private val deleteGradeByIdUseCase: DeleteGradeByIdUseCase,
     private val getAverageFromCourseUseCase: GetAverageFromCourseUseCase,
+    private val getCourseStatisticsUseCase: GetCourseStatisticsUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
     private val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
-    private val gradeFactory: GradeFactory
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableStateOf(GradeValue(0.0,0.0,0))
+    private val _accumulatePoints = mutableStateOf(0.0)
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableStateOf(GradeValue(0.0,0.0,0))
+    private val _pedingPoints = mutableStateOf(0.0)
     val pedingPoints = _pedingPoints
     private val _totalPercentaje = mutableStateOf(Percentage(0.0))
     val totalPercentaje = _totalPercentaje
@@ -110,27 +109,17 @@ class CourseViewModel  @Inject constructor(
 
     fun calPoints(courseId: Int){
         viewModelScope.launch {
-            getGradesFromCourseUseCase(courseId).collect { result ->
+            getCourseStatisticsUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val grades = result.data!!
-                        var accumulatePointsTemp = 0.0
-                        var totalPercentage = 0.0
-                        var totalEvaluledPercentage = 0.0
-                        grades.forEach { grade ->
-                            totalPercentage += grade.percentage.getPercentage()
-                            if (grade.gradeValue.isNotBlank()) {
-                                totalEvaluledPercentage += grade.percentage.getPercentage()
-                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * (grade.gradeValue.getValue() ?: 0.0)
-                            }
-                        }
-                        _totalPercentaje.value = Percentage(totalPercentage)
-                        _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
-                        _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalEvaluledPercentage)
+                        val stats = result.data!!
+                        _totalPercentaje.value = stats.totalPercentage
+                        _accumulatePoints.value = stats.accumulatePoints
+                        _pedingPoints.value = stats.pendingPoints
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                        Log.e("CourseViewModel", "Error getCourseStatistics: ${result.message}")
                     }
                 }
             }

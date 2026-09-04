@@ -24,6 +24,7 @@ class RecordSemesterViewModel @Inject constructor(
     deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
+    appConfigRepository: com.app.grader.domain.repository.AppConfigRepository,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
@@ -32,7 +33,8 @@ class RecordSemesterViewModel @Inject constructor(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
-    getAverageFromSemesterUseCase
+    getAverageFromSemesterUseCase,
+    appConfigRepository
 ) {
     private val _semester = mutableStateOf(SemesterModel.DEFAULT)
     val semester = _semester

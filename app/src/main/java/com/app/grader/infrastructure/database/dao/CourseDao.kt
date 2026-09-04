@@ -25,6 +25,12 @@ data class CourseAverage(
     @ColumnInfo(name = "min_to_pass") val minToPass: Double?,
 )
 
+data class CourseStatistics(
+    @ColumnInfo(name = "total_percentage") val totalPercentage: Double,
+    @ColumnInfo(name = "accumulate_points") val accumulatePoints: Double,
+    @ColumnInfo(name = "evaluated_percentage") val evaluatedPercentage: Double,
+)
+
 @Dao
 interface CourseDao {
     @Query(
@@ -147,6 +153,27 @@ interface CourseDao {
 
     @Query("SELECT SUM(weighting_percentage) FROM grade WHERE course_id = :courseId")
     suspend fun getTotalPercentageFromCourse(courseId: Int): Double?
+
+    @Query(
+        """
+        SELECT
+            COALESCE(SUM(base.weighting_percentage), 0.0) AS total_percentage,
+            COALESCE(SUM(CASE WHEN base.grade_value IS NOT NULL THEN (base.weighting_percentage / 100.0) * base.grade_value ELSE 0.0 END), 0.0) AS accumulate_points,
+            COALESCE(SUM(CASE WHEN base.grade_value IS NOT NULL THEN base.weighting_percentage ELSE 0.0 END), 0.0) AS evaluated_percentage
+        FROM (
+            SELECT
+                g.weighting_percentage,
+                (COALESCE(AVG(sg.grade_percentage), g.grade_percentage) * tg.max / 100.0) AS grade_value
+            FROM grade g
+            INNER JOIN course c ON c.id = g.course_id
+            INNER JOIN type_grade tg ON tg.id = c.type_grade_id
+            LEFT JOIN sub_grade sg ON sg.grade_id = g.id
+            WHERE g.course_id = :courseId
+            GROUP BY g.id
+        ) AS base
+        """
+    )
+    suspend fun getCourseStatistics(courseId: Int): CourseStatistics
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCourse(course: CourseEntity): Long

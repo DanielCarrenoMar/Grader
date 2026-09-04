@@ -1,6 +1,7 @@
 package com.app.grader.domain.repository
 
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.CourseStatisticsModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
 import com.app.grader.domain.model.SemesterStatisticsModel
@@ -25,6 +26,7 @@ interface LocalStorageRepository {
 
     suspend fun getAverageFromCourse(courseId:Int) : GradeValue
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage
+    suspend fun getCourseStatistics(courseId: Int): CourseStatisticsModel
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int
     suspend fun deleteAllCoursesFromSemester(semesterId: Int?): Int

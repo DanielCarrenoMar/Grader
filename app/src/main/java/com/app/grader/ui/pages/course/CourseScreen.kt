@@ -283,19 +283,19 @@ fun CourseScreen(
 @Composable
 fun InfoCourseCard(
     average: GradeValue,
-    accumulatePoints: GradeValue,
-    pendingPoints: GradeValue,
+    accumulatePoints: Double,
+    pendingPoints: Double,
     uc: Int,
     modifier: Modifier = Modifier,
 ) {
     val animatedAccumulatePoints by animateFloatAsState(
-        targetValue = (accumulatePoints.getValue() ?: 0.0).toFloat(),
+        targetValue = accumulatePoints.toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "accumulatePointsAnimation"
     )
 
     val animatedPendingPoints by animateFloatAsState(
-        targetValue = (pendingPoints.getValue() ?: 0.0).toFloat(),
+        targetValue = pendingPoints.toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "pendingPointsAnimation"
     )
@@ -314,7 +314,7 @@ fun InfoCourseCard(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CircleAverage(average, accumulatePoints.getValue() ?: 0.0, pendingPoints.getValue() ?: 0.0)
+                CircleAverage(average, accumulatePoints, pendingPoints)
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 0.dp)

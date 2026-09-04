@@ -1,7 +1,7 @@
 package com.app.grader.infrastructure.database.repository
 
 import com.app.grader.domain.repository.AppConfigRepository
-import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.domain.model.CourseStatisticsModel
 import com.app.grader.infrastructure.database.dao.CourseDao
 import com.app.grader.infrastructure.database.dao.GradeDao
 import com.app.grader.infrastructure.database.dao.SemesterDao
@@ -34,7 +34,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
     private val typeGradeDao: TypeGradeDao,
-    private val appConfigRepository: AppConfigRepository
+    private val appConfigRepository: AppConfigRepository,
 ) : LocalStorageRepository {
 
     override suspend fun saveCourse(courseModel: CourseModel): Long {
@@ -208,6 +208,15 @@ class LocalStorageRepositoryImpl @Inject constructor(
         val totalPercentage =
             courseDao.getTotalPercentageFromCourse(courseId) ?: return Percentage()
         return Percentage(totalPercentage)
+    }
+
+    override suspend fun getCourseStatistics(courseId: Int): CourseStatisticsModel {
+        val stats = courseDao.getCourseStatistics(courseId)
+        return CourseStatisticsModel(
+            totalPercentage = Percentage(stats.totalPercentage),
+            accumulatePoints = stats.accumulatePoints,
+            pendingPoints = 100 - stats.evaluatedPercentage,
+        )
     }
 
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
