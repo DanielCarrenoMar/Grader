@@ -56,6 +56,7 @@ import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.IconLarge
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,19 +133,21 @@ fun EditGradeScreen(
 leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
                      isError = uiState.fieldErrors.containsKey("grade"),
                      maxLength = 5,
-                    suffix = {
-                        IconButton(
-                            onClick = { viewModel.addSubGrade() },
-                            modifier = Modifier.size(IconLarge)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.plus_outline),
-                                contentDescription = "Grade",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                                modifier = Modifier
-                            )
+                    suffix = if (viewModel.defaultTypeGrade.collectAsState().value?.isDirectPercentage != true) {
+                        {
+                            IconButton(
+                                onClick = { viewModel.addSubGrade() },
+                                modifier = Modifier.size(IconLarge)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.plus_outline),
+                                    contentDescription = "Grade",
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                    modifier = Modifier
+                                )
+                            }
                         }
-                    },
+                    } else null,
                     maxLines = 1
                 )
             }

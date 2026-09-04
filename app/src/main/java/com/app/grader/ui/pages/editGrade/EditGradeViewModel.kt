@@ -206,6 +206,7 @@ class EditGradeViewModel @Inject constructor(
 
     fun addSubGrade() {
         val typeGrade = _defaultTypeGrade.value ?: return
+        if (typeGrade.isDirectPercentage) return
         val currentGrade = _uiState.value.gradeValue.replace(',', '.').toDoubleOrNull()
         val model = SubGradeModel.create(
             gradeId = -1,
