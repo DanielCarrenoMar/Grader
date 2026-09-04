@@ -3,6 +3,7 @@ package com.app.grader.domain.repository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.model.SemesterStatisticsModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.types.GradeValue
@@ -19,6 +20,8 @@ interface LocalStorageRepository {
     suspend fun getWeightOfSemester(semesterId: Int?): Int
     suspend fun updateSemester(semesterModel: SemesterModel): Boolean
     suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int
+
+    suspend fun getTotalSemestersStatistics(averageCourseRounded: Boolean): SemesterStatisticsModel
 
     suspend fun getAverageFromCourse(courseId:Int) : GradeValue
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage

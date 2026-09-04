@@ -10,6 +10,7 @@ import com.app.grader.infrastructure.database.dao.SubGradeDao
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.model.SemesterStatisticsModel
 import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.toCourseEntity
@@ -170,6 +171,21 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getWeightOfSemester(semesterId: Int?): Int {
         return semesterDao.getSemesterUCSum(semesterId)
+    }
+
+    override suspend fun getTotalSemestersStatistics(averageCourseRounded: Boolean): SemesterStatisticsModel {
+        val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
+        val gradeType = typeGradeDao.getTypeGradeById(gradeTypeId) ?: throw IllegalStateException("Default type grade not found")
+        val semestersStatistics = semesterDao.getSemestersStatistics(averageCourseRounded)
+        return SemesterStatisticsModel(
+            totalAverage = GradeValue.createFromGradePercentage(
+                semestersStatistics.totalAverage,
+                gradeType.minToPass,
+                gradeType.max
+            ),
+            totalCourses = semestersStatistics.totalCourses,
+            totalWeight = semestersStatistics.totalWeight
+        )
     }
 
     override suspend fun updateSemester(semesterModel: SemesterModel): Boolean {
