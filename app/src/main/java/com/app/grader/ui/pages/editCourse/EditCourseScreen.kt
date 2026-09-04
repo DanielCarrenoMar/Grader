@@ -141,7 +141,7 @@ fun EditCourseScreen(
                 maxLines = 1
             )
             EditScreenInputComp(
-                placeHolderText = "Ponderación",
+                placeHolderText = "Ponderación (opcional)",
                 value = viewModel.showUc.value,
                 onValueChange = {
                     viewModel.showUc.value = it

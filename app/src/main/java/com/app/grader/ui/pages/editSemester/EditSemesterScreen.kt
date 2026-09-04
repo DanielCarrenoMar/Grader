@@ -81,7 +81,7 @@ fun EditSemesterScreen(
         ) {
             Spacer(Modifier.height(10.dp))
             EditScreenInputComp(
-                placeHolderText = "Sin título",
+                placeHolderText = "Agregar título (opcional)",
                 value = viewModel.showTitle.value,
                 onValueChange = {
                     viewModel.showTitle.value = it

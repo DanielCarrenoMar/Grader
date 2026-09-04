@@ -265,7 +265,7 @@ leadingIconId = R.drawable.star_half_outline,
                 Spacer(modifier = Modifier.height(30.dp))
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 EditScreenInputComp(
-                    placeHolderText = "Agregar título (Opcional)",
+                    placeHolderText = "Agregar título (opcional)",
                     value = uiState.title,
                     onValueChange = {
                         viewModel.setTitle(it)
@@ -278,7 +278,7 @@ leadingIconId = R.drawable.star_half_outline,
                     maxLines = 1
                 )
                 EditScreenInputComp(
-                    placeHolderText = "Agregar descripcción (Opcional)",
+                    placeHolderText = "Agregar descripcción (opcional)",
                     value = uiState.description,
                     onValueChange = {
                         viewModel.setDescription(it)
