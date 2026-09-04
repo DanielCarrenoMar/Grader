@@ -36,8 +36,8 @@ import javax.inject.Inject
 import kotlin.text.toDoubleOrNull
 
 data class EditGradeUiState(
-    val title: String = "Sin Título",
-    val description: String = "Sin descripción",
+    val title: String = "",
+    val description: String = "",
     val gradeValue: String = "",
     val percentage: String = "",
     val defaultPercentage: Double = 100.0,
