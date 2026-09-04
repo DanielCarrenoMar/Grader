@@ -3,8 +3,8 @@ package com.app.grader.infrastructure.database
 import android.content.Context
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.app.grader.core.appConfig.TypeGrade
-import com.app.grader.core.appConfig.toTypeGradeId
+import com.app.grader.domain.types.TypeGrade
+import com.app.grader.domain.types.toTypeGradeId
 import com.app.grader.infrastructure.appConfig.SharedPreferencesAppConfigRepository
 
 /**

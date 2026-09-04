@@ -3,7 +3,7 @@
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.app.grader.core.appConfig.TypeGrade
+import com.app.grader.domain.types.TypeGrade
 import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.ThemeType
 import dagger.hilt.android.qualifiers.ApplicationContext

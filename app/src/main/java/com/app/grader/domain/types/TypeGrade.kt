@@ -1,5 +1,6 @@
-package com.app.grader.core.appConfig
+package com.app.grader.domain.types
 
+@Deprecated("This enum is deprecated, use TypeGradeId instead. Deprecated since 2.1.0")
 enum class TypeGrade() {
     NUMERIC_7_CHI,
     NUMERIC_10_ARG,
@@ -7,15 +8,6 @@ enum class TypeGrade() {
     NUMERIC_10_MEX,
     NUMERIC_20,
     NUMERIC_100,
-}
-
-fun TypeGrade.toBaseAt(): Int = when (this) {
-    TypeGrade.NUMERIC_7_CHI -> 7
-    TypeGrade.NUMERIC_10_ARG -> 10
-    TypeGrade.NUMERIC_10_ESP -> 10
-    TypeGrade.NUMERIC_10_MEX -> 10
-    TypeGrade.NUMERIC_20 -> 20
-    TypeGrade.NUMERIC_100 -> 100
 }
 
 fun TypeGrade.toTypeGradeId(): Int = when (this) {
