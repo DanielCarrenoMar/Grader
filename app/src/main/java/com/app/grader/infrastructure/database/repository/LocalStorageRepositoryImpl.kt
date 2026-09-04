@@ -34,7 +34,6 @@ class LocalStorageRepositoryImpl @Inject constructor(
     private val gradeDao: GradeDao,
     private val subGradeDao: SubGradeDao,
     private val typeGradeDao: TypeGradeDao,
-    private val gradeFactory: GradeFactory,
     private val appConfigRepository: AppConfigRepository
 ) : LocalStorageRepository {
 
@@ -273,9 +272,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel> {
-        return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGradeEntity ->
-            subGradeEntity.toSubGradeModel(gradeFactory)
-        }
+        return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGrade -> subGrade.toSubGradeModel() }
     }
 
     override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Long {
@@ -296,8 +293,8 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubGradeById(subGradeId: Int): SubGradeModel? {
-        val subGradeEntity = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
-        return subGradeEntity.toSubGradeModel(gradeFactory)
+        val subGrade = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
+        return subGrade.toSubGradeModel()
     }
 
     override suspend fun updateSubGrade(subGradeModel: SubGradeModel): Boolean {

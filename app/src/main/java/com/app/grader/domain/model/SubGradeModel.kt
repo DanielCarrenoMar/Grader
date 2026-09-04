@@ -1,6 +1,6 @@
 package com.app.grader.domain.model
 
-import com.app.grader.core.appConfig.GradeFactory
+import com.app.grader.infrastructure.database.dao.SubGradeCalculate
 import com.app.grader.infrastructure.database.entitites.SubGradeEntity
 import com.app.grader.domain.types.GradeValue
 
@@ -19,11 +19,12 @@ fun SubGradeModel.toSubGradeEntity(): SubGradeEntity {
         gradePercentage = this.gradeValue.getGradePercentage(),
     )
 }
-fun SubGradeEntity.toSubGradeModel(gradeFactory: GradeFactory): SubGradeModel {
+
+fun SubGradeCalculate.toSubGradeModel(): SubGradeModel {
     return SubGradeModel(
         gradeId = this.gradeId,
         title = this.title,
-        gradeValue = gradeFactory.instGradeFromPercentage(this.gradePercentage),
+        gradeValue = GradeValue.createFromGradePercentage(this.gradePercentage, this.minToPass, this.max),
         id = this.id,
     )
 }
