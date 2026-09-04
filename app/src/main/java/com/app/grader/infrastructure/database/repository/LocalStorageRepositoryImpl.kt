@@ -67,6 +67,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
         return typeGradeDao.getTypeGradeById(typeGradeId)?.toTypeGradeModel()
     }
 
+    override suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel? {
+        return typeGradeDao.getTypeGradeFromCourseId(courseId)?.toTypeGradeModel()
+    }
+
     override suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long {
         return typeGradeDao.insertTypeGrade(typeGradeModel.toTypeGradeEntity())
     }

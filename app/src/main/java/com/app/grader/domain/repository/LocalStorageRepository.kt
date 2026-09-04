@@ -43,6 +43,7 @@ interface LocalStorageRepository {
 
     suspend fun getAllTypeGrades(): List<TypeGradeModel>
     suspend fun getTypeGradeById(typeGradeId: Int): TypeGradeModel?
+    suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel?
     suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long
     suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean
 

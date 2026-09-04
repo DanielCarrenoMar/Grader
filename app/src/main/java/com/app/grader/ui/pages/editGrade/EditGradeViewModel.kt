@@ -21,7 +21,7 @@ import com.app.grader.domain.usecase.grade.SaveGradeDetailUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeDetailUseCase
 import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
-import com.app.grader.domain.usecase.typeGrade.GetDefaultTypeGradeUseCase
+import com.app.grader.domain.usecase.typeGrade.GetTypeGradeFromCourseIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +55,7 @@ class EditGradeViewModel @Inject constructor(
     private val getCourseTotalGradesRemainingPercentageUseCase: GetCourseTotalGradesRemainingPercentageUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase,
-    private val getDefaultTypeGradeUseCase: GetDefaultTypeGradeUseCase,
+    private val getTypeGradeFromCourseIdUseCase: GetTypeGradeFromCourseIdUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(EditGradeUiState())
@@ -68,21 +68,26 @@ class EditGradeViewModel @Inject constructor(
     private var percentageJob: Job? = null
 
     init {
-        loadDefaultTypeGrade()
+        loadTypeGradeFromCourse(_uiState.value.courseId)
     }
 
     val defaultPercentage: Percentage get() = Percentage(_uiState.value.defaultPercentage)
+    val gradeMax: Int get() = _defaultTypeGrade.value?.max ?: gradeFactory.instGrade().getMax()
 
-    private fun loadDefaultTypeGrade() {
+    private fun loadTypeGradeFromCourse(courseId: Int) {
+        if (courseId == -1) {
+            _defaultTypeGrade.value = null
+            return
+        }
         viewModelScope.launch {
-            getDefaultTypeGradeUseCase().collect { result ->
+            getTypeGradeFromCourseIdUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _defaultTypeGrade.value = result.data
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
-                        Log.e("EditGradeViewModel", "Error getDefaultTypeGradeUseCase: ${result.message}")
+                        Log.e("EditGradeViewModel", "Error getTypeGradeFromCourseIdUseCase: ${result.message}")
                     }
                 }
             }
@@ -104,6 +109,7 @@ class EditGradeViewModel @Inject constructor(
         if (_uiState.value.courseId == courseId) return
         _uiState.update { it.copy(courseId = courseId) }
         actDefaultPercentage(courseId)
+        loadTypeGradeFromCourse(courseId)
     }
     fun setTitle(title: String) {
         _uiState.update { it.copy(title = title) }
@@ -317,6 +323,7 @@ class EditGradeViewModel @Inject constructor(
                                     )
                                 }
                                 actDefaultPercentage(firstCourse.id)
+                                loadTypeGradeFromCourse(firstCourse.id)
                             } else {
                                 _uiState.update { it.copy(courses = courses) }
                                 getCourseFromId(courseId)

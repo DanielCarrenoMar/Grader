@@ -14,6 +14,16 @@ interface TypeGradeDao {
     @Query("SELECT * FROM type_grade WHERE id = :typeGradeId")
     suspend fun getTypeGradeById(typeGradeId: Int): TypeGradeEntity?
 
+    @Query(
+        """
+        SELECT tg.id, tg.title, tg.max, tg.min_to_pass, tg.is_from_system, tg.is_direct_percentage, tg.active
+        FROM course c
+        INNER JOIN type_grade tg ON tg.id = c.type_grade_id
+        WHERE c.id = :courseId
+        """
+    )
+    suspend fun getTypeGradeFromCourseId(courseId: Int): TypeGradeEntity?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTypeGrade(typeGrade: TypeGradeEntity): Long
 
