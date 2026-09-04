@@ -1,6 +1,5 @@
 package com.app.grader.domain.model
 
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.types.GradeValue

@@ -9,6 +9,7 @@ import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeDetailModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.types.averageGrade
@@ -20,6 +21,7 @@ import com.app.grader.domain.usecase.grade.SaveGradeDetailUseCase
 import com.app.grader.domain.usecase.grade.UpdateGradeDetailUseCase
 import com.app.grader.domain.usecase.review.LaunchInAppReviewIfValidUseCase
 import com.app.grader.domain.usecase.subGrade.GetSubGradesFromGradeUseCase
+import com.app.grader.domain.usecase.typeGrade.GetDefaultTypeGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,16 +55,39 @@ class EditGradeViewModel @Inject constructor(
     private val getCourseTotalGradesRemainingPercentageUseCase: GetCourseTotalGradesRemainingPercentageUseCase,
     private val getSubGradesFromGradeUseCase: GetSubGradesFromGradeUseCase,
     private val launchInAppReviewIfValidUseCase: LaunchInAppReviewIfValidUseCase,
+    private val getDefaultTypeGradeUseCase: GetDefaultTypeGradeUseCase,
     private val gradeFactory: GradeFactory,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(EditGradeUiState())
     val uiState: StateFlow<EditGradeUiState> = _uiState.asStateFlow()
 
+    private val _defaultTypeGrade = MutableStateFlow<TypeGradeModel?>(null)
+    val defaultTypeGrade: StateFlow<TypeGradeModel?> = _defaultTypeGrade.asStateFlow()
+
     private val _subGrades = mutableListOf<GradeValue>()
     private var percentageJob: Job? = null
 
+    init {
+        loadDefaultTypeGrade()
+    }
+
     val defaultPercentage: Percentage get() = Percentage(_uiState.value.defaultPercentage)
-    val gradeMax: Int get() = gradeFactory.instGrade().getMax()
+
+    private fun loadDefaultTypeGrade() {
+        viewModelScope.launch {
+            getDefaultTypeGradeUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _defaultTypeGrade.value = result.data
+                    }
+                    is Resource.Loading -> { }
+                    is Resource.Error -> {
+                        Log.e("EditGradeViewModel", "Error getDefaultTypeGradeUseCase: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
 
     fun setGrade(grade: String) {
         _uiState.update { it.copy(gradeValue = grade) }

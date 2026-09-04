@@ -1,6 +1,5 @@
 package com.app.grader.ui.pages.home
 
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
