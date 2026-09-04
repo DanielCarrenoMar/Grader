@@ -3,10 +3,8 @@ package com.app.grader.ui.pages.recordSemester
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
-import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
@@ -26,8 +24,6 @@ class RecordSemesterViewModel @Inject constructor(
     deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
-    gradeFactory: GradeFactory,
-    appConfigRepository: AppConfigRepository,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
@@ -36,9 +32,7 @@ class RecordSemesterViewModel @Inject constructor(
     getCoursesFromSemesterUseCase,
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
-    getAverageFromSemesterUseCase,
-    gradeFactory,
-    appConfigRepository
+    getAverageFromSemesterUseCase
 ) {
     private val _semester = mutableStateOf(SemesterModel.DEFAULT)
     val semester = _semester
