@@ -129,8 +129,9 @@ fun EditGradeScreen(
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
-                    maxLength = 5,
+leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                     isError = uiState.fieldErrors.containsKey("grade"),
+                     maxLength = 5,
                     suffix = {
                         IconButton(
                             onClick = { viewModel.addSubGrade() },
@@ -166,16 +167,19 @@ fun EditGradeScreen(
                         .padding(start = 5.dp)
                         .focusRequester(focusRequester),
                     placeHolderText = "Agregar calificación",
-                    value = subgrade,
+                    value = uiState.subGradeTexts.getOrNull(index).orEmpty(),
                     onValueChange = {
-                        viewModel.setSubGrade(index, it)
+                        if (index in viewModel.uiState.value.subGrades.indices) viewModel.setSubGrade(index, it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = R.drawable.star_half_outline,
-                    maxLength = 5,
+leadingIconId = R.drawable.star_half_outline,
+                     isError = uiState.fieldErrors.containsKey("subgrade:$index"),
+                     maxLength = 5,
                     suffix = {
                         IconButton(
-                            onClick = { viewModel.removeSubGrade(index) },
+                            onClick = {
+                                if (index in viewModel.uiState.value.subGrades.indices) viewModel.removeSubGrade(index)
+                            },
                             modifier = Modifier.size(IconLarge)
                         ) {
                             Image(
@@ -246,8 +250,9 @@ fun EditGradeScreen(
                     value = uiState.percentage,
                     onValueChange = { viewModel.setPercentage(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = R.drawable.weight_outline,
-                    suffix = {
+                     leadingIconId = R.drawable.weight_outline,
+                     isError = uiState.fieldErrors.containsKey("percentage"),
+                     suffix = {
                         Text(
                             text = "%",
                             style = MaterialTheme.typography.labelMedium,

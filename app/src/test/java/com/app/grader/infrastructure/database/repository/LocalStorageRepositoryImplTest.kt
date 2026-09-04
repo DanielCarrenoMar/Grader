@@ -1,6 +1,5 @@
 package com.app.grader.infrastructure.database.repository
 
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.dao.CourseDao
 import com.app.grader.infrastructure.database.dao.GradeDao
@@ -37,7 +36,6 @@ class LocalStorageRepositoryImplTest {
     private val gradeDao: GradeDao = mock()
     private val subGradeDao: SubGradeDao = mock()
     private val typeGradeDao: TypeGradeDao = mock()
-    private val gradeFactory: GradeFactory = mock()
     private val appConfigRepository: AppConfigRepository = mock()
 
     private val repo = LocalStorageRepositoryImpl(
@@ -46,7 +44,6 @@ class LocalStorageRepositoryImplTest {
         gradeDao = gradeDao,
         subGradeDao = subGradeDao,
         typeGradeDao = typeGradeDao,
-        gradeFactory = gradeFactory,
         appConfigRepository = appConfigRepository,
     )
 
@@ -55,8 +52,9 @@ class LocalStorageRepositoryImplTest {
             courseId = courseId,
             title = "Quiz",
             description = "",
-            gradeValue = GradeValue(15.0, 9.5, 20, false),
+            gradeValue = GradeValue(15.0, 9.5, 20),
             percentage = Percentage(percentage),
+            isDirectPercentage = false,
             id = id,
         )
 

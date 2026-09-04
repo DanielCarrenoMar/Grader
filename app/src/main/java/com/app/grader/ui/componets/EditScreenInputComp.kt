@@ -43,6 +43,7 @@ fun EditScreenInputComp(
     suffix: @Composable() (()->Unit)? = null,
     maxLength: Int = Int.MAX_VALUE,
     maxLines: Int = Int.MAX_VALUE,
+    isError: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Column (modifier = modifier) {
@@ -83,8 +84,9 @@ fun EditScreenInputComp(
                         enabled = enabled,
                         singleLine = maxLines == 1,
                         visualTransformation = VisualTransformation.None,
-                        interactionSource = interactionSource,
-                        placeholder = {
+                         interactionSource = interactionSource,
+                         isError = isError,
+                         placeholder = {
                             Text(
                                 placeHolderText,
                                 modifier = Modifier.alpha(0.6f),
