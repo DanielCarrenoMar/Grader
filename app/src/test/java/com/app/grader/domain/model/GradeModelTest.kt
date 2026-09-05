@@ -1,9 +1,7 @@
 package com.app.grader.domain.model
 
-import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
-import com.app.grader.domain.model.TypeGradeModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -17,7 +15,7 @@ class GradeModelTest {
             description = "",
             gradePercentage = 50.0,
             weightingPercentage = 40.0,
-        ).toGradeModel(TypeGradeModel(max = 10, minToPass = 8.0, isDirectPercentage = true))
+        ).toGradeModel(TypeGradeModel(id = 0, title = "", max = 10, minToPass = 8.0, isFromSystem = false, isDirectPercentage = true))
 
         assertEquals(40.0, model.gradeValue.getMax(), 0.0)
         assertEquals(50.0, model.gradeValue.getGradePercentage()!!, 0.0)
@@ -30,9 +28,16 @@ class GradeModelTest {
                 courseId = 1,
                 title = "Quiz",
                 description = "",
-                gradeValue = GradeValue(5.0, null, 10.0),
-                percentage = Percentage(0.0),
-                isDirectPercentage = true,
+                gradeValue = 5.0,
+                typeGradeModel = TypeGradeModel(
+                    id = 0,
+                    title = "",
+                    max = 10,
+                    minToPass = null,
+                    isFromSystem = false,
+                    isDirectPercentage = true,
+                ),
+                weight = Percentage(0.0),
             )
         }
     }

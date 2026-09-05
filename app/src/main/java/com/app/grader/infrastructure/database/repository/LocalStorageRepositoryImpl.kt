@@ -298,7 +298,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
             gradeModel.title,
             gradeModel.description,
             gradeModel.gradeValue.getGradePercentage(),
-            gradeModel.percentage.getPercentage()
+            gradeModel.weight.getPercentage()
         )
         return result == 1
     }

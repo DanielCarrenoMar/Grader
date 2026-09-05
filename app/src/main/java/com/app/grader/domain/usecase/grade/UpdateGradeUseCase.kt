@@ -18,8 +18,8 @@ class UpdateGradeUseCase @Inject constructor(
             gradeModel.validate()
             val currentSumWithoutThis = repository.getGradesFromCourse(gradeModel.courseId)
                 .filter { it.id != gradeModel.id }
-                .sumOf { it.percentage.getPercentage() }
-            gradeRules.validateSumNotExceed100(currentSumWithoutThis, gradeModel.percentage.getPercentage())
+                .sumOf { it.weight.getPercentage() }
+            gradeRules.validateSumNotExceed100(currentSumWithoutThis, gradeModel.weight.getPercentage())
             if (repository.updateGrade(gradeModel)){
                 send(
                     Resource.Success(data = Unit)

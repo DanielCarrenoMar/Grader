@@ -17,8 +17,8 @@ class SaveGradeUseCase @Inject constructor(
             send(Resource.Loading())
             gradeModel.validate()
             val currentSum = repository.getGradesFromCourse(gradeModel.courseId)
-                .sumOf { it.percentage.getPercentage() }
-            gradeRules.validateSumNotExceed100(currentSum, gradeModel.percentage.getPercentage())
+                .sumOf { it.weight.getPercentage() }
+            gradeRules.validateSumNotExceed100(currentSum, gradeModel.weight.getPercentage())
             val data = repository.saveGrade(gradeModel)
             if (data.toInt() != -1){
                 send(

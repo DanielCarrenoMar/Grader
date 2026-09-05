@@ -40,7 +40,7 @@ class CourseViewModel  @Inject constructor(
     private val _totalPercentaje = mutableStateOf(Percentage(0.0))
     val totalPercentaje = _totalPercentaje
 
-    private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
+    private val _showGrade = mutableStateOf(GradeModel())
     val showGrade = _showGrade
     private val _course = mutableStateOf(
         CourseModel.DEFAULT

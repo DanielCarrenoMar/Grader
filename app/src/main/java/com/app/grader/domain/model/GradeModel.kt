@@ -1,6 +1,5 @@
 package com.app.grader.domain.model
 
-import android.util.Log
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.types.GradeValue
@@ -19,21 +18,43 @@ open class GradeModel(
     val courseId: Int,
     title: String,
     description: String,
-    val gradeValue: GradeValue,
-    val percentage: Percentage,
-    val isDirectPercentage: Boolean,
+    gradeValue: Double?,
+    typeGradeModel: TypeGradeModel,
+    val weight: Percentage,
     val id: Int = -1,
 ){
+    constructor() : this(
+        courseId = -1,
+        title = "",
+        description = "",
+        gradeValue = null,
+        typeGradeModel = TypeGradeModel(),
+        weight = Percentage(1.0),
+    )
     val title = title.ifBlank { "Sin título" }
     val description = description.ifBlank { "Sin descripción" }
+    val isDirectPercentage = typeGradeModel.isDirectPercentage
+    val gradeValue = if (!isDirectPercentage) {
+        GradeValue(gradeValue, typeGradeModel.minToPass, typeGradeModel.max)
+    } else {
+        GradeValue(gradeValue, typeGradeModel.minToPass, weight.getPercentage())
+    }
 
     init {
         validate()
     }
 
     open fun validate() {
-        val errors = gradeValidationErrors(courseId, percentage)
+        val errors = gradeValidationErrors(courseId, weight)
         if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
+    }
+
+    fun getGradePercentage(): Double? {
+        if (isDirectPercentage) {
+            val value = gradeValue.getValue() ?: return null
+            return value * 100.0 / weight.getPercentage()
+        }
+        return gradeValue.getGradePercentage()
     }
 
     companion object {
@@ -47,22 +68,12 @@ open class GradeModel(
             id: Int = -1,
         ): GradeModel {
             val gradeValue = if (!typeGradeModel.isDirectPercentage) {
-                GradeValue.createFromGradePercentage(gradePercentage, typeGradeModel.minToPass, typeGradeModel.max)
+                gradePercentage?.let { it * typeGradeModel.max / 100.0 }
             } else {
-                val value = gradePercentage?.let { weight.getPercentage() * (it / 100.0) }
-                GradeValue(value, typeGradeModel.minToPass, weight.getPercentage())
+                gradePercentage?.let { it * weight.getPercentage() / 100.0 }
             }
-            return GradeModel(courseId, title, description, gradeValue, weight, typeGradeModel.isDirectPercentage, id)
+            return GradeModel(courseId, title, description, gradeValue, typeGradeModel, weight, id)
         }
-
-        val DEFAULT = GradeModel(
-            courseId = -1,
-            title = "",
-            description = "",
-            gradeValue = GradeValue(null, 0.0, 0),
-            percentage = Percentage(100.0),
-            isDirectPercentage = false,
-        )
     }
 }
 
@@ -83,8 +94,8 @@ fun GradeModel.toGradeEntity(): GradeEntity {
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        gradePercentage = this.gradeValue.getGradePercentage(),
-        weightingPercentage = this.percentage.getPercentage(),
+        gradePercentage = this.getGradePercentage(),
+        weightingPercentage = this.weight.getPercentage(),
     )
 }
 

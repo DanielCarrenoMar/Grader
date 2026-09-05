@@ -55,7 +55,7 @@ class LocalStorageRepositoryImplTest {
             title = "Quiz",
             description = "",
             gradeValue = GradeValue(15.0, 9.5, 20),
-            percentage = Percentage(percentage),
+            weight = Percentage(percentage),
             isDirectPercentage = false,
             id = id,
         )

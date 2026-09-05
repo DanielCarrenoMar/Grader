@@ -121,7 +121,7 @@ fun GradeCardComp(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = grade.percentage.toString() + "%",
+                    text = grade.weight.toString() + "%",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface
                     )

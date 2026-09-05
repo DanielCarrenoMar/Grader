@@ -41,7 +41,7 @@ fun GradeBottomSheet(
     deleteOnClick: () -> Unit
 ) {
     val accumulatePoints =
-        if (showGrade.gradeValue.isBlank()) showGrade.gradeValue.copy() else showGrade.gradeValue.copy( value = (showGrade.gradeValue.getValue() ?: 0.0) * (showGrade.percentage.getPercentage() / 100))
+        if (showGrade.gradeValue.isBlank()) showGrade.gradeValue.copy() else showGrade.gradeValue.copy( value = (showGrade.gradeValue.getValue() ?: 0.0) * (showGrade.weight.getPercentage() / 100))
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -81,7 +81,7 @@ fun GradeBottomSheet(
                             .size(IconLarge),
                     )
                     Text(
-                        text = showGrade.percentage.toString() + "%",
+                        text = showGrade.weight.toString() + "%",
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(start = 12.dp)
                     )

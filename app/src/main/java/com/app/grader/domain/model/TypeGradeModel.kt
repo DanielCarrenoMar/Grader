@@ -3,13 +3,22 @@ package com.app.grader.domain.model
 import com.app.grader.infrastructure.database.entitites.TypeGradeEntity
 
 data class TypeGradeModel(
-    val id: Int = 0,
-    val title: String = "Sin título",
-    val max: Int = 0,
-    val minToPass: Double? = null,
-    val isFromSystem: Boolean = false,
-    val isDirectPercentage: Boolean = false,
-)
+    val id: Int,
+    val title: String,
+    val max: Int,
+    val minToPass: Double?,
+    val isFromSystem: Boolean,
+    val isDirectPercentage: Boolean,
+) {
+    constructor() : this(
+        id = 0,
+        title = "Sin título",
+        max = 0,
+        minToPass = null,
+        isFromSystem = false,
+        isDirectPercentage = false,
+    )
+}
 
 fun TypeGradeEntity.toTypeGradeModel(): TypeGradeModel {
     return TypeGradeModel(

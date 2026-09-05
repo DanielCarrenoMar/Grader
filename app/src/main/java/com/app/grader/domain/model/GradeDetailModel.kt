@@ -7,25 +7,25 @@ class GradeDetailModel(
     courseId: Int,
     title: String,
     description: String,
-    gradeValue: GradeValue,
+    gradeValue: Double?,
     percentage: Percentage,
     id: Int = -1,
     subgrades: List<SubGradeModel> = emptyList(),
-    isDirectPercentage: Boolean = false,
+    typeGradeModel: TypeGradeModel
 ): GradeModel(
     courseId,
     title,
     description,
     gradeValue,
+    typeGradeModel,
     percentage,
-    isDirectPercentage,
     id,
 ) {
     private val validationSubgrades = subgrades
     val subgrades = if (isDirectPercentage) emptyList() else subgrades
 
     init {
-        val errors = subgradeValidationErrors(gradeValue, validationSubgrades, isDirectPercentage)
+        val errors = subgradeValidationErrors(this.gradeValue, validationSubgrades, typeGradeModel)
         if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
     }
 
@@ -36,42 +36,30 @@ class GradeDetailModel(
             description: String,
             gradeValue: Double?,
             percentage: Percentage,
-            typeGrade: TypeGradeModel? = null,
+            typeGrade: TypeGradeModel,
             id: Int = -1,
             subgrades: List<SubGradeModel> = emptyList(),
         ): Result<GradeDetailModel> = runCatching {
-            val formattedGradeValue = typeGrade?.let {
-                GradeValue(gradeValue, it.minToPass, it.max)
-            } ?: GradeValue(gradeValue, 0.0, 0)
-
             GradeDetailModel(
                 courseId = courseId,
                 title = title,
                 description = description,
-                gradeValue = formattedGradeValue,
+                gradeValue = gradeValue,
                 percentage = percentage,
                 id = id,
                 subgrades = subgrades,
-                isDirectPercentage = typeGrade?.isDirectPercentage == true,
+                typeGradeModel = typeGrade
             )
         }
-
-        val DEFAULT = GradeDetailModel(
-            courseId = -1,
-            title = "",
-            description = "",
-            gradeValue = GradeValue(null, 0.0, 0),
-            percentage = Percentage(100.0),
-        )
     }
 }
 
 private fun subgradeValidationErrors(
     gradeValue: GradeValue,
     subgrades: List<SubGradeModel>,
-    isDirectPercentage: Boolean,
+    typeGradeModel: TypeGradeModel
 ): List<GradeFieldError> = buildList {
-    if (!isDirectPercentage) {
+    if (!typeGradeModel.isDirectPercentage) {
         subgrades.forEachIndexed { index, subgrade ->
             val value = subgrade.gradeValue.getValue()
             if (value != null && !gradeValue.check(value)) {

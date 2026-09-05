@@ -278,13 +278,8 @@ class EditGradeViewModel @Inject constructor(
                             it.copy(
                                 title = grade.title,
                                 description = grade.description,
-                                gradeValue = if (_defaultTypeGrade.value?.isDirectPercentage == true) {
-                                    val percentage = grade.gradeValue.getGradePercentage()
-                                    percentage?.let { (it / 100.0 * _defaultTypeGrade.value!!.max).toString() }.orEmpty()
-                                } else {
-                                    grade.gradeValue.toString()
-                                },
-                                percentage = grade.percentage.toString(),
+                                gradeValue = grade.gradeValue.toString(),
+                                percentage = grade.weight.toString(),
                             )
                         }
                     }

@@ -28,7 +28,7 @@ class AllGradesViewModel  @Inject constructor(
     val grades = _grades
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
-    private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
+    private val _showGrade = mutableStateOf(GradeModel())
     val showGrade = _showGrade
 
     fun deleteGradeFromId(gradeId: Int){
