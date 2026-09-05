@@ -22,7 +22,7 @@ class GradeDetailModel(
     id,
 ) {
     private val validationSubgrades = subgrades
-    val subgrades = if (isDirectPercentage) emptyList() else subgrades.map { it.normalize(gradeValue) }
+    val subgrades = if (isDirectPercentage) emptyList() else subgrades
 
     init {
         val errors = subgradeValidationErrors(gradeValue, validationSubgrades, isDirectPercentage)
@@ -79,11 +79,4 @@ private fun subgradeValidationErrors(
             }
         }
     }
-}
-
-fun SubGradeModel.normalize(gradeValue: GradeValue): SubGradeModel {
-    val value = gradeValue.getValue()
-    val normalized = GradeValue(null, gradeValue.getMinToPass(), gradeValue.getMax())
-    if (value != null && normalized.check(value)) normalized.setValue(value) else normalized.setBlank()
-    return copy(gradeValue = normalized.getValue(), minToPass = normalized.getMinToPass(), max = normalized.getMax().toInt())
 }
