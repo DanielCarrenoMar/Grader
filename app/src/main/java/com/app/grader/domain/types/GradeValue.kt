@@ -51,13 +51,8 @@ data class GradeValue(
         return max
     }
 
-
     fun getRounded(): GradeValue {
         return GradeValue(value?.roundToInt()?.toDouble(), minToPass, max)
-    }
-
-    fun getRoundedGrade(): Double? {
-        return value?.roundToInt()?.toDouble()
     }
 
     fun getGradePercentage(): Double? {
@@ -97,11 +92,7 @@ data class GradeValue(
     }
 
     fun check(grade: Double): Boolean {
-        return grade in 0.0..max.toDouble()
-    }
-
-    fun check(grade: Int): Boolean {
-        return grade.toDouble() in 0.0..max
+        return grade in 0.0..max
     }
 
     companion object {
