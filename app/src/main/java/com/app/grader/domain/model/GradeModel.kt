@@ -1,5 +1,6 @@
 package com.app.grader.domain.model
 
+import android.util.Log
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.types.GradeValue
@@ -41,12 +42,17 @@ open class GradeModel(
             title: String,
             description: String,
             gradePercentage: Double?,
-            percentage: Percentage,
+            weight: Percentage,
             typeGradeModel: TypeGradeModel,
-            id: Int = -1
+            id: Int = -1,
         ): GradeModel {
-            val gradeValue = GradeValue.createFromGradePercentage(gradePercentage, typeGradeModel.minToPass, typeGradeModel.max)
-            return GradeModel(courseId, title, description, gradeValue, percentage, typeGradeModel.isDirectPercentage, id)
+            val gradeValue = if (!typeGradeModel.isDirectPercentage) {
+                GradeValue.createFromGradePercentage(gradePercentage, typeGradeModel.minToPass, typeGradeModel.max)
+            } else {
+                val value = gradePercentage?.let { weight.getPercentage() * (it / 100.0) }
+                GradeValue(value, typeGradeModel.minToPass, weight.getPercentage())
+            }
+            return GradeModel(courseId, title, description, gradeValue, weight, typeGradeModel.isDirectPercentage, id)
         }
 
         val DEFAULT = GradeModel(
@@ -88,7 +94,7 @@ fun CalculatedGrade.toGradeModel(typeGradeModel: TypeGradeModel): GradeModel {
         title = this.title,
         description = this.description,
         gradePercentage = this.gradePercentage,
-        percentage = Percentage(this.weightingPercentage),
+        weight = Percentage(this.weightingPercentage),
         typeGradeModel = typeGradeModel,
         id = this.id
     )

@@ -13,15 +13,14 @@ data class GradeValue(
         require(minToPass >= 0) { "Min must be greater than 0. Not $minToPass" }
         require(max >= 0) { "Max must be greater than 0. Not $max" }
     }
-    constructor(value: Double?, min: Double?, max: Double) : this(value, min ?: max, max)
-    constructor(value: Double?, min: Double?, max: Int) : this(value, min, max.toDouble())
-    constructor() : this(null, 0.0, 0)
+    constructor(value: Double?, minToPass: Double?, max: Double) : this(value,
+        minToPass ?: (max / 2), max)
+    constructor(value: Double?, minToPass: Double?, max: Int) : this(value, minToPass, max.toDouble())
+    constructor() : this(null, 0.0, 0.0)
 
-    constructor(min: Double, max: Double) : this(null, min, max)
-    constructor(min: Double, max: Int) : this(null, min, max.toDouble())
+    constructor(minToPass: Double, max: Double) : this(null, minToPass, max)
+    constructor(minToPass: Double, max: Int) : this(null, minToPass, max.toDouble())
     constructor(gradeValue: GradeValue) : this(gradeValue.getValue(), gradeValue.getMinToPass(), gradeValue.getMax())
-    constructor(grade: Int, min: Double, max: Double) : this(grade.toDouble(), min, max)
-    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max.toDouble())
 
     fun setValue(value: Double) {
         if (value !in 0.0..max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
