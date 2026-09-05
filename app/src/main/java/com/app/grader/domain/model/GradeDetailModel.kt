@@ -7,7 +7,7 @@ class GradeDetailModel(
     courseId: Int,
     title: String,
     description: String,
-    gradeValue: Double?,
+    gradeValueRaw: Double?,
     percentage: Percentage,
     id: Int = -1,
     subgrades: List<SubGradeModel> = emptyList(),
@@ -16,13 +16,18 @@ class GradeDetailModel(
     courseId,
     title,
     description,
-    gradeValue,
+    gradeValueRaw,
     typeGradeModel,
     percentage,
     id,
 ) {
     private val validationSubgrades = subgrades
-    val subgrades = if (isDirectPercentage) emptyList() else subgrades
+    val subgrades = if (isDirectPercentage) emptyList() else subgrades.map { it.actTypeGrade(typeGradeModel) }
+
+    override fun validate() {
+        val errors = gradeValidationErrors(courseId, weight, gradeValueRaw, typeGradeModel.max.toDouble())
+        if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
+    }
 
     init {
         val errors = subgradeValidationErrors(this.gradeValue, validationSubgrades, typeGradeModel)
@@ -39,17 +44,33 @@ class GradeDetailModel(
             typeGrade: TypeGradeModel,
             id: Int = -1,
             subgrades: List<SubGradeModel> = emptyList(),
-        ): Result<GradeDetailModel> = runCatching {
-            GradeDetailModel(
-                courseId = courseId,
-                title = title,
-                description = description,
-                gradeValue = gradeValue,
-                percentage = percentage,
-                id = id,
-                subgrades = subgrades,
-                typeGradeModel = typeGrade
-            )
+        ): Result<GradeDetailModel> {
+            val errors = mutableListOf<GradeFieldError>()
+            errors += gradeValidationErrors(courseId, percentage, gradeValue, typeGrade.max.toDouble())
+            if (!typeGrade.isDirectPercentage) {
+                subgrades.forEachIndexed { index, subgrade ->
+                    val value = subgrade.gradeValue.getValue()
+                    if (value != null && (value < 0.0 || value > typeGrade.max.toDouble())) {
+                        val maxFormatted = if (typeGrade.max.toDouble() % 1.0 == 0.0) typeGrade.max.toString() else typeGrade.max.toDouble().toString()
+                        errors += GradeFieldError("subgrade:$index", "La calificación ($value) debe estar entre 0 y $maxFormatted.")
+                    }
+                }
+            }
+            if (errors.isNotEmpty()) {
+                return Result.failure(GradeDetailValidationException(errors))
+            }
+            return runCatching {
+                GradeDetailModel(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    gradeValueRaw = gradeValue,
+                    percentage = percentage,
+                    id = id,
+                    subgrades = subgrades,
+                    typeGradeModel = typeGrade
+                )
+            }
         }
     }
 }

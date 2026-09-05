@@ -20,10 +20,10 @@ class GradeValueTest {
     }
 
     @Test
-    fun nullMinToPassFallsBackToMax() {
+    fun nullMinToPassFallsBackToHalfMax() {
         val grade = GradeValue(5.0, null, 10.0)
 
-        assertEquals(10.0, grade.getMinToPass(), 0.000001)
+        assertEquals(5.0, grade.getMinToPass(), 0.000001)
         assertEquals(false, grade.isFail())
     }
 }

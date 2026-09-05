@@ -9,6 +9,7 @@ import com.app.grader.infrastructure.database.dao.SubGradeDao
 import com.app.grader.infrastructure.database.dao.TypeGradeDao
 import com.app.grader.infrastructure.database.entitites.TypeGradeEntity
 import com.app.grader.domain.model.GradeModel
+import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
@@ -54,9 +55,9 @@ class LocalStorageRepositoryImplTest {
             courseId = courseId,
             title = "Quiz",
             description = "",
-            gradeValue = GradeValue(15.0, 9.5, 20),
+            gradeValueRaw = 15.0,
+            typeGradeModel = TypeGradeModel(id = 0, title = "", max = 20, minToPass = 9.5, isFromSystem = false, isDirectPercentage = false),
             weight = Percentage(percentage),
-            isDirectPercentage = false,
             id = id,
         )
 

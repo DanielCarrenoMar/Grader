@@ -348,12 +348,18 @@ class EditGradeViewModel @Inject constructor(
 
         if (result.isFailure) {
             val exception = result.exceptionOrNull()
-            val errors = (exception as? GradeDetailValidationException)?.errors.orEmpty()
+            val errors = (exception as? GradeDetailValidationException)?.errors.orEmpty().toMutableList()
             val message = exception?.message ?: "Error de validación"
-            val weightingError = com.app.grader.domain.policy.GradeRules.isWeightingOverflow(exception?.message)
-            val finalErrors = if (weightingError) errors + GradeFieldError("percentage", message) else errors
-            _uiState.update { it.copy(fieldErrors = finalErrors.associate { error -> error.field to error.message }) }
-            return exception?.message ?: "Error de validación"
+            if (errors.isEmpty()) {
+                val weightingError = com.app.grader.domain.policy.GradeRules.isWeightingOverflow(exception?.message)
+                if (weightingError) {
+                    errors += GradeFieldError("percentage", message)
+                } else if (message.contains("calificación", ignoreCase = true) || message.contains("grade", ignoreCase = true)) {
+                    errors += GradeFieldError("grade", message)
+                }
+            }
+            _uiState.update { it.copy(fieldErrors = it.fieldErrors + errors.associate { error -> error.field to error.message }) }
+            return message
         }
 
         val gradeDetail = result.getOrNull()!!
@@ -365,6 +371,10 @@ class EditGradeViewModel @Inject constructor(
         }
         val saveError = (saveResult as? Resource.Error)?.message
         if (saveError != null) {
+            val weightingError = com.app.grader.domain.policy.GradeRules.isWeightingOverflow(saveError)
+            if (weightingError) {
+                _uiState.update { it.copy(fieldErrors = it.fieldErrors + ("percentage" to saveError)) }
+            }
             return saveError
         }
 

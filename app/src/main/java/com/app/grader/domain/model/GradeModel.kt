@@ -18,8 +18,8 @@ open class GradeModel(
     val courseId: Int,
     title: String,
     description: String,
-    gradeValue: Double?,
-    typeGradeModel: TypeGradeModel,
+    val gradeValueRaw: Double?,
+    val typeGradeModel: TypeGradeModel,
     val weight: Percentage,
     val id: Int = -1,
 ){
@@ -27,26 +27,31 @@ open class GradeModel(
         courseId = -1,
         title = "",
         description = "",
-        gradeValue = null,
+        gradeValueRaw = null,
         typeGradeModel = TypeGradeModel(),
         weight = Percentage(1.0),
     )
+
     val title = title.ifBlank { "Sin título" }
     val description = description.ifBlank { "Sin descripción" }
     val isDirectPercentage = typeGradeModel.isDirectPercentage
-    val gradeValue = if (!isDirectPercentage) {
-        GradeValue(gradeValue, typeGradeModel.minToPass, typeGradeModel.max)
-    } else {
-        GradeValue(gradeValue, typeGradeModel.minToPass, weight.getPercentage())
-    }
 
     init {
         validate()
     }
 
     open fun validate() {
-        val errors = gradeValidationErrors(courseId, weight)
+        val max = if (!isDirectPercentage) typeGradeModel.max.toDouble() else weight.getPercentage()
+        val errors = gradeValidationErrors(courseId, weight, gradeValueRaw, max)
         if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
+    }
+
+    open val gradeValue: GradeValue by lazy {
+        if (!isDirectPercentage) {
+            GradeValue(gradeValueRaw, typeGradeModel.minToPass, typeGradeModel.max)
+        } else {
+            GradeValue(gradeValueRaw, typeGradeModel.minToPass, weight.getPercentage())
+        }
     }
 
     fun getGradePercentage(): Double? {
@@ -67,12 +72,12 @@ open class GradeModel(
             typeGradeModel: TypeGradeModel,
             id: Int = -1,
         ): GradeModel {
-            val gradeValue = if (!typeGradeModel.isDirectPercentage) {
+            val gradeValueRaw = if (!typeGradeModel.isDirectPercentage) {
                 gradePercentage?.let { it * typeGradeModel.max / 100.0 }
             } else {
                 gradePercentage?.let { it * weight.getPercentage() / 100.0 }
             }
-            return GradeModel(courseId, title, description, gradeValue, typeGradeModel, weight, id)
+            return GradeModel(courseId, title, description, gradeValueRaw, typeGradeModel, weight, id)
         }
     }
 }
@@ -80,12 +85,18 @@ open class GradeModel(
 internal fun gradeValidationErrors(
     courseId: Int,
     percentage: Percentage,
+    gradeValue: Double? = null,
+    max: Double = 0.0,
 ): List<GradeFieldError> = buildList {
     if (courseId <= 0 && courseId != -1) {
         add(GradeFieldError("course", "El parámetro 'courseId' ($courseId) debe ser mayor a 0 o -1."))
     }
     if (percentage.getPercentage() <= 0.0) {
         add(GradeFieldError("percentage", "El porcentaje debe ser mayor a 0."))
+    }
+    if (gradeValue != null && (gradeValue < 0.0 || (max > 0.0 && gradeValue > max))) {
+        val maxFormatted = if (max % 1.0 == 0.0) max.toInt().toString() else max.toString()
+        add(GradeFieldError("grade", "La calificación ($gradeValue) debe estar entre 0 y $maxFormatted."))
     }
 }
 

@@ -28,7 +28,7 @@ class GradeModelTest {
                 courseId = 1,
                 title = "Quiz",
                 description = "",
-                gradeValue = 5.0,
+                gradeValueRaw = 5.0,
                 typeGradeModel = TypeGradeModel(
                     id = 0,
                     title = "",

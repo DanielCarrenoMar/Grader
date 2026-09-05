@@ -29,7 +29,7 @@ class GradeDetailModelTest {
         )
 
         assertTrue(result.isSuccess)
-        assertEquals(7, result.getOrThrow().subgrades.single().gradeValue.getMax())
+        assertEquals(7.0, result.getOrThrow().subgrades.single().gradeValue.getMax(), 0.0)
     }
 
     @Test
@@ -93,5 +93,43 @@ class GradeDetailModelTest {
     fun createRejectsInvalidGradeIdAndMax() {
         assertTrue(SubGradeModel.create(0, "Part", null, 0.0, 7).isFailure)
         assertTrue(SubGradeModel.create(1, "Part", null, 0.0, -1).isFailure)
+    }
+
+    @Test
+    fun createRejectsOutOfRangeGradeValue() {
+        val result = GradeDetailModel.createResult(
+            courseId = 1,
+            title = "Exam",
+            description = "",
+            gradeValue = 8.5,
+            percentage = Percentage(50.0),
+            typeGrade = typeGrade, // max is 7
+        )
+
+        assertTrue(result.isFailure)
+        val ex = result.exceptionOrNull() as? GradeDetailValidationException
+        assertTrue(ex != null)
+        val error = ex!!.errors.firstOrNull { it.field == "grade" }
+        assertTrue(error != null)
+        assertEquals("La calificación (8.5) debe estar entre 0 y 7.", error!!.message)
+    }
+
+    @Test
+    fun createRejectsNegativeGradeValue() {
+        val result = GradeDetailModel.createResult(
+            courseId = 1,
+            title = "Exam",
+            description = "",
+            gradeValue = -1.0,
+            percentage = Percentage(50.0),
+            typeGrade = typeGrade,
+        )
+
+        assertTrue(result.isFailure)
+        val ex = result.exceptionOrNull() as? GradeDetailValidationException
+        assertTrue(ex != null)
+        val error = ex!!.errors.firstOrNull { it.field == "grade" }
+        assertTrue(error != null)
+        assertEquals("La calificación (-1.0) debe estar entre 0 y 7.", error!!.message)
     }
 }
