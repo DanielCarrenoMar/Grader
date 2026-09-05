@@ -24,16 +24,16 @@ class GradeModelTest {
     }
 
     @Test
-    fun validateRejectsZeroWeighting() {
-        val grade = GradeModel(
-            courseId = 1,
-            title = "Quiz",
-            description = "",
-            gradeValue = GradeValue(5.0, null, 10.0),
-            percentage = Percentage(0.0),
-            isDirectPercentage = true,
-        )
-
-        assertThrows(IllegalArgumentException::class.java) { grade.validate() }
+    fun constructorRejectsZeroWeighting() {
+        assertThrows(GradeDetailValidationException::class.java) {
+            GradeModel(
+                courseId = 1,
+                title = "Quiz",
+                description = "",
+                gradeValue = GradeValue(5.0, null, 10.0),
+                percentage = Percentage(0.0),
+                isDirectPercentage = true,
+            )
+        }
     }
 }

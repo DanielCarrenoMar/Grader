@@ -250,7 +250,7 @@ class EditGradeViewModel @Inject constructor(
                     is Resource.Success -> {
                         val subGrades: List<SubGradeModel> = result.data!!
                         if (_defaultTypeGrade.value?.isDirectPercentage == true) return@collect
-                        _subGrades.addAll(subGrades.map { it.normalize(_defaultTypeGrade.value) })
+                        _subGrades.addAll(subGrades.map { it.normalize(_defaultTypeGrade.value!!) })
                         _uiState.update {
                             it.copy(
                                 subGrades = _subGrades.toList(),
@@ -340,7 +340,7 @@ class EditGradeViewModel @Inject constructor(
         }
         val percentage = Percentage(percentageValue!!)
 
-        result = GradeDetailModel.create(
+        result = GradeDetailModel.createResult(
             courseId = state.courseId,
             title = state.title,
             description = state.description,

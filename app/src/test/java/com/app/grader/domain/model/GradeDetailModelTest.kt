@@ -18,7 +18,7 @@ class GradeDetailModelTest {
 
     @Test
     fun createUsesSelectedTypeGradeBoundsForSubgrades() {
-        val result = GradeDetailModel.create(
+        val result = GradeDetailModel.createResult(
             courseId = 1,
             title = "",
             description = "",
@@ -60,7 +60,7 @@ class GradeDetailModelTest {
 
     @Test
     fun createUsesTypeGradeMaxForDirectGradeInput() {
-        val result = GradeDetailModel.create(
+        val result = GradeDetailModel.createResult(
             courseId = 1,
             title = "",
             description = "",
@@ -77,7 +77,7 @@ class GradeDetailModelTest {
 
     @Test
     fun createRejectsZeroWeighting() {
-        val result = GradeDetailModel.create(
+        val result = GradeDetailModel.createResult(
             courseId = 1,
             title = "",
             description = "",

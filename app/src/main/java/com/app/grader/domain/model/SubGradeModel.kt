@@ -78,3 +78,16 @@ fun Iterable<SubGradeModel>.average(): Double? {
         .map { it.gradeValue }
         .averageGrade()
 }
+
+fun SubGradeModel.normalize(typeGrade: TypeGradeModel): SubGradeModel {
+    val normalizedGradeValue = GradeValue.createFromGradePercentage(
+        this.gradeValue.getGradePercentage(),
+        typeGrade.minToPass,
+        typeGrade.max
+    )
+    return this.copy(
+        gradeValue = normalizedGradeValue.getValue(),
+        minToPass = normalizedGradeValue.getMinToPass(),
+        max = normalizedGradeValue.getMax().toInt()
+    )
+}

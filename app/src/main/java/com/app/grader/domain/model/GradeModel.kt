@@ -5,20 +5,34 @@ import com.app.grader.infrastructure.database.entitites.GradeEntity
 import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 
+data class GradeFieldError(
+    val field: String,
+    val message: String,
+)
+
+class GradeDetailValidationException(
+    val errors: List<GradeFieldError>,
+) : IllegalArgumentException(errors.firstOrNull()?.message ?: "Error de validación")
 
 open class GradeModel(
     val courseId: Int,
-    val title: String,
-    val description: String,
+    title: String,
+    description: String,
     val gradeValue: GradeValue,
     val percentage: Percentage,
     val isDirectPercentage: Boolean,
     val id: Int = -1,
 ){
+    val title = title.ifBlank { "Sin título" }
+    val description = description.ifBlank { "Sin descripción" }
+
+    init {
+        validate()
+    }
+
     open fun validate() {
-        if (percentage.getPercentage() <= 0.0) {
-            throw IllegalArgumentException("El porcentaje de la nota no puede ser 0%")
-        }
+        val errors = gradeValidationErrors(courseId, percentage)
+        if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
     }
 
     companion object {
@@ -40,9 +54,21 @@ open class GradeModel(
             title = "",
             description = "",
             gradeValue = GradeValue(null, 0.0, 0),
-            percentage = Percentage(),
+            percentage = Percentage(100.0),
             isDirectPercentage = false,
         )
+    }
+}
+
+internal fun gradeValidationErrors(
+    courseId: Int,
+    percentage: Percentage,
+): List<GradeFieldError> = buildList {
+    if (courseId <= 0 && courseId != -1) {
+        add(GradeFieldError("course", "El parámetro 'courseId' ($courseId) debe ser mayor a 0 o -1."))
+    }
+    if (percentage.getPercentage() <= 0.0) {
+        add(GradeFieldError("percentage", "El porcentaje debe ser mayor a 0."))
     }
 }
 
