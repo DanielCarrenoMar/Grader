@@ -22,6 +22,19 @@ open class GradeModel(
     }
 
     companion object {
+        fun createFromGradePercentage(
+            courseId: Int,
+            title: String,
+            description: String,
+            gradePercentage: Double?,
+            percentage: Percentage,
+            typeGradeModel: TypeGradeModel,
+            id: Int = -1
+        ): GradeModel {
+            val gradeValue = GradeValue.createFromGradePercentage(gradePercentage, typeGradeModel.minToPass, typeGradeModel.max)
+            return GradeModel(courseId, title, description, gradeValue, percentage, typeGradeModel.isDirectPercentage, id)
+        }
+
         val DEFAULT = GradeModel(
             courseId = -1,
             title = "",
@@ -43,18 +56,14 @@ fun GradeModel.toGradeEntity(): GradeEntity {
     )
 }
 
-fun CalculatedGrade.toGradeModel(): GradeModel {
-    return GradeModel(
-        id = this.id,
+fun CalculatedGrade.toGradeModel(typeGradeModel: TypeGradeModel): GradeModel {
+    return GradeModel.createFromGradePercentage(
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        gradeValue = GradeValue(
-            this.gradeValue,
-            this.minToPass ?: if (this.isDirectPercentage) this.weightingPercentage else this.max.toDouble(),
-            if (this.isDirectPercentage) this.weightingPercentage else this.max.toDouble()
-        ),
+        gradePercentage = this.gradePercentage,
         percentage = Percentage(this.weightingPercentage),
-        isDirectPercentage = this.isDirectPercentage
+        typeGradeModel = typeGradeModel,
+        id = this.id
     )
 }

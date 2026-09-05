@@ -12,32 +12,17 @@ data class SubGradeCalculate(
     @ColumnInfo(name = "grade_id") val gradeId: Int,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "grade_percentage") val gradePercentage: Double?,
-    @ColumnInfo(name = "max") val max: Int,
-    @ColumnInfo(name = "min_to_pass") val minToPass: Double?,
 )
 
 @Dao
 interface SubGradeDao {
-
-    @Query("SELECT\n" +
-            "    sg.id,\n" +
-            "    sg.grade_id,\n" +
-            "    sg.title,\n" +
-            "    sg.grade_percentage,\n" +
-            "    tg.max,\n" +
-            "    tg.min_to_pass\n" +
-            "FROM\n" +
-            "    sub_grade sg\n" +
-            "INNER JOIN grade g ON g.id = sg.grade_id\n" +
-            "INNER JOIN course c ON c.id = g.course_id\n" +
-            "INNER JOIN type_grade tg ON tg.id = c.type_grade_id\n" +
-            "WHERE sg.grade_id = :gradeId")
+    @Query("SELECT sg.id, sg.grade_id, sg.title, sg.grade_percentage FROM sub_grade sg WHERE sg.grade_id = :gradeId")
     suspend fun getSubGradesFromGradeId(gradeId: Int): List<SubGradeCalculate>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSubGrade(subGrade: SubGradeEntity): Long
 
-    @Query("UPDATE sub_grade SET title = :title, grade_percentage = :gradePercentage  WHERE id = :subGradeId")
+    @Query("UPDATE sub_grade SET title = :title, grade_percentage = :gradePercentage WHERE id = :subGradeId")
     suspend fun updateSubGradeById(subGradeId: Int, title: String, gradePercentage: Double?): Int
 
     @Query("DELETE FROM sub_grade WHERE grade_id = :gradeId")
@@ -52,18 +37,6 @@ interface SubGradeDao {
     @Query("DELETE FROM sqlite_sequence WHERE name = 'sub_grade'")
     suspend fun resetIncrementalSubGrade()
 
-    @Query("SELECT\n" +
-            "    sg.id,\n" +
-            "    sg.grade_id,\n" +
-            "    sg.title,\n" +
-            "    sg.grade_percentage,\n" +
-            "    tg.max,\n" +
-            "    tg.min_to_pass\n" +
-            "FROM\n" +
-            "    sub_grade sg\n" +
-            "INNER JOIN grade g ON g.id = sg.grade_id\n" +
-            "INNER JOIN course c ON c.id = g.course_id\n" +
-            "INNER JOIN type_grade tg ON tg.id = c.type_grade_id\n" +
-            "WHERE sg.id = :subGradeId")
+    @Query("SELECT sg.id, sg.grade_id, sg.title, sg.grade_percentage FROM sub_grade sg WHERE sg.id = :subGradeId")
     suspend fun getSubGradeFromId(subGradeId: Int): SubGradeCalculate?
 }

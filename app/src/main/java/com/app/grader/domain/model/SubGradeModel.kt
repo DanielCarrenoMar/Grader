@@ -61,8 +61,8 @@ fun SubGradeModel.toSubGradeEntity(): SubGradeEntity {
     )
 }
 
-fun SubGradeCalculate.toSubGradeModel(): SubGradeModel {
-    val gradeValue = GradeValue.createFromGradePercentage(this.gradePercentage, this.minToPass, this.max)
+fun SubGradeCalculate.toSubGradeModel(typeGradeModel: TypeGradeModel): SubGradeModel {
+    val gradeValue = GradeValue.createFromGradePercentage(this.gradePercentage, typeGradeModel.minToPass, typeGradeModel.max)
     return SubGradeModel.create(
         gradeId = this.gradeId,
         title = this.title,

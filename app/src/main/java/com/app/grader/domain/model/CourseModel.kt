@@ -31,14 +31,14 @@ fun CourseModel.toCourseEntity():CourseEntity{
         typeGradeId = this.typeGradeId,
     )
 }
-fun CalculatedCourse.toCourseModel(): CourseModel {
+fun CalculatedCourse.toCourseModel(typeGradeModel: TypeGradeModel): CourseModel {
     return CourseModel(
         id = this.id,
         title = this.title,
         uc = this.uc,
         semesterId = this.semesterId,
         typeGradeId = this.typeGradeId,
-        average = GradeValue(this.average, this.minToPass ?: this.max.toDouble(), this.max),
+        average = GradeValue.createFromGradePercentage(this.average, typeGradeModel.minToPass, typeGradeModel.max),
         totalPercentage = Percentage(this.totalWeightingPercentage ?: 0.0)
     )
 }

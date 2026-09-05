@@ -81,19 +81,21 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAllCourses(): List<CourseModel> {
         return courseDao.getAllCourses().map { row ->
-            row.toCourseModel()
+            row.toCourseModel(typeGradeDao.getTypeGradeById(row.typeGradeId)?.toTypeGradeModel() ?: throw IllegalStateException("Type grade not found"))
         }
     }
 
     override suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel> {
         return courseDao.getAllCoursesFromSemesterId(semesterId).map { row ->
-            row.toCourseModel()
+            row.toCourseModel(typeGradeDao.getTypeGradeById(row.typeGradeId)?.toTypeGradeModel() ?: throw IllegalStateException("Type grade not found"))
         }
     }
 
     override suspend fun getCourseById(courseId: Int): CourseModel? {
         val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
-        return courseEntity.toCourseModel()
+        val typeGrade = typeGradeDao.getTypeGradeById(courseEntity.typeGradeId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return courseEntity.toCourseModel(typeGrade)
     }
 
     override suspend fun deleteAllCourses(): Int {
@@ -209,7 +211,9 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromCourse(courseId: Int): GradeValue {
         val averagePercentage = courseDao.getAverageFromCourse(courseId)
-        return GradeValue(averagePercentage.average, averagePercentage.minToPass, averagePercentage.max)
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return GradeValue.createFromGradePercentage(averagePercentage.average, typeGrade.minToPass, typeGrade.max)
     }
 
     override suspend fun getTotalPercentageFromCourse(courseId: Int): Percentage {
@@ -220,28 +224,35 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getCourseStatistics(courseId: Int): CourseStatisticsModel {
         val stats = courseDao.getCourseStatistics(courseId)
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        val max = if (typeGrade.isDirectPercentage) 100.0 else typeGrade.max.toDouble()
         return CourseStatisticsModel(
             totalPercentage = Percentage(stats.totalPercentage),
-            accumulatePoints = stats.accumulatePoints,
+            accumulatePoints = stats.accumulatePoints * max / 100.0,
             pendingPoints = 100 - stats.evaluatedPercentage,
         )
     }
 
     override suspend fun getGradesFromCourse(courseId: Int): List<GradeModel> {
-        return gradeDao.getGradesFromCourseId(courseId).map { gradeEntity ->
-            gradeEntity.toGradeModel()
-        }
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return gradeDao.getGradesFromCourseId(courseId).map { it.toGradeModel(typeGrade) }
     }
 
     override suspend fun getGradesFromSemester(semesterId: Int?): List<GradeModel> {
-        return gradeDao.getGradesFromSemesterId(semesterId).map { gradeEntity ->
-            gradeEntity.toGradeModel()
+        return gradeDao.getGradesFromSemesterId(semesterId).map { grade ->
+            val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+                ?: throw IllegalStateException("Type grade not found")
+            grade.toGradeModel(typeGrade)
         }
     }
 
     override suspend fun getGradesFromSemesterLessThan(semesterId: Int?): List<GradeModel> {
-        return gradeDao.getGradesFromSemesterLessThanId(semesterId).map { gradeEntity ->
-            gradeEntity.toGradeModel()
+        return gradeDao.getGradesFromSemesterLessThanId(semesterId).map { grade ->
+            val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+                ?: throw IllegalStateException("Type grade not found")
+            grade.toGradeModel(typeGrade)
         }
     }
 
@@ -267,14 +278,18 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllGrades(): List<GradeModel> {
-        return gradeDao.getAllGrades().map { gradeEntity ->
-            gradeEntity.toGradeModel()
+        return gradeDao.getAllGrades().map { grade ->
+            val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+                ?: throw IllegalStateException("Type grade not found")
+            grade.toGradeModel(typeGrade)
         }
     }
 
     override suspend fun getGradeById(gradeId: Int): GradeModel? {
-        val gradeEntity = gradeDao.getGradeFromId(gradeId) ?: return null
-        return gradeEntity.toGradeModel()
+        val grade = gradeDao.getGradeFromId(gradeId) ?: return null
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return grade.toGradeModel(typeGrade)
     }
 
     override suspend fun updateGrade(gradeModel: GradeModel): Boolean {
@@ -289,7 +304,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubGradesFromGrade(gradeId: Int): List<SubGradeModel> {
-        return subGradeDao.getSubGradesFromGradeId(gradeId).map { subGrade -> subGrade.toSubGradeModel() }
+        val grade = gradeDao.getGradeFromId(gradeId) ?: return emptyList()
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return subGradeDao.getSubGradesFromGradeId(gradeId).map { it.toSubGradeModel(typeGrade) }
     }
 
     override suspend fun saveSubGrade(subGradeModel: SubGradeModel): Long {
@@ -311,7 +329,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getSubGradeById(subGradeId: Int): SubGradeModel? {
         val subGrade = subGradeDao.getSubGradeFromId(subGradeId) ?: return null
-        return subGrade.toSubGradeModel()
+        val grade = gradeDao.getGradeFromId(subGrade.gradeId) ?: return null
+        val typeGrade = typeGradeDao.getTypeGradeFromCourseId(grade.courseId)?.toTypeGradeModel()
+            ?: throw IllegalStateException("Type grade not found")
+        return subGrade.toSubGradeModel(typeGrade)
     }
 
     override suspend fun updateSubGrade(subGradeModel: SubGradeModel): Boolean {

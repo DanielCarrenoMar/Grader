@@ -2,10 +2,12 @@ package com.app.grader.infrastructure.database.repository
 
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.dao.CourseDao
+import com.app.grader.infrastructure.database.dao.CourseStatistics
 import com.app.grader.infrastructure.database.dao.GradeDao
 import com.app.grader.infrastructure.database.dao.SemesterDao
 import com.app.grader.infrastructure.database.dao.SubGradeDao
 import com.app.grader.infrastructure.database.dao.TypeGradeDao
+import com.app.grader.infrastructure.database.entitites.TypeGradeEntity
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.types.GradeValue
@@ -64,12 +66,62 @@ class LocalStorageRepositoryImplTest {
             courseId = 1,
             title = "Midterm",
             description = "",
-            gradeValue = 15.0,
-            weightingPercentage = weightingPercentage,
-            max = 20,
-            minToPass = 9.5,
-            isDirectPercentage = false
+            gradePercentage = 75.0,
+            weightingPercentage = weightingPercentage
         )
+
+    private fun typeGradeEntity(max: Int, isDirectPercentage: Boolean): TypeGradeEntity =
+        TypeGradeEntity(
+            id = 1,
+            title = "Test",
+            max = max,
+            minToPass = null,
+            isFromSystem = false,
+            isDirectPercentage = isDirectPercentage,
+            active = true,
+        )
+
+    @Test
+    fun getCourseStatistics_scalesRawPercentageByNumericTypeGradeMax() {
+        runBlocking {
+            whenever(courseDao.getCourseStatistics(1)).thenReturn(
+                CourseStatistics(
+                    totalPercentage = 60.0,
+                    accumulatePoints = 45.0,
+                    evaluatedPercentage = 60.0,
+                )
+            )
+            whenever(typeGradeDao.getTypeGradeFromCourseId(1)).thenReturn(
+                typeGradeEntity(max = 20, isDirectPercentage = false)
+            )
+
+            val result = repo.getCourseStatistics(1)
+
+            assertEquals(9.0, result.accumulatePoints, 0.000001)
+            assertEquals(40.0, result.pendingPoints, 0.000001)
+            assertEquals(60.0, result.totalPercentage.getPercentage(), 0.000001)
+        }
+    }
+
+    @Test
+    fun getCourseStatistics_keepsRawPercentageForDirectPercentageTypeGrade() {
+        runBlocking {
+            whenever(courseDao.getCourseStatistics(1)).thenReturn(
+                CourseStatistics(
+                    totalPercentage = 60.0,
+                    accumulatePoints = 45.0,
+                    evaluatedPercentage = 60.0,
+                )
+            )
+            whenever(typeGradeDao.getTypeGradeFromCourseId(1)).thenReturn(
+                typeGradeEntity(max = 100, isDirectPercentage = true)
+            )
+
+            val result = repo.getCourseStatistics(1)
+
+            assertEquals(45.0, result.accumulatePoints, 0.000001)
+        }
+    }
 
     @Test
     fun saveGrade_throwsWhenSumPlusNewExceeds100() {
