@@ -9,9 +9,9 @@ data class GradeValue(
     private var max: Double
 ) {
     init {
-        require(value == null || value!! in 0.0..max) { "Grade must be between 0 and $max or null. Not $value" }
-        require(minToPass >= 0) { "Min must be greater than 0. Not $minToPass" }
-        require(max >= 0) { "Max must be greater than 0. Not $max" }
+        require(value == null || value!! in 0.0..max) { "La calificación debe estar entre 0 y $max o estar vacía. No $value" }
+        require(minToPass >= 0) { "El mínimo para pasar debe ser mayor que 0. No $minToPass" }
+        require(max >= 0) { "El máximo debe ser mayor que 0. No $max" }
     }
     constructor(value: Double?, minToPass: Double?, max: Double) : this(value,
         minToPass ?: (max / 2), max)
@@ -23,7 +23,7 @@ data class GradeValue(
     constructor(gradeValue: GradeValue) : this(gradeValue.getValue(), gradeValue.getMinToPass(), gradeValue.getMax())
 
     fun setValue(value: Double) {
-        if (value !in 0.0..max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
+        if (value !in 0.0..max) throw IllegalArgumentException("La calificación debe estar entre 0 y $max. No $value")
         this.value = value
     }
 

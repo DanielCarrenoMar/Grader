@@ -5,7 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 class GradeDetailModelTest {
-    private val typeGrade = TypeGradeModel(max = 7, minToPass = 4.0)
+    private val typeGrade = TypeGradeModel(id = 0, title = "", max = 7, minToPass = 4.0, isFromSystem = false, isDirectPercentage = false)
 
     @Test
     fun createNormalizesNullAndBlankSubgradeTitles() {
@@ -66,7 +66,7 @@ class GradeDetailModelTest {
             description = "",
             gradeValue = 5.0,
             percentage = Percentage(50.0),
-            typeGrade = TypeGradeModel(max = 10, isDirectPercentage = true),
+            typeGrade = TypeGradeModel(id = 0, title = "", max = 10, minToPass = null, isFromSystem = false, isDirectPercentage = true),
         )
 
         assertTrue(result.isSuccess)
