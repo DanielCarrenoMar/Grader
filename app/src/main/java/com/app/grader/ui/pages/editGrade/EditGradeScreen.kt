@@ -151,7 +151,7 @@ leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.
                     maxLines = 1
                 )
             }
-            itemsIndexed (uiState.subGrades) { index, subgrade ->
+            if (viewModel.defaultTypeGrade.value?.isDirectPercentage != true) itemsIndexed (uiState.subGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }

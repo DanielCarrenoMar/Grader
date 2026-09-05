@@ -59,6 +59,37 @@ class GradeDetailModelTest {
     }
 
     @Test
+    fun createUsesTypeGradeMaxForDirectGradeInput() {
+        val result = GradeDetailModel.create(
+            courseId = 1,
+            title = "",
+            description = "",
+            gradeValue = 5.0,
+            percentage = Percentage(50.0),
+            typeGrade = TypeGradeModel(max = 10, isDirectPercentage = true),
+        )
+
+        assertTrue(result.isSuccess)
+        assertEquals(10.0, result.getOrThrow().gradeValue.getMax(), 0.0)
+        assertEquals(50.0, result.getOrThrow().gradeValue.getGradePercentage()!!, 0.0)
+        assertTrue(result.getOrThrow().subgrades.isEmpty())
+    }
+
+    @Test
+    fun createRejectsZeroWeighting() {
+        val result = GradeDetailModel.create(
+            courseId = 1,
+            title = "",
+            description = "",
+            gradeValue = 5.0,
+            percentage = Percentage(0.0),
+            typeGrade = typeGrade,
+        )
+
+        assertTrue(result.isFailure)
+    }
+
+    @Test
     fun createRejectsInvalidGradeIdAndMax() {
         assertTrue(SubGradeModel.create(0, "Part", null, 0.0, 7).isFailure)
         assertTrue(SubGradeModel.create(1, "Part", null, 0.0, -1).isFailure)

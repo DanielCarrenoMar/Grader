@@ -6,22 +6,25 @@ import kotlin.math.roundToInt
 data class GradeValue(
     private var value: Double?,
     private var minToPass: Double,
-    private var max: Int
+    private var max: Double
 ) {
     init {
-        require(value == null || value!! in 0.0..max.toDouble()) { "Grade must be between 0 and $max or null. Not $value" }
+        require(value == null || value!! in 0.0..max) { "Grade must be between 0 and $max or null. Not $value" }
         require(minToPass >= 0) { "Min must be greater than 0. Not $minToPass" }
         require(max >= 0) { "Max must be greater than 0. Not $max" }
     }
-    constructor(value: Double?, min: Double?, max: Int) : this(value, min ?: max.toDouble(), max)
+    constructor(value: Double?, min: Double?, max: Double) : this(value, min ?: max, max)
+    constructor(value: Double?, min: Double?, max: Int) : this(value, min, max.toDouble())
     constructor() : this(null, 0.0, 0)
 
-    constructor(min: Double, max: Int) : this(null, min, max)
+    constructor(min: Double, max: Double) : this(null, min, max)
+    constructor(min: Double, max: Int) : this(null, min, max.toDouble())
     constructor(gradeValue: GradeValue) : this(gradeValue.getValue(), gradeValue.getMinToPass(), gradeValue.getMax())
-    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max)
+    constructor(grade: Int, min: Double, max: Double) : this(grade.toDouble(), min, max)
+    constructor(grade: Int, min: Double, max: Int) : this(grade.toDouble(), min, max.toDouble())
 
     fun setValue(value: Double) {
-        if (value < 0.0 || value > max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
+        if (value !in 0.0..max) throw IllegalArgumentException("Grade value must be between 0 and $max. Not $value")
         this.value = value
     }
 
@@ -45,7 +48,7 @@ data class GradeValue(
         return minToPass
     }
 
-    fun getMax(): Int {
+    fun getMax(): Double {
         return max
     }
 
@@ -99,14 +102,18 @@ data class GradeValue(
     }
 
     fun check(grade: Int): Boolean {
-        return grade in 0..max
+        return grade.toDouble() in 0.0..max
     }
 
     companion object {
-        fun createFromGradePercentage(gradePercentage: Double?, minToPass: Double?, max: Int): GradeValue {
+        fun createFromGradePercentage(gradePercentage: Double?, minToPass: Double?, max: Double): GradeValue {
             if (gradePercentage == null) return GradeValue(null, minToPass, max)
             val gradeValue = (gradePercentage / 100.0) * max
             return GradeValue(gradeValue, minToPass, max)
+        }
+
+        fun createFromGradePercentage(gradePercentage: Double?, minToPass: Double?, max: Int): GradeValue {
+            return createFromGradePercentage(gradePercentage, minToPass, max.toDouble())
         }
         fun formatText(grade: Double): String {
             return if (grade % 1.0 == 0.0) {

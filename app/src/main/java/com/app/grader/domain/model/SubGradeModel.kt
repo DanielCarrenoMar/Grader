@@ -68,7 +68,7 @@ fun SubGradeCalculate.toSubGradeModel(): SubGradeModel {
         title = this.title,
         gradeValue = gradeValue.getValue(),
         minToPass = gradeValue.getMinToPass(),
-        max = gradeValue.getMax(),
+        max = gradeValue.getMax().toInt(),
         id = this.id,
     ).getOrThrow()
 }

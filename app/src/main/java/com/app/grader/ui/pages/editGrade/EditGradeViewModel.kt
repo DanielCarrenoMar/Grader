@@ -90,7 +90,11 @@ class EditGradeViewModel @Inject constructor(
                         if (_uiState.value.courseId != courseId || result.data == null) return@collect
                         _defaultTypeGrade.value = result.data
                         loadedTypeGradeCourseId = courseId
-                        _subGrades.replaceAll { it.normalize(result.data) }
+                        if (result.data.isDirectPercentage) {
+                            _subGrades.clear()
+                        } else {
+                            _subGrades.replaceAll { it.normalize(result.data) }
+                        }
                         _uiState.update { state ->
                             state.copy(
                                 subGrades = _subGrades.toList(),
@@ -245,6 +249,7 @@ class EditGradeViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         val subGrades: List<SubGradeModel> = result.data!!
+                        if (_defaultTypeGrade.value?.isDirectPercentage == true) return@collect
                         _subGrades.addAll(subGrades.map { it.normalize(_defaultTypeGrade.value) })
                         _uiState.update {
                             it.copy(
@@ -273,7 +278,12 @@ class EditGradeViewModel @Inject constructor(
                             it.copy(
                                 title = grade.title,
                                 description = grade.description,
-                                gradeValue = grade.gradeValue.toString(),
+                                gradeValue = if (_defaultTypeGrade.value?.isDirectPercentage == true) {
+                                    val percentage = grade.gradeValue.getGradePercentage()
+                                    percentage?.let { (it / 100.0 * _defaultTypeGrade.value!!.max).toString() }.orEmpty()
+                                } else {
+                                    grade.gradeValue.toString()
+                                },
                                 percentage = grade.percentage.toString(),
                             )
                         }
@@ -303,7 +313,7 @@ class EditGradeViewModel @Inject constructor(
             inputErrors["percentage"] = "El porcentaje debe ser un número válido."
         }
         val subgradeErrors = mutableMapOf<String, String>()
-        val subgradeModels = _subGrades.mapIndexedNotNull { index, subgrade ->
+        val subgradeModels = if (typeGrade.isDirectPercentage) emptyList() else _subGrades.mapIndexedNotNull { index, subgrade ->
             val text = state.subGradeTexts.getOrNull(index).orEmpty()
             if (text.isBlank()) return@mapIndexedNotNull null
             val value = text.trim().replace(',', '.').toDoubleOrNull()

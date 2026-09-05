@@ -29,4 +29,8 @@ data class GradeEntity(
     @ColumnInfo(name = "grade_percentage") val gradePercentage: Double?,
     @ColumnInfo(name = "weighting_percentage") val weightingPercentage: Double,
     @ColumnInfo(name = "created_at", defaultValue = "(strftime('%s','now')*1000)") val createdAt: Date = Date()
-)
+) {
+    init {
+        require(weightingPercentage > 0.0) { "Weighting percentage must be greater than 0" }
+    }
+}

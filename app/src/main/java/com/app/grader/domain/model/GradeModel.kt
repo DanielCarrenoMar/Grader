@@ -49,7 +49,11 @@ fun CalculatedGrade.toGradeModel(): GradeModel {
         courseId = this.courseId,
         title = this.title,
         description = this.description,
-        gradeValue = GradeValue(this.gradeValue, this.minToPass ?: this.max.toDouble(), this.max),
+        gradeValue = GradeValue(
+            this.gradeValue,
+            this.minToPass ?: if (this.isDirectPercentage) this.weightingPercentage else this.max.toDouble(),
+            if (this.isDirectPercentage) this.weightingPercentage else this.max.toDouble()
+        ),
         percentage = Percentage(this.weightingPercentage),
         isDirectPercentage = this.isDirectPercentage
     )
