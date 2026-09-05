@@ -79,7 +79,7 @@ fun Iterable<SubGradeModel>.average(): Double? {
         .averageGrade()
 }
 
-fun SubGradeModel.normalize(typeGrade: TypeGradeModel): SubGradeModel {
+fun SubGradeModel.actTypeGrade(typeGrade: TypeGradeModel): SubGradeModel {
     val normalizedGradeValue = GradeValue.createFromGradePercentage(
         this.gradeValue.getGradePercentage(),
         typeGrade.minToPass,

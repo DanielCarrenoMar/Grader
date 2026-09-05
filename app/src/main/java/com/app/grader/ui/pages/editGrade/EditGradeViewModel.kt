@@ -12,7 +12,7 @@ import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.TypeGradeModel
 import com.app.grader.domain.model.average
-import com.app.grader.domain.model.normalize
+import com.app.grader.domain.model.actTypeGrade
 import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
@@ -93,7 +93,7 @@ class EditGradeViewModel @Inject constructor(
                         if (result.data.isDirectPercentage) {
                             _subGrades.clear()
                         } else {
-                            _subGrades.replaceAll { it.normalize(result.data) }
+                            _subGrades.replaceAll { it.actTypeGrade(result.data) }
                         }
                         _uiState.update { state ->
                             state.copy(
@@ -250,7 +250,7 @@ class EditGradeViewModel @Inject constructor(
                     is Resource.Success -> {
                         val subGrades: List<SubGradeModel> = result.data!!
                         if (_defaultTypeGrade.value?.isDirectPercentage == true) return@collect
-                        _subGrades.addAll(subGrades.map { it.normalize(_defaultTypeGrade.value!!) })
+                        _subGrades.addAll(subGrades.map { it.actTypeGrade(_defaultTypeGrade.value!!) })
                         _uiState.update {
                             it.copy(
                                 subGrades = _subGrades.toList(),
