@@ -150,7 +150,7 @@ fun CourseScreen(
                     viewModel.accumulatePoints.value,
                     viewModel.pendingPoints.value,
                     viewModel.course.value.uc,
-                    false,
+                    viewModel.course.value.typeGradeModel.isDirectPercentage,
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 CardContainer(
@@ -341,7 +341,7 @@ fun InfoCourseCard(
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = if (isDirectPercentage) "Porcentaje Acumulado" else "Ptos. Acumulados",
+                                    text = if (isDirectPercentage) "%. Acumulado" else "Ptos. Acumulados",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.tertiary
                                 )
@@ -356,7 +356,7 @@ fun InfoCourseCard(
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = if (isDirectPercentage) "Porcentaje Por Evaluar" else "Ptos. Por Evaluar",
+                                    text = if (isDirectPercentage) "%. Por Evaluar" else "Ptos. Por Evaluar",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.secondary
                                 )
