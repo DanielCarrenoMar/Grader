@@ -109,7 +109,8 @@ fun GradeCardComp(
                 } else{
                     CircleGrade(
                         gradeValue = grade.gradeValue,
-                        radius = 25.dp
+                        radius = 25.dp,
+                        isPercentage = grade.isDirectPercentage
                     )
                 }
             Column(

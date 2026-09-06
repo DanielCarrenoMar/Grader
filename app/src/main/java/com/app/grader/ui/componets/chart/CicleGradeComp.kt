@@ -1,6 +1,7 @@
 package com.app.grader.ui.componets.chart
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +22,8 @@ fun CircleGrade(
     modifier: Modifier = Modifier,
     gradeValue: GradeValue,
     fontSize: TextUnit = 16.sp,
-    radius : Dp = 40.dp
+    radius : Dp = 40.dp,
+    isPercentage: Boolean = false,
 ) {
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 
@@ -43,12 +45,23 @@ fun CircleGrade(
             }
             .then(modifier)
     ) {
-        Text(
-            textGrade,
-            style = MaterialTheme.typography.labelLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.surface,
-            fontSize = fontSize
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                textGrade,
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.surface,
+                fontSize = fontSize
+            )
+            if (isPercentage) {
+                Text(
+                    text = "%",
+                    color = MaterialTheme.colorScheme.surface,
+                    fontSize = fontSize * 0.65f
+                )
+            }
+        }
     }
 }
