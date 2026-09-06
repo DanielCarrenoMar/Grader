@@ -24,9 +24,8 @@ class GradeDetailModel(
     private val validationSubgrades = subgrades
     val subgrades = if (isDirectPercentage) emptyList() else subgrades.map { it.actTypeGrade(typeGradeModel) }
 
-    override fun validate() {
-        val errors = gradeValidationErrors(courseId, weight, gradeValueRaw, typeGradeModel.max.toDouble())
-        if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
+    override fun validate(): List<GradeFieldError> {
+        return validateBase() + subgradeValidationErrors(gradeValue, validationSubgrades, typeGradeModel)
     }
 
     init {
@@ -46,7 +45,6 @@ class GradeDetailModel(
             subgrades: List<SubGradeModel> = emptyList(),
         ): Result<GradeDetailModel> {
             val errors = mutableListOf<GradeFieldError>()
-            errors += gradeValidationErrors(courseId, percentage, gradeValue, typeGrade.max.toDouble())
             if (!typeGrade.isDirectPercentage) {
                 subgrades.forEachIndexed { index, subgrade ->
                     val value = subgrade.gradeValue.getValue()
@@ -59,16 +57,24 @@ class GradeDetailModel(
             if (errors.isNotEmpty()) {
                 return Result.failure(GradeDetailValidationException(errors))
             }
-            return runCatching {
+            return createResult(
+                courseId = courseId,
+                title = title,
+                description = description,
+                gradeValue = gradeValue,
+                weight = percentage,
+                typeGradeModel = typeGrade,
+                id = id,
+            ).map { gradeModel ->
                 GradeDetailModel(
-                    courseId = courseId,
-                    title = title,
-                    description = description,
-                    gradeValueRaw = gradeValue,
-                    percentage = percentage,
-                    id = id,
+                    courseId = gradeModel.courseId,
+                    title = gradeModel.title,
+                    description = gradeModel.description,
+                    gradeValueRaw = gradeModel.gradeValueRaw,
+                    percentage = gradeModel.weight,
+                    id = gradeModel.id,
                     subgrades = subgrades,
-                    typeGradeModel = typeGrade
+                    typeGradeModel = typeGrade,
                 )
             }
         }

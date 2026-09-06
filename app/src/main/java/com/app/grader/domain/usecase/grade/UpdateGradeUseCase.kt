@@ -15,7 +15,6 @@ class UpdateGradeUseCase @Inject constructor(
     operator fun invoke(gradeModel: GradeModel): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            gradeModel.validate()
             val currentSumWithoutThis = repository.getGradesFromCourse(gradeModel.courseId)
                 .filter { it.id != gradeModel.id }
                 .sumOf { it.weight.getPercentage() }

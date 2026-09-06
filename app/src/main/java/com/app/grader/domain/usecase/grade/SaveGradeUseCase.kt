@@ -15,7 +15,6 @@ class SaveGradeUseCase @Inject constructor(
     operator fun invoke(gradeModel: GradeModel): Flow<Resource<Long>> = channelFlow {
         try {
             send(Resource.Loading())
-            gradeModel.validate()
             val currentSum = repository.getGradesFromCourse(gradeModel.courseId)
                 .sumOf { it.weight.getPercentage() }
             gradeRules.validateSumNotExceed100(currentSum, gradeModel.weight.getPercentage())

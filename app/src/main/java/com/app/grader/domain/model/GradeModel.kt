@@ -37,12 +37,7 @@ open class GradeModel(
     val isDirectPercentage = typeGradeModel.isDirectPercentage
 
     init {
-        validate()
-    }
-
-    open fun validate() {
-        val max = if (!isDirectPercentage) typeGradeModel.max.toDouble() else weight.getPercentage()
-        val errors = gradeValidationErrors(courseId, weight, gradeValueRaw, max)
+        val errors = validateBase()
         if (errors.isNotEmpty()) throw GradeDetailValidationException(errors)
     }
 
@@ -51,6 +46,17 @@ open class GradeModel(
             GradeValue(gradeValueRaw, typeGradeModel.minToPass, typeGradeModel.max)
         } else {
             GradeValue(gradeValueRaw, typeGradeModel.minToPass, weight.getPercentage())
+        }
+    }
+
+    open fun validate(): List<GradeFieldError> = validateBase()
+
+    protected fun validateBase(): List<GradeFieldError> = buildList {
+        if (courseId <= 0 && courseId != -1) {
+            add(GradeFieldError("course", "El parámetro 'courseId' ($courseId) debe ser mayor a 0 o -1."))
+        }
+        if (weight.getPercentage() <= 0.0) {
+            add(GradeFieldError("percentage", "El porcentaje debe ser mayor a 0."))
         }
     }
 
@@ -63,6 +69,18 @@ open class GradeModel(
     }
 
     companion object {
+        fun createResult(
+            courseId: Int,
+            title: String,
+            description: String,
+            gradeValue: Double?,
+            weight: Percentage,
+            typeGradeModel: TypeGradeModel,
+            id: Int = -1,
+        ): Result<GradeModel> = runCatching {
+            GradeModel(courseId, title, description, gradeValue, typeGradeModel, weight, id)
+        }
+
         fun createFromGradePercentage(
             courseId: Int,
             title: String,
@@ -79,24 +97,6 @@ open class GradeModel(
             }
             return GradeModel(courseId, title, description, gradeValueRaw, typeGradeModel, weight, id)
         }
-    }
-}
-
-internal fun gradeValidationErrors(
-    courseId: Int,
-    percentage: Percentage,
-    gradeValue: Double? = null,
-    max: Double = 0.0,
-): List<GradeFieldError> = buildList {
-    if (courseId <= 0 && courseId != -1) {
-        add(GradeFieldError("course", "El parámetro 'courseId' ($courseId) debe ser mayor a 0 o -1."))
-    }
-    if (percentage.getPercentage() <= 0.0) {
-        add(GradeFieldError("percentage", "El porcentaje debe ser mayor a 0."))
-    }
-    if (gradeValue != null && (gradeValue < 0.0 || (max > 0.0 && gradeValue > max))) {
-        val maxFormatted = if (max % 1.0 == 0.0) max.toInt().toString() else max.toString()
-        add(GradeFieldError("grade", "La calificación ($gradeValue) debe estar entre 0 y $maxFormatted."))
     }
 }
 
