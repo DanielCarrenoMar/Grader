@@ -333,7 +333,7 @@ fun InfoCourseCard(
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
                                     text = GradeValue.formatText(
-                                        if (isDirectPercentage) animatedAccumulatePoints * 10f else animatedAccumulatePoints
+                                        animatedAccumulatePoints
                                     ),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
