@@ -1,5 +1,6 @@
 package com.app.grader.infrastructure.database.repository
 
+import com.app.grader.infrastructure.database.dao.CalculatedCourse
 import com.app.grader.infrastructure.database.dao.CalculatedGrade
 import com.app.grader.infrastructure.database.dao.CourseDao
 import com.app.grader.infrastructure.database.dao.CourseStatistics
@@ -81,6 +82,30 @@ class LocalStorageRepositoryImplTest {
             isDirectPercentage = isDirectPercentage,
             active = true,
         )
+
+    @Test
+    fun getCourseById_resolvesAndStoresCourseTypeGradeModel() {
+        runBlocking {
+            whenever(courseDao.getCourseFromId(1)).thenReturn(
+                CalculatedCourse(
+                    id = 1,
+                    semesterId = null,
+                    typeGradeId = 1,
+                    title = "Course",
+                    uc = 4,
+                    average = 75.0,
+                    totalWeightingPercentage = 50.0,
+                )
+            )
+            whenever(typeGradeDao.getTypeGradeById(1)).thenReturn(
+                typeGradeEntity(max = 20, isDirectPercentage = false)
+            )
+
+            val result = repo.getCourseById(1)
+
+            assertEquals(TypeGradeModel(id = 1, title = "Test", max = 20, minToPass = null, isFromSystem = false, isDirectPercentage = false), result?.typeGradeModel)
+        }
+    }
 
     @Test
     fun getCourseStatistics_scalesRawPercentageByNumericTypeGradeMax() {

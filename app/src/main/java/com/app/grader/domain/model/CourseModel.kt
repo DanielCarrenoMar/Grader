@@ -9,6 +9,7 @@ import com.app.grader.domain.types.Percentage
 data class CourseModel(
     val semesterId: Int? = null,
     val typeGradeId: Int = 0,
+    val typeGradeModel: TypeGradeModel = TypeGradeModel(),
     val title: String,
     val uc: Int,
     val average: GradeValue = GradeValue(),
@@ -38,6 +39,7 @@ fun CalculatedCourse.toCourseModel(typeGradeModel: TypeGradeModel): CourseModel 
         uc = this.uc,
         semesterId = this.semesterId,
         typeGradeId = this.typeGradeId,
+        typeGradeModel = typeGradeModel,
         average = GradeValue.createFromGradePercentage(this.average, typeGradeModel.minToPass, typeGradeModel.max),
         totalPercentage = Percentage(this.totalWeightingPercentage ?: 0.0)
     )

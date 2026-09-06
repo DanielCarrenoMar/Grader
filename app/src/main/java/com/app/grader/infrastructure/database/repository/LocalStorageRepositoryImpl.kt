@@ -81,21 +81,24 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAllCourses(): List<CourseModel> {
         return courseDao.getAllCourses().map { row ->
-            row.toCourseModel(typeGradeDao.getTypeGradeById(row.typeGradeId)?.toTypeGradeModel() ?: throw IllegalStateException("Type grade not found"))
+            row.toCourseModel(getTypeGradeModel(row.typeGradeId))
         }
     }
 
     override suspend fun getCoursesFromSemester(semesterId: Int?): List<CourseModel> {
         return courseDao.getAllCoursesFromSemesterId(semesterId).map { row ->
-            row.toCourseModel(typeGradeDao.getTypeGradeById(row.typeGradeId)?.toTypeGradeModel() ?: throw IllegalStateException("Type grade not found"))
+            row.toCourseModel(getTypeGradeModel(row.typeGradeId))
         }
     }
 
     override suspend fun getCourseById(courseId: Int): CourseModel? {
         val courseEntity = courseDao.getCourseFromId(courseId) ?: return null
-        val typeGrade = typeGradeDao.getTypeGradeById(courseEntity.typeGradeId)?.toTypeGradeModel()
+        return courseEntity.toCourseModel(getTypeGradeModel(courseEntity.typeGradeId))
+    }
+
+    private suspend fun getTypeGradeModel(typeGradeId: Int): TypeGradeModel {
+        return typeGradeDao.getTypeGradeById(typeGradeId)?.toTypeGradeModel()
             ?: throw IllegalStateException("Type grade not found")
-        return courseEntity.toCourseModel(typeGrade)
     }
 
     override suspend fun deleteAllCourses(): Int {
