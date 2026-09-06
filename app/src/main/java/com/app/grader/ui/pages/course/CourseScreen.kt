@@ -148,8 +148,9 @@ fun CourseScreen(
                 InfoCourseCard(
                     viewModel.course.value.average,
                     viewModel.accumulatePoints.value,
-                    viewModel.pedingPoints.value,
-                    viewModel.course.value.uc
+                    viewModel.pendingPoints.value,
+                    viewModel.course.value.uc,
+                    false,
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 CardContainer(
@@ -169,11 +170,11 @@ fun CourseScreen(
                                 style = MaterialTheme.typography.labelLarge
                             )
                             Spacer(Modifier.width(6.dp))
-                            if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
-                                modifier = Modifier.alpha(if (viewModel.totalPercentaje.value.getPercentage() >= 100) 0.4f else 1f),
-                                text = viewModel.totalPercentaje.value.toString() + "%",
+                            if (viewModel.totalPercentage.value.getPercentage() != 0.0) Text(
+                                modifier = Modifier.alpha(if (viewModel.totalPercentage.value.getPercentage() >= 100) 0.4f else 1f),
+                                text = viewModel.totalPercentage.value.toString() + "%",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
+                                color = if (viewModel.totalPercentage.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
                             )
                             Spacer(Modifier.weight(1f))
                             IconButton(onClick = { showQuickEditInfoDialog = true }) {
@@ -268,7 +269,7 @@ fun CourseScreen(
             FloatingMenuComp(
                 listOf(
                     FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
-                        if (viewModel.totalPercentaje.value.getPercentage() < 100.0) {
+                        if (viewModel.totalPercentage.value.getPercentage() < 100.0) {
                             navigateToEditGrade(viewModel.course.value.semesterId ?: -1, courseId, -1)
                         } else coroutineScope.launch {
                             snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
@@ -286,6 +287,7 @@ fun InfoCourseCard(
     accumulatePoints: Double,
     pendingPoints: Double,
     uc: Int,
+    isDirectPercentage: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val animatedAccumulatePoints by animateFloatAsState(
@@ -330,14 +332,16 @@ fun InfoCourseCard(
                         ) {
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = GradeValue.formatText(animatedAccumulatePoints),
+                                    text = GradeValue.formatText(
+                                        if (isDirectPercentage) animatedAccumulatePoints * 10f else animatedAccumulatePoints
+                                    ),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = "Ptos. Acumulados",
+                                    text = if (isDirectPercentage) "Porcentaje Acumulado" else "Ptos. Acumulados",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.tertiary
                                 )
@@ -352,7 +356,7 @@ fun InfoCourseCard(
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = "Ptos. Por Evaluar",
+                                    text = if (isDirectPercentage) "Porcentaje Por Evaluar" else "Ptos. Por Evaluar",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.secondary
                                 )

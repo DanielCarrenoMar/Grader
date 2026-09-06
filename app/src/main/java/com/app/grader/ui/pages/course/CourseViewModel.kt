@@ -1,6 +1,7 @@
 package com.app.grader.ui.pages.course
 
 import android.util.Log
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,12 +34,12 @@ class CourseViewModel  @Inject constructor(
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableStateOf(0.0)
+    private val _accumulatePoints = mutableDoubleStateOf(0.0)
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableStateOf(0.0)
-    val pedingPoints = _pedingPoints
-    private val _totalPercentaje = mutableStateOf(Percentage(0.0))
-    val totalPercentaje = _totalPercentaje
+    private val _pendingPoints = mutableDoubleStateOf(0.0)
+    val pendingPoints = _pendingPoints
+    private val _totalPercentage = mutableStateOf(Percentage(0.0))
+    val totalPercentage = _totalPercentage
 
     private val _showGrade = mutableStateOf(GradeModel())
     val showGrade = _showGrade
@@ -113,9 +114,9 @@ class CourseViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         val stats = result.data!!
-                        _totalPercentaje.value = stats.totalPercentage
-                        _accumulatePoints.value = stats.accumulatePoints
-                        _pedingPoints.value = stats.pendingPoints
+                        _totalPercentage.value = stats.totalPercentage
+                        _accumulatePoints.doubleValue = stats.accumulatePoints
+                        _pendingPoints.doubleValue = stats.pendingPoints
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
