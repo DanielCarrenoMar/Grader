@@ -17,6 +17,7 @@ import com.app.grader.domain.usecase.course.UpdateTypeGradeForAllCoursesUseCase
 import com.app.grader.domain.usecase.grade.DeleteAllGradesUseCase
 import com.app.grader.domain.usecase.semester.DeleteAllSemestersUseCase
 import com.app.grader.domain.usecase.subGrade.DeleteAllSubGradesUseCase
+import com.app.grader.domain.usecase.typeGrade.ChangeTypeGradeUseCase
 import com.app.grader.domain.usecase.typeGrade.GetAllTypeGradeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -30,6 +31,7 @@ class ConfigViewModel  @Inject constructor(
     private val deleteAllSubGradesUseCase: DeleteAllSubGradesUseCase,
     private val deleteAllSemestersUseCase: DeleteAllSemestersUseCase,
     private val getAllTypeGradeUseCase: GetAllTypeGradeUseCase,
+    private val changeTypeGradeUseCase: ChangeTypeGradeUseCase,
     private val appConfigRepository: AppConfigRepository,
     private val updateTypeGradeForAllCoursesUseCase: UpdateTypeGradeForAllCoursesUseCase
 ): ViewModel() {
@@ -40,6 +42,9 @@ class ConfigViewModel  @Inject constructor(
 
     private val _typeGradeList = mutableStateOf<List<TypeGradeModel>>(emptyList())
     val typeGradeList = _typeGradeList
+
+    private val _isDirectPercentage = mutableStateOf(false)
+    val isDirectPercentage = _isDirectPercentage
 
     private val _selectedTypeGradeId = mutableIntStateOf(appConfigRepository.getDefaultTypeGradeId())
     val selectedTypeGradeId = _selectedTypeGradeId
@@ -66,6 +71,7 @@ class ConfigViewModel  @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         _typeGradeList.value = result.data ?: emptyList()
+                        _isDirectPercentage.value = _typeGradeList.value.isNotEmpty() && _typeGradeList.value.all { it.isDirectPercentage }
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
@@ -104,6 +110,22 @@ class ConfigViewModel  @Inject constructor(
     fun setRoundFinalCourseAverage(isRoundFinalCourseAverage: Boolean) {
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
         appConfigRepository.setRoundFinalCourseAverage(isRoundFinalCourseAverage)
+    }
+
+    fun setDirectPercentage(isDirectPercentage: Boolean) {
+        _isDirectPercentage.value = isDirectPercentage
+        viewModelScope.launch {
+            changeTypeGradeUseCase(isDirectPercentage).collect { result ->
+                when (result) {
+                    is Resource.Success -> loadTypeGrades()
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("ConfigViewModel", "Error changeTypeGradeUseCase: ${result.message}")
+                        loadTypeGrades()
+                    }
+                }
+            }
+        }
     }
     fun setSelectedTypeGradeId(typeGradeId: Int) {
         _selectedTypeGradeId.intValue = typeGradeId

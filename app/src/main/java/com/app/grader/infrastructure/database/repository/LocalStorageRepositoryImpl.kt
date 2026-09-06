@@ -75,6 +75,10 @@ class LocalStorageRepositoryImpl @Inject constructor(
         return typeGradeDao.insertTypeGrade(typeGradeModel.toTypeGradeEntity())
     }
 
+    override suspend fun updateDirectPercentageForAll(isDirectPercentage: Boolean): Int {
+        return typeGradeDao.updateDirectPercentageForAll(isDirectPercentage)
+    }
+
     override suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean {
         return typeGradeDao.deleteTypeGradeFromId(typeGradeId) == 1
     }

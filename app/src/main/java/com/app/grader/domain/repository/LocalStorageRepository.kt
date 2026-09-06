@@ -45,6 +45,7 @@ interface LocalStorageRepository {
     suspend fun getTypeGradeById(typeGradeId: Int): TypeGradeModel?
     suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel?
     suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long
+    suspend fun updateDirectPercentageForAll(isDirectPercentage: Boolean): Int
     suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean
 
     /**

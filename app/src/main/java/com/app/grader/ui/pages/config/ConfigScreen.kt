@@ -136,6 +136,16 @@ fun ConfigScreen(
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
             )
+            SwitchCardComp(
+                checked = viewModel.isDirectPercentage.value,
+                onCheckedChange = {
+                    viewModel.setDirectPercentage(it)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.primary,
+                icon = R.drawable.round,
+                text = "Usar porcentaje directo en todos los tipos de calificación",
+            )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
                 onClick = {

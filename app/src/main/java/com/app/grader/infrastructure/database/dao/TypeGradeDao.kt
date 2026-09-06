@@ -42,6 +42,9 @@ interface TypeGradeDao {
         active: Boolean
     ): Int
 
+    @Query("UPDATE type_grade SET is_direct_percentage = :isDirectPercentage")
+    suspend fun updateDirectPercentageForAll(isDirectPercentage: Boolean): Int
+
     @Query("DELETE FROM type_grade WHERE id = :typeGradeId")
     suspend fun deleteTypeGradeFromId(typeGradeId: Int): Int
 }
