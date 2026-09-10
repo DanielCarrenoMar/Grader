@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -86,31 +87,28 @@ fun EditGradeScreen(
 
     HeaderBack(
         title = {
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "Calificación",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.weight(1f))
-                ButtonState(
-                    text = if (gradeId == -1) "Crear" else "Guardar",
-                    isLoading = isSubmitting,
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        coroutineScope.launch {
-                            val error = viewModel.submitGrade(gradeId, activity)
-                            if (error == null) navigateBack()
-                            else snackbarHostState.showSnackbar(error)
-                        }
+            Text(
+                text = "Calificación",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingItem = {
+            ButtonState(
+                text = if (gradeId == -1) "Crear" else "Guardar",
+                isLoading = isSubmitting,
+                modifier = Modifier.widthIn(min = 88.dp, max = 120.dp),
+                onClick = {
+                    coroutineScope.launch {
+                        val error = viewModel.submitGrade(gradeId, activity)
+                        if (error == null) navigateBack()
+                        else snackbarHostState.showSnackbar(error)
                     }
-                )
-                Spacer(Modifier.weight(0.3f))
-            }
+                }
+            )
         },
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack

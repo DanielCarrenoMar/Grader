@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -48,30 +49,27 @@ fun TransferSemesterScreen(
 
     HeaderBack(
         title = {
-            Row (
-                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "Registro",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.weight(1f))
-                ButtonState(
-                    text = "Guardar",
-                    isLoading = viewModel.isTransferring.value || viewModel.isSaving.value,
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        // Await transfer completion before navigating back.
-                        viewModel.transferCoursesToNewSemester(
-                            onComplete = { navigateBack() }
-                        )
-                    }
-                )
-                Spacer(Modifier.weight(0.3f))
-            }
+            Text(
+                text = "Registro",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingItem = {
+            ButtonState(
+                text = "Guardar",
+                isLoading = viewModel.isTransferring.value || viewModel.isSaving.value,
+                modifier = Modifier.widthIn(min = 88.dp, max = 120.dp),
+                onClick = {
+                    // Await transfer completion before navigating back.
+                    viewModel.transferCoursesToNewSemester(
+                        onComplete = { navigateBack() }
+                    )
+                }
+            )
         },
         navigateBack = navigateBack
     ) { innerPadding ->

@@ -126,6 +126,8 @@ fun CourseScreen(
                 text = viewModel.course.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
         },

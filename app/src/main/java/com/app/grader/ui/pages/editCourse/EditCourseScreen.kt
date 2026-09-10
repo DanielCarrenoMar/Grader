@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -73,44 +74,41 @@ fun EditCourseScreen(
     HeaderBack(
         snackbarHostState = snackbarHostState,
         title = {
-            Row (
-                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "Asignatura",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.weight(1f))
-                ButtonState(
-                    text = if (courseId == -1) "Crear" else "Guardar",
-                    isLoading = viewModel.isSaving.value,
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        try {
-                            viewModel.updateOrCreateCourse(
-                                semesterId,
-                                courseId,
-                                onCreate = { newCourseId ->
-                                    navigateBack()
-                                    if (semesterId != -1) navigateToEditGrade(semesterId, newCourseId.toInt(), -1)
-                                },
-                                onUpdate = {
-                                    navigateBack()
-                                }
-                            )
-
-                        }catch (e: InvalidParameterException){
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar(e.message?: "Error desconocido")
+            Text(
+                text = "Asignatura",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingItem = {
+            ButtonState(
+                text = if (courseId == -1) "Crear" else "Guardar",
+                isLoading = viewModel.isSaving.value,
+                modifier = Modifier.widthIn(min = 88.dp, max = 120.dp),
+                onClick = {
+                    try {
+                        viewModel.updateOrCreateCourse(
+                            semesterId,
+                            courseId,
+                            onCreate = { newCourseId ->
+                                navigateBack()
+                                if (semesterId != -1) navigateToEditGrade(semesterId, newCourseId.toInt(), -1)
+                            },
+                            onUpdate = {
+                                navigateBack()
                             }
+                        )
+
+                    }catch (e: InvalidParameterException){
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(e.message?: "Error desconocido")
                         }
                     }
-                )
-                Spacer(Modifier.weight(0.3f))
-            }
+                }
+            )
         },
         navigateBack = navigateBack
     ) { innerPadding ->

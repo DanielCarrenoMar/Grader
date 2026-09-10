@@ -19,11 +19,7 @@ import androidx.compose.ui.unit.dp
  * When [isLoading] is true the button is disabled and shows a small
  * progress indicator together with [loadingText] (falls back to [text]).
  * Clicks received while loading are ignored.
- *
- * Callers keep their loading flag in the ViewModel as source of truth and
- * pass a fixed width (for example `Modifier.width(120.dp)`) to match the
- * edit-screen header pattern.
- */
+*/
 @Composable
 fun ButtonState(
     text: String,

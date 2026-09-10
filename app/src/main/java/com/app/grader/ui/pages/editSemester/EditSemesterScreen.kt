@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -45,31 +46,28 @@ fun EditSemesterScreen(
 
     HeaderBack(
         title = {
-            Row (
-                modifier = Modifier.fillMaxWidth().padding(end = 30.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "Registro",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.weight(1f))
-                ButtonState(
-                    text = if (semesterId == -1) "Crear" else "Guardar",
-                    isLoading = viewModel.isSaving.value,
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        viewModel.updateOrCreateSemester(
-                            semesterId,
-                            onCreate = {navigateBack()},
-                            onUpdate = {navigateBack()}
-                        )
-                    }
-                )
-                Spacer(Modifier.weight(0.3f))
-            }
+            Text(
+                text = "Registro",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingItem = {
+            ButtonState(
+                text = if (semesterId == -1) "Crear" else "Guardar",
+                isLoading = viewModel.isSaving.value,
+                modifier = Modifier.widthIn(min = 88.dp, max = 120.dp),
+                onClick = {
+                    viewModel.updateOrCreateSemester(
+                        semesterId,
+                        onCreate = {navigateBack()},
+                        onUpdate = {navigateBack()}
+                    )
+                }
+            )
         },
         navigateBack = navigateBack
     ) { innerPadding ->

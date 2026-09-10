@@ -109,6 +109,8 @@ fun RecordSemesterScreen(
                 text = viewModel.semester.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
         },
