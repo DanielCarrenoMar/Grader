@@ -69,7 +69,7 @@ fun EditCourseScreen(
 
     if (showPesoInfoDialog) {
         InfoAlertDialogComp(
-            title = "¿Qué significa Peso?",
+            title = "Peso",
             message = "Representa la ponderación que tendrá en el cálculo del promedio.",
             onDismiss = { showPesoInfoDialog = false }
         )
@@ -161,7 +161,7 @@ fun EditCourseScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.info_outline),
                                 contentDescription = "Información sobre Peso",
-                                tint = MaterialTheme.colorScheme.onSurface
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }

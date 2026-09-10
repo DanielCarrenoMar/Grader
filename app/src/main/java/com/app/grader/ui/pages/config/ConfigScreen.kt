@@ -24,6 +24,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -51,6 +53,7 @@ import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.InfoAlertDialogComp
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
@@ -68,6 +71,7 @@ fun ConfigScreen(
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
     val isDebugBuild = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+    var showMinToPassInfoDialog by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -83,6 +87,15 @@ fun ConfigScreen(
             "Esta opción borrara TODOS los datos de la app.",
         )
     }
+
+    if (showMinToPassInfoDialog) {
+        InfoAlertDialogComp(
+            title = "Mínimo para aprobar",
+            message = "Representa la nota mínima que se necesita acumulada para aprobar la asignatura.",
+            onDismiss = { showMinToPassInfoDialog = false }
+        )
+    }
+
     HeaderMenu(
         "Ajustes",
         navigateToHome,
@@ -105,18 +118,29 @@ fun ConfigScreen(
                 current = viewModel.selectedTypeGradeId.intValue.toString(),
                 onSelect = { viewModel.setSelectedTypeGradeId(it.toInt()) },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 icon = R.drawable.rectangle_list_outline,
             )
             EditScreenInputComp(
                 placeHolderText = "Mínimo para aprobar (opcional)",
                 value = viewModel.minToPassInput.value,
                 onValueChange = viewModel::setMinToPass,
-                leadingIconId = R.drawable.pen_outline,
+                leadingIconId = R.drawable.check_outline,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 maxLength = 6,
                 maxLines = 1,
                 isError = viewModel.minToPassError.value,
+                suffix = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { showMinToPassInfoDialog = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.info_outline),
+                                contentDescription = "Información sobre Mínimo para aprobar",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                },
             )
             SelectorCard(
                 title = "Tema",
@@ -131,7 +155,7 @@ fun ConfigScreen(
                     viewModel.restartApp(context)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 icon = when(viewModel.typeTheme.value){
                     ThemeType.DARK -> R.drawable.moon_outline
                     ThemeType.LIGHT -> R.drawable.sun_outline
@@ -145,7 +169,7 @@ fun ConfigScreen(
                     viewModel.setRoundFinalCourseAverage(it)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
             )
@@ -155,8 +179,8 @@ fun ConfigScreen(
                     viewModel.setDirectPercentage(it)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.weight_outline,
+                iconColor = MaterialTheme.colorScheme.onSurface,
+                icon = R.drawable.layers_outline,
                 text = "Usar porcentaje acumulativo como calificacion",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
@@ -187,7 +211,7 @@ fun ConfigScreen(
                 onClick = { showDeleteConfirmation.value = true },
                 contentColor = Error500,
                 icon = R.drawable.trash_outline,
-                text = "Eliminar todos los datos",
+                text = "Eliminar todos los datos de la app",
             )
             if (isDebugBuild) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
