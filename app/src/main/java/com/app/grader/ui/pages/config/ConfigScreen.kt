@@ -108,6 +108,16 @@ fun ConfigScreen(
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.rectangle_list_outline,
             )
+            EditScreenInputComp(
+                placeHolderText = "Mínimo para aprobar (opcional)",
+                value = viewModel.minToPassInput.value,
+                onValueChange = viewModel::setMinToPass,
+                leadingIconId = R.drawable.pen_outline,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                maxLength = 6,
+                maxLines = 1,
+                isError = viewModel.minToPassError.value,
+            )
             SelectorCard(
                 title = "Tema",
                 items = listOf(
@@ -139,16 +149,6 @@ fun ConfigScreen(
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
             )
-            EditScreenInputComp(
-                placeHolderText = "Mínimo para aprobar (opcional)",
-                value = viewModel.minToPassInput.value,
-                onValueChange = viewModel::setMinToPass,
-                leadingIconId = R.drawable.round,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                maxLength = 6,
-                maxLines = 1,
-                isError = viewModel.minToPassError.value,
-            )
             SwitchCardComp(
                 checked = viewModel.isDirectPercentage.value,
                 onCheckedChange = {
@@ -156,7 +156,7 @@ fun ConfigScreen(
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.round,
+                icon = R.drawable.weight_outline,
                 text = "Usar porcentaje directo en todos los tipos de calificación",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
