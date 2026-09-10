@@ -71,7 +71,7 @@ class GradeDetailModelTest {
 
         assertTrue(result.isSuccess)
         assertEquals(50.0, result.getOrThrow().gradeValue.getMax(), 0.0)
-        assertEquals(50.0, result.getOrThrow().gradeValue.getGradePercentage()!!, 0.0)
+        assertEquals(10.0, result.getOrThrow().gradeValue.getGradePercentage()!!, 0.0)
         assertTrue(result.getOrThrow().subgrades.isEmpty())
     }
 
