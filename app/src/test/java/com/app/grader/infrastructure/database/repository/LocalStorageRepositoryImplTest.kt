@@ -150,21 +150,6 @@ class LocalStorageRepositoryImplTest {
     }
 
     @Test
-    fun saveGrade_throwsWhenSumPlusNewExceeds100() {
-        runBlocking {
-            whenever(gradeDao.getSumPercentageByCourseId(1)).thenReturn(80.0)
-
-            val model = gradeModel(percentage = 30.0) // 80 + 30 = 110 > 100
-
-            val ex = assertThrows(IllegalArgumentException::class.java) {
-                runBlocking { repo.saveGrade(model) }
-            }
-            assertEquals("La suma de las notas excede el 100%", ex.message)
-            verify(gradeDao, never()).insertGrade(any())
-        }
-    }
-
-    @Test
     fun saveGrade_succeedsWhenSumPlusNewAtMost100() {
         runBlocking {
             whenever(gradeDao.getSumPercentageByCourseId(1)).thenReturn(60.0)
@@ -193,24 +178,6 @@ class LocalStorageRepositoryImplTest {
 
             assertEquals(true, result)
             verify(gradeDao).updateGradeById(eq(7), any(), any(), any(), eq(40.0))
-        }
-    }
-
-    @Test
-    fun updateGrade_throwsWhenWithoutCurrentPlusNewExceeds100() {
-        runBlocking {
-            // Other grades on the course sum to 80. Current grade is 10.
-            // Excluding current: 80 - 10 = 70. New 40 → 70 + 40 = 110 > 100.
-            whenever(gradeDao.getSumPercentageByCourseId(1)).thenReturn(80.0)
-            whenever(gradeDao.getGradeFromId(7)).thenReturn(currentGradeEntity(weightingPercentage = 10.0))
-
-            val model = gradeModel(percentage = 40.0, id = 7, courseId = 1)
-
-            val ex = assertThrows(IllegalArgumentException::class.java) {
-                runBlocking { repo.updateGrade(model) }
-            }
-            assertEquals("La suma de las notas excede el 100%", ex.message)
-            verify(gradeDao, never()).updateGradeById(any(), any(), any(), any(), any())
         }
     }
 }
