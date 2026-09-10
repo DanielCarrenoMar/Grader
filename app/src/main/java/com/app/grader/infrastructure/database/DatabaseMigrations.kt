@@ -337,7 +337,9 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
  * Cambia la representación de "nota vacía" de -1.0 a NULL en `grade_percentage`
  * de las tablas `grade` y `sub_grade`, haciendo la columna NULLABLE y
  * convirtiendo -1.0 → NULL.
- */
+ *
+ * Además, se recrea la tabla `type_grade` con el nuevo esquema y se re-sembran los tipos de calificación.
+ * */
 val MIGRATION_9_10 = object : Migration(9, 10) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.beginTransaction()
@@ -397,14 +399,6 @@ val MIGRATION_9_10 = object : Migration(9, 10) {
             db.execSQL("ALTER TABLE sub_grade_new RENAME TO sub_grade")
             db.execSQL("CREATE INDEX index_sub_grade_grade_id ON sub_grade(grade_id)")
 
-            // ── type_grade ──────────────────────────────────────────────────────
-            // Se reemplaza el esquema antiguo (base_at, active) por el nuevo
-            // (title, max, min_to_pass, is_from_system, is_direct_percentage, active).
-            // Se borran los datos y se recrean con los mismos ids 1..5, más las nuevas
-            // variantes Base 10 ESP (id 6) y Base 10 MEX (id 7) para distinguir los
-            // distintos minToPass sobre la misma escala 0-10.
-            // Los cursos existentes referencian type_grade(id); al conservar los ids
-            // 1..5 las referencias de course.type_grade_id siguen siendo válidas.
             db.execSQL("DROP TABLE type_grade")
             db.execSQL(
                 """
