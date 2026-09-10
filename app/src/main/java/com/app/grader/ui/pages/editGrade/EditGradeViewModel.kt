@@ -77,6 +77,7 @@ class EditGradeViewModel @Inject constructor(
     private var percentageJob: Job? = null
     private var typeGradeJob: Job? = null
     private var loadedTypeGradeCourseId: Int? = null
+    private var editingGradeId: Int = -1
 
     init {
         loadTypeGradeFromCourse(_uiState.value.courseId)
@@ -141,10 +142,10 @@ class EditGradeViewModel @Inject constructor(
         _uiState.update { it.copy(percentage = percentage, fieldErrors = it.fieldErrors - "percentage") }
         actMax()
     }
-    fun setCourseId(courseId: Int) {
+    fun setCourseId(courseId: Int, gradeId: Int = editingGradeId) {
         if (_uiState.value.courseId == courseId) return
         _uiState.update { it.copy(courseId = courseId, fieldErrors = emptyMap()) }
-        actDefaultPercentage(courseId)
+        actDefaultPercentage(courseId, gradeId)
         loadTypeGradeFromCourse(courseId)
     }
     fun setTitle(title: String) {
@@ -157,7 +158,7 @@ class EditGradeViewModel @Inject constructor(
         _uiState.update { it.copy(course = course) }
     }
 
-    fun actDefaultPercentage(courseId: Int = _uiState.value.courseId) {
+    fun actDefaultPercentage(courseId: Int = _uiState.value.courseId, gradeId: Int = editingGradeId) {
         if (courseId == -1) return
 
         percentageJob?.cancel()
@@ -166,10 +167,22 @@ class EditGradeViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         val remaining = result.data?.getPercentage() ?: 100.0
+                        var trueRemaining = remaining
+                        if (gradeId != -1) {
+                            try {
+                                val gradeResult = getGradeByIdUseCase(gradeId).first { it !is Resource.Loading }
+                                val grade = (gradeResult as? Resource.Success)?.data
+                                if (grade != null && grade.courseId == courseId) {
+                                    trueRemaining = (remaining + grade.weight.getPercentage()).coerceIn(0.0, 100.0)
+                                }
+                            } catch (e: Exception) {
+                                Log.e("EditGradeViewModel", "Error getGradeById for defaultPercentage: ${e.message}")
+                            }
+                        }
                         _uiState.update {
                             it.copy(
-                                defaultPercentage = remaining,
-                                percentage = ""
+                                defaultPercentage = trueRemaining,
+                                percentage = if (gradeId == -1) "" else it.percentage
                             )
                         }
                         actMax()
@@ -302,6 +315,7 @@ class EditGradeViewModel @Inject constructor(
 
     fun loadGradeFromId(gradeId: Int) {
         if (gradeId == -1) return
+        editingGradeId = gradeId
         viewModelScope.launch {
             getGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
@@ -316,6 +330,8 @@ class EditGradeViewModel @Inject constructor(
                             )
                         }
                         actMax()
+                        val targetCourseId = _uiState.value.courseId.takeIf { it != -1 } ?: grade.courseId
+                        actDefaultPercentage(targetCourseId, gradeId)
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
@@ -452,7 +468,7 @@ class EditGradeViewModel @Inject constructor(
         }
     }
 
-    fun loadCourseOptionsFromSemester(semesterId: Int, courseId: Int = _uiState.value.courseId) {
+    fun loadCourseOptionsFromSemester(semesterId: Int, courseId: Int = _uiState.value.courseId, gradeId: Int = editingGradeId) {
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             getCoursesFromSemesterUseCase(semesterIdOrNull).collect { result ->
@@ -470,7 +486,7 @@ class EditGradeViewModel @Inject constructor(
                                         courseId = firstCourse.id
                                     )
                                 }
-                                actDefaultPercentage(firstCourse.id)
+                                actDefaultPercentage(firstCourse.id, gradeId)
                                 loadTypeGradeFromCourse(firstCourse.id)
                             } else {
                                 _uiState.update { it.copy(courses = courses) }

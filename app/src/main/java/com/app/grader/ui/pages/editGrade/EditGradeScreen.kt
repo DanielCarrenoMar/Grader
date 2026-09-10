@@ -78,11 +78,11 @@ fun EditGradeScreen(
     val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
-        viewModel.setCourseId(courseId)
+        viewModel.setCourseId(courseId, gradeId)
         viewModel.loadGradeFromId(gradeId)
         viewModel.loadSubGradesFromGrade(gradeId)
-        viewModel.loadCourseOptionsFromSemester(semesterId, courseId)
-        if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
+        viewModel.loadCourseOptionsFromSemester(semesterId, courseId, gradeId)
+        viewModel.actDefaultPercentage(courseId, gradeId)
     }
 
     HeaderBack(
