@@ -119,6 +119,26 @@ fun ConfigScreen(
         ) {
             Spacer(Modifier.height(10.dp))
             SelectorCard(
+                title = "Tema",
+                items = listOf(
+                    SelectorItem("Usar mi tema del sistema", ThemeType.SYSTEM_DEFAULT.name),
+                    SelectorItem("Tema Claro", ThemeType.LIGHT.name),
+                    SelectorItem("Tema Oscuro", ThemeType.DARK.name),
+                ),
+                current = viewModel.typeTheme.value.name,
+                onSelect = {
+                    viewModel.setTypeTheme(ThemeType.valueOf(it))
+                    viewModel.restartApp(context)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.onSurface,
+                icon = when(viewModel.typeTheme.value){
+                    ThemeType.DARK -> R.drawable.moon_outline
+                    ThemeType.LIGHT -> R.drawable.sun_outline
+                    ThemeType.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
+                },
+            )
+            SelectorCard(
                 title = "Tipo de calificación",
                 items = viewModel.typeGradeList.value.map { SelectorItem(it.title, it.id.toString()) },
                 current = viewModel.selectedTypeGradeId.intValue.toString(),
@@ -146,26 +166,6 @@ fun ConfigScreen(
                             )
                         }
                     }
-                },
-            )
-            SelectorCard(
-                title = "Tema",
-                items = listOf(
-                    SelectorItem("Usar mi tema del sistema", ThemeType.SYSTEM_DEFAULT.name),
-                    SelectorItem("Tema Claro", ThemeType.LIGHT.name),
-                    SelectorItem("Tema Oscuro", ThemeType.DARK.name),
-                ),
-                current = viewModel.typeTheme.value.name,
-                onSelect = {
-                    viewModel.setTypeTheme(ThemeType.valueOf(it))
-                    viewModel.restartApp(context)
-                },
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.onSurface,
-                icon = when(viewModel.typeTheme.value){
-                    ThemeType.DARK -> R.drawable.moon_outline
-                    ThemeType.LIGHT -> R.drawable.sun_outline
-                    ThemeType.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
