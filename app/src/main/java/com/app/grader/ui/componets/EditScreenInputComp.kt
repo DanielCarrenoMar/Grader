@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,8 +50,8 @@ fun EditScreenInputComp(
     Column (modifier = modifier) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 15.dp),
+                .padding(vertical = 15.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.Top // Alinea los elementos al inicio (arriba)
         ) {
             Box (
@@ -64,7 +65,7 @@ fun EditScreenInputComp(
                         .size(IconLarge)
                 )
             }
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             BasicTextField(
                 value = value.take(maxLength),
                 onValueChange = { if (it.length <= maxLength) onValueChange(it) },

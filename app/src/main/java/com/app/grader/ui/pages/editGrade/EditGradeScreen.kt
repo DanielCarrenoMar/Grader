@@ -118,6 +118,7 @@ fun EditGradeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 20.dp)
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -211,8 +212,7 @@ leadingIconId = R.drawable.star_half_outline,
                         .padding(vertical = 5.dp)
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 20.dp)
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.education_cap_outline),
