@@ -63,7 +63,7 @@ import androidx.compose.runtime.collectAsState
 @Composable
 fun EditGradeScreen(
     semesterId: Int,
-    courseId:Int,
+    courseId: Int,
     gradeId: Int,
     navigateBack: () -> Unit,
     viewModel: EditGradeViewModel = hiltViewModel(),
@@ -132,9 +132,9 @@ fun EditGradeScreen(
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
-                     isError = uiState.fieldErrors.containsKey("grade"),
-                     maxLength = 5,
+                    leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                    isError = uiState.fieldErrors.containsKey("grade"),
+                    maxLength = 5,
                     suffix = if (defaultTypeGrade?.isDirectPercentage != true) {
                         {
                             IconButton(
@@ -150,11 +150,19 @@ leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.
                                 )
                             }
                         }
-                    } else null,
+                    } else {
+                        {
+                            Text(
+                                text = "%",
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.padding(start = 5.dp)
+                            )
+                        }
+                    },
                     maxLines = 1
                 )
             }
-            if (defaultTypeGrade?.isDirectPercentage != true) itemsIndexed (uiState.subGrades) { index, subgrade ->
+            if (defaultTypeGrade?.isDirectPercentage != true) itemsIndexed(uiState.subGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }
@@ -175,16 +183,21 @@ leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.
                     placeHolderText = "Agregar calificación",
                     value = uiState.subGradeTexts.getOrNull(index).orEmpty(),
                     onValueChange = {
-                        if (index in viewModel.uiState.value.subGrades.indices) viewModel.setSubGrade(index, it)
+                        if (index in viewModel.uiState.value.subGrades.indices) viewModel.setSubGrade(
+                            index,
+                            it
+                        )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-leadingIconId = R.drawable.star_half_outline,
-                     isError = uiState.fieldErrors.containsKey("subgrade:$index"),
-                     maxLength = 5,
+                    leadingIconId = R.drawable.star_half_outline,
+                    isError = uiState.fieldErrors.containsKey("subgrade:$index"),
+                    maxLength = 5,
                     suffix = {
                         IconButton(
                             onClick = {
-                                if (index in viewModel.uiState.value.subGrades.indices) viewModel.removeSubGrade(index)
+                                if (index in viewModel.uiState.value.subGrades.indices) viewModel.removeSubGrade(
+                                    index
+                                )
                             },
                             enabled = !isSubmitting,
                             modifier = Modifier.size(IconLarge)
@@ -256,9 +269,9 @@ leadingIconId = R.drawable.star_half_outline,
                     value = uiState.percentage,
                     onValueChange = { viewModel.setPercentage(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                     leadingIconId = R.drawable.weight_outline,
-                     isError = uiState.fieldErrors.containsKey("percentage"),
-                     suffix = {
+                    leadingIconId = R.drawable.weight_outline,
+                    isError = uiState.fieldErrors.containsKey("percentage"),
+                    suffix = {
                         Text(
                             text = "%",
                             style = MaterialTheme.typography.labelMedium,
