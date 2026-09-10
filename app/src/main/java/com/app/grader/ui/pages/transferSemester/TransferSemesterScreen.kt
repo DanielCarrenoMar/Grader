@@ -78,8 +78,9 @@ fun TransferSemesterScreen(
         LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.surface),
+                .padding(horizontal = 20.dp),
         ) {
             item {
                 Spacer(Modifier.height(10.dp))
@@ -99,8 +100,7 @@ fun TransferSemesterScreen(
                 Spacer(Modifier.height(40.dp))
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ){
