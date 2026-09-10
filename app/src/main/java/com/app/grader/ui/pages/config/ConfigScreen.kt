@@ -195,22 +195,6 @@ fun ConfigScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Launch Count: ${viewModel.launchCount.intValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Review Asked Count: ${viewModel.reviewAskedCount.intValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Last Review Asked Time: ${viewModel.lastReviewAskedTimeDays.longValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Review Completed: ${viewModel.reviewCompleted.value}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
                 text = "Grader $versionName",
                 style = MaterialTheme.typography.bodyMedium,
             )
