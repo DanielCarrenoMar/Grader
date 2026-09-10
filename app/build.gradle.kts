@@ -32,8 +32,8 @@ android {
         applicationId = "com.app.grader"
         minSdk = 24
         targetSdk = 36
-        versionCode = 25
-        versionName = "2.0.2"
+        versionCode = 26
+        versionName = "2.1.0"
         ndk.debugSymbolLevel = "FULL"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
