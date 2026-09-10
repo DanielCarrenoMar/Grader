@@ -18,9 +18,11 @@ import com.app.grader.ui.pages.editCourse.EditCourseScreen
 import com.app.grader.ui.pages.editGrade.EditGradeScreen
 import com.app.grader.ui.pages.editSemester.EditSemesterScreen
 import com.app.grader.ui.pages.home.HomeScreen
+import com.app.grader.ui.pages.initialConfig.InitialConfigScreen
 import com.app.grader.ui.pages.record.RecordScreen
 import com.app.grader.ui.pages.recordSemester.RecordSemesterScreen
 import com.app.grader.ui.pages.transferSemester.TransferSemesterScreen
+import com.app.grader.domain.repository.AppConfigRepository
 
 /**
  * Navega a una pantalla borrandola de la pila de pantallas
@@ -39,15 +41,28 @@ fun NavController.navigateSingleTop(route: Any, builder: androidx.navigation.Nav
 }
 
 @Composable
-fun NavigationWrapper() {
+fun NavigationWrapper(appConfigRepository: AppConfigRepository) {
     val navController = rememberNavController()
+    val startDestination: Any = if (appConfigRepository.getLaunchCount() > 0) {
+        Home
+    } else {
+        InitialConfig
+    }
     NavHost(
         navController = navController,
-        startDestination = Home,
+        startDestination = startDestination,
         enterTransition = { fadeIn(animationSpec = tween(700)) },
         exitTransition = { fadeOut(animationSpec = tween(700)) },
         popEnterTransition = {fadeIn(animationSpec = tween(0))},
     ) {
+        composable<InitialConfig> {
+            InitialConfigScreen(
+                onComplete = {
+                    appConfigRepository.setLaunchCount(1)
+                    navController.navigatePop(Home)
+                }
+            )
+        }
         composable<Home> {
             HomeScreen(
                 { navController.navigateSingleTop(AllGrades) },

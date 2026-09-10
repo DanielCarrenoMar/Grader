@@ -9,13 +9,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import com.app.grader.data.database.AppDatabase
-import com.app.grader.data.database.MIGRATION_3_4
-import com.app.grader.data.database.MIGRATION_4_5
-import com.app.grader.data.database.MIGRATION_7_8
-import com.app.grader.data.database.MIGRATION_8_9
-import com.app.grader.data.database.migration6To7
-import com.app.grader.data.database.seedTypeGrade
+import com.app.grader.infrastructure.database.AppDatabase
+import com.app.grader.infrastructure.database.MIGRATION_3_4
+import com.app.grader.infrastructure.database.MIGRATION_4_5
+import com.app.grader.infrastructure.database.MIGRATION_7_8
+import com.app.grader.infrastructure.database.MIGRATION_8_9
+import com.app.grader.infrastructure.database.MIGRATION_9_10
+import com.app.grader.infrastructure.database.migration6To7
+import com.app.grader.infrastructure.database.seedTypeGrade
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,7 +36,7 @@ class DataBaseModule {
             appContext,
             AppDatabase::class.java, "grader_database"
         ).addCallback(seedCallback)
-            .addMigrations(MIGRATION_3_4, MIGRATION_4_5, migration6To7, MIGRATION_7_8, MIGRATION_8_9)
+            .addMigrations(MIGRATION_3_4, MIGRATION_4_5, migration6To7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
             .build()
     }
     @Singleton

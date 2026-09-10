@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.SaveSemesterUseCase
@@ -23,6 +24,7 @@ class TransferSemesterViewModel @Inject constructor(
     updateSemesterUseCase: UpdateSemesterUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
     private val getCoursesFromSemesterUseCase: GetCoursesFromSemesterUseCase,
+    val appConfigRepository: AppConfigRepository,
 ) : EditSemesterViewModel(
     getSemesterByIdUseCase,
     saveSemesterUseCase,
@@ -30,6 +32,9 @@ class TransferSemesterViewModel @Inject constructor(
 ) {
     private val _courses = mutableStateOf<List<CourseModel>>(emptyList())
     val courses = _courses
+
+    private val _isTransferring = mutableStateOf(false)
+    val isTransferring = _isTransferring
 
     fun getCoursesFromSemester(semesterId: Int?) {
         viewModelScope.launch {
@@ -47,7 +52,10 @@ class TransferSemesterViewModel @Inject constructor(
         }
     }
 
-    fun transferCoursesToNewSemester() {
+    fun transferCoursesToNewSemester(onComplete: () -> Unit = {}) {
+        // Guard against duplicate transfer while save or transfer is in flight.
+        if (_isTransferring.value || isSaving.value) return
+        _isTransferring.value = true
         saveSemester(
             SemesterModel(
                 title = title.value
@@ -57,16 +65,23 @@ class TransferSemesterViewModel @Inject constructor(
                     transferSemesterToSemesterUseCase(null, newSemesterId.toInt()).collect { result ->
                         when (result) {
                             is Resource.Success -> {
+                                // Success path: keep isTransferring true (sticky) so
+                                // the button stays disabled. Navigation leaves the page.
                                 Log.d("TransferSemesterViewModel", "Courses transferred successfully")
+                                onComplete()
                             }
                             is Resource.Loading -> {}
                             is Resource.Error -> {
+                                _isTransferring.value = false
                                 Log.e("TransferSemesterViewModel", "Error transferring courses: ${result.message}")
                             }
                         }
                     }
                 }
-            }
+            },
+            onError = {
+                _isTransferring.value = false
+            },
         )
     }
 }

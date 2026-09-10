@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -82,9 +82,17 @@ fun RecordSemesterScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId) }) },
+            {
+                viewModel.deleteSelectedCourse(
+                    onDeleteAction = {
+                        showDeleteConfirmation = false
+                        viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId)
+                    }
+                )
+            },
             { showDeleteConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     if (showDeleteSelfConfirmation) {
@@ -92,6 +100,7 @@ fun RecordSemesterScreen(
             { viewModel.deleteSelf(navigateBack) },
             { showDeleteSelfConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.semester.value.title}?",
+            enabled = !viewModel.isDeletingSemester.value,
         )
     }
     HeaderBack(
@@ -100,27 +109,35 @@ fun RecordSemesterScreen(
                 text = viewModel.semester.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
         },
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Transferir al registro actual") {
-                if (viewModel.semester.value.size <= 0) coroutineScope.launch {
-                    snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
-                    return@launch
-                }
-                viewModel.onGetSizeOfActualSemester{ size ->
-                    if (size > 0) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
-                        }
-                        return@onGetSizeOfActualSemester
+            MenuAction(
+                label = "Transferir al registro actual",
+                onClick = {
+                    // Guard against duplicate transfer while a transfer is in flight.
+                    if (viewModel.isTransferring.value) return@MenuAction
+                    if (viewModel.semester.value.size <= 0) coroutineScope.launch {
+                        snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
+                        return@launch
                     }
-                    viewModel.transferSelfToActualSemester(navigateBack)
-                }
-            },
+                    viewModel.onGetSizeOfActualSemester{ size ->
+                        if (size > 0) {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
+                            }
+                            return@onGetSizeOfActualSemester
+                        }
+                        viewModel.transferSelfToActualSemester(navigateBack)
+                    }
+                },
+                enabled = !viewModel.isTransferring.value,
+            ),
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         ),
@@ -155,7 +172,7 @@ fun RecordSemesterScreen(
             if (viewModel.isLoading.value) {
                 item {
                     CircularProgressIndicator(
-                        modifier = Modifier.width(64.dp),
+                        modifier = Modifier.size(64.dp),
                         color = MaterialTheme.colorScheme.secondary,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
@@ -199,6 +216,7 @@ fun RecordSemesterScreen(
                         val courseCardType = cardTypeFromCourse(course)
                         CourseCard(
                             course,
+                            appConfigRepository = viewModel.appConfigRepository,
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =  { navigateToEditCourse(-1, course.id) },
                             onDelete = {

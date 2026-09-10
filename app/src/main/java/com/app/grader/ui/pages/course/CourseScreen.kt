@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -42,13 +42,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
@@ -90,9 +89,15 @@ fun CourseScreen(
 
     if (showDeleteGradeConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
+            {
+                viewModel.deleteGradeFromId(
+                    viewModel.showGrade.value.id,
+                    onComplete = { showDeleteGradeConfirmation = false },
+                )
+            },
             { showDeleteGradeConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
+            enabled = !viewModel.isDeletingGrade.value,
         )
     }
     if (showDeleteSelfConfirmation) {
@@ -100,6 +105,7 @@ fun CourseScreen(
             { viewModel.deleteSelf(navigateBack) },
             { showDeleteSelfConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.course.value.title}?",
+            enabled = !viewModel.isDeletingCourse.value,
         )
     }
     if (showQuickEditInfoDialog) {
@@ -120,6 +126,8 @@ fun CourseScreen(
                 text = viewModel.course.value.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
         },
@@ -150,8 +158,9 @@ fun CourseScreen(
                 InfoCourseCard(
                     viewModel.course.value.average,
                     viewModel.accumulatePoints.value,
-                    viewModel.pedingPoints.value,
-                    viewModel.course.value.uc
+                    viewModel.pendingPoints.value,
+                    viewModel.course.value.uc,
+                    viewModel.course.value.typeGradeModel.isDirectPercentage,
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 CardContainer(
@@ -171,11 +180,11 @@ fun CourseScreen(
                                 style = MaterialTheme.typography.labelLarge
                             )
                             Spacer(Modifier.width(6.dp))
-                            if (viewModel.totalPercentaje.value.getPercentage() != 0.0) Text(
-                                modifier = Modifier.alpha(if (viewModel.totalPercentaje.value.getPercentage() >= 100) 0.4f else 1f),
-                                text = viewModel.totalPercentaje.value.toString() + "%",
+                            if (viewModel.totalPercentage.value.getPercentage() != 0.0) Text(
+                                modifier = Modifier.alpha(if (viewModel.totalPercentage.value.getPercentage() >= 100) 0.4f else 1f),
+                                text = viewModel.totalPercentage.value.toString() + "%",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = if (viewModel.totalPercentaje.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
+                                color = if (viewModel.totalPercentage.value.getPercentage() >= 100) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.tertiary
                             )
                             Spacer(Modifier.weight(1f))
                             IconButton(onClick = { showQuickEditInfoDialog = true }) {
@@ -195,7 +204,7 @@ fun CourseScreen(
                                     .padding(16.dp)
                             ) {
                                 CircularProgressIndicator(
-                                    modifier = Modifier.width(64.dp),
+                                    modifier = Modifier.size(64.dp),
                                     color = MaterialTheme.colorScheme.secondary,
                                     trackColor = MaterialTheme.colorScheme.surfaceVariant,
                                 )
@@ -234,14 +243,14 @@ fun CourseScreen(
                                         isEditing = viewModel.isEditingGrade.value,
                                         onInputValueChange = { newValue ->
                                             if (newValue.isBlank()) {
-                                                grade.grade.setBlank()
+                                                grade.gradeValue.setBlank()
                                                 viewModel.updateGrade(grade)
                                                 return@GradeCardComp
                                             }
                                             val numberValue = newValue.toDoubleOrNull()
                                             if (numberValue == null) return@GradeCardComp
-                                            if (!grade.grade.check(numberValue)) return@GradeCardComp
-                                            grade.grade.setGrade(numberValue)
+                                            if (!grade.gradeValue.check(numberValue)) return@GradeCardComp
+                                            grade.gradeValue.setValue(numberValue)
                                             viewModel.updateGrade(grade)
                                         },
                                     )
@@ -270,7 +279,7 @@ fun CourseScreen(
             FloatingMenuComp(
                 listOf(
                     FloatingMenuCompItem("Calificación", R.drawable.star_outline) {
-                        if (viewModel.totalPercentaje.value.getPercentage() < 100.0) {
+                        if (viewModel.totalPercentage.value.getPercentage() < 100.0) {
                             navigateToEditGrade(viewModel.course.value.semesterId ?: -1, courseId, -1)
                         } else coroutineScope.launch {
                             snackbarHostState.showSnackbar("Los porcentajes de las calificaciones ya suman 100%")
@@ -284,20 +293,21 @@ fun CourseScreen(
 
 @Composable
 fun InfoCourseCard(
-    average: Grade,
-    accumulatePoints: Grade,
-    pendingPoints: Grade,
+    average: GradeValue,
+    accumulatePoints: Double,
+    pendingPoints: Double,
     uc: Int,
+    isDirectPercentage: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val animatedAccumulatePoints by animateFloatAsState(
-        targetValue = accumulatePoints.getGrade().toFloat(),
+        targetValue = accumulatePoints.toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "accumulatePointsAnimation"
     )
 
     val animatedPendingPoints by animateFloatAsState(
-        targetValue = pendingPoints.getGrade().toFloat(),
+        targetValue = pendingPoints.toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "pendingPointsAnimation"
     )
@@ -316,7 +326,7 @@ fun InfoCourseCard(
                 modifier = Modifier
                     .padding(horizontal = 0.dp, vertical = 10.dp)
             ) {
-                CircleAverage(average, accumulatePoints.getGrade(), pendingPoints.getGrade())
+                CircleAverage(average, accumulatePoints, pendingPoints)
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 0.dp)
@@ -332,14 +342,16 @@ fun InfoCourseCard(
                         ) {
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = Grade.formatText(animatedAccumulatePoints),
+                                    text = GradeValue.formatText(
+                                        animatedAccumulatePoints
+                                    ),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.tertiary,
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = "Ptos. Acumulados",
+                                    text = if (isDirectPercentage) "%. Acumulado" else "Ptos. Acumulados",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.tertiary
                                 )
@@ -347,14 +359,14 @@ fun InfoCourseCard(
                             Spacer(Modifier.height(3.dp))
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = Grade.formatText(animatedPendingPoints),
+                                    text = GradeValue.formatText(animatedPendingPoints),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.secondary
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    text = "Ptos. Por Evaluar",
+                                    text = if (isDirectPercentage) "%. Por Evaluar" else "Ptos. Por Evaluar",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.secondary
                                 )

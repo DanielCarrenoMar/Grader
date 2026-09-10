@@ -15,11 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenu
@@ -44,27 +43,27 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.grader.R
+import com.app.grader.ui.componets.ButtonState
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.IconLarge
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditGradeScreen(
     semesterId: Int,
-    courseId:Int,
+    courseId: Int,
     gradeId: Int,
     navigateBack: () -> Unit,
     viewModel: EditGradeViewModel = hiltViewModel(),
@@ -74,45 +73,42 @@ fun EditGradeScreen(
     val coroutineScope = rememberCoroutineScope()
     val activity = LocalActivity.current
 
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val defaultTypeGrade by viewModel.defaultTypeGrade.collectAsState()
+    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
+
     LaunchedEffect(viewModel) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-            viewModel.resetCacheGrade()
-            viewModel.courseId.intValue = courseId
-            viewModel.loadGradeFromId(gradeId)
-            viewModel.loadSubGradesFromGrade(gradeId)
-            viewModel.loadCourseOptionsFromSemester(semesterId, courseId)
-            if (gradeId == -1) viewModel.actDefaultPercentage(courseId)
-        }
+        viewModel.setCourseId(courseId, gradeId)
+        viewModel.loadGradeFromId(gradeId)
+        viewModel.loadSubGradesFromGrade(gradeId)
+        viewModel.loadCourseOptionsFromSemester(semesterId, courseId, gradeId)
+        viewModel.actDefaultPercentage(courseId, gradeId)
     }
 
     HeaderBack(
         title = {
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "Calificación",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.weight(1f))
-                Button(
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        if (viewModel.submitGrade(gradeId, activity)) navigateBack()
-                        else {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Campos inválidos")
-                            }
-                        }
-                    }) {
-                    Text(text = if (gradeId == -1) "Crear" else "Guardar")
+            Text(
+                text = "Calificación",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingItem = {
+            ButtonState(
+                text = if (gradeId == -1) "Crear" else "Guardar",
+                isLoading = isSubmitting,
+                modifier = Modifier.widthIn(min = 88.dp, max = 120.dp),
+                onClick = {
+                    coroutineScope.launch {
+                        val error = viewModel.submitGrade(gradeId, activity)
+                        if (error == null) navigateBack()
+                        else snackbarHostState.showSnackbar(error)
+                    }
                 }
-                Spacer(Modifier.weight(0.3f))
-            }
+            )
         },
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack
@@ -122,45 +118,58 @@ fun EditGradeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 20.dp)
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
-                    enabled = viewModel.showSubGrades.isEmpty(),
-                    placeHolderText = "Agregar calificación 0-${viewModel.grade.value.getMax()}",
-                    value = viewModel.showGrade.value,
+                    enabled = uiState.subGrades.isEmpty(),
+                    placeHolderText = "Agregar calificación 0-${uiState.max}",
+                    value = uiState.gradeValue,
                     onValueChange = {
                         viewModel.setGrade(it)
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    leadingIconId = if (viewModel.showSubGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                    leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
+                    isError = uiState.fieldErrors.containsKey("grade"),
                     maxLength = 5,
-                    suffix = {
-                        IconButton(
-                            onClick = { viewModel.addSubGrade() },
-                            modifier = Modifier.size(IconLarge)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.plus_outline),
-                                contentDescription = "Grade",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                                modifier = Modifier
+                    suffix = if (defaultTypeGrade?.isDirectPercentage != true) {
+                        {
+                            IconButton(
+                                onClick = { viewModel.addSubGrade() },
+                                enabled = !isSubmitting,
+                                modifier = Modifier.size(IconLarge)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.plus_outline),
+                                    contentDescription = "Grade",
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                    modifier = Modifier
+                                )
+                            }
+                        }
+                    } else {
+                        {
+                            Text(
+                                text = "%",
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.padding(start = 5.dp)
                             )
                         }
                     },
                     maxLines = 1
                 )
             }
-            itemsIndexed (viewModel.showSubGrades) { index, subgrade ->
+            if (defaultTypeGrade?.isDirectPercentage != true) itemsIndexed(uiState.subGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(Unit) {
                     itemHeight = 65.dp
-                    if (index == viewModel.showSubGrades.size - 1) {
+                    if (index == uiState.subGrades.size - 1) {
                         focusRequester.requestFocus()
                     }
                 }
@@ -172,16 +181,25 @@ fun EditGradeScreen(
                         .padding(start = 5.dp)
                         .focusRequester(focusRequester),
                     placeHolderText = "Agregar calificación",
-                    value = subgrade,
+                    value = uiState.subGradeTexts.getOrNull(index).orEmpty(),
                     onValueChange = {
-                        viewModel.setSubGrade(index, it)
+                        if (index in viewModel.uiState.value.subGrades.indices) viewModel.setSubGrade(
+                            index,
+                            it
+                        )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     leadingIconId = R.drawable.star_half_outline,
+                    isError = uiState.fieldErrors.containsKey("subgrade:$index"),
                     maxLength = 5,
                     suffix = {
                         IconButton(
-                            onClick = { viewModel.removeSubGrade(index) },
+                            onClick = {
+                                if (index in viewModel.uiState.value.subGrades.indices) viewModel.removeSubGrade(
+                                    index
+                                )
+                            },
+                            enabled = !isSubmitting,
                             modifier = Modifier.size(IconLarge)
                         ) {
                             Image(
@@ -209,8 +227,7 @@ fun EditGradeScreen(
                         .padding(vertical = 5.dp)
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 20.dp)
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.education_cap_outline),
@@ -220,7 +237,7 @@ fun EditGradeScreen(
                                 .size(IconLarge),
                         )
                         Text(
-                            text = viewModel.showCourse.value.title,
+                            text = uiState.course.title,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 20.dp),
@@ -231,10 +248,10 @@ fun EditGradeScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
-                        viewModel.courses.value.forEach { option ->
+                        uiState.courses.forEach { option ->
                             DropdownMenuItem(
                                 onClick = {
-                                    viewModel.showCourse.value = option
+                                    viewModel.setCourse(option)
                                     viewModel.setCourseId(option.id)
                                     expanded = false
                                 },
@@ -247,12 +264,13 @@ fun EditGradeScreen(
                 }
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 EditScreenInputComp(
-                    placeHolderText = viewModel.defaultPercentage.value.toString()
+                    placeHolderText = viewModel.defaultPercentage.toString()
                         .removeSuffix(".0"),
-                    value = viewModel.showPercentage.value,
+                    value = uiState.percentage,
                     onValueChange = { viewModel.setPercentage(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     leadingIconId = R.drawable.weight_outline,
+                    isError = uiState.fieldErrors.containsKey("percentage"),
                     suffix = {
                         Text(
                             text = "%",
@@ -266,11 +284,10 @@ fun EditGradeScreen(
                 Spacer(modifier = Modifier.height(30.dp))
                 HorizontalDivider(modifier = Modifier.alpha(0.5f))
                 EditScreenInputComp(
-                    placeHolderText = "Agregar título (Opcional)",
-                    value = viewModel.showTitle.value,
+                    placeHolderText = "Agregar título (opcional)",
+                    value = uiState.title,
                     onValueChange = {
-                        viewModel.showTitle.value = it
-                        viewModel.title.value = it
+                        viewModel.setTitle(it)
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences
@@ -280,11 +297,10 @@ fun EditGradeScreen(
                     maxLines = 1
                 )
                 EditScreenInputComp(
-                    placeHolderText = "Agregar descripcción (Opcional)",
-                    value = viewModel.showDescription.value,
+                    placeHolderText = "Agregar descripcción (opcional)",
+                    value = uiState.description,
                     onValueChange = {
-                        viewModel.showDescription.value = it
-                        viewModel.description.value = it
+                        viewModel.setDescription(it)
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences

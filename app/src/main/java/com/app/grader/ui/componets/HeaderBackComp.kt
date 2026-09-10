@@ -2,6 +2,7 @@ package com.app.grader.ui.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,7 +31,8 @@ import com.app.grader.R
 
 data class MenuAction(
     val label: String,
-    val onClick: () -> Unit
+    val enabled: Boolean = true,
+    val onClick: () -> Unit,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +50,11 @@ fun HeaderBack(
         subtitleContentColor = MaterialTheme.colorScheme.onBackground,
         actionIconContentColor = MaterialTheme.colorScheme.primary,
     ),
+    // Slot for the header primary button/action (e.g. Save/Create).
+    // Rendered in `TopAppBar.actions` (single-line RowScope),
+    // outside `title`, so it never competes for width with the title
+    // and never wraps to a second line on narrow devices.
+    leadingItem: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -61,6 +68,7 @@ fun HeaderBack(
         iconId = R.drawable.arrow_left_outline,
         onClickIcon = { navigateBack() },
         actions = {
+            leadingItem()
             if (actions.isNotEmpty()) {
                 IconButton(
                     onClick = { menuExpanded = true },
@@ -88,7 +96,9 @@ fun HeaderBack(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
+                            enabled = action.enabled,
                             onClick = {
+                                if (!action.enabled) return@DropdownMenuItem
                                 action.onClick()
                                 menuExpanded = false
                             }

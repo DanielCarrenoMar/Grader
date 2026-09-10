@@ -1,6 +1,7 @@
 package com.app.grader.ui.componets.chart
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,21 +15,22 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.grader.core.lib.getColorForGrade
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 
 @Composable
 fun CircleGrade(
     modifier: Modifier = Modifier,
-    grade: Grade,
+    gradeValue: GradeValue,
     fontSize: TextUnit = 16.sp,
-    radius : Dp = 40.dp
+    radius : Dp = 40.dp,
+    isPercentage: Boolean = false,
 ) {
     if (radius < 0.dp) throw IllegalArgumentException("Radius must be positive")
 
-    val colorOnBase = getColorForGrade(grade)
+    val colorOnBase = getColorForGrade(gradeValue)
     val textGrade = when{
-        grade.isBlank() -> "--"
-        else -> grade.toString()
+        gradeValue.isBlank() -> "--"
+        else -> gradeValue.toString()
     }
 
     Box(
@@ -43,12 +45,23 @@ fun CircleGrade(
             }
             .then(modifier)
     ) {
-        Text(
-            textGrade,
-            style = MaterialTheme.typography.labelLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.surface,
-            fontSize = fontSize
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                textGrade,
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.surface,
+                fontSize = fontSize
+            )
+            if (isPercentage && !gradeValue.isBlank()) {
+                Text(
+                    text = "%",
+                    color = MaterialTheme.colorScheme.surface,
+                    fontSize = fontSize * 0.65f
+                )
+            }
+        }
     }
 }

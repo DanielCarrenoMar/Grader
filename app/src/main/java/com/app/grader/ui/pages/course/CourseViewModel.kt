@@ -1,17 +1,17 @@
 package com.app.grader.ui.pages.course
 
 import android.util.Log
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
-import com.app.grader.domain.types.Grade
 import com.app.grader.domain.types.Percentage
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetAverageFromCourseUseCase
+import com.app.grader.domain.usecase.course.GetCourseStatisticsUseCase
 import com.app.grader.domain.usecase.grade.DeleteGradeByIdUseCase
 import com.app.grader.domain.usecase.course.GetCourseByIdUseCase
 import com.app.grader.domain.usecase.grade.GetGradeByIdUseCase
@@ -28,20 +28,20 @@ class CourseViewModel  @Inject constructor(
     private val getGradeByIdUseCase: GetGradeByIdUseCase,
     private val deleteGradeByIdUseCase: DeleteGradeByIdUseCase,
     private val getAverageFromCourseUseCase: GetAverageFromCourseUseCase,
+    private val getCourseStatisticsUseCase: GetCourseStatisticsUseCase,
     private val updateGradeUseCase: UpdateGradeUseCase,
     private val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
-    private val gradeFactory: GradeFactory
 ): ViewModel() {
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
-    private val _accumulatePoints = mutableStateOf(Grade(0.0,0.0,0))
+    private val _accumulatePoints = mutableDoubleStateOf(0.0)
     val accumulatePoints = _accumulatePoints
-    private val _pedingPoints = mutableStateOf(Grade(0.0,0.0,0))
-    val pedingPoints = _pedingPoints
-    private val _totalPercentaje = mutableStateOf(Percentage(0.0))
-    val totalPercentaje = _totalPercentaje
+    private val _pendingPoints = mutableDoubleStateOf(0.0)
+    val pendingPoints = _pendingPoints
+    private val _totalPercentage = mutableStateOf(Percentage(0.0))
+    val totalPercentage = _totalPercentage
 
-    private val _showGrade = mutableStateOf(GradeModel.DEFAULT)
+    private val _showGrade = mutableStateOf(GradeModel())
     val showGrade = _showGrade
     private val _course = mutableStateOf(
         CourseModel.DEFAULT
@@ -54,18 +54,29 @@ class CourseViewModel  @Inject constructor(
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
 
+    private val _isDeletingGrade = mutableStateOf(false)
+    val isDeletingGrade = _isDeletingGrade
+
+    private val _isDeletingCourse = mutableStateOf(false)
+    val isDeletingCourse = _isDeletingCourse
+
     fun deleteSelf(navigateTo: () -> Unit) {
+        // Separate flag for course delete so grade delete stays available.
+        if (_isDeletingCourse.value) return
         if (_course.value.id == -1) return
+        _isDeletingCourse.value = true
         viewModelScope.launch {
             deleteCourseByIdUseCase(_course.value.id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingCourse.value = false
                         navigateTo()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
+                        _isDeletingCourse.value = false
                         Log.e("CourseViewModel", "Error deleteSelf: ${result.message}")
                     }
                 }
@@ -110,27 +121,17 @@ class CourseViewModel  @Inject constructor(
 
     fun calPoints(courseId: Int){
         viewModelScope.launch {
-            getGradesFromCourseUseCase(courseId).collect { result ->
+            getCourseStatisticsUseCase(courseId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val grades = result.data!!
-                        var accumulatePointsTemp = 0.0
-                        var totalPercentage = 0.0
-                        var totalEvaluledPercentage = 0.0
-                        grades.forEach { grade ->
-                            totalPercentage += grade.percentage.getPercentage()
-                            if (grade.grade.isNotBlank()) {
-                                totalEvaluledPercentage += grade.percentage.getPercentage()
-                                accumulatePointsTemp += (grade.percentage.getPercentage() / 100) * grade.grade.getGrade()
-                            }
-                        }
-                        _totalPercentaje.value = Percentage(totalPercentage)
-                        _accumulatePoints.value = gradeFactory.instGrade(accumulatePointsTemp)
-                        _pedingPoints.value = gradeFactory.instGradeFromPercentage(100 - totalEvaluledPercentage)
+                        val stats = result.data!!
+                        _totalPercentage.value = stats.totalPercentage
+                        _accumulatePoints.doubleValue = stats.accumulatePoints
+                        _pendingPoints.doubleValue = stats.pendingPoints
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
-                        Log.e("CourseViewModel", "Error getCourseFromIdUseCase: ${result.message}")
+                        Log.e("CourseViewModel", "Error getCourseStatistics: ${result.message}")
                     }
                 }
             }
@@ -189,19 +190,25 @@ class CourseViewModel  @Inject constructor(
         }
     }
 
-    fun deleteGradeFromId(gradeId: Int){
+    fun deleteGradeFromId(gradeId: Int, onComplete: () -> Unit = {}){
+        // Separate flag for grade delete so course delete stays available.
+        if (_isDeletingGrade.value) return
+        _isDeletingGrade.value = true
         viewModelScope.launch {
             deleteGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingGrade.value = false
                         getGradesFromCourse(_course.value.id)
                         calPoints(_course.value.id)
                         calAverageFromCourseId(_course.value.id)
+                        onComplete()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
+                        _isDeletingGrade.value = false
                         Log.e("CourseViewModel", "Error deleteGradeFromId: ${result.message}")
                     }
                 }

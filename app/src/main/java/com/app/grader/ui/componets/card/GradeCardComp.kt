@@ -42,18 +42,18 @@ fun GradeCardComp(
     isEditing: Boolean = false,
     onInputValueChange: (String) -> Unit = {},
 ) {
-    val maxGradeLength = grade.grade.getMax().toString().length + 3 // +3 for decimal point and two decimal places
+    val maxGradeLength = grade.gradeValue.getMax().toString().length + 3 // +3 for decimal point and two decimal places
 
     var gradeTextFieldValue by remember {
-        mutableStateOf(TextFieldValue(grade.grade.toString()))
+        mutableStateOf(TextFieldValue(grade.gradeValue.toString()))
     }
     val focusRequester = remember { FocusRequester() }
     var requestFocus by remember { mutableStateOf(false) }
 
     LaunchedEffect(requestFocus, Unit) {
         if (requestFocus) {
-            val currentText = TextFieldValue(grade.grade.toString()).text
-            gradeTextFieldValue = TextFieldValue(grade.grade.toString()).copy(
+            val currentText = TextFieldValue(grade.gradeValue.toString()).text
+            gradeTextFieldValue = TextFieldValue(grade.gradeValue.toString()).copy(
                 selection = TextRange(currentText.length)
             )
             focusRequester.requestFocus()
@@ -103,13 +103,14 @@ fun GradeCardComp(
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = getColorForGrade(grade.grade)
+                            unfocusedBorderColor = getColorForGrade(grade.gradeValue)
                         )
                     )
                 } else{
                     CircleGrade(
-                        grade = grade.grade,
-                        radius = 25.dp
+                        gradeValue = grade.gradeValue,
+                        radius = 25.dp,
+                        isPercentage = grade.isDirectPercentage
                     )
                 }
             Column(
@@ -121,7 +122,7 @@ fun GradeCardComp(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = grade.percentage.toString() + "%",
+                    text = grade.weight.toString() + "%",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface
                     )

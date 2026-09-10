@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
@@ -20,9 +20,9 @@ open class SemesterViewModel(
     protected val deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     protected val getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     protected val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
-    protected val gradeFactory: GradeFactory,
+    val appConfigRepository: com.app.grader.domain.repository.AppConfigRepository
 ): ViewModel() {
-    private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
+    private val _totalAverage = mutableStateOf(GradeValue())
     val totalAverage = _totalAverage
 
     private val _totalWeight = mutableIntStateOf(0)
@@ -40,6 +40,9 @@ open class SemesterViewModel(
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
 
+    private val _isDeleting = mutableStateOf(false)
+    val isDeleting = _isDeleting
+
     private val _grades = mutableStateOf<List<GradeModel>>(emptyList())
     val grades = _grades
 
@@ -48,15 +51,20 @@ open class SemesterViewModel(
     }
 
     fun deleteSelectedCourse(onDeleteAction : () -> Unit = {}) {
+        // Guard against duplicate delete while a delete is in flight.
+        if (_isDeleting.value) return
         if (_deleteCourse.value.id == -1) return
+        _isDeleting.value = true
         viewModelScope.launch {
             deleteCourseByIdUseCase(_deleteCourse.value.id).collect{ result ->
                 when (result){
                     is Resource.Success -> {
+                        _isDeleting.value = false
                         onDeleteAction()
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isDeleting.value = false
                         Log.e("SemesterViewModel", "Error deleteSelectedCourse: ${result.message}")
                     }
                 }

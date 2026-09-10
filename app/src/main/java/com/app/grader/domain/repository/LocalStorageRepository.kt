@@ -1,11 +1,13 @@
 package com.app.grader.domain.repository
 
 import com.app.grader.domain.model.CourseModel
+import com.app.grader.domain.model.CourseStatisticsModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.model.SemesterStatisticsModel
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.model.TypeGradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
 
 interface LocalStorageRepository {
@@ -14,14 +16,17 @@ interface LocalStorageRepository {
     suspend fun deleteSemesterById(semesterId: Int): Boolean
     suspend fun getAllSemesters(): List<SemesterModel>
     suspend fun getSemesterById(semesterId: Int): SemesterModel?
-    suspend fun getAverageFromSemester(semesterId: Int?): Grade
+    suspend fun getAverageFromSemester(semesterId: Int?): GradeValue
     suspend fun getSizeOfSemesters(semesterId: Int?): Int
     suspend fun getWeightOfSemester(semesterId: Int?): Int
     suspend fun updateSemester(semesterModel: SemesterModel): Boolean
     suspend fun transferSemesterToSemester(semesterIdSender: Int?, semesterIdReceiver: Int?): Int
 
-    suspend fun getAverageFromCourse(courseId:Int) : Grade
+    suspend fun getTotalSemestersStatistics(averageCourseRounded: Boolean): SemesterStatisticsModel
+
+    suspend fun getAverageFromCourse(courseId:Int) : GradeValue
     suspend fun getTotalPercentageFromCourse(courseId:Int) : Percentage
+    suspend fun getCourseStatistics(courseId: Int): CourseStatisticsModel
     suspend fun saveCourse(courseModel: CourseModel): Long
     suspend fun deleteAllCourses() : Int
     suspend fun deleteAllCoursesFromSemester(semesterId: Int?): Int
@@ -34,8 +39,14 @@ interface LocalStorageRepository {
      */
     suspend fun updateCourse(courseModel: CourseModel): Boolean
 
+    suspend fun updateTypeGradeForAllCourses(typeGradeId: Int): Int
+
     suspend fun getAllTypeGrades(): List<TypeGradeModel>
+    suspend fun getTypeGradeById(typeGradeId: Int): TypeGradeModel?
+    suspend fun getTypeGradeFromCourse(courseId: Int): TypeGradeModel?
     suspend fun saveTypeGrade(typeGradeModel: TypeGradeModel): Long
+    suspend fun updateTypeGradeConfigurationForAll(isDirectPercentage: Boolean): Int
+    suspend fun updateTypeGradeMinToPass(typeGradeId: Int, minToPass: Double?): Boolean
     suspend fun deleteTypeGradeById(typeGradeId: Int): Boolean
 
     /**

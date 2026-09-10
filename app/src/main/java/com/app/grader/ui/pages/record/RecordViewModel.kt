@@ -5,15 +5,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterLessThanUseCase
 import com.app.grader.domain.usecase.semester.DeleteSemesterByIdUseCase
 import com.app.grader.domain.usecase.semester.GetAllSemestersUseCase
 import com.app.grader.domain.usecase.semester.GetAverageFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.GetSizeFromSemesterUseCase
+import com.app.grader.domain.usecase.semester.GetTotalSemesterStatisticsUseCase
 import com.app.grader.domain.usecase.semester.GetWeightFromSemesterUseCase
 import com.app.grader.domain.usecase.semester.TransferSemesterToSemesterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,8 +31,8 @@ class RecordViewModel @Inject constructor(
     private val getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
     private val getSizeFromSemesterUseCase: GetSizeFromSemesterUseCase,
     private val getWeightFromSemesterUSeCase: GetWeightFromSemesterUseCase,
+    private val getTotalSemesterStatisticsUseCase: GetTotalSemesterStatisticsUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
-    private val gradeFactory: GradeFactory,
 ) : ViewModel() {
     private val _semesters = mutableStateOf<List<SemesterModel>>(emptyList())
     val semesters = _semesters
@@ -39,7 +40,7 @@ class RecordViewModel @Inject constructor(
     private val _currentSemester = mutableStateOf(SemesterModel.DEFAULT)
     val currentSemester = _currentSemester
 
-    private val _totalAverage = mutableStateOf(gradeFactory.instGrade())
+    private val _totalAverage = mutableStateOf(GradeValue())
     val totalAverage = _totalAverage
 
     private val _totalWeight = mutableIntStateOf(0)
@@ -57,18 +58,35 @@ class RecordViewModel @Inject constructor(
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
 
+    private val _isDeleting = mutableStateOf(false)
+    val isDeleting = _isDeleting
+
+    private val _isTransferring = mutableStateOf(false)
+    val isTransferring = _isTransferring
+
     fun transferSelfToActualSemester(semesterIdSender: Int){
+        // Guard against duplicate transfer while a transfer is in flight.
+        if (_isTransferring.value) return
         if (semesterIdSender == -1) return
+        _isTransferring.value = true
         viewModelScope.launch {
             transferSemesterToSemesterUseCase(semesterIdSender, null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        deleteSemester(semesterIdSender){
-                            getCurrentSemester()
-                        }
+                        deleteSemester(
+                            semesterIdSender,
+                            onDeleteAction = {
+                                getCurrentSemester()
+                                _isTransferring.value = false
+                            },
+                            onError = {
+                                _isTransferring.value = false
+                            },
+                        )
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isTransferring.value = false
                         Log.e("RecordViewModel", "Error transferSelfToActualSemester: ${result.message}")
                     }
                 }
@@ -101,7 +119,7 @@ class RecordViewModel @Inject constructor(
             val average = getAverageFromSemesterUseCase(null)
                 .firstOrNull { it is Resource.Success }
                 ?.let { (it as Resource.Success).data }
-                ?: gradeFactory.instGrade()
+                ?: GradeValue()
 
             val size = getSizeFromSemesterUseCase(null)
                 .firstOrNull { it is Resource.Success }
@@ -125,37 +143,32 @@ class RecordViewModel @Inject constructor(
 
     fun getAllSemestersAndCalTotalAverage() {
         viewModelScope.launch {
+            // Refresca la lista de semestres.
             getAllSemestersUseCase().collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _semesters.value = result.data!!
-                        if (_semesters.value.isEmpty()) {
-                            _totalAverage.value = gradeFactory.instGrade()
-                            return@collect
-                        }
-
-                        var sumAverage = 0.0
-                        var sumSemesterWeight = 0
-                        var sumCoursesLength = 0
-                        _semesters.value.forEach { semester ->
-                            if (semester.average.isBlank()) return@forEach
-                            sumAverage += semester.average.getGrade() * semester.weight
-                            sumSemesterWeight += semester.weight
-                            sumCoursesLength += semester.size
-                        }
-                        if (sumSemesterWeight == 0) {
-                            _totalAverage.value = gradeFactory.instGrade()
-                            return@collect
-                        }
-
-                        _totalCourses.intValue = sumCoursesLength
-                        _totalWeight.intValue = sumSemesterWeight
-                        _totalAverage.value = gradeFactory.instGrade(sumAverage / sumSemesterWeight)
                     }
 
                     is Resource.Loading -> {}
                     is Resource.Error -> {
                         Log.e("RecordViewModel", "Error getAllSemestersUserCase: ${result.message}")
+                    }
+                }
+            }
+            // Calcula los totales (cursos, UC y promedio) desde el flujo del DAO.
+            getTotalSemesterStatisticsUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        val statistics = result.data!!
+                        _totalCourses.intValue = statistics.totalCourses
+                        _totalWeight.intValue = statistics.totalWeight
+                        _totalAverage.value = statistics.totalAverage
+                    }
+
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.e("RecordViewModel", "Error getTotalSemesterStatisticsUseCase: ${result.message}")
                     }
                 }
             }
@@ -166,17 +179,23 @@ class RecordViewModel @Inject constructor(
         _deleteSemester.value = semesterModel
     }
 
-    fun deleteSemester(semesterId: Int, onDeleteAction: () -> Unit = {}){
+    fun deleteSemester(semesterId: Int, onDeleteAction: () -> Unit = {}, onError: () -> Unit = {}){
+        // Separate flag for delete so transfer stays available.
+        if (_isDeleting.value) return
+        _isDeleting.value = true
         viewModelScope.launch {
             deleteSemesterByIdUseCase(semesterId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeleting.value = false
                         getAllSemestersAndCalTotalAverage()
                         onDeleteAction()
                     }
 
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isDeleting.value = false
+                        onError()
                         Log.e("RecordViewModel", "Error deleteSemesterByIdUseCase: ${result.message}")
                     }
                 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.TypeGradeModel
@@ -40,6 +40,9 @@ class EditCourseViewModel @Inject constructor(
     val showTitle = _showTitle
     private val _showUc = mutableStateOf("")
     val showUc = _showUc
+
+    private val _isSaving = mutableStateOf(false)
+    val isSaving = _isSaving
 
     init {
         loadTypeGrades()
@@ -94,6 +97,7 @@ class EditCourseViewModel @Inject constructor(
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
                 }
@@ -110,6 +114,7 @@ class EditCourseViewModel @Inject constructor(
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
                 }
@@ -134,7 +139,9 @@ class EditCourseViewModel @Inject constructor(
     }
 
     fun updateOrCreateCourse(semesterId: Int, courseId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {
+        if (_isSaving.value) return
         validCourse()
+        _isSaving.value = true
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             if (courseId == -1) {

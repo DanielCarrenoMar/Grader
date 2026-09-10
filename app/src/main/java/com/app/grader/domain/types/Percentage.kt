@@ -1,7 +1,5 @@
 package com.app.grader.domain.types
 
-import com.app.grader.domain.types.Grade
-
 data class Percentage(
     private var percentage: Double
 ) {

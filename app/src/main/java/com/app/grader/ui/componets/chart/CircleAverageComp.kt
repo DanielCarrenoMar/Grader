@@ -21,11 +21,11 @@ import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutConfig
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 
 @Composable
 fun CircleAverage(
-    average: Grade,
+    average: GradeValue,
     accumulatePoints:Double,
     pendingPoints: Double,
     strokeWith: Dp = 7.dp,
@@ -34,14 +34,14 @@ fun CircleAverage(
     val density = LocalDensity.current
 
     val animatedAverage by animateFloatAsState(
-        targetValue = average.getGrade().toFloat(),
+        targetValue = (average.getValue() ?: 0.0).toFloat(),
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "averageAnimation"
     )
 
     val textAverage = when{
         average.isBlank() -> "--"
-        else -> Grade.formatText(animatedAverage)
+        else -> GradeValue.formatText(animatedAverage)
     }
     val sections = if (average.isNotBlank()) {
         listOf(

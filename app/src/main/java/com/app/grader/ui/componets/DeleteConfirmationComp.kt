@@ -19,9 +19,13 @@ fun DeleteConfirmationComp(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     description: String = "¿Realmente desea eliminar este elemento?",
+    enabled: Boolean = true,
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            // Gate dismissal while deleting to avoid a trapped disabled dialog.
+            if (enabled) onDismiss()
+        },
         title = {
                     Text(
                         text = "Eliminar",
@@ -35,25 +39,24 @@ fun DeleteConfirmationComp(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-               },
+                },
         confirmButton = {
             Button(
-                onClick = {
-                    onDismiss()
-                    onConfirm()
-                },
+                onClick = onConfirm,
+                enabled = enabled,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Error500,
                     contentColor = Shadow50
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Eliminar")
+                Text(if (enabled) "Eliminar" else "Eliminando...")
             }
         },
         dismissButton = {
             Button(
                 onClick = onDismiss,
+                enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Shadow50
@@ -62,6 +65,6 @@ fun DeleteConfirmationComp(
                 Text("Cancelar")
             }
         },
-        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+        properties = DialogProperties(dismissOnBackPress = enabled, dismissOnClickOutside = enabled)
     )
 }

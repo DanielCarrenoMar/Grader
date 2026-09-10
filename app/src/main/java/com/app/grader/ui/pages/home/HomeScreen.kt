@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -78,9 +78,15 @@ fun HomeScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse { viewModel.getCoursesAndCalTotalAverageFromSemester(null) } },
+            {
+                viewModel.deleteSelectedCourse {
+                    showDeleteConfirmation.value = false
+                    viewModel.getCoursesAndCalTotalAverageFromSemester(null)
+                }
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     HeaderMenu(
@@ -112,7 +118,7 @@ fun HomeScreen(
             if (viewModel.isLoading.value) {
                 item {
                     CircularProgressIndicator(
-                        modifier = Modifier.width(64.dp),
+                        modifier = Modifier.size(64.dp),
                         color = MaterialTheme.colorScheme.secondary,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
@@ -154,6 +160,7 @@ fun HomeScreen(
                         val courseCardType = cardTypeFromCourse(course)
                         CourseCard(
                             course,
+                            appConfigRepository = viewModel.appConfigRepository,
                             onClick =  { navigateToCourse(course.id) },
                             onEdit =   { navigateToEditCourse(-1, course.id) },
                             onDelete = {

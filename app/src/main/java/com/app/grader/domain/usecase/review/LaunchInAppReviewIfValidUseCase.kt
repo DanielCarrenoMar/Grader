@@ -1,17 +1,17 @@
 package com.app.grader.domain.usecase.review
 
 import android.app.Activity
-import com.app.grader.data.appConfig.AppConfigRepository
+import com.app.grader.domain.repository.AppConfigRepository
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.policy.InAppReviewPolicy
-import com.app.grader.service.review.InAppReviewHelper
+import com.app.grader.domain.repository.DistributionPlatformRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
 class LaunchInAppReviewIfValidUseCase @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
-    private val inAppReviewHelper: InAppReviewHelper,
+    private val distributionPlatformRepository: DistributionPlatformRepository,
     private val inAppReviewPolicy: InAppReviewPolicy
 ) {
 
@@ -48,15 +48,13 @@ class LaunchInAppReviewIfValidUseCase @Inject constructor(
                 return@channelFlow
             }
 
-            inAppReviewHelper.launchReviewFlow(
-                activity = activity,
-                onComplete = {
-                    markReviewAsked()
-                },
-                onError = { }
-            )
-
-            send(Resource.Success(true))
+            val reviewResult = distributionPlatformRepository.requestReview(activity)
+            if (reviewResult.isSuccess) {
+                markReviewAsked()
+                send(Resource.Success(true))
+            } else {
+                send(Resource.Success(false))
+            }
         } catch (e: Exception) {
             send(Resource.Error(e.message ?: "Unknown Error"))
         }

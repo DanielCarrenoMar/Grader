@@ -3,10 +3,8 @@ package com.app.grader.ui.pages.recordSemester
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SemesterModel
-import com.app.grader.domain.types.Grade
 import com.app.grader.domain.usecase.course.DeleteCourseByIdUseCase
 import com.app.grader.domain.usecase.course.GetCoursesFromSemesterUseCase
 import com.app.grader.domain.usecase.grade.GetGradesFromSemesterUseCase
@@ -26,7 +24,7 @@ class RecordSemesterViewModel @Inject constructor(
     deleteCourseByIdUseCase: DeleteCourseByIdUseCase,
     getGradesFromSemesterUseCase: GetGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase: GetAverageFromSemesterUseCase,
-    gradeFactory: GradeFactory,
+    appConfigRepository: com.app.grader.domain.repository.AppConfigRepository,
     private val deleteSemesterByIdUseCase: DeleteSemesterByIdUseCase,
     private val getSemesterByIdUseCase: GetSemesterByIdUseCase,
     private val transferSemesterToSemesterUseCase: TransferSemesterToSemesterUseCase,
@@ -36,10 +34,16 @@ class RecordSemesterViewModel @Inject constructor(
     deleteCourseByIdUseCase,
     getGradesFromSemesterUseCase,
     getAverageFromSemesterUseCase,
-    gradeFactory
+    appConfigRepository
 ) {
     private val _semester = mutableStateOf(SemesterModel.DEFAULT)
     val semester = _semester
+
+    private val _isDeletingSemester = mutableStateOf(false)
+    val isDeletingSemester = _isDeletingSemester
+
+    private val _isTransferring = mutableStateOf(false)
+    val isTransferring = _isTransferring
 
     fun getSemester(semesterId: Int) {
         viewModelScope.launch {
@@ -61,16 +65,21 @@ class RecordSemesterViewModel @Inject constructor(
         }
     }
     fun deleteSelf(navigateTo: () -> Unit) {
+        // Separate flag for semester delete so course delete stays available.
+        if (_isDeletingSemester.value) return
         if (_semester.value.id == -1) return
+        _isDeletingSemester.value = true
         viewModelScope.launch {
             deleteSemesterByIdUseCase(_semester.value.id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingSemester.value = false
                         navigateTo()
                     }
 
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isDeletingSemester.value = false
                         Log.e("RecordSemesterViewModel", "Error deleteSelf: ${result.message}")
                     }
                 }
@@ -79,16 +88,38 @@ class RecordSemesterViewModel @Inject constructor(
     }
 
     fun transferSelfToActualSemester(navigateTo: () -> Unit){
+        // Guard against duplicate transfer while a transfer is in flight.
+        if (_isTransferring.value) return
         if (_semester.value.id == -1) return
+        _isTransferring.value = true
         viewModelScope.launch {
             transferSemesterToSemesterUseCase(_semester.value.id, null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        deleteSelf(navigateTo)
+                        deleteSelfAfterTransfer(navigateTo)
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isTransferring.value = false
                         Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteSelfAfterTransfer(navigateTo: () -> Unit) {
+        viewModelScope.launch {
+            deleteSemesterByIdUseCase(_semester.value.id).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _isTransferring.value = false
+                        navigateTo()
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        _isTransferring.value = false
+                        Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester delete: ${result.message}")
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.app.grader.ui.pages.config
 
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
@@ -23,6 +25,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,17 +42,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
-import com.app.grader.core.appConfig.TypeGrade
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
+import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderMenu
+import com.app.grader.ui.componets.InfoAlertDialogComp
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.card.SwitchCardComp
 import com.app.grader.ui.theme.Error500
@@ -66,6 +72,7 @@ fun ConfigScreen(
     val context = LocalContext.current
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
     val isDebugBuild = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+    var showMinToPassInfoDialog by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(viewModel) {
@@ -76,11 +83,25 @@ fun ConfigScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteAll() },
+            {
+                viewModel.deleteAll(
+                    onComplete = { showDeleteConfirmation.value = false }
+                )
+            },
             { showDeleteConfirmation.value = false },
             "Esta opción borrara TODOS los datos de la app.",
+            enabled = !viewModel.isDeletingAll.value,
         )
     }
+
+    if (showMinToPassInfoDialog) {
+        InfoAlertDialogComp(
+            title = "Mínimo para aprobar",
+            message = "Representa la nota mínima que se necesita acumulada para aprobar la asignatura.",
+            onDismiss = { showMinToPassInfoDialog = false }
+        )
+    }
+
     HeaderMenu(
         "Ajustes",
         navigateToHome,
@@ -98,22 +119,6 @@ fun ConfigScreen(
         ) {
             Spacer(Modifier.height(10.dp))
             SelectorCard(
-                title = "Tipo de calificación",
-                items = listOf(
-                    SelectorItem("0-7", TypeGrade.NUMERIC_7_CHI.name),
-                    SelectorItem("0-10 (Argentina)", TypeGrade.NUMERIC_10_ARG.name),
-                    SelectorItem("0-10 (España)", TypeGrade.NUMERIC_10_ESP.name),
-                    SelectorItem("0-10 (México)", TypeGrade.NUMERIC_10_MEX.name),
-                    SelectorItem("0-20", TypeGrade.NUMERIC_20.name),
-                    SelectorItem("0-100", TypeGrade.NUMERIC_100.name),
-                ),
-                current = viewModel.typeGrade.value.name,
-                onSelect = { viewModel.setTypeGrade(TypeGrade.valueOf(it)) },
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
-                icon = R.drawable.rectangle_list_outline,
-            )
-            SelectorCard(
                 title = "Tema",
                 items = listOf(
                     SelectorItem("Usar mi tema del sistema", ThemeType.SYSTEM_DEFAULT.name),
@@ -126,11 +131,41 @@ fun ConfigScreen(
                     viewModel.restartApp(context)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 icon = when(viewModel.typeTheme.value){
                     ThemeType.DARK -> R.drawable.moon_outline
                     ThemeType.LIGHT -> R.drawable.sun_outline
                     ThemeType.SYSTEM_DEFAULT -> if (isSystemInDarkTheme()) R.drawable.moon_outline else R.drawable.sun_outline
+                },
+            )
+            SelectorCard(
+                title = "Tipo de calificación",
+                items = viewModel.typeGradeList.value.map { SelectorItem(it.title, it.id.toString()) },
+                current = viewModel.selectedTypeGradeId.intValue.toString(),
+                onSelect = { viewModel.setSelectedTypeGradeId(it.toInt()) },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.onSurface,
+                icon = R.drawable.rectangle_list_outline,
+            )
+            EditScreenInputComp(
+                placeHolderText = "Mínimo para aprobar (opcional)",
+                value = viewModel.minToPassInput.value,
+                onValueChange = viewModel::setMinToPass,
+                leadingIconId = R.drawable.check_outline,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                maxLength = 6,
+                maxLines = 1,
+                isError = viewModel.minToPassError.value,
+                suffix = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { showMinToPassInfoDialog = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.info_outline),
+                                contentDescription = "Información sobre Mínimo para aprobar",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                 },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
@@ -140,9 +175,19 @@ fun ConfigScreen(
                     viewModel.setRoundFinalCourseAverage(it)
                 },
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
+            )
+            SwitchCardComp(
+                checked = viewModel.isDirectPercentage.value,
+                onCheckedChange = {
+                    viewModel.setDirectPercentage(it)
+                },
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconColor = MaterialTheme.colorScheme.onSurface,
+                icon = R.drawable.layers_outline,
+                text = "Usar porcentaje acumulativo como calificacion",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
@@ -172,29 +217,23 @@ fun ConfigScreen(
                 onClick = { showDeleteConfirmation.value = true },
                 contentColor = Error500,
                 icon = R.drawable.trash_outline,
-                text = "Eliminar todos los datos",
+                text = "Eliminar todos los datos de la app",
             )
             if (isDebugBuild) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 DebugHelper.DebugOptionsComp()
+                IconCardButton(
+                    onClick = {
+                        viewModel.resetLaunchCount()
+                        Toast.makeText(context, "Launch count reiniciado a 0", Toast.LENGTH_SHORT).show()
+                    },
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    iconColor = MaterialTheme.colorScheme.primary,
+                    icon = R.drawable.cog_outline,
+                    text = "Reiniciar launch count (dev)",
+                )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "Launch Count: ${viewModel.launchCount.intValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Review Asked Count: ${viewModel.reviewAskedCount.intValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Last Review Asked Time: ${viewModel.lastReviewAskedTimeDays.longValue}",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                text = "Review Completed: ${viewModel.reviewCompleted.value}",
-                style = MaterialTheme.typography.bodySmall,
-            )
             Text(
                 text = "Grader $versionName",
                 style = MaterialTheme.typography.bodyMedium,

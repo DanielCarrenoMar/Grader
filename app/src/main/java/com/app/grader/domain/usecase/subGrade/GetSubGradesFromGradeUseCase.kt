@@ -1,6 +1,5 @@
 package com.app.grader.domain.usecase.subGrade
 
-import com.app.grader.core.appConfig.GradeFactory
 import com.app.grader.domain.model.Resource
 import com.app.grader.domain.model.SubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository

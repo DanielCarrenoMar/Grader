@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
@@ -69,9 +68,15 @@ fun AllGradesScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
+            {
+                viewModel.deleteGradeFromId(
+                    viewModel.showGrade.value.id,
+                    onComplete = { showDeleteConfirmation.value = false },
+                )
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     HeaderMenu(
@@ -96,7 +101,7 @@ fun AllGradesScreen(
                         modifier = Modifier.fillMaxWidth()
                     ){
                         CircularProgressIndicator(
-                            modifier = Modifier.width(64.dp),
+                            modifier = Modifier.size(64.dp),
                             color = MaterialTheme.colorScheme.secondary,
                             trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         )

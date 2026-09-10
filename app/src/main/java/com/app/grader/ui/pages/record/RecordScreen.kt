@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -36,7 +37,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.domain.model.GradeModel
-import com.app.grader.domain.types.Grade
+import com.app.grader.domain.types.GradeValue
 import com.app.grader.ui.componets.DeleteConfirmationComp
 import com.app.grader.ui.componets.FloatingMenuComp
 import com.app.grader.ui.componets.FloatingMenuCompItem
@@ -75,9 +76,15 @@ fun RecordScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectSemester { viewModel.getAllSemestersAndCalTotalAverage() } },
+            {
+                viewModel.deleteSelectSemester {
+                    showDeleteConfirmation.value = false
+                    viewModel.getAllSemestersAndCalTotalAverage()
+                }
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteSemester.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
 
@@ -121,7 +128,7 @@ fun RecordScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         CircularProgressIndicator(
-                            modifier = Modifier.width(64.dp),
+                            modifier = Modifier.size(64.dp),
                             color = MaterialTheme.colorScheme.secondary,
                             trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         )
@@ -148,7 +155,10 @@ fun RecordScreen(
                     RecordSemesterCard(
                         semester =  semester,
                         onClick =  { navigateToRecordSemester(semester.id) },
+                        transferEnabled = !viewModel.isTransferring.value,
                         onTransfer = {
+                            // Guard against duplicate transfer while a transfer is in flight.
+                            if (viewModel.isTransferring.value) return@RecordSemesterCard
                             if (semester.size == 0) {
                                 coroutineScope.launch {
                                     snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
@@ -197,7 +207,7 @@ fun RecordScreen(
 }
 
 @Composable
-fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, coursesLength: Int) {
+fun InfoRecordCard(average: GradeValue, grades: List<GradeModel>, totalWeight: Int, coursesLength: Int) {
     CardContainer { innerPading ->
         Column(
             modifier = Modifier
@@ -231,7 +241,7 @@ fun InfoRecordCard(average: Grade, grades: List<GradeModel>, totalWeight: Int, c
                 ) {
                     if (grades.isNotEmpty()) {
                         LineChartAverage(
-                            gradeSeries = grades.map { it.grade.getGrade() },
+                            gradeSeries = grades.map { it.gradeValue.getValue() ?: 0.0 },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .alpha(0.7f)
