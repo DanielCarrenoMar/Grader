@@ -73,6 +73,7 @@ fun EditGradeScreen(
     val activity = LocalActivity.current
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val defaultTypeGrade by viewModel.defaultTypeGrade.collectAsState()
 
     LaunchedEffect(viewModel) {
         viewModel.setCourseId(courseId)
@@ -124,7 +125,7 @@ fun EditGradeScreen(
                 Spacer(Modifier.height(10.dp))
                 EditScreenInputComp(
                     enabled = uiState.subGrades.isEmpty(),
-                    placeHolderText = "Agregar calificación 0-${viewModel.defaultTypeGrade.value?.max ?: 20}",
+                    placeHolderText = "Agregar calificación 0-${uiState.max}",
                     value = uiState.gradeValue,
                     onValueChange = {
                         viewModel.setGrade(it)
@@ -133,7 +134,7 @@ fun EditGradeScreen(
 leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.drawable.star_half_stroke_outline,
                      isError = uiState.fieldErrors.containsKey("grade"),
                      maxLength = 5,
-                    suffix = if (viewModel.defaultTypeGrade.collectAsState().value?.isDirectPercentage != true) {
+                    suffix = if (defaultTypeGrade?.isDirectPercentage != true) {
                         {
                             IconButton(
                                 onClick = { viewModel.addSubGrade() },
@@ -151,7 +152,7 @@ leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.
                     maxLines = 1
                 )
             }
-            if (viewModel.defaultTypeGrade.value?.isDirectPercentage != true) itemsIndexed (uiState.subGrades) { index, subgrade ->
+            if (defaultTypeGrade?.isDirectPercentage != true) itemsIndexed (uiState.subGrades) { index, subgrade ->
                 var itemHeight by remember { mutableStateOf(0.dp) }
                 val animatedHeight by animateDpAsState(targetValue = itemHeight)
                 val focusRequester = remember { FocusRequester() }

@@ -41,6 +41,7 @@ data class EditGradeUiState(
     val gradeValue: String = "",
     val percentage: String = "",
     val defaultPercentage: Double = 100.0,
+    val max: String = "20",
     val courseId: Int = -1,
     val course: CourseModel = CourseModel.DEFAULT,
     val courses: List<CourseModel> = emptyList(),
@@ -78,10 +79,26 @@ class EditGradeViewModel @Inject constructor(
 
     val defaultPercentage: Percentage get() = Percentage(_uiState.value.defaultPercentage)
 
+    private fun actMax() {
+        val typeGrade = _defaultTypeGrade.value
+        val state = _uiState.value
+        val newMax = if (typeGrade?.isDirectPercentage == true) {
+            val current = state.percentage.trim().replace(',', '.').toDoubleOrNull()
+                ?: state.defaultPercentage
+            Percentage(current).toString()
+        } else {
+            (typeGrade?.max ?: 20).toString()
+        }
+        if (state.max != newMax) {
+            _uiState.update { it.copy(max = newMax) }
+        }
+    }
+
     private fun loadTypeGradeFromCourse(courseId: Int) {
         typeGradeJob?.cancel()
         loadedTypeGradeCourseId = null
         _defaultTypeGrade.value = null
+        actMax()
         if (courseId == -1) return
         typeGradeJob = viewModelScope.launch {
             getTypeGradeFromCourseIdUseCase(courseId).collect { result ->
@@ -101,6 +118,7 @@ class EditGradeViewModel @Inject constructor(
                                 subGradeTexts = _subGrades.map { it.gradeValue.toString() },
                             )
                         }
+                        actMax()
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
@@ -116,6 +134,7 @@ class EditGradeViewModel @Inject constructor(
     }
     fun setPercentage(percentage: String) {
         _uiState.update { it.copy(percentage = percentage, fieldErrors = it.fieldErrors - "percentage") }
+        actMax()
     }
     fun setCourseId(courseId: Int) {
         if (_uiState.value.courseId == courseId) return
@@ -148,6 +167,7 @@ class EditGradeViewModel @Inject constructor(
                                 percentage = ""
                             )
                         }
+                        actMax()
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
@@ -282,6 +302,7 @@ class EditGradeViewModel @Inject constructor(
                                 percentage = grade.weight.toString(),
                             )
                         }
+                        actMax()
                     }
                     is Resource.Loading -> { }
                     is Resource.Error -> {
