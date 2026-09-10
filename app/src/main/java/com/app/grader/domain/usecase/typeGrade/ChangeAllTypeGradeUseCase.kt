@@ -6,16 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
 
-class ChangeTypeGradeUseCase @Inject constructor(
+class ChangeAllTypeGradeUseCase @Inject constructor(
     private val repository: LocalStorageRepository
 ) {
     operator fun invoke(
-        typeGradeId: Int,
-        minToPass: Double?,
+        isDirectPercentage: Boolean,
     ): Flow<Resource<Unit>> = channelFlow {
         try {
             send(Resource.Loading())
-            repository.updateTypeGradeMinToPass(typeGradeId, minToPass)
+            repository.updateTypeGradeConfigurationForAll(isDirectPercentage)
             send(Resource.Success(Unit))
         } catch (e: Exception) {
             send(Resource.Error(e.message ?: "Unknown Error"))

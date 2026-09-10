@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenuItem
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -47,6 +49,7 @@ import com.app.grader.R
 import com.app.grader.domain.types.ThemeType
 import com.app.grader.debug.DebugHelper
 import com.app.grader.ui.componets.DeleteConfirmationComp
+import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderMenu
 import com.app.grader.ui.componets.card.IconCardButton
 import com.app.grader.ui.componets.card.SwitchCardComp
@@ -135,6 +138,16 @@ fun ConfigScreen(
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.round,
                 text = "Redondear promedio para asignaturas finalizadas",
+            )
+            EditScreenInputComp(
+                placeHolderText = "Mínimo para aprobar (opcional)",
+                value = viewModel.minToPassInput.value,
+                onValueChange = viewModel::setMinToPass,
+                leadingIconId = R.drawable.round,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                maxLength = 6,
+                maxLines = 1,
+                isError = viewModel.minToPassError.value,
             )
             SwitchCardComp(
                 checked = viewModel.isDirectPercentage.value,
