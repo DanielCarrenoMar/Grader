@@ -30,7 +30,8 @@ import com.app.grader.R
 
 data class MenuAction(
     val label: String,
-    val onClick: () -> Unit
+    val enabled: Boolean = true,
+    val onClick: () -> Unit,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +89,9 @@ fun HeaderBack(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
+                            enabled = action.enabled,
                             onClick = {
+                                if (!action.enabled) return@DropdownMenuItem
                                 action.onClick()
                                 menuExpanded = false
                             }

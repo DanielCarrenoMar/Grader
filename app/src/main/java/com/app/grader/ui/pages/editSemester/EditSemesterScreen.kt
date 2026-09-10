@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +25,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
+import com.app.grader.ui.componets.ButtonState
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 
@@ -56,7 +56,9 @@ fun EditSemesterScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.weight(1f))
-                Button(
+                ButtonState(
+                    text = if (semesterId == -1) "Crear" else "Guardar",
+                    isLoading = viewModel.isSaving.value,
                     modifier = Modifier.width(120.dp),
                     onClick = {
                         viewModel.updateOrCreateSemester(
@@ -64,9 +66,8 @@ fun EditSemesterScreen(
                             onCreate = {navigateBack()},
                             onUpdate = {navigateBack()}
                         )
-                }) {
-                    Text(text = if (semesterId == -1) "Crear" else "Guardar")
-                }
+                    }
+                )
                 Spacer(Modifier.weight(0.3f))
             }
         },

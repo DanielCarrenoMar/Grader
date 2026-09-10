@@ -76,9 +76,15 @@ fun RecordScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectSemester { viewModel.getAllSemestersAndCalTotalAverage() } },
+            {
+                viewModel.deleteSelectSemester {
+                    showDeleteConfirmation.value = false
+                    viewModel.getAllSemestersAndCalTotalAverage()
+                }
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteSemester.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
 
@@ -149,7 +155,10 @@ fun RecordScreen(
                     RecordSemesterCard(
                         semester =  semester,
                         onClick =  { navigateToRecordSemester(semester.id) },
+                        transferEnabled = !viewModel.isTransferring.value,
                         onTransfer = {
+                            // Guard against duplicate transfer while a transfer is in flight.
+                            if (viewModel.isTransferring.value) return@RecordSemesterCard
                             if (semester.size == 0) {
                                 coroutineScope.launch {
                                     snackbarHostState.showSnackbar("No puedes transferir un registro vacío")

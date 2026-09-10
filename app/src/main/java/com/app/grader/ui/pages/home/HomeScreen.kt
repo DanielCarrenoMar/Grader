@@ -78,9 +78,15 @@ fun HomeScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse { viewModel.getCoursesAndCalTotalAverageFromSemester(null) } },
+            {
+                viewModel.deleteSelectedCourse {
+                    showDeleteConfirmation.value = false
+                    viewModel.getCoursesAndCalTotalAverageFromSemester(null)
+                }
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     HeaderMenu(

@@ -82,9 +82,17 @@ fun RecordSemesterScreen(
 
     if (showDeleteConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteSelectedCourse({ viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId) }) },
+            {
+                viewModel.deleteSelectedCourse(
+                    onDeleteAction = {
+                        showDeleteConfirmation = false
+                        viewModel.getCoursesAndCalTotalAverageFromSemester(semesterId)
+                    }
+                )
+            },
             { showDeleteConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.deleteCourse.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     if (showDeleteSelfConfirmation) {
@@ -92,6 +100,7 @@ fun RecordSemesterScreen(
             { viewModel.deleteSelf(navigateBack) },
             { showDeleteSelfConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.semester.value.title}?",
+            enabled = !viewModel.isDeletingSemester.value,
         )
     }
     HeaderBack(
@@ -106,21 +115,27 @@ fun RecordSemesterScreen(
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         actions = listOf(
-            MenuAction("Transferir al registro actual") {
-                if (viewModel.semester.value.size <= 0) coroutineScope.launch {
-                    snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
-                    return@launch
-                }
-                viewModel.onGetSizeOfActualSemester{ size ->
-                    if (size > 0) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
-                        }
-                        return@onGetSizeOfActualSemester
+            MenuAction(
+                label = "Transferir al registro actual",
+                onClick = {
+                    // Guard against duplicate transfer while a transfer is in flight.
+                    if (viewModel.isTransferring.value) return@MenuAction
+                    if (viewModel.semester.value.size <= 0) coroutineScope.launch {
+                        snackbarHostState.showSnackbar("No puedes transferir un registro vacío")
+                        return@launch
                     }
-                    viewModel.transferSelfToActualSemester(navigateBack)
-                }
-            },
+                    viewModel.onGetSizeOfActualSemester{ size ->
+                        if (size > 0) {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Debes vaciar el registro actual primero")
+                            }
+                            return@onGetSizeOfActualSemester
+                        }
+                        viewModel.transferSelfToActualSemester(navigateBack)
+                    }
+                },
+                enabled = !viewModel.isTransferring.value,
+            ),
             MenuAction("Editar") { navigateToEditSemester(semesterId) },
             MenuAction("Eliminar") { showDeleteSelfConfirmation = true },
         ),

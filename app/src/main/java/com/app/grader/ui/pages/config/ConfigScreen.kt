@@ -82,9 +82,14 @@ fun ConfigScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteAll() },
+            {
+                viewModel.deleteAll(
+                    onComplete = { showDeleteConfirmation.value = false }
+                )
+            },
             { showDeleteConfirmation.value = false },
             "Esta opción borrara TODOS los datos de la app.",
+            enabled = !viewModel.isDeletingAll.value,
         )
     }
 

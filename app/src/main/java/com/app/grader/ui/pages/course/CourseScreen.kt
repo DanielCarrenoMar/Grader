@@ -89,9 +89,15 @@ fun CourseScreen(
 
     if (showDeleteGradeConfirmation) {
         DeleteConfirmationComp(
-            { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
+            {
+                viewModel.deleteGradeFromId(
+                    viewModel.showGrade.value.id,
+                    onComplete = { showDeleteGradeConfirmation = false },
+                )
+            },
             { showDeleteGradeConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
+            enabled = !viewModel.isDeletingGrade.value,
         )
     }
     if (showDeleteSelfConfirmation) {
@@ -99,6 +105,7 @@ fun CourseScreen(
             { viewModel.deleteSelf(navigateBack) },
             { showDeleteSelfConfirmation = false },
             "¿Realmente desea eliminar ${viewModel.course.value.title}?",
+            enabled = !viewModel.isDeletingCourse.value,
         )
     }
     if (showQuickEditInfoDialog) {

@@ -11,30 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextField
-import com.app.grader.R
-import com.app.grader.ui.componets.EditScreenInputComp
-import com.app.grader.ui.componets.HeaderBack
-import com.app.grader.ui.componets.InfoAlertDialogComp
-import kotlinx.coroutines.launch
-import java.security.InvalidParameterException
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +34,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import com.app.grader.R
+import com.app.grader.ui.componets.ButtonState
+import com.app.grader.ui.componets.EditScreenInputComp
+import com.app.grader.ui.componets.HeaderBack
+import com.app.grader.ui.componets.InfoAlertDialogComp
+import kotlinx.coroutines.launch
+import java.security.InvalidParameterException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +84,9 @@ fun EditCourseScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.weight(1f))
-                Button(
+                ButtonState(
+                    text = if (courseId == -1) "Crear" else "Guardar",
+                    isLoading = viewModel.isSaving.value,
                     modifier = Modifier.width(120.dp),
                     onClick = {
                         try {
@@ -110,9 +107,8 @@ fun EditCourseScreen(
                                 snackbarHostState.showSnackbar(e.message?: "Error desconocido")
                             }
                         }
-                    }) {
-                    Text(text = if (courseId == -1) "Crear" else "Guardar")
-                }
+                    }
+                )
                 Spacer(Modifier.weight(0.3f))
             }
         },

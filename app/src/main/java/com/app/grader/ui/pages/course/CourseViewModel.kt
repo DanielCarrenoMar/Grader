@@ -54,18 +54,29 @@ class CourseViewModel  @Inject constructor(
     private val _isLoading = mutableStateOf(true)
     val isLoading = _isLoading
 
+    private val _isDeletingGrade = mutableStateOf(false)
+    val isDeletingGrade = _isDeletingGrade
+
+    private val _isDeletingCourse = mutableStateOf(false)
+    val isDeletingCourse = _isDeletingCourse
+
     fun deleteSelf(navigateTo: () -> Unit) {
+        // Separate flag for course delete so grade delete stays available.
+        if (_isDeletingCourse.value) return
         if (_course.value.id == -1) return
+        _isDeletingCourse.value = true
         viewModelScope.launch {
             deleteCourseByIdUseCase(_course.value.id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingCourse.value = false
                         navigateTo()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
+                        _isDeletingCourse.value = false
                         Log.e("CourseViewModel", "Error deleteSelf: ${result.message}")
                     }
                 }
@@ -179,19 +190,25 @@ class CourseViewModel  @Inject constructor(
         }
     }
 
-    fun deleteGradeFromId(gradeId: Int){
+    fun deleteGradeFromId(gradeId: Int, onComplete: () -> Unit = {}){
+        // Separate flag for grade delete so course delete stays available.
+        if (_isDeletingGrade.value) return
+        _isDeletingGrade.value = true
         viewModelScope.launch {
             deleteGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingGrade.value = false
                         getGradesFromCourse(_course.value.id)
                         calPoints(_course.value.id)
                         calAverageFromCourseId(_course.value.id)
+                        onComplete()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
+                        _isDeletingGrade.value = false
                         Log.e("CourseViewModel", "Error deleteGradeFromId: ${result.message}")
                     }
                 }

@@ -41,6 +41,9 @@ class EditCourseViewModel @Inject constructor(
     private val _showUc = mutableStateOf("")
     val showUc = _showUc
 
+    private val _isSaving = mutableStateOf(false)
+    val isSaving = _isSaving
+
     init {
         loadTypeGrades()
     }
@@ -94,6 +97,7 @@ class EditCourseViewModel @Inject constructor(
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
                 }
@@ -110,6 +114,7 @@ class EditCourseViewModel @Inject constructor(
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
                         Log.e("EditCourseViewModel", "Error saving course: ${result.message}")
                     }
                 }
@@ -134,7 +139,9 @@ class EditCourseViewModel @Inject constructor(
     }
 
     fun updateOrCreateCourse(semesterId: Int, courseId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {
+        if (_isSaving.value) return
         validCourse()
+        _isSaving.value = true
         val semesterIdOrNull = if (semesterId != -1) semesterId else null
         viewModelScope.launch {
             if (courseId == -1) {

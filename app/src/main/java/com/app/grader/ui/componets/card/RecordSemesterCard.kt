@@ -39,6 +39,7 @@ fun RecordSemesterCard(
     onDelete: () -> Unit,
     onEdit: () -> Unit,
     modifier: Modifier = Modifier,
+    transferEnabled: Boolean = true,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val screenWidth = LocalWindowInfo.current.containerSize.width.dp
@@ -78,6 +79,7 @@ fun RecordSemesterCard(
                     ) {
                         DropdownMenuItem(
                             onClick = { onTransfer();expanded = false },
+                            enabled = transferEnabled,
                             text = {
                                 Text(
                                     "Transferir al registro actual",

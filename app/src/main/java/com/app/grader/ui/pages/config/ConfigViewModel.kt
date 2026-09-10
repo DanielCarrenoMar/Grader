@@ -57,6 +57,9 @@ class ConfigViewModel  @Inject constructor(
     private val _selectedTypeGradeId = mutableIntStateOf(appConfigRepository.getDefaultTypeGradeId())
     val selectedTypeGradeId = _selectedTypeGradeId
 
+    private val _isDeletingAll = mutableStateOf(false)
+    val isDeletingAll = _isDeletingAll
+
     init {
         loadTypeGrades()
     }
@@ -157,7 +160,10 @@ class ConfigViewModel  @Inject constructor(
         }
         loadTypeGrades()
     }
-    fun deleteAll(){
+    fun deleteAll(onComplete: () -> Unit = {}){
+        // Guard against duplicate delete-all while a delete is in flight.
+        if (_isDeletingAll.value) return
+        _isDeletingAll.value = true
         viewModelScope.launch {
             var finished = true
             deleteAllSemestersUseCase().collect { result ->
@@ -200,8 +206,10 @@ class ConfigViewModel  @Inject constructor(
                     }
                 }
             }
+            _isDeletingAll.value = false
             if (finished){
                 Log.i("ConfigViewModel", "All data deleted successfully")
+                onComplete()
             }
         }
     }

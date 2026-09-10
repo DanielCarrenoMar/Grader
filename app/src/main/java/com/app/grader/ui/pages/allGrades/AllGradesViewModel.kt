@@ -31,17 +31,26 @@ class AllGradesViewModel  @Inject constructor(
     private val _showGrade = mutableStateOf(GradeModel())
     val showGrade = _showGrade
 
-    fun deleteGradeFromId(gradeId: Int){
+    private val _isDeleting = mutableStateOf(false)
+    val isDeleting = _isDeleting
+
+    fun deleteGradeFromId(gradeId: Int, onComplete: () -> Unit = {}){
+        // Guard against duplicate delete while a delete is in flight.
+        if (_isDeleting.value) return
+        _isDeleting.value = true
         viewModelScope.launch {
             deleteGradeByIdUseCase(gradeId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeleting.value = false
                         getAllGradesWithCourses()
+                        onComplete()
                     }
                     is Resource.Loading -> {
                         // Handle loading state if needed
                     }
                     is Resource.Error -> {
+                        _isDeleting.value = false
                         Log.e("CourseViewModel", "Error deleteGradeFromId: ${result.message}")
                     }
                 }

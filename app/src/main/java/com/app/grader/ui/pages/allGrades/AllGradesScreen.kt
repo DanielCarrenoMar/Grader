@@ -68,9 +68,15 @@ fun AllGradesScreen(
 
     if (showDeleteConfirmation.value) {
         DeleteConfirmationComp(
-            { viewModel.deleteGradeFromId(viewModel.showGrade.value.id) },
+            {
+                viewModel.deleteGradeFromId(
+                    viewModel.showGrade.value.id,
+                    onComplete = { showDeleteConfirmation.value = false },
+                )
+            },
             { showDeleteConfirmation.value = false },
             "¿Realmente desea eliminar ${viewModel.showGrade.value.title}?",
+            enabled = !viewModel.isDeleting.value,
         )
     }
     HeaderMenu(

@@ -55,7 +55,7 @@ fun CircleGrade(
                 color = MaterialTheme.colorScheme.surface,
                 fontSize = fontSize
             )
-            if (isPercentage) {
+            if (isPercentage && !gradeValue.isBlank()) {
                 Text(
                     text = "%",
                     color = MaterialTheme.colorScheme.surface,

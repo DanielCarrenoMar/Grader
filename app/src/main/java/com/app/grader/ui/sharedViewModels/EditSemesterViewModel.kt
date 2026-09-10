@@ -22,6 +22,9 @@ open class EditSemesterViewModel(
     private val _showTitle = mutableStateOf("")
     val showTitle = _showTitle
 
+    private val _isSaving = mutableStateOf(false)
+    val isSaving = _isSaving
+
     fun setTitle(newTitle: String) {
         if (newTitle.isBlank()) {
             _title.value = "Sin Título"
@@ -51,13 +54,23 @@ open class EditSemesterViewModel(
         }
     }
 
-    protected fun saveSemester(semesterModel: SemesterModel, onComplete: (Long) -> Unit = {}) {
+    protected fun saveSemester(
+        semesterModel: SemesterModel,
+        onComplete: (Long) -> Unit = {},
+        onError: () -> Unit = {},
+    ) {
         viewModelScope.launch {
             saveSemesterUseCase(semesterModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {onComplete(result.data!!)}
+                    is Resource.Success -> {
+                        // Success path: keep isSaving true (sticky) so the button
+                        // stays disabled. Navigation always leaves the page.
+                        onComplete(result.data!!)
+                    }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
+                        onError()
                         Log.e("TransferSemesterViewModel", "Error saving course: ${result.message}")
                     }
                 }
@@ -65,13 +78,23 @@ open class EditSemesterViewModel(
         }
     }
 
-    protected fun updateSemester(semesterModel: SemesterModel, onComplete: () -> Unit = {}) {
+    protected fun updateSemester(
+        semesterModel: SemesterModel,
+        onComplete: () -> Unit = {},
+        onError: () -> Unit = {},
+    ) {
         viewModelScope.launch {
             updateSemesterUseCase(semesterModel).collect { result ->
                 when (result) {
-                    is Resource.Success -> {onComplete()}
+                    is Resource.Success -> {
+                        // Success path: keep isSaving true (sticky) so the button
+                        // stays disabled. Navigation always leaves the page.
+                        onComplete()
+                    }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isSaving.value = false
+                        onError()
                         Log.e("TransferSemesterViewModel", "Error saving semester: ${result.message}")
                     }
                 }
@@ -80,22 +103,32 @@ open class EditSemesterViewModel(
     }
 
     fun updateOrCreateSemester(semesterId: Int, onCreate: (Long) -> Unit = {}, onUpdate: () -> Unit = {}) {
+        // Guard against duplicate save while outer or inner save is in flight.
+        if (_isSaving.value) return
+        _isSaving.value = true
         viewModelScope.launch {
-            if (semesterId == -1) {
-                saveSemester(
-                    SemesterModel(
-                        title = title.value,
-                    ),
-                    onComplete = onCreate
-                )
-            } else {
-                updateSemester(
-                    SemesterModel(
-                        title = title.value,
-                        id = semesterId
-                    ),
-                    onComplete = onUpdate
-                )
+            try {
+                if (semesterId == -1) {
+                    saveSemester(
+                        SemesterModel(
+                            title = title.value,
+                        ),
+                        onComplete = onCreate,
+                        onError = {},
+                    )
+                } else {
+                    updateSemester(
+                        SemesterModel(
+                            title = title.value,
+                            id = semesterId
+                        ),
+                        onComplete = onUpdate,
+                        onError = {},
+                    )
+                }
+            } catch (e: Exception) {
+                _isSaving.value = false
+                throw e
             }
         }
     }

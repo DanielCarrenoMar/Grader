@@ -68,6 +68,11 @@ class EditGradeViewModel @Inject constructor(
     private val _defaultTypeGrade = MutableStateFlow<TypeGradeModel?>(null)
     val defaultTypeGrade: StateFlow<TypeGradeModel?> = _defaultTypeGrade.asStateFlow()
 
+    private val _isSubmitting = MutableStateFlow(false)
+    val isSubmitting: StateFlow<Boolean> = _isSubmitting.asStateFlow()
+
+    private var lastSubGradeActionTimeMs = 0L
+
     private val _subGrades = mutableListOf<SubGradeModel>()
     private var percentageJob: Job? = null
     private var typeGradeJob: Job? = null
@@ -229,6 +234,10 @@ class EditGradeViewModel @Inject constructor(
     }
 
     fun addSubGrade() {
+        // Debounce rapid taps so double tap creates a single row.
+        val now = System.currentTimeMillis()
+        if (now - lastSubGradeActionTimeMs < 400) return
+        lastSubGradeActionTimeMs = now
         val typeGrade = _defaultTypeGrade.value ?: return
         if (typeGrade.isDirectPercentage) return
         val currentGrade = _uiState.value.gradeValue.replace(',', '.').toDoubleOrNull()
@@ -245,6 +254,10 @@ class EditGradeViewModel @Inject constructor(
     }
 
     fun removeSubGrade(index: Int) {
+        // Debounce rapid taps to avoid double removal.
+        val now = System.currentTimeMillis()
+        if (now - lastSubGradeActionTimeMs < 400) return
+        lastSubGradeActionTimeMs = now
         if (index !in _subGrades.indices || index !in _uiState.value.subGrades.indices) return
 
         _subGrades.removeAt(index)
@@ -314,6 +327,8 @@ class EditGradeViewModel @Inject constructor(
     }
 
     suspend fun submitGrade(gradeId: Int, activity: Activity?): String? {
+        // Guard against duplicate submit while a save is in flight.
+        if (_isSubmitting.value) return "Save in progress"
         val state = _uiState.value
         if (state.courseId == -1) return "Selecciona una asignatura"
         val typeGrade = _defaultTypeGrade.value
@@ -385,26 +400,37 @@ class EditGradeViewModel @Inject constructor(
 
         val gradeDetail = result.getOrNull()!!
 
-        val saveResult = if (gradeId == -1) {
-            saveGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
-        } else {
-            updateGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
-        }
-        val saveError = (saveResult as? Resource.Error)?.message
-        if (saveError != null) {
-            val weightingError = com.app.grader.domain.policy.GradeRules.isWeightingOverflow(saveError)
-            if (weightingError) {
-                _uiState.update { it.copy(fieldErrors = it.fieldErrors + ("percentage" to saveError)) }
+        _isSubmitting.value = true
+        try {
+            val saveResult = if (gradeId == -1) {
+                saveGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
+            } else {
+                updateGradeDetailUseCase(gradeDetail).first { it !is Resource.Loading }
             }
-            return saveError
-        }
+            val saveError = (saveResult as? Resource.Error)?.message
+            if (saveError != null) {
+                // Error path only: release the button so the user can retry.
+                _isSubmitting.value = false
+                val weightingError = com.app.grader.domain.policy.GradeRules.isWeightingOverflow(saveError)
+                if (weightingError) {
+                    _uiState.update { it.copy(fieldErrors = it.fieldErrors + ("percentage" to saveError)) }
+                }
+                return saveError
+            }
 
-        if (activity != null) {
-            viewModelScope.launch {
-                launchInAppReviewIfValidUseCase(activity).collect {}
+            if (activity != null) {
+                viewModelScope.launch {
+                    launchInAppReviewIfValidUseCase(activity).collect {}
+                }
             }
+            // Success path: keep isSubmitting true (sticky) so the button stays
+            // disabled. Navigation always leaves this page on success.
+            return null
+        } catch (e: Exception) {
+            // Error path only: release the button so the user can retry.
+            _isSubmitting.value = false
+            throw e
         }
-        return null
     }
 
     // --- Course loading ---

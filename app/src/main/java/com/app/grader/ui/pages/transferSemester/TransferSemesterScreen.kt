@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +27,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.app.grader.R
 import com.app.grader.domain.types.cardTypeFromCourse
+import com.app.grader.ui.componets.ButtonState
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.componets.TitleIcon
@@ -59,14 +59,17 @@ fun TransferSemesterScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.weight(1f))
-                Button(
+                ButtonState(
+                    text = "Guardar",
+                    isLoading = viewModel.isTransferring.value || viewModel.isSaving.value,
                     modifier = Modifier.width(120.dp),
                     onClick = {
-                        viewModel.transferCoursesToNewSemester()
-                        navigateBack()
-                }) {
-                    Text(text = "Guardar")
-                }
+                        // Await transfer completion before navigating back.
+                        viewModel.transferCoursesToNewSemester(
+                            onComplete = { navigateBack() }
+                        )
+                    }
+                )
                 Spacer(Modifier.weight(0.3f))
             }
         },

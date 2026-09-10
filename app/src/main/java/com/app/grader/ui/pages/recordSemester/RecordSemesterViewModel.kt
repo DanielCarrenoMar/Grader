@@ -39,6 +39,12 @@ class RecordSemesterViewModel @Inject constructor(
     private val _semester = mutableStateOf(SemesterModel.DEFAULT)
     val semester = _semester
 
+    private val _isDeletingSemester = mutableStateOf(false)
+    val isDeletingSemester = _isDeletingSemester
+
+    private val _isTransferring = mutableStateOf(false)
+    val isTransferring = _isTransferring
+
     fun getSemester(semesterId: Int) {
         viewModelScope.launch {
             getSemesterByIdUseCase(semesterId).collect { result ->
@@ -59,16 +65,21 @@ class RecordSemesterViewModel @Inject constructor(
         }
     }
     fun deleteSelf(navigateTo: () -> Unit) {
+        // Separate flag for semester delete so course delete stays available.
+        if (_isDeletingSemester.value) return
         if (_semester.value.id == -1) return
+        _isDeletingSemester.value = true
         viewModelScope.launch {
             deleteSemesterByIdUseCase(_semester.value.id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        _isDeletingSemester.value = false
                         navigateTo()
                     }
 
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isDeletingSemester.value = false
                         Log.e("RecordSemesterViewModel", "Error deleteSelf: ${result.message}")
                     }
                 }
@@ -77,16 +88,38 @@ class RecordSemesterViewModel @Inject constructor(
     }
 
     fun transferSelfToActualSemester(navigateTo: () -> Unit){
+        // Guard against duplicate transfer while a transfer is in flight.
+        if (_isTransferring.value) return
         if (_semester.value.id == -1) return
+        _isTransferring.value = true
         viewModelScope.launch {
             transferSemesterToSemesterUseCase(_semester.value.id, null).collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        deleteSelf(navigateTo)
+                        deleteSelfAfterTransfer(navigateTo)
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
+                        _isTransferring.value = false
                         Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester: ${result.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteSelfAfterTransfer(navigateTo: () -> Unit) {
+        viewModelScope.launch {
+            deleteSemesterByIdUseCase(_semester.value.id).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _isTransferring.value = false
+                        navigateTo()
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        _isTransferring.value = false
+                        Log.e("RecordSemesterViewModel", "Error transferSelfToActualSemester delete: ${result.message}")
                     }
                 }
             }

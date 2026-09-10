@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.DropdownMenu
@@ -52,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.grader.R
+import com.app.grader.ui.componets.ButtonState
 import com.app.grader.ui.componets.EditScreenInputComp
 import com.app.grader.ui.componets.HeaderBack
 import com.app.grader.ui.theme.IconLarge
@@ -74,6 +74,7 @@ fun EditGradeScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val defaultTypeGrade by viewModel.defaultTypeGrade.collectAsState()
+    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
         viewModel.setCourseId(courseId)
@@ -96,7 +97,9 @@ fun EditGradeScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.weight(1f))
-                Button(
+                ButtonState(
+                    text = if (gradeId == -1) "Crear" else "Guardar",
+                    isLoading = isSubmitting,
                     modifier = Modifier.width(120.dp),
                     onClick = {
                         coroutineScope.launch {
@@ -104,9 +107,8 @@ fun EditGradeScreen(
                             if (error == null) navigateBack()
                             else snackbarHostState.showSnackbar(error)
                         }
-                    }) {
-                    Text(text = if (gradeId == -1) "Crear" else "Guardar")
-                }
+                    }
+                )
                 Spacer(Modifier.weight(0.3f))
             }
         },
@@ -139,6 +141,7 @@ leadingIconId = if (uiState.subGrades.isEmpty()) R.drawable.star_outline else R.
                         {
                             IconButton(
                                 onClick = { viewModel.addSubGrade() },
+                                enabled = !isSubmitting,
                                 modifier = Modifier.size(IconLarge)
                             ) {
                                 Image(
@@ -185,6 +188,7 @@ leadingIconId = R.drawable.star_half_outline,
                             onClick = {
                                 if (index in viewModel.uiState.value.subGrades.indices) viewModel.removeSubGrade(index)
                             },
+                            enabled = !isSubmitting,
                             modifier = Modifier.size(IconLarge)
                         ) {
                             Image(
