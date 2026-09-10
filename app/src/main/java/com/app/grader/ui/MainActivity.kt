@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     ThemeType.SYSTEM_DEFAULT -> isSystemInDarkTheme()
                 },
             ) {
-                NavigationWrapper()
+                NavigationWrapper(appConfigRepository)
             }
         }
     }

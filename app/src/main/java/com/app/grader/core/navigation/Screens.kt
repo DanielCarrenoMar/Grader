@@ -13,6 +13,9 @@ object AllGrades
 object Config
 
 @Serializable
+object InitialConfig
+
+@Serializable
 object Record
 
 @Serializable

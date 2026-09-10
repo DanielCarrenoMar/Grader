@@ -109,6 +109,9 @@ class ConfigViewModel  @Inject constructor(
         _isRoundFinalCourseAverage.value = isRoundFinalCourseAverage
         appConfigRepository.setRoundFinalCourseAverage(isRoundFinalCourseAverage)
     }
+    fun resetLaunchCount() {
+        appConfigRepository.setLaunchCount(0)
+    }
 
     fun setDirectPercentage(isDirectPercentage: Boolean) {
         _isDirectPercentage.value = isDirectPercentage

@@ -2,6 +2,7 @@ package com.app.grader.ui.pages.config
 
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -221,6 +222,16 @@ fun ConfigScreen(
             if (isDebugBuild) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 DebugHelper.DebugOptionsComp()
+                IconCardButton(
+                    onClick = {
+                        viewModel.resetLaunchCount()
+                        Toast.makeText(context, "Launch count reiniciado a 0", Toast.LENGTH_SHORT).show()
+                    },
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    iconColor = MaterialTheme.colorScheme.primary,
+                    icon = R.drawable.cog_outline,
+                    text = "Reiniciar launch count (dev)",
+                )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(
