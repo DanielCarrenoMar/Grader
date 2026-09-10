@@ -157,7 +157,7 @@ fun ConfigScreen(
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 iconColor = MaterialTheme.colorScheme.primary,
                 icon = R.drawable.weight_outline,
-                text = "Usar porcentaje directo en todos los tipos de calificación",
+                text = "Usar porcentaje acumulativo como calificacion",
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             IconCardButton(
