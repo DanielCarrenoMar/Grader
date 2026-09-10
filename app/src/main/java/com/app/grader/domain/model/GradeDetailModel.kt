@@ -45,6 +45,14 @@ class GradeDetailModel(
             subgrades: List<SubGradeModel> = emptyList(),
         ): Result<GradeDetailModel> {
             val errors = mutableListOf<GradeFieldError>()
+            val maxForGrade = if (typeGrade.isDirectPercentage) {
+                percentage.getPercentage()
+            } else {
+                typeGrade.max.toDouble()
+            }
+            if (gradeValue != null && (gradeValue < 0.0 || gradeValue > maxForGrade)) {
+                errors += GradeFieldError("grade", "La calificación ($gradeValue) debe estar entre 0 y ${GradeValue.formatText(maxForGrade)}.")
+            }
             if (!typeGrade.isDirectPercentage) {
                 subgrades.forEachIndexed { index, subgrade ->
                     val value = subgrade.gradeValue.getValue()
@@ -65,18 +73,27 @@ class GradeDetailModel(
                 weight = percentage,
                 typeGradeModel = typeGrade,
                 id = id,
-            ).map { gradeModel ->
-                GradeDetailModel(
-                    courseId = gradeModel.courseId,
-                    title = gradeModel.title,
-                    description = gradeModel.description,
-                    gradeValueRaw = gradeModel.gradeValueRaw,
-                    percentage = gradeModel.weight,
-                    id = gradeModel.id,
-                    subgrades = subgrades,
-                    typeGradeModel = typeGrade,
-                )
-            }
+            ).fold(
+                onSuccess = { gradeModel ->
+                    try {
+                        Result.success(
+                            GradeDetailModel(
+                                courseId = gradeModel.courseId,
+                                title = gradeModel.title,
+                                description = gradeModel.description,
+                                gradeValueRaw = gradeModel.gradeValueRaw,
+                                percentage = gradeModel.weight,
+                                id = gradeModel.id,
+                                subgrades = subgrades,
+                                typeGradeModel = typeGrade,
+                            ),
+                        )
+                    } catch (e: GradeDetailValidationException) {
+                        Result.failure(e)
+                    }
+                },
+                onFailure = { Result.failure(it) },
+            )
         }
     }
 }
