@@ -32,7 +32,7 @@ android {
         applicationId = "com.app.grader"
         minSdk = 24
         targetSdk = 36
-        versionCode = 26
+        versionCode = 27
         versionName = "2.1.0"
         ndk.debugSymbolLevel = "FULL"
 
