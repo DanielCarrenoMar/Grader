@@ -12,11 +12,12 @@ Grader maneja tus calificaciones de manera sencilla y práctica; olvídate de us
 > 👀 [Descargar última versión desde la Play Store](https://play.google.com/store/apps/details?id=com.app.grader)
 
 ## Características ⭐
-- Visualiza tu rendimiento con gráficos generados a partir de tus calificaciones.
-- Calcula el promedio ponderado de tu ciclo actual como el de los anteriores.
 - Proyecta fácilmente calificaciones a futuro y observa tu puntaje acumulado para cada asignatura. 
-- Cambia el tipo de calificación al correspondiente en tu institución (como base 20 o base 10).
-- Crea calificaciones a partir de una lista de subnotas.
+- Puede calcular ponderación acumulativa, también llamada calificación por peso directo.
+- Calcula el promedio ponderado de tu ciclo actual y el de los anteriores.
+- Admite múltiples tipos de calificación.
+- Te avisa cuando ya aprobaste una asignatura.
+- Visualiza tu rendimiento con gráficos generados a partir de tus calificaciones.
 ## Librerías Utilizadas 📚
 - HiltAndroid (inyección de dependencias)
 - Room (base de datos)
