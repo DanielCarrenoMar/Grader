@@ -160,7 +160,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     override suspend fun getSemesterById(semesterId: Int): SemesterModel? {
         val semesterEntity = semesterDao.getSemesterById(semesterId) ?: return null
         return semesterEntity.toSemesterModel(
-            average = getAverageFromCourse(semesterId),
+            average = getAverageFromSemester(semesterId),
             size = getSizeOfSemesters(semesterId),
             weight = getWeightOfSemester(semesterId)
         )
