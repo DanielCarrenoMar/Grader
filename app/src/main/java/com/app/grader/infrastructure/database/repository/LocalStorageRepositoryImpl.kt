@@ -241,7 +241,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
         return CourseStatisticsModel(
             totalPercentage = Percentage(stats.totalPercentage),
             accumulatePoints = stats.accumulatePoints * max / 100.0,
-            pendingPoints = 100 - stats.evaluatedPercentage,
+            pendingPoints = (100 - stats.evaluatedPercentage) * max / 100.0,
         )
     }
 
