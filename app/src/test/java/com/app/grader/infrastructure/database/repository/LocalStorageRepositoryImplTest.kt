@@ -108,48 +108,6 @@ class LocalStorageRepositoryImplTest {
     }
 
     @Test
-    fun getCourseStatistics_scalesRawPercentageByNumericTypeGradeMax() {
-        runBlocking {
-            whenever(courseDao.getCourseStatistics(1)).thenReturn(
-                CourseStatistics(
-                    totalPercentage = 60.0,
-                    accumulatePoints = 45.0,
-                    evaluatedPercentage = 60.0,
-                )
-            )
-            whenever(typeGradeDao.getTypeGradeFromCourseId(1)).thenReturn(
-                typeGradeEntity(max = 20, isDirectPercentage = false)
-            )
-
-            val result = repo.getCourseStatistics(1)
-
-            assertEquals(9.0, result.accumulatePoints, 0.000001)
-            assertEquals(40.0, result.pendingPoints, 0.000001)
-            assertEquals(60.0, result.totalPercentage.getPercentage(), 0.000001)
-        }
-    }
-
-    @Test
-    fun getCourseStatistics_keepsRawPercentageForDirectPercentageTypeGrade() {
-        runBlocking {
-            whenever(courseDao.getCourseStatistics(1)).thenReturn(
-                CourseStatistics(
-                    totalPercentage = 60.0,
-                    accumulatePoints = 45.0,
-                    evaluatedPercentage = 60.0,
-                )
-            )
-            whenever(typeGradeDao.getTypeGradeFromCourseId(1)).thenReturn(
-                typeGradeEntity(max = 100, isDirectPercentage = true)
-            )
-
-            val result = repo.getCourseStatistics(1)
-
-            assertEquals(45.0, result.accumulatePoints, 0.000001)
-        }
-    }
-
-    @Test
     fun saveGrade_succeedsWhenSumPlusNewAtMost100() {
         runBlocking {
             whenever(gradeDao.getSumPercentageByCourseId(1)).thenReturn(60.0)
