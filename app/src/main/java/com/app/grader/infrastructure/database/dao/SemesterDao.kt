@@ -45,38 +45,21 @@ interface SemesterDao {
 
     @Query(
         "SELECT " +
-            "SUM(course_average * uc) / SUM(uc) " +
-            "FROM (" +
+                "SUM(course_average * uc) / NULLIF(SUM(uc), 0) " +
+                "FROM (" +
                 "SELECT c.id AS course_id, c.uc AS uc, " +
-                "SUM((COALESCE(g.grade_percentage, 0) * g.weighting_percentage) / 100.0) AS course_average " +
+                "SUM(COALESCE(g.grade_percentage, 0) * g.weighting_percentage) / NULLIF(SUM(g.weighting_percentage), 0) AS course_average " +
                 "FROM course c " +
                 "INNER JOIN grade g ON c.id = g.course_id " +
                 "WHERE ( (:semesterId IS NULL AND c.semester_id IS NULL) OR c.semester_id = :semesterId ) " +
                 "GROUP BY c.id, c.uc" +
-            ")"
+                ")"
     )
     suspend fun getAverageFromSemester(semesterId: Int?): Double?
-
-    @Query(
-        "SELECT " +
-            "SUM(ROUND(course_average) * uc) / SUM(uc) " +
-            "FROM (" +
-                "SELECT c.id AS course_id, c.uc AS uc, " +
-                "SUM((COALESCE(g.grade_percentage, 0) * g.weighting_percentage) / 100.0) AS course_average " +
-                "FROM course c " +
-                "INNER JOIN grade g ON c.id = g.course_id " +
-                "WHERE ( (:semesterId IS NULL AND c.semester_id IS NULL) OR c.semester_id = :semesterId ) " +
-                "GROUP BY c.id, c.uc" +
-            ")"
-    )
-    suspend fun getAverageRoundFromSemester(semesterId: Int?): Double?
 
     /**
      * Agrega estadísticas globales sobre todos los semestres guardados
      * (todas las asignaturas cuyo semester_id apunta a un semestre existente).
-     *
-     * @param round si es true redondea el promedio de cada asignatura antes de
-     *              ponderarlo por UC (mismo criterio que getAverageRoundFromSemester).
      */
     @Query(
         "SELECT " +

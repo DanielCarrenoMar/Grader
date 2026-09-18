@@ -3,7 +3,6 @@ package com.app.grader.ui.theme
 import android.app.Activity
 import android.os.Build
 import android.view.Window
-import android.view.WindowInsets
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -46,15 +45,13 @@ val replyShapes = Shapes(
 )
 
 fun setStatusBarColor(window: Window, color: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) { // Android 15+
-        window.decorView.setOnApplyWindowInsetsListener { view, insets ->
-            val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
-            view.setBackgroundColor(color)
-            view.setPadding(0, statusBarInsets.top, 0, 0)
-            insets
-        }
-    } else {
-        // For Android 14 and below
+    // Edge-to-edge (enableEdgeToEdge + targetSdk 35+): Scaffold/TopAppBar ya aplican
+    // WindowInsets.statusBars. No aplicar padding manual en decorView: duplicaba el inset
+    // y empujaba el header hacia abajo en modelos con status bar alta (notch/cutout grande).
+    window.decorView.setOnApplyWindowInsetsListener(null)
+    window.decorView.setBackgroundColor(color)
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        // Solo pre-Android 15: en 15+ statusBarColor se ignora en edge-to-edge
         window.statusBarColor = color
     }
 }
