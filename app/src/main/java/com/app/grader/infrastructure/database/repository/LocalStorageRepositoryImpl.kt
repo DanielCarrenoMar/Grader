@@ -7,6 +7,7 @@ import com.app.grader.infrastructure.database.dao.GradeDao
 import com.app.grader.infrastructure.database.dao.SemesterDao
 import com.app.grader.infrastructure.database.dao.TypeGradeDao
 import com.app.grader.infrastructure.database.dao.SubGradeDao
+import com.app.grader.infrastructure.database.entitites.TypeGradeEntity
 import com.app.grader.domain.model.CourseModel
 import com.app.grader.domain.model.GradeModel
 import com.app.grader.domain.model.SemesterModel
@@ -109,6 +110,12 @@ class LocalStorageRepositoryImpl @Inject constructor(
             ?: throw IllegalStateException("Type grade not found")
     }
 
+    private suspend fun getDefaultTypeGrade(): TypeGradeEntity {
+        val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
+        return typeGradeDao.getTypeGradeById(gradeTypeId)
+            ?: throw IllegalStateException("Default type grade not found")
+    }
+
     override suspend fun deleteAllCourses(): Int {
         subGradeDao.deleteAllSubGrades()
         gradeDao.deleteAllGrades()
@@ -167,8 +174,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAverageFromSemester(semesterId: Int?): GradeValue {
-        val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
-        val gradeType = typeGradeDao.getTypeGradeById(gradeTypeId) ?: throw IllegalStateException("Default type grade not found")
+        val gradeType = getDefaultTypeGrade()
 
         val averagePercentage = if (appConfigRepository.isRoundFinalCourseAverage()) {
             semesterDao.getAverageRoundFromSemester(semesterId)
@@ -194,8 +200,7 @@ class LocalStorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTotalSemestersStatistics(averageCourseRounded: Boolean): SemesterStatisticsModel {
-        val gradeTypeId = appConfigRepository.getDefaultTypeGradeId()
-        val gradeType = typeGradeDao.getTypeGradeById(gradeTypeId) ?: throw IllegalStateException("Default type grade not found")
+        val gradeType = getDefaultTypeGrade()
         val semestersStatistics = semesterDao.getSemestersStatistics(averageCourseRounded)
         return SemesterStatisticsModel(
             totalAverage = GradeValue.createFromGradePercentage(
