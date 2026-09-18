@@ -27,7 +27,9 @@ import com.app.grader.domain.model.toSubGradeModel
 import com.app.grader.domain.repository.LocalStorageRepository
 import com.app.grader.domain.types.GradeValue
 import com.app.grader.domain.types.Percentage
+import com.app.grader.infrastructure.database.dao.CalculatedCourse
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class LocalStorageRepositoryImpl @Inject constructor(
     private val semesterDao: SemesterDao,
@@ -175,20 +177,39 @@ class LocalStorageRepositoryImpl @Inject constructor(
 
     override suspend fun getAverageFromSemester(semesterId: Int?): GradeValue {
         val gradeType = getDefaultTypeGrade()
-
-        val averagePercentage = if (appConfigRepository.isRoundFinalCourseAverage()) {
-            semesterDao.getAverageRoundFromSemester(semesterId)
-        } else {
-            semesterDao.getAverageFromSemester(semesterId)
-        }
-
-        if (averagePercentage == null) return GradeValue(
+        val nullGrade = GradeValue(
             null,
             gradeType.minToPass,
             gradeType.max
         )
 
-        return GradeValue.createFromGradePercentage(averagePercentage, gradeType.minToPass, gradeType.max)
+        if (appConfigRepository.isRoundFinalCourseAverage()) {
+            val coursesFromSemester = courseDao.getAllCoursesFromSemesterId(semesterId)
+            if (coursesFromSemester.isEmpty()) return nullGrade
+
+            var totalUC = 0
+            var weightedRoundedSum = 0.0
+
+            coursesFromSemester.forEach { course ->
+                val convertedCourseAverage = GradeValue.createFromGradePercentage(
+                    course.average,
+                    gradeType.minToPass,
+                    gradeType.max
+                ).getValue() ?: return@forEach
+
+                val roundedCourseAverage = convertedCourseAverage.roundToInt().toDouble()
+                totalUC += course.uc
+                weightedRoundedSum += roundedCourseAverage * course.uc
+            }
+
+            if (totalUC == 0) return nullGrade
+
+            return GradeValue(weightedRoundedSum / totalUC, gradeType.minToPass, gradeType.max)
+
+        } else {
+            val averagePercentage = semesterDao.getAverageFromSemester(semesterId)
+            return GradeValue.createFromGradePercentage(averagePercentage, gradeType.minToPass, gradeType.max)
+        }
     }
 
     override suspend fun getSizeOfSemesters(semesterId: Int?): Int {
